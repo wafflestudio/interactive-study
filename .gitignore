@@ -1,0 +1,22 @@
+# Common gitignore for all projects
+## IDE Configs
+.idea
+.vscode
+
+## Mac OS file format
+.DS-Store
+
+## Package dependencies
+node_modules
+package-lock.json
+yarn.lock
+
+## Build output
+dist
+build
+out
+.next
+
+## Logs
+logs
+*.log*
