@@ -15,6 +15,16 @@ function Disk({ size = 220 }: DiskProps) {
         width: cdSize220,
         height: cdSize220,
         perspective: "1000px",
+        // @ts-ignore
+        "--translateX": "0px",
+        "--translateY": "0px",
+        "--translateZ": "0px",
+        "--rotateX": "30deg",
+        "--rotateY": "45deg",
+        "--rotateZ": "0deg",
+        "--scaleX": "1",
+        "--scaleY": "1",
+        "--scaleZ": "1",
       }}
     >
       <svg>
@@ -42,10 +52,12 @@ function Disk({ size = 220 }: DiskProps) {
         </defs>
       </svg>
 
-      <div className={styles.disk}>
-        <div className={styles.front}></div>
-        <div className={styles.back}>
-          <div className={styles.back_hologram}></div>
+      <div className={styles.diskTranslator}>
+        <div className={styles.diskRotator}>
+          <div className={styles.front}></div>
+          <div className={styles.back}>
+            <div className={styles.back_hologram}></div>
+          </div>
         </div>
       </div>
     </div>
