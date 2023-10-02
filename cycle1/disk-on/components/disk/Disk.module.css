@@ -8,9 +8,7 @@
   --rotateX: 0deg;
   --rotateY: 0deg;
   --rotateZ: 0deg;
-  --scaleX: 1;
-  --scaleY: 1;
-  --scaleZ: 1;
+  transform-style: preserve-3d;
 }
 
 .diskTranslator {
@@ -24,6 +22,7 @@
     var(--translateY),
     var(--translateZ)
   );
+  transform-style: preserve-3d;
 }
 
 .diskRotator {
