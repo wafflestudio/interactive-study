@@ -1,0 +1,115 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  clip-path: url(#cd);
+
+  /*background-image: url(https://images.immediate.co.uk/production/volatile/sites/30/2022/09/Classic-Waffles-0ae28b2.jpg);*/
+}
+
+.hologram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #444e5a 0deg,
+    #516983 28.799999356269836deg,
+    #818e62 74.61400151252747deg,
+    #79a799 108.8436770439148deg,
+    #6691bc 140.34626483917236deg,
+    #444e5a 179.10415291786194deg,
+    #818e62 234.9986743927002deg,
+    #89a380 258.7453007698059deg,
+    #6691bc 316.42045497894287deg,
+    #516983 340.9759283065796deg,
+    #444e5a 359.7802948951721deg,
+    #444e5a 360deg
+  );
+}
+
+.mainBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(217, 217, 217, 0.6);
+}
+
+.blendLayerSet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 98.1818%;
+  height: 98.1818%;
+  transform: translate(-50%, -50%);
+
+  clip-path: url(#cd);
+}
+
+.classic .blendLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0.6;
+  background: rgba(188, 188, 188, 0.5);
+}
+
+.classic .blendBackground1 {
+  mix-blend-mode: overlay;
+}
+
+.classic .blendBackground2 {
+  mix-blend-mode: soft-light;
+}
+
+.classic .blendBackground3 {
+}
+
+.classic .blendBackground4 {
+  mix-blend-mode: hard-light;
+}
+
+.classic .blendBackground5 {
+  mix-blend-mode: hard-light;
+}
+
+.holeLayer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hole1 {
+  width: 30px;
+  height: 30px;
+  background: #e4dfe5;
+  clip-path: url(#hole2);
+}
+
+.hole2 {
+  width: 42px;
+  height: 42px;
+  mix-blend-mode: multiply;
+  background: rgba(100, 100, 100, 0.5);
+  clip-path: url(#hole1);
+}

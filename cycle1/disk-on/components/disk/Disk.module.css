@@ -2,13 +2,18 @@
   position: absolute;
   top: 100px;
   left: 100px;
-  --translateX: 0px;
-  --translateY: 0px;
-  --translateZ: 0px;
-  --rotateX: 0deg;
-  --rotateY: 0deg;
-  --rotateZ: 0deg;
+  width: var(--size);
+  height: var(--size);
+  --size: 220px;
+  --translate-x: 0px;
+  --translate-y: 0px;
+  --translate-z: 0px;
+  --scale: 1;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --rotate-z: 0deg;
   transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .diskTranslator {
@@ -18,10 +23,11 @@
   width: 100%;
   height: 100%;
   transform: translate3d(
-    var(--translateX),
-    var(--translateY),
-    var(--translateZ)
-  );
+      var(--translate-x),
+      var(--translate-y),
+      var(--translate-z)
+    )
+    scale(var(--scale));
 }
 
 .diskRotator {
@@ -30,20 +36,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transform: rotateX(var(--rotateX)) rotateY(var(--rotateY))
-    rotateZ(var(--rotateZ));
-}
-
-.front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  clip-path: url(#cd);
-
-  background-image: url(https://images.immediate.co.uk/production/volatile/sites/30/2022/09/Classic-Waffles-0ae28b2.jpg);
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y))
+    rotateZ(var(--rotate-z));
 }
 
 .back {

@@ -2,21 +2,26 @@
 
 import styles from "./Disk.module.css";
 import { useSpring, animated } from "@react-spring/web";
+import DiskFront from "@/components/disk/DiskFront";
 
 type DiskProps = {
   size?: number;
 };
 
-function Disk({ size = 220 }: DiskProps) {
-  const cdSize220 = size;
-  const cdSize216 = (size * 216) / 220;
+function Disk({}: DiskProps) {
+  const size = 220;
 
   const [translate, translateApi] = useSpring(() => ({
-    from: { "--translateX": "0", "--translateY": "0", "--translateZ": "0" },
+    from: {
+      "--translate-x": "0px",
+      "--translate-y": "0px",
+      "--translate-z": "0px",
+      "--scale": "1",
+    },
   }));
 
   const [rotate, rotateApi] = useSpring(() => ({
-    from: { "--rotateX": "0", "--rotateY": "0", "--rotateZ": "0" },
+    from: { "--rotate-x": "0deg", "--rotate-y": "0deg", "--rotate-z": "0deg" },
   }));
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -25,9 +30,9 @@ function Disk({ size = 220 }: DiskProps) {
     const relativeY = ((e.clientY - rect.top - size / 2) / size) * -2;
     rotateApi.start({
       to: {
-        "--rotateX": `${-relativeY * 30}deg`,
-        "--rotateY": `${-relativeX * 30}deg`,
-        "--rotateZ": "0",
+        "--rotate-x": `${-relativeY * 30}deg`,
+        "--rotate-y": `${-relativeX * 30}deg`,
+        "--rotate-z": "0",
       },
     });
   };
@@ -35,9 +40,9 @@ function Disk({ size = 220 }: DiskProps) {
   const handleMouseLeave = () => {
     rotateApi.start({
       to: {
-        "--rotateX": "0",
-        "--rotateY": "0",
-        "--rotateZ": "0",
+        "--rotate-x": "0",
+        "--rotate-y": "0",
+        "--rotate-z": "0",
       },
     });
   };
@@ -46,14 +51,11 @@ function Disk({ size = 220 }: DiskProps) {
     <animated.div
       className={styles.scene}
       style={{
-        width: cdSize220,
-        height: cdSize220,
-        perspective: "1000px",
+        // @ts-ignore
+        "--size": `${size}px`,
         ...translate,
         ...rotate,
       }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       <svg>
         <defs>
@@ -65,14 +67,10 @@ function Disk({ size = 220 }: DiskProps) {
             <path
               d="
               M1 0.5
-              A0.5 0.5 0 0 1 0.5 1
               A0.5 0.5 0 0 1 0 0.5
-              A0.5 0.5 0 0 1 0.5 0
               A0.5 0.5 0 0 1 1 0.5
               L0.565 0.5
-              A0.065 0.065 0 0 1 0.5 0.565
               A0.065 0.065 0 0 1 0.435 0.5
-              A0.065 0.065 0 0 1 0.5 0.435
               A0.065 0.065 0 0 1 0.565 0.5
               Z"
             />
@@ -80,9 +78,55 @@ function Disk({ size = 220 }: DiskProps) {
         </defs>
       </svg>
 
-      <div className={styles.diskTranslator}>
+      <svg>
+        <defs>
+          <clipPath
+            id="hole1"
+            clipPathUnits="objectBoundingBox"
+            clipRule="evenodd"
+          >
+            <path
+              d="
+              M1 0.5
+              A0.5 0.5 0 0 1 0 0.5
+              A0.5 0.5 0 0 1 1 0.5
+              L0.9 0.5
+              A0.4 0.4 0 0 1 0.1 0.5
+              A0.4 0.4 0 0 1 0.9 0.5
+              Z"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+
+      <svg>
+        <defs>
+          <clipPath
+            id="hole2"
+            clipPathUnits="objectBoundingBox"
+            clipRule="evenodd"
+          >
+            <path
+              d="
+              M1 0.5
+              A0.5 0.5 0 0 1 0 0.5
+              A0.5 0.5 0 0 1 1 0.5
+              L0.55 0.5
+              A0.4 0.4 0 0 1 0.45 0.5
+              A0.4 0.4 0 0 1 0.55 0.5
+              Z"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+
+      <div
+        className={styles.diskTranslator}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         <div className={styles.diskRotator}>
-          <div className={styles.front}></div>
+          <DiskFront type="classic" />
           <div className={styles.back}>
             <div className={styles.back_hologram}></div>
           </div>
