@@ -3,6 +3,7 @@
   width: 150px;
   height: 150px;
   perspective: 1000px;
+  perspective-origin: center;
 }
 .disk {
   width: 100%;
@@ -11,13 +12,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   transform-style: preserve-3d;
-}
-.disk:hover {
   cursor: grab;
 }
 
-.grabbing {
-  cursor: grabbing;
+.disk.grabbing {
+  cursor: grabbing !important;
 }
