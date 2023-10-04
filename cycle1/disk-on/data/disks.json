@@ -1,0 +1,22 @@
+[
+  {
+    "id": "a",
+    "backgroundColor": "#fff000"
+  },
+  {
+    "id": "b",
+    "backgroundColor": "#ff0000"
+  },
+  {
+    "id": "c",
+    "backgroundColor": "#00ff00"
+  },
+  {
+    "id": "d",
+    "backgroundColor": "#0000ff"
+  },
+  {
+    "id": "e",
+    "backgroundColor": "#0ff0ff"
+  }
+]
