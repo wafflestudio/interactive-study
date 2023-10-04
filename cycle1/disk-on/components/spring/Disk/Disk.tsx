@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 type DiskProps = {
   movement: Movement;
   backgroundColor: Disk["backgroundColor"];
+  isGrabbed: boolean;
   onMouseDown: MouseEventHandler;
   onMouseUp: MouseEventHandler;
 };
@@ -17,6 +18,7 @@ type DiskProps = {
 export default function Disk({
   movement,
   backgroundColor,
+  isGrabbed,
   onMouseDown,
   onMouseUp,
 }: DiskProps) {
@@ -24,7 +26,7 @@ export default function Disk({
   return (
     <div className={cx("disk-wrapper")}>
       <animated.div
-        className={cx("disk")}
+        className={cx("disk", { grabbing: isGrabbed })}
         style={{ backgroundColor, ...spring }}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
