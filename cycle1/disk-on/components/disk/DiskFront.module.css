@@ -5,9 +5,17 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  clip-path: url(#cd);
 
   /*background-image: url(https://images.immediate.co.uk/production/volatile/sites/30/2022/09/Classic-Waffles-0ae28b2.jpg);*/
+}
+
+.mainLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: url(#cd);
 }
 
 .hologram {
@@ -34,7 +42,7 @@
   );
 }
 
-.mainBackground {
+.classic .opaque {
   position: absolute;
   top: 0;
   left: 0;
@@ -44,7 +52,7 @@
   background: rgba(217, 217, 217, 0.6);
 }
 
-.blendLayerSet {
+.blendLayer {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -55,7 +63,7 @@
   clip-path: url(#cd);
 }
 
-.classic .blendLayer {
+.classic .blend {
   position: absolute;
   top: 0;
   left: 0;
@@ -66,22 +74,22 @@
   background: rgba(188, 188, 188, 0.5);
 }
 
-.classic .blendBackground1 {
+.classic .blend1 {
   mix-blend-mode: overlay;
 }
 
-.classic .blendBackground2 {
+.classic .blend2 {
   mix-blend-mode: soft-light;
 }
 
-.classic .blendBackground3 {
+.classic .blend3 {
 }
 
-.classic .blendBackground4 {
+.classic .blend4 {
   mix-blend-mode: hard-light;
 }
 
-.classic .blendBackground5 {
+.classic .blend5 {
   mix-blend-mode: hard-light;
 }
 
@@ -89,6 +97,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  width: calc(100% / 220 * 42);
+  height: calc(100% / 220 * 42);
   transform: translate(-50%, -50%);
 }
 
@@ -100,16 +110,18 @@
 }
 
 .hole1 {
-  width: 30px;
-  height: 30px;
-  background: #e4dfe5;
-  clip-path: url(#hole2);
+  width: calc(100% / 42 * 30);
+  height: calc(100% / 42 * 30);
+  background-color: #ffffff;
+  opacity: 0.8;
+  clip-path: url(#hole1);
 }
 
 .hole2 {
-  width: 42px;
-  height: 42px;
+  width: 100%;
+  height: 100%;
   mix-blend-mode: multiply;
-  background: rgba(100, 100, 100, 0.5);
-  clip-path: url(#hole1);
+  background-color: #000000;
+  opacity: 0.1;
+  clip-path: url(#hole2);
 }

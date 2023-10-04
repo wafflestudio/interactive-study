@@ -8,9 +8,7 @@ type DiskProps = {
   size?: number;
 };
 
-function Disk({}: DiskProps) {
-  const size = 220;
-
+function Disk({ size = 220 }: DiskProps) {
   const [translate, translateApi] = useSpring(() => ({
     from: {
       "--translate-x": "0px",
@@ -40,9 +38,9 @@ function Disk({}: DiskProps) {
   const handleMouseLeave = () => {
     rotateApi.start({
       to: {
-        "--rotate-x": "0",
-        "--rotate-y": "0",
-        "--rotate-z": "0",
+        "--rotate-x": "0deg",
+        "--rotate-y": "0deg",
+        "--rotate-z": "0deg",
       },
     });
   };
@@ -90,9 +88,9 @@ function Disk({}: DiskProps) {
               M1 0.5
               A0.5 0.5 0 0 1 0 0.5
               A0.5 0.5 0 0 1 1 0.5
-              L0.9 0.5
-              A0.4 0.4 0 0 1 0.1 0.5
-              A0.4 0.4 0 0 1 0.9 0.5
+              L0.87 0.5
+              A0.37 0.37 0 0 1 0.13 0.5
+              A0.37 0.37 0 0 1 0.87 0.5
               Z"
             />
           </clipPath>
@@ -111,9 +109,9 @@ function Disk({}: DiskProps) {
               M1 0.5
               A0.5 0.5 0 0 1 0 0.5
               A0.5 0.5 0 0 1 1 0.5
-              L0.55 0.5
-              A0.4 0.4 0 0 1 0.45 0.5
-              A0.4 0.4 0 0 1 0.55 0.5
+              L0.575 0.5
+              A0.075 0.075 0 0 1 0.425 0.5
+              A0.075 0.075 0 0 1 0.575 0.5
               Z"
             />
           </clipPath>
