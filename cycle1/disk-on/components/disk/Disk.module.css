@@ -12,8 +12,35 @@
   --rotate-x: 0deg;
   --rotate-y: 0deg;
   --rotate-z: 0deg;
+  --pointer-x: 0px;
+  --pointer-y: 0px;
+  --hologram: conic-gradient(
+    from 182deg at 50% 50%,
+    #5b7088 0deg,
+    #5e758f 7.296745106577873deg,
+    #577596 28.799999356269836deg,
+    #818e62 74.61400151252747deg,
+    #79a799 108.8436770439148deg,
+    #6691bc 140.34626483917236deg,
+    #668094 164.44093465805054deg,
+    #5e7680 179.10415291786194deg,
+    #5a6f78 189.44446563720703deg,
+    #5f7175 195.45100450515747deg,
+    #607276 200.4342269897461deg,
+    #818e62 234.9986743927002deg,
+    #89a380 258.7453007698059deg,
+    #6691bc 316.42045497894287deg,
+    #617995 340.9759283065796deg,
+    #5c728a 349.06386137008667deg,
+    #5b7088 359.2827773094177deg
+  );
   transform-style: preserve-3d;
   perspective: 1000px;
+}
+
+.scene svg {
+  width: 0;
+  height: 0;
 }
 
 .diskTranslator {
@@ -50,26 +77,43 @@
   backface-visibility: hidden;
 }
 
-.back_hologram {
+.backHologram {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 
-  background-image: conic-gradient(
-    from 180deg at 50% 50%,
-    #444e5a 0deg,
-    #516983 28.799999356269836deg,
-    #818e62 74.61400151252747deg,
-    #79a799 108.8436770439148deg,
-    #6691bc 140.34626483917236deg,
-    #444e5a 179.10415291786194deg,
-    #818e62 234.9986743927002deg,
-    #89a380 258.7453007698059deg,
-    #6691bc 316.42045497894287deg,
-    #516983 340.9759283065796deg,
-    #444e5a 359.7802948951721deg,
-    #444e5a 360deg
+  background-image: var(--hologram);
+  clip-path: url(#cd);
+}
+
+.glare {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    farthest-corner circle at var(--pointer-x) var(--pointer-y),
+    hsl(0, 0%, 80%),
+    hsla(0, 0%, 74.9%, 0.25) 30%,
+    hsl(0, 0%, 21.6%) 130%
   );
+  filter: brightness(0.9) contrast(2);
+  mix-blend-mode: hard-light;
+  opacity: 0.9;
+  clip-path: url(#cd);
+  backface-visibility: hidden;
+}
+
+.scene:hover .glare {
+  display: block;
+}
+
+.glare.front {
+  transform: translateZ(1px);
+}
+
+.glare.back {
+  transform: rotateY(180deg) translateZ(-1px);
 }

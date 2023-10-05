@@ -5,8 +5,7 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-
-  /*background-image: url(https://images.immediate.co.uk/production/volatile/sites/30/2022/09/Classic-Waffles-0ae28b2.jpg);*/
+  --cover-image: "";
 }
 
 .mainLayer {
@@ -25,24 +24,10 @@
   width: 100%;
   height: 100%;
 
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #444e5a 0deg,
-    #516983 28.799999356269836deg,
-    #818e62 74.61400151252747deg,
-    #79a799 108.8436770439148deg,
-    #6691bc 140.34626483917236deg,
-    #444e5a 179.10415291786194deg,
-    #818e62 234.9986743927002deg,
-    #89a380 258.7453007698059deg,
-    #6691bc 316.42045497894287deg,
-    #516983 340.9759283065796deg,
-    #444e5a 359.7802948951721deg,
-    #444e5a 360deg
-  );
+  background: var(--hologram);
 }
 
-.classic .opaque {
+.opaque {
   position: absolute;
   top: 0;
   left: 0;
@@ -63,7 +48,7 @@
   clip-path: url(#cd);
 }
 
-.classic .blend {
+.blend {
   position: absolute;
   top: 0;
   left: 0;
@@ -74,23 +59,24 @@
   background: rgba(188, 188, 188, 0.5);
 }
 
-.classic .blend1 {
+.classic1 {
+  mix-blend-mode: hard-light;
+}
+
+.classic2 {
+  mix-blend-mode: hard-light;
+}
+
+.classic3 {
+  mix-blend-mode: normal;
+}
+
+.classic4 {
   mix-blend-mode: overlay;
 }
 
-.classic .blend2 {
-  mix-blend-mode: soft-light;
-}
-
-.classic .blend3 {
-}
-
-.classic .blend4 {
-  mix-blend-mode: hard-light;
-}
-
-.classic .blend5 {
-  mix-blend-mode: hard-light;
+.classic5 {
+  mix-blend-mode: overlay;
 }
 
 .holeLayer {

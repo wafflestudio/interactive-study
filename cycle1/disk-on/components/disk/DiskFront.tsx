@@ -1,22 +1,83 @@
 import styles from "./DiskFront.module.css";
+import Image from "next/image";
 
 type DiskFrontProps = {
-  type?: string;
+  type?: "classic" | "paper" | "holographic";
+  imageUrl?: string;
 };
 
-function DiskFront({ type = "classic" }: DiskFrontProps) {
+function ImageOrDiv({
+  imageUrl,
+  className,
+}: {
+  imageUrl?: string;
+  className?: string;
+}) {
+  if (imageUrl) {
+    return (
+      <img src={imageUrl} className={className} alt={"앨범 커버 이미지"} />
+    );
+  } else {
+    return <div className={className} />;
+  }
+}
+
+function DiskFront({ type = "classic", imageUrl }: DiskFrontProps) {
   return (
-    <div className={`${styles.container} ${styles[type] ?? ""}`}>
+    <div className={styles.container}>
       <div className={styles.mainLayer}>
         <div className={styles.hologram} />
         <div className={styles.opaque} />
       </div>
       <div className={styles.blendLayer}>
-        <div className={`${styles.blend} ${styles.blend1}`} />
-        <div className={`${styles.blend} ${styles.blend2}`} />
-        <div className={`${styles.blend} ${styles.blend3}`} />
-        <div className={`${styles.blend} ${styles.blend4}`} />
-        <div className={`${styles.blend} ${styles.blend5}`} />
+        {type === "classic" && (
+          <>
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.classic1}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.classic2}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.classic3}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.classic4}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.classic5}`}
+            />
+          </>
+        )}
+        {type === "paper" && (
+          <>
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.paper1}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.paper2}`}
+            />
+          </>
+        )}
+        {type === "holographic" && (
+          <>
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.holographic1}`}
+            />
+            <ImageOrDiv
+              imageUrl={imageUrl}
+              className={`${styles.blend} ${styles.holographic2}`}
+            />
+          </>
+        )}
       </div>
       <div className={styles.holeLayer}>
         <div className={`${styles.hole} ${styles.hole1}`} />

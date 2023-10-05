@@ -22,6 +22,10 @@ function Disk({ size = 220 }: DiskProps) {
     from: { "--rotate-x": "0deg", "--rotate-y": "0deg", "--rotate-z": "0deg" },
   }));
 
+  const [pointer, pointerApi] = useSpring(() => ({
+    from: { "--pointer-x": "0px", "--pointer-y": "0px" },
+  }));
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const relativeX = ((e.clientX - rect.left - size / 2) / size) * 2;
@@ -29,8 +33,14 @@ function Disk({ size = 220 }: DiskProps) {
     rotateApi.start({
       to: {
         "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * 30}deg`,
+        "--rotate-y": `${-relativeX * 30 + 180}deg`,
         "--rotate-z": "0",
+      },
+    });
+    pointerApi.start({
+      to: {
+        "--pointer-x": `${e.clientX - rect.left}px`,
+        "--pointer-y": `${e.clientY - rect.top}px`,
       },
     });
   };
@@ -42,6 +52,7 @@ function Disk({ size = 220 }: DiskProps) {
         "--rotate-y": "0deg",
         "--rotate-z": "0deg",
       },
+      config: { mass: 1, tension: 200, friction: 40 },
     });
   };
 
@@ -53,6 +64,7 @@ function Disk({ size = 220 }: DiskProps) {
         "--size": `${size}px`,
         ...translate,
         ...rotate,
+        ...pointer,
       }}
     >
       <svg>
@@ -124,10 +136,12 @@ function Disk({ size = 220 }: DiskProps) {
         onMouseLeave={handleMouseLeave}
       >
         <div className={styles.diskRotator}>
-          <DiskFront type="classic" />
+          <DiskFront />
           <div className={styles.back}>
-            <div className={styles.back_hologram}></div>
+            <div className={styles.backHologram}></div>
           </div>
+          <div className={`${styles.glare} ${styles.front}`} />
+          <div className={`${styles.glare} ${styles.back}`} />
         </div>
       </div>
     </animated.div>
