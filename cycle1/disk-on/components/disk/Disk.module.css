@@ -14,6 +14,7 @@
   --rotate-z: 0deg;
   --pointer-x: 0px;
   --pointer-y: 0px;
+  --pointer-from-center: 0;
   --hologram: conic-gradient(
     from 182deg at 50% 50%,
     #5b7088 0deg,
@@ -67,47 +68,24 @@
     rotateZ(var(--rotate-z));
 }
 
-.back {
-  position: absolute;
-  transform: rotateY(180deg);
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-}
-
-.backHologram {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  background-image: var(--hologram);
-  clip-path: url(#cd);
-}
-
 .glare {
-  display: none;
   position: absolute;
   width: 100%;
   height: 100%;
   background-image: radial-gradient(
     farthest-corner circle at var(--pointer-x) var(--pointer-y),
-    hsl(0, 0%, 80%),
-    hsla(0, 0%, 74.9%, 0.25) 30%,
-    hsl(0, 0%, 21.6%) 130%
+    #ccccccff,
+    #bfbfbf3f 30%,
+    #373737ff 130%
   );
   filter: brightness(0.9) contrast(2);
   mix-blend-mode: hard-light;
-  opacity: 0.9;
+  opacity: calc(var(--pointer-from-center) * 0.9);
   clip-path: url(#cd);
   backface-visibility: hidden;
 }
 
 .scene:hover .glare {
-  display: block;
 }
 
 .glare.front {

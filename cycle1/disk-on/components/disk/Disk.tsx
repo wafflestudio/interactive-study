@@ -3,6 +3,7 @@
 import styles from "./Disk.module.css";
 import { useSpring, animated } from "@react-spring/web";
 import DiskFront from "@/components/disk/DiskFront";
+import DiskBack from "@/components/disk/DiskBack";
 
 type DiskProps = {
   size?: number;
@@ -23,7 +24,11 @@ function Disk({ size = 220 }: DiskProps) {
   }));
 
   const [pointer, pointerApi] = useSpring(() => ({
-    from: { "--pointer-x": "0px", "--pointer-y": "0px" },
+    from: {
+      "--pointer-x": "0px",
+      "--pointer-y": "0px",
+      "--pointer-from-center": "0",
+    },
   }));
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -33,7 +38,7 @@ function Disk({ size = 220 }: DiskProps) {
     rotateApi.start({
       to: {
         "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * 30 + 180}deg`,
+        "--rotate-y": `${-relativeX * 30}deg`,
         "--rotate-z": "0",
       },
     });
@@ -41,18 +46,35 @@ function Disk({ size = 220 }: DiskProps) {
       to: {
         "--pointer-x": `${e.clientX - rect.left}px`,
         "--pointer-y": `${e.clientY - rect.top}px`,
+        "--pointer-from-center": `${
+          Math.sqrt(
+            (e.clientX - rect.left - size / 2) ** 2 +
+              (e.clientY - rect.top - size / 2) ** 2,
+          ) /
+          (size / 2)
+        })}`,
       },
     });
   };
 
   const handleMouseLeave = () => {
+    const fadeOutConfig = { mass: 1, tension: 200, friction: 40 };
+
     rotateApi.start({
       to: {
         "--rotate-x": "0deg",
         "--rotate-y": "0deg",
         "--rotate-z": "0deg",
       },
-      config: { mass: 1, tension: 200, friction: 40 },
+      config: fadeOutConfig,
+    });
+    pointerApi.start({
+      to: {
+        "--pointer-x": "0px",
+        "--pointer-y": "0px",
+        "--pointer-from-center": "0",
+      },
+      config: fadeOutConfig,
     });
   };
 
@@ -137,9 +159,7 @@ function Disk({ size = 220 }: DiskProps) {
       >
         <div className={styles.diskRotator}>
           <DiskFront />
-          <div className={styles.back}>
-            <div className={styles.backHologram}></div>
-          </div>
+          <DiskBack />
           <div className={`${styles.glare} ${styles.front}`} />
           <div className={`${styles.glare} ${styles.back}`} />
         </div>
