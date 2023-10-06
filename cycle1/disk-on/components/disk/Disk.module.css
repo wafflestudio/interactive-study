@@ -43,7 +43,7 @@
     #6691bc calc(316.42045497894287deg + var(--angle1)),
     #617995 calc(340.9759283065796deg + var(--angle2)),
     #5c728a calc(349.06386137008667deg + var(--angle1)),
-    #5b7088 calc(360deg + var(--angle2))
+    #5b7088 calc(360deg + var(--angle1))
   );
 
   /*--hologram: repeating-conic-gradient(*/
