@@ -1,0 +1,188 @@
+.bg_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  box-sizing: border-box;
+  z-index: 0;
+  animation: 1s fade_in ease-in-out forwards;
+}
+
+.announce {
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: #FFF;
+  text-align: center;
+  font-family: 'Pretendard-Regular', serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  animation: 3s fade_j_up ease-in-out forwards;
+}
+
+.next {
+  position: absolute;
+  top: 12%;
+  left: 30%;
+  transform: translate(-50%, 0);
+  color: #FFF;
+  text-align: center;
+  font-family: 'Pretendard-Regular', serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  animation: 3s fade_j_up ease-in-out forwards;
+}
+
+.bill_container {
+  position: relative;
+  width: 80%;
+  height: 86%;
+}
+
+.bill_1 {
+  width: 48%;
+  max-width: 880px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  background: lightgray 50% / cover no-repeat;
+  box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.90);
+  animation: 1.6s slide_1 ease-in-out forwards;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.animation_up_down {
+  animation: up_down 2s infinite ease-in-out;
+}
+
+.bill_2 {
+  width: 48%;
+  max-width: 880px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  animation: 1.6s slide_2 ease-in-out forwards;
+}
+
+.bill_3 {
+  width: 48%;
+  max-width: 880px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  animation: 1.6s slide_3 ease-in-out forwards;
+}
+
+.bill_4 {
+  width: 48%;
+  max-width: 880px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  animation: 1.6s slide_4 ease-in-out forwards;
+}
+
+.bill_5 {
+  width: 48%;
+  max-width: 880px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  animation: 1.6s slide_5 ease-in-out forwards;
+}
+
+@keyframes up_down {
+  0%, 100% {
+    transform: rotate(250deg) translate(34%, -120%);
+  }
+  50% {
+    transform: rotate(250deg) translate(37%, -120%);
+  }
+}
+
+@keyframes fade_in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade_j_up {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide_1 {
+  0% {
+    transform: rotate(270deg) translate(20%, -120%);
+  }
+  100% {
+    transform: rotate(250deg) translate(34%, -120%);
+  }
+}
+
+@keyframes slide_2 {
+  0% {
+    transform: rotate(270deg) translate(20%, -120%);
+  }
+  100% {
+    transform: rotate(260deg) translate(26%, -110%);
+  }
+}
+
+@keyframes slide_3 {
+  0% {
+    transform: rotate(270deg) translate(20%, -120%);
+  }
+  100% {
+    transform: rotate(270deg) translate(18%, -100%);
+  }
+}
+
+@keyframes slide_4 {
+  0% {
+    transform: rotate(270deg) translate(20%, -120%);
+  }
+  100% {
+    transform: rotate(280deg) translate(10%, -90%);
+  }
+}
+
+@keyframes slide_5 {
+  0% {
+    transform: rotate(270deg) translate(20%, -120%);
+  }
+  100% {
+    transform: rotate(290deg) translate(2%, -80%);
+  }
+}
