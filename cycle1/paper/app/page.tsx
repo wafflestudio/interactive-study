@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Wallet from '@/components/wallet';
-import StageAnnounce from '@/components/stage-announce';
+import Navigation from '@/components/navigation';
 
 export default function Home() {
   const start = 500;
@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <>
       {step === 0 && <Wallet start={start} end={end} />}
-      {step === 1 && <StageAnnounce onNext={onNext} />}
+      {step === 1 && <Navigation onNext={onNext} />}
     </>
   );
 }

@@ -6,7 +6,7 @@ import S from './styles.module.css';
 import bill from '@/public/images/pictures/front.png';
 import bills from '@/public/images/pictures/front_blue_light.png';
 
-export default function StageAnnounce({ onNext }: { onNext: () => void }) {
+export default function Navigation({ onNext }: { onNext: () => void }) {
   const [animation, setAnimation] = useState(false);
 
   useEffect(() => {
