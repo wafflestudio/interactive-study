@@ -10,6 +10,8 @@ type DiskProps = {
 };
 
 function Disk({ size = 220 }: DiskProps) {
+  const radius = size / 2;
+
   const [translate, translateApi] = useSpring(() => ({
     from: {
       "--translate-x": "0px",
@@ -20,39 +22,51 @@ function Disk({ size = 220 }: DiskProps) {
   }));
 
   const [rotate, rotateApi] = useSpring(() => ({
-    from: { "--rotate-x": "0deg", "--rotate-y": "0deg", "--rotate-z": "0deg" },
+    from: {
+      "--rotate-x": "0deg",
+      "--rotate-y": "180deg",
+      "--rotate-z": "0deg",
+    },
   }));
 
   const [pointer, pointerApi] = useSpring(() => ({
     from: {
-      "--pointer-x": "0px",
-      "--pointer-y": "0px",
-      "--pointer-from-center": "0",
+      "--pointer-x": `${radius}px`,
+      "--pointer-y": `${radius}px`,
+      "--relative-x": 0,
+      "--relative-y": 0,
+      "--pointer-from-center": 0,
     },
   }));
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const relativeX = ((e.clientX - rect.left - size / 2) / size) * 2;
-    const relativeY = ((e.clientY - rect.top - size / 2) / size) * -2;
+
+    const pointerX = e.clientX - rect.left;
+    const pointerY = e.clientY - rect.top;
+
+    const relativeX = (pointerX - radius) / radius;
+    const relativeY = (pointerY - radius) / radius;
+
     rotateApi.start({
       to: {
         "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * 30}deg`,
+        "--rotate-y": `${-relativeX * -30 + 180}deg`,
         "--rotate-z": "0",
       },
     });
+
     pointerApi.start({
       to: {
-        "--pointer-x": `${e.clientX - rect.left}px`,
-        "--pointer-y": `${e.clientY - rect.top}px`,
-        "--pointer-from-center": `${
+        "--pointer-x": `${pointerX}px`,
+        "--pointer-y": `${pointerY}px`,
+        "--relative-x": relativeX,
+        "--relative-y": relativeY,
+        "--pointer-from-center":
           Math.sqrt(
-            (e.clientX - rect.left - size / 2) ** 2 +
-              (e.clientY - rect.top - size / 2) ** 2,
-          ) /
-          (size / 2)
-        })}`,
+            (e.clientX - rect.left - radius) ** 2 +
+              (e.clientY - rect.top - radius) ** 2,
+          ) / radius,
       },
     });
   };
@@ -63,16 +77,18 @@ function Disk({ size = 220 }: DiskProps) {
     rotateApi.start({
       to: {
         "--rotate-x": "0deg",
-        "--rotate-y": "0deg",
+        "--rotate-y": "180deg",
         "--rotate-z": "0deg",
       },
       config: fadeOutConfig,
     });
     pointerApi.start({
       to: {
-        "--pointer-x": "0px",
-        "--pointer-y": "0px",
-        "--pointer-from-center": "0",
+        "--pointer-x": `${radius}px`,
+        "--pointer-y": `${radius}px`,
+        "--relative-x": 0,
+        "--relative-y": 0,
+        "--pointer-from-center": 0,
       },
       config: fadeOutConfig,
     });

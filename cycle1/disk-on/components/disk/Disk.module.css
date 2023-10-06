@@ -14,27 +14,59 @@
   --rotate-z: 0deg;
   --pointer-x: 0px;
   --pointer-y: 0px;
+  --relative-x: 0;
+  --relative-y: 0;
   --pointer-from-center: 0;
-  --hologram: conic-gradient(
-    from 182deg at 50% 50%,
-    #5b7088 0deg,
-    #5e758f 7.296745106577873deg,
-    #577596 28.799999356269836deg,
-    #818e62 74.61400151252747deg,
-    #79a799 108.8436770439148deg,
-    #6691bc 140.34626483917236deg,
-    #668094 164.44093465805054deg,
-    #5e7680 179.10415291786194deg,
-    #5a6f78 189.44446563720703deg,
-    #5f7175 195.45100450515747deg,
-    #607276 200.4342269897461deg,
-    #818e62 234.9986743927002deg,
-    #89a380 258.7453007698059deg,
-    #6691bc 316.42045497894287deg,
-    #617995 340.9759283065796deg,
-    #5c728a 349.06386137008667deg,
-    #5b7088 359.2827773094177deg
+  --angle1: calc(
+    60deg * var(--pointer-from-center) + 15deg * var(--relative-x) - 15deg *
+      var(--relative-y)
   );
+  --angle2: calc(
+    60deg * var(--pointer-from-center) - 15deg * var(--relative-x) + 15deg *
+      var(--relative-y)
+  );
+  --hologram: repeating-conic-gradient(
+    from 182deg at 50% 50%,
+    #5b7088 calc(0deg + var(--angle1)),
+    #5e758f calc(7.296745106577873deg + var(--angle1)),
+    #577596 calc(28.799999356269836deg + var(--angle2)),
+    #818e62 calc(74.61400151252747deg + var(--angle1)),
+    #79a799 calc(108.8436770439148deg + var(--angle2)),
+    #6691bc calc(140.34626483917236deg + var(--angle1)),
+    #668094 calc(164.44093465805054deg + var(--angle2)),
+    #5e7680 calc(179.10415291786194deg + var(--angle1)),
+    #5a6f78 calc(189.44446563720703deg + var(--angle1)),
+    #5f7175 calc(195.45100450515747deg + var(--angle1)),
+    #607276 calc(200.4342269897461deg + var(--angle2)),
+    #818e62 calc(234.9986743927002deg + var(--angle1)),
+    #89a380 calc(258.7453007698059deg + var(--angle1)),
+    #6691bc calc(316.42045497894287deg + var(--angle1)),
+    #617995 calc(340.9759283065796deg + var(--angle2)),
+    #5c728a calc(349.06386137008667deg + var(--angle1)),
+    #5b7088 calc(360deg + var(--angle2))
+  );
+
+  /*--hologram: repeating-conic-gradient(*/
+  /*  from 182deg at 50% 50%,*/
+  /*  #5b7088 0deg,*/
+  /*  #5e758f 7.296745106577873deg,*/
+  /*  #577596 28.799999356269836deg,*/
+  /*  #818e62 74.61400151252747deg,*/
+  /*  #79a799 108.8436770439148deg,*/
+  /*  #6691bc 140.34626483917236deg,*/
+  /*  #668094 164.44093465805054deg,*/
+  /*  #5e7680 179.10415291786194deg,*/
+  /*  #5a6f78 189.44446563720703deg,*/
+  /*  #5f7175 195.45100450515747deg,*/
+  /*  #607276 200.4342269897461deg,*/
+  /*  #818e62 234.9986743927002deg,*/
+  /*  #89a380 258.7453007698059deg,*/
+  /*  #6691bc 316.42045497894287deg,*/
+  /*  #617995 340.9759283065796deg,*/
+  /*  #5c728a 349.06386137008667deg,*/
+  /*  #5b7088 359.2827773094177deg*/
+  /*);*/
+
   transform-style: preserve-3d;
   perspective: 1000px;
 }
