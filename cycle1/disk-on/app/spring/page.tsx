@@ -4,115 +4,159 @@ import classNames from "classnames/bind";
 import styles from "./Spring.module.css";
 import { MouseEventHandler, useState } from "react";
 import disks from "@/data/disks.json";
-import Disk from "@/components/spring/Disk/Disk";
 import { Disk as DiskType } from "@/types/spring/disk";
 import { Movement } from "@/types/spring/movement";
+import MockDisk from "@/components/MockDisk/MockDisk";
 
 const cx = classNames.bind(styles);
 
-// types
+type DiskStatus = {
+  originalStatus: "idle" | "select" | "preview" | "play";
+  grabbed: boolean;
+};
+
 type GrabStatus = {
-  grabStatus: "idle" | "grabbing";
-  grabTarget: {
-    targetId: DiskType["id"] | null;
-    targetX: number;
-    targetY: number;
-  };
-  movementX: number;
-  movementY: number;
+  targetId: DiskType["id"];
+  initialX: number;
+  initialY: number;
+  currentX: number;
+  currentY: number;
   speedX: number;
   speedY: number;
 };
 
-type DiskStatus = {
-  diskStatus: "idle" | "preview" | "play";
-  diskTarget: DiskType["id"] | null;
+type SelectStatus = {
+  targetId: DiskType["id"];
 };
 
-// constants
-const initialDiskStatus: DiskStatus = {
-  diskStatus: "idle",
-  diskTarget: null,
-};
+type PreviewStatus = SelectStatus;
 
-const initialGrabStatus: GrabStatus = {
-  grabStatus: "idle",
-  grabTarget: {
-    targetId: null,
-    targetX: 0,
-    targetY: 0,
-  },
-  movementX: 0,
-  movementY: 0,
-  speedX: 0,
-  speedY: 0,
+type PlayStatus = SelectStatus & { url: string; isPlaying: boolean };
+
+type InteractionStatus = {
+  grab: null | GrabStatus;
+  select: null | SelectStatus;
+  preview: null | PreviewStatus;
+  play: null | PlayStatus;
 };
 
 export default function Spring() {
-  const [diskStatus, setDiskStatus] = useState<DiskStatus>(initialDiskStatus);
-  const [grabStatus, setGrabStatus] = useState<GrabStatus>(initialGrabStatus);
+  const [interactionStatus, setInteractionStatus] = useState<InteractionStatus>(
+    {
+      grab: null,
+      select: null,
+      preview: null,
+      play: null,
+    },
+  );
+
+  const getDiskStatus = (diskId: DiskType["id"]): DiskStatus => {
+    let status: DiskStatus["originalStatus"] = "idle";
+    let grabbed = false;
+    if (interactionStatus.grab?.targetId === diskId) grabbed = true;
+    if (interactionStatus.play?.targetId === diskId) {
+      status = "play";
+    } else if (interactionStatus.preview?.targetId === diskId) {
+      status = "preview";
+    } else if (interactionStatus.select?.targetId === diskId) {
+      status = "select";
+    }
+    return { originalStatus: status, grabbed };
+  };
 
   const calculateDiskMovement = (diskId: DiskType["id"]): Movement => {
-    const result: Movement = { x: 0, y: 0, scale: 1, rotateX: 0, rotateY: 0 };
-    if (grabStatus.grabTarget.targetId === diskId) {
-      result.x = grabStatus.movementX;
-      result.y = grabStatus.movementY;
+    const result: Movement = {
+      translateX: 0,
+      translateY: 0,
+      scale: 1,
+      moveRotateX: 0,
+      moveRotateY: 0,
+    };
+
+    const { originalStatus, grabbed } = getDiskStatus(diskId);
+
+    if (interactionStatus.grab && grabbed) {
+      result.translateX = interactionStatus.grab.currentX;
+      result.translateY = interactionStatus.grab.currentY;
       /**
        * TODO: refine rotate calculation
        */
-      result.rotateX = grabStatus.speedY * -5;
-      result.rotateY = grabStatus.speedX * 5;
-    } else if (diskStatus.diskTarget === diskId) {
+      result.moveRotateX = interactionStatus.grab.speedY * -2.5;
+      result.moveRotateY = interactionStatus.grab.speedX * 2.5;
+    } else {
+      if (originalStatus === "play" && interactionStatus.play) {
+      }
+      if (originalStatus === "preview" && interactionStatus.preview) {
+      }
+      if (originalStatus === "select" && interactionStatus.select) {
+      }
     }
     return result;
   };
 
-  const calculateDiskMouseDownHandler =
+  const onGrabStart =
     (diskId: DiskType["id"]): MouseEventHandler =>
     (e) => {
-      if (grabStatus.grabStatus !== "idle") return;
-      setGrabStatus({
-        ...grabStatus,
-        grabStatus: "grabbing",
-        grabTarget: {
+      if (interactionStatus.grab) return;
+      setInteractionStatus({
+        ...interactionStatus,
+        grab: {
           targetId: diskId,
-          targetX: e.clientX,
-          targetY: e.clientY,
+          initialX: e.clientX,
+          initialY: e.clientY,
+          currentX: 0,
+          currentY: 0,
+          speedX: 0,
+          speedY: 0,
         },
       });
     };
 
-  const onMouseUp = () => {
-    if (grabStatus.grabStatus === "grabbing") {
-      setGrabStatus(initialGrabStatus);
-    }
+  const onGrabMove: MouseEventHandler = (e) => {
+    if (!interactionStatus.grab) return;
+    const { grab } = interactionStatus;
+    const previousX = grab.currentX;
+    const previousY = grab.currentY;
+
+    setInteractionStatus({
+      ...interactionStatus,
+      grab: {
+        ...grab,
+        currentX: e.clientX - grab.initialX,
+        currentY: e.clientY - grab.initialY,
+        speedX: e.clientX - grab.initialX - previousX,
+        speedY: e.clientY - grab.initialY - previousY,
+      },
+    });
+  };
+
+  const onGrabEnd = () => {
+    if (interactionStatus.grab)
+      setInteractionStatus({ ...interactionStatus, grab: null });
   };
 
   return (
-    <div
-      className={cx("main")}
-      onMouseMove={(e) => {
-        if (grabStatus.grabStatus === "grabbing") {
-          setGrabStatus({
-            ...grabStatus,
-            movementX: e.clientX - grabStatus.grabTarget.targetX,
-            movementY: e.clientY - grabStatus.grabTarget.targetY,
-            speedX: e.movementX,
-            speedY: e.movementY,
-          });
-        }
-      }}
-      onMouseUp={onMouseUp}
-    >
-      {disks.map(({ id, backgroundColor }) => {
-        const movement = calculateDiskMovement(id);
+    <div className={cx("main")} onMouseMove={onGrabMove} onMouseUp={onGrabEnd}>
+      <div className={cx("preview")} />
+      {disks.map(({ id }) => {
+        const { originalStatus, grabbed } = getDiskStatus(id);
+        const { translateX, translateY, moveRotateX, moveRotateY, scale } =
+          calculateDiskMovement(id);
         return (
-          <Disk
+          <MockDisk
             key={id}
-            movement={movement}
-            backgroundColor={backgroundColor}
-            onMouseDown={calculateDiskMouseDownHandler(id)}
-            onMouseUp={onMouseUp}
+            size={220}
+            isGrabbed={grabbed}
+            onMouseDown={onGrabStart(id)}
+            onMouseUp={onGrabEnd}
+            translateX={translateX}
+            translateY={translateY}
+            scale={scale}
+            moveRotateX={moveRotateX}
+            moveRotateY={moveRotateY}
+            isPlaying={
+              originalStatus === "play" && !!interactionStatus.play?.isPlaying
+            }
           />
         );
       })}
