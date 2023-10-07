@@ -1,14 +1,24 @@
 .bg_container {
   width: 100vw;
-  height: 100vh;
   min-width: 1440px;
+  height: 100vh;
+  position: relative;
+  animation: 1.5s fade_in ease-in-out forwards;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 1440px;
+  height: 906px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   position: relative;
-  animation: 1.5s fade_in ease-in-out forwards;
+  overflow: hidden;
 }
 
 .bg_container_lighted {
