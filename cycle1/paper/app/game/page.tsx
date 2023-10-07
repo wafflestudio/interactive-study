@@ -57,7 +57,7 @@ export default function Game() {
             </div>
           </div>
           <div className={S.stages}>
-            <StageAnnouncer currStage={stage} />
+            <StageAnnouncer mode={mode} currStage={stage} />
           </div>
           {(mode === Mode.WHITE_LIGHTED || mode === Mode.BLUE_LIGHTED) && (
             <div className={S.filter}></div>
