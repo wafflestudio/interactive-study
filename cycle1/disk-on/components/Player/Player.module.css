@@ -1,0 +1,26 @@
+.wrapper {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: -300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.5s ease;
+}
+
+.wrapper.playing {
+  right: 13px;
+  cursor: pointer !important;
+}
+
+.player {
+  height: 476px;
+}
+
+.youtube {
+  position: absolute;
+  right: 0;
+  transform: translateY(264px);
+}

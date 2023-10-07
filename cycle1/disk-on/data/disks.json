@@ -1,22 +1,37 @@
 [
   {
     "id": "a",
-    "backgroundColor": "#fff000"
+    "musicUrl": "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
+    "imageUrl": "",
+    "frontType": "classic",
+    "backType": "normal"
   },
   {
     "id": "b",
-    "backgroundColor": "#ff0000"
+    "musicUrl": "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
+    "imageUrl": "",
+    "frontType": "classic",
+    "backType": "normal"
   },
   {
     "id": "c",
-    "backgroundColor": "#00ff00"
+    "musicUrl": "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
+    "imageUrl": "",
+    "frontType": "classic",
+    "backType": "normal"
   },
   {
     "id": "d",
-    "backgroundColor": "#0000ff"
+    "musicUrl": "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
+    "imageUrl": "",
+    "frontType": "classic",
+    "backType": "normal"
   },
   {
     "id": "e",
-    "backgroundColor": "#0ff0ff"
+    "musicUrl": "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
+    "imageUrl": "",
+    "frontType": "classic",
+    "backType": "normal"
   }
 ]
