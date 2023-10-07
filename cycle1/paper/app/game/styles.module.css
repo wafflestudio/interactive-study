@@ -8,6 +8,7 @@
   justify-content: center;
   overflow: hidden;
   position: relative;
+  animation: 1.5s fade_in ease-in-out forwards;
 }
 
 .bg_container_lighted {
@@ -89,4 +90,13 @@
 .button_container {
   width: 446px;
   height: 60px;
+}
+
+@keyframes fade_in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

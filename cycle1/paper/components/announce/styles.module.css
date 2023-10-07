@@ -20,4 +20,23 @@
   font-style: normal;
   font-weight: 400;
   line-height: 30px;
+  animation: 4s up_down ease-in-out;
+}
+
+@keyframes up_down {
+  0% {
+    transform: translateY(-10px);
+  }
+  25% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  75% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

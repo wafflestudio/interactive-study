@@ -40,7 +40,7 @@
   top: 50%;
   left: 50%;
   z-index: 5;
-  transform: rotate(250deg) translate(44%, -120%);
+  transform: rotate(245deg) translate(56%, -120%);
 }
 
 .bill_2 {
@@ -51,7 +51,7 @@
   top: 50%;
   left: 50%;
   z-index: 4;
-  transform: rotate(260deg) translate(30%, -110%);
+  transform: rotate(255deg) translate(38%, -110%);
 }
 
 .bill_3 {

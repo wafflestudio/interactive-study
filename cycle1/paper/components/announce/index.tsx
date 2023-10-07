@@ -10,7 +10,7 @@ export default function Announce({ mode }: { mode: Mode }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(false);
-    }, 5000);
+    }, 8000);
     return () => clearTimeout(timer);
   }, []);
 

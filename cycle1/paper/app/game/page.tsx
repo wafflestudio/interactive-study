@@ -31,10 +31,8 @@ export default function Game() {
   );
 
   useEffect(() => {
-    if (stage === 6) {
-      setMode(Mode.LIGHTED);
-    }
-  }, [stage, mode]);
+    setMode(Mode.LIGHTED);
+  }, [stage]);
 
   return (
     <div
