@@ -1,5 +1,11 @@
 import React from 'react';
-import { centerHolo, leftHolo, rightHolo } from '@/constants/imgUrls';
+import {
+  leftHolo,
+  rightHolo,
+  centerHolo,
+  fakeLeftHolo,
+} from '@/constants/imgUrls';
+import { Fake } from '@/types/bill';
 
 export const getOffset = (e: React.MouseEvent) => {
   const rect = e.currentTarget.getBoundingClientRect();
@@ -82,12 +88,14 @@ export const getOpacity = (offsetX: number, offsetY: number) => {
   return op;
 };
 
-export const getHoloMask = (offsetX: number) => {
-  if (offsetX < 513 / 3) {
+// TODO: bug
+export const getHoloMask = (offsetX: number, fakeType: Fake) => {
+  if (offsetX < 513 / 3 && fakeType === Fake.TYPE_3) {
+    return `url(${fakeLeftHolo})`;
+  } else if (offsetX < 513 / 3 && fakeType !== Fake.TYPE_3) {
     return `url(${leftHolo})`;
   } else if ((513 / 3) * 2 < offsetX) {
     return `url(${rightHolo})`;
-  } else {
-    return `url(${centerHolo})`;
   }
+  return `url(${centerHolo})`;
 };

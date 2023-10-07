@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useCallback } from 'react';
+import { animated, useSpring } from '@react-spring/web';
+
 import Image from 'next/image';
-import { useSpring, animated } from '@react-spring/web';
 import S from './styles.module.css';
 
 import {
@@ -11,22 +12,27 @@ import {
   getOpacity,
   getHoloMask,
 } from '@/utils/calculate';
-import { Mode } from '@/types/bill';
+import { Fake, Mode } from '@/types/bill';
 import { centerHolo } from '@/constants/imgUrls';
 
 import backImage from '@/public/images/pictures/back.png';
 import frontImage from '@/public/images/pictures/front.png';
-import tiltedBackImage from '@/public/images/pictures/tilt_back.png';
 import hiddenImage from '@/public/images/pictures/genuine_hidden_pic.png';
+import fakeHiddenImage from '@/public/images/pictures/fake2_hidden_pic.png';
 import registerImage from '@/public/images/pictures/genuine_circle_logo.png';
+import fakeRegisterImage from '@/public/images/pictures/fake1_circle_logo.png';
 import blueLightedFrontImage from '@/public/images/pictures/front_blue_light.png';
 import blueLightedHoloImage from '@/public/images/pictures/genuine_blue_light_pic.svg';
+import fake4blueLightedHoloImage from '@/public/images/pictures/fake4_blue_light_pic.svg';
+import fake5blueLightedHoloImage from '@/public/images/pictures/fake5_blue_light_pic.svg';
 
 export default function Bill({
   clipPath = 'none',
   mode = Mode.LIGHTED,
+  fakeType = Fake.NONE,
 }: {
   mode?: Mode;
+  fakeType?: Fake;
   clipPath?: string;
 }) {
   const [holoMask, holoMaskApi] = useSpring(() => ({
@@ -61,7 +67,7 @@ export default function Bill({
 
       holoMaskApi.start({
         to: {
-          '--color-holo-mask': getHoloMask(offset.x),
+          '--color-holo-mask': getHoloMask(offset.x, fakeType),
         },
       });
       pointerApi.start({
@@ -90,7 +96,7 @@ export default function Bill({
         });
       }
     },
-    [mode, opacityApi, pointerApi, rotateApi, holoMaskApi],
+    [mode, fakeType, holoMaskApi, pointerApi, rotateApi, opacityApi],
   );
 
   const handleMouseLeave = useCallback(
@@ -173,7 +179,7 @@ export default function Bill({
             <>
               {/* LAYER 5 */}
               <Image
-                src={hiddenImage}
+                src={fakeType === Fake.TYPE_2 ? fakeHiddenImage : hiddenImage}
                 className={S.back_img_hidden}
                 alt={'hidden image of bill'}
               />
@@ -185,7 +191,9 @@ export default function Bill({
               />
               {/* LAYER 7 */}
               <Image
-                src={registerImage}
+                src={
+                  fakeType === Fake.TYPE_1 ? fakeRegisterImage : registerImage
+                }
                 className={S.back_circle_register}
                 alt={'see through circle register of bill'}
               />
@@ -199,7 +207,13 @@ export default function Bill({
               <div className={S.front_blue_lighted_filter}></div>
               {/* LAYER 9 */}
               <Image
-                src={blueLightedHoloImage}
+                src={
+                  fakeType === Fake.TYPE_4
+                    ? fake4blueLightedHoloImage
+                    : fakeType === Fake.TYPE_5
+                    ? fake5blueLightedHoloImage
+                    : blueLightedHoloImage
+                }
                 className={S.front_blue_lighted_holo}
                 alt={'holo image of bill'}
               />
