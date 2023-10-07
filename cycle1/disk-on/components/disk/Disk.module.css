@@ -25,25 +25,89 @@
     60deg * var(--pointer-from-center) - 15deg * var(--relative-x) + 15deg *
       var(--relative-y)
   );
-  --hologram: repeating-conic-gradient(
-    from 182deg at 50% 50%,
-    #5b7088 calc(0deg + var(--angle1)),
-    #5e758f calc(7.296745106577873deg + var(--angle1)),
-    #577596 calc(28.799999356269836deg + var(--angle2)),
-    #818e62 calc(74.61400151252747deg + var(--angle1)),
-    #79a799 calc(108.8436770439148deg + var(--angle2)),
-    #6691bc calc(140.34626483917236deg + var(--angle1)),
-    #668094 calc(164.44093465805054deg + var(--angle2)),
-    #5e7680 calc(179.10415291786194deg + var(--angle1)),
-    #5a6f78 calc(189.44446563720703deg + var(--angle1)),
-    #5f7175 calc(195.45100450515747deg + var(--angle1)),
-    #607276 calc(200.4342269897461deg + var(--angle2)),
-    #818e62 calc(234.9986743927002deg + var(--angle1)),
-    #89a380 calc(258.7453007698059deg + var(--angle1)),
-    #6691bc calc(316.42045497894287deg + var(--angle1)),
-    #617995 calc(340.9759283065796deg + var(--angle2)),
-    #5c728a calc(349.06386137008667deg + var(--angle1)),
-    #5b7088 calc(360deg + var(--angle1))
+  /*--hologram: repeating-conic-gradient(*/
+  /*  from 182deg at 50% 50%,*/
+  /*  #5b7088 calc(0deg + var(--angle1)),*/
+  /*  #5e758f calc(7.296745106577873deg + var(--angle1)),*/
+  /*  #577596 calc(28.799999356269836deg + var(--angle2)),*/
+  /*  #818e62 calc(74.61400151252747deg + var(--angle1)),*/
+  /*  #79a799 calc(108.8436770439148deg + var(--angle2)),*/
+  /*  #6691bc calc(140.34626483917236deg + var(--angle1)),*/
+  /*  #668094 calc(164.44093465805054deg + var(--angle2)),*/
+  /*  #5e7680 calc(179.10415291786194deg + var(--angle1)),*/
+  /*  #5a6f78 calc(189.44446563720703deg + var(--angle1)),*/
+  /*  #5f7175 calc(195.45100450515747deg + var(--angle1)),*/
+  /*  #607276 calc(200.4342269897461deg + var(--angle2)),*/
+  /*  #818e62 calc(234.9986743927002deg + var(--angle1)),*/
+  /*  #89a380 calc(258.7453007698059deg + var(--angle1)),*/
+  /*  #6691bc calc(316.42045497894287deg + var(--angle1)),*/
+  /*  #617995 calc(340.9759283065796deg + var(--angle2)),*/
+  /*  #5c728a calc(349.06386137008667deg + var(--angle1)),*/
+  /*  #5b7088 calc(360deg + var(--angle1))*/
+  /*);*/
+
+  --hologram1: conic-gradient(
+    from 69deg at 50% 50%,
+    #303030 calc(6.611008197069168deg + var(--angle1)),
+    #988181 calc(16.148981004953384deg + var(--angle1)),
+    #000 calc(38.22094738483429deg + var(--angle1)),
+    #000 calc(52.11483299732208deg + var(--angle1)),
+    #ebff00 calc(73.79968822002411deg + var(--angle1)),
+    #ff7a00 calc(88.74029517173767deg + var(--angle1)),
+    #ff4206 calc(98.82320165634155deg + var(--angle1)),
+    #000 calc(115.11155962944031deg + var(--angle1)),
+    #ff00a8 calc(134.11804676055908deg + var(--angle1)),
+    #0038ff calc(142.49012231826782deg + var(--angle1)),
+    #0085ff calc(150.49933791160583deg + var(--angle1)),
+    #00fff0c1 calc(163.65690350532532deg + var(--angle2)),
+    #4a504fea calc(196.65126085281372deg + var(--angle1)),
+    #000 calc(211.51636362075806deg + var(--angle2)),
+    #faff0066 calc(232.05755710601807deg + var(--angle1)),
+    #2b2b2bba calc(245.18029689788818deg + var(--angle2)),
+    #f3510b calc(266.33254051208496deg + var(--angle1)),
+    #ff2e00 calc(274.5907402038574deg + var(--angle2)),
+    #f800fd calc(284.43530559539795deg + var(--angle1)),
+    #0085ff calc(304.78962421417236deg + var(--angle2)),
+    #00ffd1 calc(318.4117269515991deg + var(--angle1)),
+    #000 calc(351.8194556236267deg + var(--angle2))
+  );
+
+  --hologram2: conic-gradient(
+    from 180deg at 50% 50%,
+    #fff 0.06682525738142431deg,
+    #f00 57.67395794391632deg,
+    #ffa800 80.1017153263092deg,
+    #f6e64f 98.67340564727783deg,
+    #60c058 118.40169668197632deg,
+    #0085ff 136.08124136924744deg,
+    rgba(153, 14, 176, 0.76) 163.65690350532532deg,
+    rgba(255, 255, 255, 0.4) 201.077721118927deg,
+    #f00 240.05633354187012deg,
+    #ffa800 258.3491277694702deg,
+    #f6e64f 274.5446491241455deg,
+    #60c058 290.4333257675171deg,
+    #516983 302.40838050842285deg,
+    #990eb0 318.0308747291565deg,
+    #fefefe 344.32682275772095deg
+  );
+
+  --hologram3: conic-gradient(
+    from 180deg at 50% 50%,
+    #fff 0.06682525738142431deg,
+    #f00 57.67395794391632deg,
+    #ffa800 80.1017153263092deg,
+    #f6e64f 98.67340564727783deg,
+    #60c058 118.40169668197632deg,
+    #0085ff 136.08124136924744deg,
+    rgba(153, 14, 176, 0.76) 163.65690350532532deg,
+    rgba(255, 255, 255, 0.4) 201.077721118927deg,
+    #f00 240.05633354187012deg,
+    #ffa800 258.3491277694702deg,
+    #f6e64f 274.5446491241455deg,
+    #60c058 290.4333257675171deg,
+    #516983 302.40838050842285deg,
+    #990eb0 318.0308747291565deg,
+    #fefefe 344.32682275772095deg
   );
 
   /*--hologram: repeating-conic-gradient(*/
@@ -66,7 +130,6 @@
   /*  #5c728a 349.06386137008667deg,*/
   /*  #5b7088 359.2827773094177deg*/
   /*);*/
-
   transform-style: preserve-3d;
   perspective: 1000px;
 }
