@@ -3,7 +3,6 @@ import styles from "./MockDisk.module.css";
 import classNames from "classnames/bind";
 import { MouseEventHandler } from "react";
 import { Disk } from "@/types/spring/disk";
-import { Movement } from "@/types/spring/movement";
 
 const cx = classNames.bind(styles);
 
@@ -119,7 +118,6 @@ export default function Disk({
     <div className={cx("disk-wrapper")}>
       <animated.div
         className={cx("disk", { grabbing: isGrabbed })}
-        style={spring}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
       >

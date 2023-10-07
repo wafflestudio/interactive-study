@@ -2,14 +2,5 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.preview {
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  background-color: red;
-  left: calc(100vw - 75%);
-  top: calc(100vh - 75%);
+  background: url("/mosaic.png") repeat #463c29;
 }
