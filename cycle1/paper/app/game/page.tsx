@@ -48,7 +48,7 @@ export default function Game() {
       {stage !== 6 && (
         <>
           <div className={S.tools}>
-            <Announce />
+            <Announce mode={mode} />
             <LightToggle mode={mode} setMode={setMode} />
             <div className={S.button_container}>
               {mode !== Mode.LIGHTED && (
