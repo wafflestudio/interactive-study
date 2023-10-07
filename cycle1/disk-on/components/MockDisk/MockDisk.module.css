@@ -17,6 +17,17 @@
   cursor: grab;
 }
 
+.mini-disk {
+  width: 50%;
+  height: 50%;
+  background-color: black;
+}
+
+.mini-mini-disk {
+  width: 50%;
+  height: 50%;
+  background-color: white;
+}
 .disk.grabbing {
   cursor: grabbing !important;
 }

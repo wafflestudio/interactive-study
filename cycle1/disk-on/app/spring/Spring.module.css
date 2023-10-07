@@ -1,5 +1,15 @@
 .main {
-  min-width: 100vw;
-  min-height: 100vh;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+.preview {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-color: red;
+  left: calc(100vw - 75%);
+  top: calc(100vh - 75%);
 }

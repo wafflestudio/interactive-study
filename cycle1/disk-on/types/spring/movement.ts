@@ -1,7 +1,7 @@
 export type Movement = {
-  x: number;
-  y: number;
+  translateX: number;
+  translateY: number;
   scale: number;
-  rotateX: number;
-  rotateY: number;
+  moveRotateX: number;
+  moveRotateY: number;
 };
