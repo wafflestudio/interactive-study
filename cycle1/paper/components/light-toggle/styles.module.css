@@ -1,0 +1,107 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  gap: 20px;
+}
+
+.title_light {
+  color: #333;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.title_dark {
+  color: #FFF;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.button_container_light {
+  width: 200px;
+  height: 60px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: space-between;
+  background: #F1F1F1;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15) inset;
+}
+
+.button_container_dark {
+  width: 200px;
+  height: 60px;
+  border-radius: 50px;
+  background: #373737;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15) inset;
+}
+
+.on_active {
+  width: 110px;
+  height: 60px;
+  border-radius: 50px;
+  background: #FFF;
+  box-shadow: 4px 0 10px 0 rgba(0, 0, 0, 0.15);
+  color: #333;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.on_n_active {
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #5C5C5C;
+  text-align: center;
+  padding-right: 24px;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.off_active {
+  width: 110px;
+  height: 60px;
+  border-radius: 50px;
+  background: #4F4F4F;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+  color: #FFF;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.off_n_active {
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 24px;
+  color: #CCC;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

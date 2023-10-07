@@ -27,6 +27,8 @@ import fake4blueLightedHoloImage from '@/public/images/pictures/fake4_blue_light
 import fake5blueLightedHoloImage from '@/public/images/pictures/fake5_blue_light_pic.svg';
 
 export default function Bill({
+  onNext,
+  answer,
   clipPath = 'none',
   mode = Mode.LIGHTED,
   fakeType = Fake.NONE,
@@ -34,6 +36,8 @@ export default function Bill({
   mode?: Mode;
   fakeType?: Fake;
   clipPath?: string;
+  onNext: () => void;
+  answer: { x: number; y: number };
 }) {
   const [holoMask, holoMaskApi] = useSpring(() => ({
     from: {
@@ -135,6 +139,19 @@ export default function Bill({
     [opacityApi, pointerApi, rotateApi, holoMaskApi],
   );
 
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      const offset = getOffset(e);
+      if (answer.x - 25 < offset.x && offset.x < answer.x + 25) {
+        if (answer.y - 25 < offset.y && offset.y < answer.y + 25) {
+          alert('정답입니다!');
+          onNext();
+        }
+      }
+    },
+    [answer.x, answer.y, onNext],
+  );
+
   return (
     <animated.div
       style={{
@@ -145,6 +162,7 @@ export default function Bill({
         ...holoMask,
       }}
       className={S.container}
+      onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -179,18 +197,21 @@ export default function Bill({
             <>
               {/* LAYER 5 */}
               <Image
+                priority
                 src={fakeType === Fake.TYPE_2 ? fakeHiddenImage : hiddenImage}
                 className={S.back_img_hidden}
                 alt={'hidden image of bill'}
               />
               {/* LAYER 6 */}
               <Image
+                priority
                 src={backImage}
                 className={S.back_img}
                 alt={'transparent back image of bill'}
               />
               {/* LAYER 7 */}
               <Image
+                priority
                 src={
                   fakeType === Fake.TYPE_1 ? fakeRegisterImage : registerImage
                 }
@@ -207,6 +228,7 @@ export default function Bill({
               <div className={S.front_blue_lighted_filter}></div>
               {/* LAYER 9 */}
               <Image
+                priority
                 src={
                   fakeType === Fake.TYPE_4
                     ? fake4blueLightedHoloImage

@@ -1,0 +1,102 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  gap: 20px;
+}
+
+.title {
+  color: #FFF;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.button_container {
+  width: 300px;
+  height: 60px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: space-between;
+  background: #373737;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15) inset;
+}
+
+.white_active {
+  color: #FFF;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: 110px;
+  height: 60px;
+  background-color: #4F4F4F;
+  border-radius: 50px;
+}
+
+.white_n_active {
+  color: #5C5C5C;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: 105px;
+}
+
+
+.blue_active {
+  color: #A0A0FF;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: 100px;
+  height: 60px;
+  background-color: #4F4F4F;
+  border-radius: 50px;
+}
+
+.blue_n_active {
+  color: #5C5C5C;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.back_active {
+  color: #FFA0A0;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: 110px;
+  height: 60px;
+  background-color: #4F4F4F;
+  border-radius: 50px;
+}
+
+.back_n_active {
+  width: 95px;
+  color: #5C5C5C;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
