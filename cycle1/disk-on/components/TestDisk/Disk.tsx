@@ -40,6 +40,7 @@ function TestDisk({
   onClick,
   isPreview,
   isPlaying,
+  imageUrl,
 }: DiskProps) {
   const flip = isPreview ? 180 : 0;
 
@@ -93,8 +94,8 @@ function TestDisk({
 
     pointerApi.start({
       to: {
-        "--pointer-x": `${pointerX}px`,
-        "--pointer-y": `${pointerY}px`,
+        "--pointer-x": `${pointerX / scale}px`,
+        "--pointer-y": `${pointerY / scale}px`,
         "--relative-x": relativeX,
         "--relative-y": relativeY,
         "--pointer-from-center":
@@ -217,7 +218,7 @@ function TestDisk({
         }}
       >
         <div className={styles.diskRotator}>
-          <DiskFront type={frontType} />
+          <DiskFront type={frontType} imageUrl={imageUrl} />
           <DiskBack type={backType} />
           <div className={`${styles.glare} ${styles.front}`} />
           <div className={`${styles.glare} ${styles.back}`} />

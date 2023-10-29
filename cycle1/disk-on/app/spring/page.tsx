@@ -92,6 +92,9 @@ export default function Spring() {
       if (originalStatus === "preview") {
         result.scale = 2;
       }
+      if (originalStatus === "select") {
+        result.scale = 1.2;
+      }
     } else {
       if (originalStatus === "play" && interactionStatus.play) {
         result.translateX = window.innerWidth - 580;
@@ -103,6 +106,7 @@ export default function Spring() {
         result.scale = 2;
       } else if (originalStatus === "select" && interactionStatus.select) {
         result.translateX = -58;
+        result.scale = 1.2;
       }
     }
     return result;
@@ -205,7 +209,7 @@ export default function Spring() {
             preview: null,
             play: {
               targetId: interactionStatus.grab.targetId,
-              url: "",
+              url: "https://www.youtube.com/embed/Km71Rr9K-Bw?si=0rX6J7Zlu9wadWfL",
               isPlaying: true,
             },
           });

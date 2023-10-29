@@ -8,8 +8,9 @@ function DiskBack({ type = "normal" }: DiskBackProps) {
   return (
     <div className={styles.container}>
       <div className={styles.mainLayer}>
-        <div className={styles.hologram} />
         <div className={styles.opaque} />
+      </div>
+      <div className={styles.blendLayer}>
         <div className={styles.hologram} />
       </div>
       <div className={styles.holeLayer}>
