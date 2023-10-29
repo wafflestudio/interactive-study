@@ -1,15 +1,31 @@
 "use client";
 
 import styles from "./Disk.module.css";
-import { useSpring, animated } from "@react-spring/web";
-import DiskFront from "@/components/disk/DiskFront";
-import DiskBack from "@/components/disk/DiskBack";
+import { useSpring, animated, SpringValue } from "@react-spring/web";
+import DiskFront from "@/components/disk-impl/DiskFront";
+import DiskBack from "@/components/disk-impl/DiskBack";
 
+/**
+ * style에 필요한 값
+ * --size: 220px;
+ * --translate-x: 0px;
+ * --translate-y: 0px;
+ * --translate-z: 0px;
+ * --rotate-x: 0deg;
+ * --rotate-y: 0deg;
+ * --rotate-z: 0deg;
+ * --pointer-x: 110px;
+ * --pointer-y: 110px;
+ * --relative-x: 0;
+ * --relative-y: 0;
+ * --pointer-from-center: 0;
+ */
 type DiskProps = {
   size?: number;
+  style?: Record<string, SpringValue<string | number>>;
 };
 
-function Disk({ size = 220 }: DiskProps) {
+function Disk({ size = 220, style }: DiskProps) {
   const radius = size / 2;
 
   const [translate, translateApi] = useSpring(() => ({
@@ -17,7 +33,6 @@ function Disk({ size = 220 }: DiskProps) {
       "--translate-x": "0px",
       "--translate-y": "0px",
       "--translate-z": "0px",
-      "--scale": "1",
     },
   }));
 
@@ -65,7 +80,7 @@ function Disk({ size = 220 }: DiskProps) {
         "--pointer-from-center":
           Math.sqrt(
             (e.clientX - rect.left - radius) ** 2 +
-              (e.clientY - rect.top - radius) ** 2,
+              (e.clientY - rect.top - radius) ** 2
           ) / radius,
       },
     });
@@ -103,71 +118,9 @@ function Disk({ size = 220 }: DiskProps) {
         ...translate,
         ...rotate,
         ...pointer,
+        ...style,
       }}
     >
-      <svg>
-        <defs>
-          <clipPath
-            id="cd"
-            clipPathUnits="objectBoundingBox"
-            clipRule="evenodd"
-          >
-            <path
-              d="
-              M1 0.5
-              A0.5 0.5 0 0 1 0 0.5
-              A0.5 0.5 0 0 1 1 0.5
-              L0.565 0.5
-              A0.065 0.065 0 0 1 0.435 0.5
-              A0.065 0.065 0 0 1 0.565 0.5
-              Z"
-            />
-          </clipPath>
-        </defs>
-      </svg>
-
-      <svg>
-        <defs>
-          <clipPath
-            id="hole1"
-            clipPathUnits="objectBoundingBox"
-            clipRule="evenodd"
-          >
-            <path
-              d="
-              M1 0.5
-              A0.5 0.5 0 0 1 0 0.5
-              A0.5 0.5 0 0 1 1 0.5
-              L0.87 0.5
-              A0.37 0.37 0 0 1 0.13 0.5
-              A0.37 0.37 0 0 1 0.87 0.5
-              Z"
-            />
-          </clipPath>
-        </defs>
-      </svg>
-
-      <svg>
-        <defs>
-          <clipPath
-            id="hole2"
-            clipPathUnits="objectBoundingBox"
-            clipRule="evenodd"
-          >
-            <path
-              d="
-              M1 0.5
-              A0.5 0.5 0 0 1 0 0.5
-              A0.5 0.5 0 0 1 1 0.5
-              L0.575 0.5
-              A0.075 0.075 0 0 1 0.425 0.5
-              A0.075 0.075 0 0 1 0.575 0.5
-              Z"
-            />
-          </clipPath>
-        </defs>
-      </svg>
-
       <div
         className={styles.diskTranslator}
         onMouseMove={handleMouseMove}
