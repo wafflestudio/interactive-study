@@ -1,0 +1,141 @@
+.scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  --size: 220px;
+  --translate-x: 0px;
+  --translate-y: 0px;
+  --translate-z: 0px;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --rotate-z: 0deg;
+  --pointer-x: 0px;
+  --pointer-y: 0px;
+  --relative-x: 0;
+  --relative-y: 0;
+  --pointer-from-center: 0;
+
+  --angle1: calc(
+    60deg * var(--pointer-from-center) + 60deg * var(--relative-x) - 60deg *
+      var(--relative-y)
+  );
+  --angle2: calc(
+    60deg * var(--pointer-from-center) - 60deg * var(--relative-x) + 60deg *
+      var(--relative-y)
+  );
+  --angle3: calc(
+    60deg * var(--pointer-from-center) + 45deg * var(--relative-x) + 45deg *
+      var(--relative-y)
+  );
+
+  --hologram1: conic-gradient(
+    from 180deg at 50% 50%,
+    #a66f6f 0deg,
+    #835151 28.799999356269836deg,
+    #b2716d 74.61400151252747deg,
+    #a6a779 108.8436770439148deg,
+    #879c90 135deg,
+    #6691bc 163.125deg,
+    #5a5995 202.5deg,
+    #62718e 234.9986743927002deg,
+    #809fa3 258.7453007698059deg,
+    #66bc9d 279.3750071525574deg,
+    #a6ab69 309.375deg,
+    #b19e6c 330.0000071525574deg,
+    #a66f6f 360deg
+  );
+
+  --hologram2: conic-gradient(
+    from 180deg at 50% 50%,
+    #835151 28.799999356269836deg,
+    #948357 74.61400151252747deg,
+    #a4a576 108.8436770439148deg,
+    #7c9f61 140.34626483917236deg,
+    #7288a1 179.10415291786194deg,
+    #6c8aad 206.25000715255737deg,
+    #8f80a3 236.25deg,
+    #5d6ca0 262.5000071525574deg,
+    #667ba9 298.125deg,
+    #64975c 318.7500071525574deg,
+    #836f51 358.02462816238403deg,
+    #444e5a 359.7802948951721deg,
+    #5a4444 360deg
+  );
+
+  --hologram3: conic-gradient(
+    from 180deg at 50% 50%,
+    #396494 0deg,
+    #51835f 28.799999356269836deg,
+    #aeb96d 74.61400151252747deg,
+    #a77979 108.8436770439148deg,
+    #8673ba 143.31948280334473deg,
+    #6691bc 164.6707570552826deg,
+    #5f8a4a 193.86770725250244deg,
+    #898a5c 228.41788530349731deg,
+    #8f826e 252.39769220352173deg,
+    #a38080 278.41044187545776deg,
+    #7766bc 316.42045497894287deg,
+    #396494 347.13385105133057deg
+  );
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.scene svg {
+  width: 0;
+  height: 0;
+}
+
+.diskTranslator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate3d(
+      var(--translate-x),
+      var(--translate-y),
+      var(--translate-z)
+    )
+    scale(var(--scale));
+}
+
+.diskRotator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y))
+    rotateZ(var(--rotate-z));
+}
+
+.glare {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    farthest-corner circle at var(--pointer-x) var(--pointer-y),
+    #ccccccff,
+    #bfbfbf3f 30%,
+    #373737ff 130%
+  );
+  filter: brightness(0.9) contrast(2);
+  mix-blend-mode: hard-light;
+  opacity: calc(var(--pointer-from-center) * 0.9);
+  clip-path: url(#cd13);
+  backface-visibility: hidden;
+}
+
+.scene:hover .glare {
+}
+
+.glare.front {
+  transform: translateZ(1px);
+}
+
+.glare.back {
+  transform: rotateY(180deg) translateZ(-1px);
+}

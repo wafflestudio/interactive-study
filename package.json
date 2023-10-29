@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  },
+  "dependencies": {}
+}
