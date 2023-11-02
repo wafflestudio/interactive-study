@@ -47,6 +47,7 @@ function Disk({
     handleMouseDownOnDisk,
     handleMouseLeaveFromDisk,
     handleMouseMoveOnDisk,
+    handleMouseClickOnDisk,
   } = useDiskMovement({
     size,
     id,
@@ -148,6 +149,7 @@ function Disk({
       >
         <div
           className={styles.diskTranslator}
+          onClick={handleMouseClickOnDisk}
           onMouseDown={handleMouseDownOnDisk}
           onMouseMove={handleMouseMoveOnDisk}
           onMouseLeave={handleMouseLeaveFromDisk}

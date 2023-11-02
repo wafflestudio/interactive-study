@@ -2,8 +2,12 @@ import { diskGap, diskSize } from "./constants";
 import { parseCoordinatesIfPercent, pivotCoordinate } from "./functions";
 import { Area, Coordinates } from "./types";
 
+const cancelPickArea: Area = {
+  min: parseCoordinatesIfPercent({ x: 0, y: 0 }),
+  max: parseCoordinatesIfPercent({ x: 0.3, y: 1 }),
+};
 const previewArea: Area = {
-  min: parseCoordinatesIfPercent({ x: 0.4, y: 0 }),
+  min: parseCoordinatesIfPercent({ x: 0.3, y: 0 }),
   max: parseCoordinatesIfPercent({ x: 0.8, y: 1 }),
 };
 
@@ -20,14 +24,17 @@ const playArea: Area = {
 const checkIfCoordinatesInsideArea = (
   area: Area,
   { x, y }: Coordinates,
-): boolean =>
-  area.min.x < x && x < area.max.x && area.min.y < y && y < area.max.y;
+): boolean => {
+  return area.min.x < x && x < area.max.x && area.min.y < y && y < area.max.y;
+};
 
 export const isInsideAreaCalled = (
-  area: "preview" | "cancelPreview" | "play",
+  area: "cancelPick" | "preview" | "cancelPreview" | "play",
   coords: Coordinates,
 ): boolean => {
   switch (area) {
+    case "cancelPick":
+      return checkIfCoordinatesInsideArea(cancelPickArea, coords);
     case "preview":
       return checkIfCoordinatesInsideArea(previewArea, coords);
     case "cancelPreview":

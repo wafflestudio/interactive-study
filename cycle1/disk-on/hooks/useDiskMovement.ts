@@ -69,10 +69,12 @@ export const useDiskMovement = ({
     }, [movementApi, radius]);
 
   /**
-   * Event Handlers
+   * 마우스가 디스크 위에서 움직일 때 회전시킵니다
    */
   const handleMouseMoveOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
+      if (store.grabbedDiskId === id) return;
+      if (store.playingDiskId === id) return;
       const { x: pointerX, y: pointerY } = getXAndYFromMouseEvent(e, "parent");
 
       const relativeX = (pointerX - radius) / radius;
@@ -91,17 +93,37 @@ export const useDiskMovement = ({
           ) / radius,
       });
     },
-    [movementApi, radius],
+    [id, movementApi, radius, store.grabbedDiskId],
   );
 
+  /**
+   * 디스크를 클릭해서 선택할 때
+   */
+  const handleMouseClickOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      if (
+        store.pickedDiskId !== id &&
+        store.previewedDiskId !== id &&
+        store.playingDiskId !== id
+      ) {
+        store.pickDisk(id);
+        return;
+      }
+    },
+    [id, store],
+  );
+  /**
+   * 디스크를 잡을 때
+   */
   const handleMouseDownOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       e.preventDefault();
       if (store.grabbedDiskId) return;
+      if (store.pickedDiskId !== id && store.previewedDiskId !== id) return;
       const pivot = getXAndYFromMouseEvent(e, "parent");
       store.grabDisk(id, pivot);
     },
-    [id, store.grabbedDiskId, store.grabDisk],
+    [id, store],
   );
 
   // grab이 아닐 때 기본 위치 계산
@@ -124,8 +146,8 @@ export const useDiskMovement = ({
     setSize(newSize);
   }, [
     id,
-    store.grabbedDiskId,
     movementApi,
+    store.grabbedDiskId,
     store.pickedDiskId,
     store.previewedDiskId,
     store.playingDiskId,
@@ -162,6 +184,7 @@ export const useDiskMovement = ({
     handleMouseDownOnDisk,
     handleMouseMoveOnDisk,
     handleMouseLeaveFromDisk,
+    handleMouseClickOnDisk,
     movement,
   };
 };

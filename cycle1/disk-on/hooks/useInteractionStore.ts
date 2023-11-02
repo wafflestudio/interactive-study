@@ -16,6 +16,7 @@ type InteractionStore = {
   grabbedDiskId: Disk["id"] | null;
   grabbedPivotCoords: Coordinates | null;
   cursorCoords: Coordinates | null;
+  pickDisk: (id: Disk["id"] | null) => void;
   grabDisk: (id: Disk["id"] | null, grabbedPivot: Coordinates | null) => void;
   onGrabMove: (coords: Coordinates) => void;
   onMouseUp: () => void;
@@ -31,6 +32,7 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
 
   grabbedPivotCoords: null,
   cursorCoords: null,
+  pickDisk: (id) => set({ pickedDiskId: id }),
   grabDisk: (id, pivot) =>
     set({
       grabbedDiskId: id,
@@ -50,7 +52,10 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
         playingDiskId: null,
       };
       const coords = state.cursorCoords;
-      if (state.pickedDiskId !== state.grabbedDiskId) {
+      if (state.pickedDiskId === state.grabbedDiskId) {
+        if (isInsideAreaCalled("cancelPick", coords)) {
+          return { ...clearGrabState };
+        }
         if (isInsideAreaCalled("preview", coords)) {
           return {
             ...clearGrabState,
@@ -75,9 +80,9 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
       return clearGrabState;
     }),
   onEmit: () =>
-    set((state) => {
+    set(() => {
       return {
-        previewedDiskId: state.playingDiskId,
+        previewedDiskId: null,
         playingDiskId: null,
       };
     }),
