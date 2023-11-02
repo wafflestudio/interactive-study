@@ -17,7 +17,6 @@ export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
         className={cx("player")}
         src="/player.png"
         onClick={(e) => {
-          console.log("!!!");
           onEmit(e);
         }}
       />

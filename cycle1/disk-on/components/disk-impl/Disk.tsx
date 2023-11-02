@@ -1,9 +1,12 @@
 "use client";
 
 import styles from "./Disk.module.css";
-import { useSpring, animated, SpringValue } from "@react-spring/web";
+import { animated, SpringValue } from "@react-spring/web";
 import DiskFront from "@/components/disk-impl/DiskFront";
 import DiskBack from "@/components/disk-impl/DiskBack";
+import { useDiskMovement } from "@/hooks/useDiskMovement";
+import { Disk } from "@/types/spring/disk";
+import ClipPath from "@/utils/ClipPath";
 
 /**
  * style에 필요한 값
@@ -21,119 +24,149 @@ import DiskBack from "@/components/disk-impl/DiskBack";
  * --pointer-from-center: 0;
  */
 type DiskProps = {
+  index: number;
+  id: Disk["id"];
+  imageUrl: string;
+  frontType: "classic" | "paper" | "holographic";
+  backType: "normal" | "dim" | "bright";
   size?: number;
   style?: Record<string, SpringValue<string | number>>;
 };
 
-function Disk({ size = 220, style }: DiskProps) {
-  const radius = size / 2;
+function Disk({
+  index,
+  id,
+  size = 220,
+  style,
+  imageUrl,
+  frontType,
+  backType,
+}: DiskProps) {
+  const {
+    movement,
+    handleMouseDownOnDisk,
+    handleMouseLeaveFromDisk,
+    handleMouseMoveOnDisk,
+  } = useDiskMovement({
+    size,
+    id,
+    index,
+  });
 
-  const [translate, translateApi] = useSpring(() => ({
-    from: {
-      "--translate-x": "0px",
-      "--translate-y": "0px",
-      "--translate-z": "0px",
-    },
-  }));
+  // const radius = size / 2;
 
-  const [rotate, rotateApi] = useSpring(() => ({
-    from: {
-      "--rotate-x": "0deg",
-      "--rotate-y": "180deg",
-      "--rotate-z": "0deg",
-    },
-  }));
+  // const [translate, translateApi] = useSpring(() => ({
+  //   from: {
+  //     "--translate-x": "0px",
+  //     "--translate-y": "0px",
+  //     "--translate-z": "0px",
+  //   },
+  // }));
 
-  const [pointer, pointerApi] = useSpring(() => ({
-    from: {
-      "--pointer-x": `${radius}px`,
-      "--pointer-y": `${radius}px`,
-      "--relative-x": 0,
-      "--relative-y": 0,
-      "--pointer-from-center": 0,
-    },
-  }));
+  // const [rotate, rotateApi] = useSpring(() => ({
+  //   from: {
+  //     "--rotate-x": "0deg",
+  //     "--rotate-y": "180deg",
+  //     "--rotate-z": "0deg",
+  //   },
+  // }));
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+  // const [pointer, pointerApi] = useSpring(() => ({
+  //   from: {
+  //     "--pointer-x": `${radius}px`,
+  //     "--pointer-y": `${radius}px`,
+  //     "--relative-x": 0,
+  //     "--relative-y": 0,
+  //     "--pointer-from-center": 0,
+  //   },
+  // }));
 
-    const pointerX = e.clientX - rect.left;
-    const pointerY = e.clientY - rect.top;
+  // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   const rect = e.currentTarget.getBoundingClientRect();
 
-    const relativeX = (pointerX - radius) / radius;
-    const relativeY = (pointerY - radius) / radius;
+  //   const pointerX = e.clientX - rect.left;
+  //   const pointerY = e.clientY - rect.top;
 
-    rotateApi.start({
-      to: {
-        "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * -30 + 180}deg`,
-        "--rotate-z": "0",
-      },
-    });
+  //   const relativeX = (pointerX - radius) / radius;
+  //   const relativeY = (pointerY - radius) / radius;
 
-    pointerApi.start({
-      to: {
-        "--pointer-x": `${pointerX}px`,
-        "--pointer-y": `${pointerY}px`,
-        "--relative-x": relativeX,
-        "--relative-y": relativeY,
-        "--pointer-from-center":
-          Math.sqrt(
-            (e.clientX - rect.left - radius) ** 2 +
-              (e.clientY - rect.top - radius) ** 2
-          ) / radius,
-      },
-    });
-  };
+  //   rotateApi.start({
+  //     to: {
+  //       "--rotate-x": `${-relativeY * 30}deg`,
+  //       "--rotate-y": `${-relativeX * -30 + 180}deg`,
+  //       "--rotate-z": "0",
+  //     },
+  //   });
 
-  const handleMouseLeave = () => {
-    const fadeOutConfig = { mass: 1, tension: 200, friction: 40 };
+  //   pointerApi.start({
+  //     to: {
+  //       "--pointer-x": `${pointerX}px`,
+  //       "--pointer-y": `${pointerY}px`,
+  //       "--relative-x": relativeX,
+  //       "--relative-y": relativeY,
+  //       "--pointer-from-center":
+  //         Math.sqrt(
+  //           (e.clientX - rect.left - radius) ** 2 +
+  //             (e.clientY - rect.top - radius) ** 2,
+  //         ) / radius,
+  //     },
+  //   });
+  // };
 
-    rotateApi.start({
-      to: {
-        "--rotate-x": "0deg",
-        "--rotate-y": "180deg",
-        "--rotate-z": "0deg",
-      },
-      config: fadeOutConfig,
-    });
-    pointerApi.start({
-      to: {
-        "--pointer-x": `${radius}px`,
-        "--pointer-y": `${radius}px`,
-        "--relative-x": 0,
-        "--relative-y": 0,
-        "--pointer-from-center": 0,
-      },
-      config: fadeOutConfig,
-    });
-  };
+  // const handleMouseLeave = () => {
+  //   const fadeOutConfig = { mass: 1, tension: 200, friction: 40 };
+
+  //   rotateApi.start({
+  //     to: {
+  //       "--rotate-x": "0deg",
+  //       "--rotate-y": "180deg",
+  //       "--rotate-z": "0deg",
+  //     },
+  //     config: fadeOutConfig,
+  //   });
+  //   pointerApi.start({
+  //     to: {
+  //       "--pointer-x": `${radius}px`,
+  //       "--pointer-y": `${radius}px`,
+  //       "--relative-x": 0,
+  //       "--relative-y": 0,
+  //       "--pointer-from-center": 0,
+  //     },
+  //     config: fadeOutConfig,
+  //   });
+  // };
 
   return (
-    <animated.div
-      className={styles.scene}
-      style={{
+    <>
+      <animated.div
+        className={styles.scene}
         // @ts-ignore
-        "--size": `${size}px`,
-        ...translate,
-        ...rotate,
-        ...pointer,
-        ...style,
-      }}
-    >
-      <div
-        className={styles.diskTranslator}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        style={{
+          ...movement,
+          ...style,
+        }}
       >
-        <div className={styles.diskRotator}>
-          <DiskFront />
-          <DiskBack />
-          <div className={`${styles.glare} ${styles.front}`} />
-          <div className={`${styles.glare} ${styles.back}`} />
+        <div
+          className={styles.diskTranslator}
+          onMouseDown={handleMouseDownOnDisk}
+          onMouseMove={handleMouseMoveOnDisk}
+          onMouseLeave={handleMouseLeaveFromDisk}
+        >
+          <div className={styles.diskRotator}>
+            <DiskFront type={frontType} imageUrl={imageUrl} />
+            <DiskBack type={backType} />
+            <div className={`${styles.glare} ${styles.front}`} />
+            <div className={`${styles.glare} ${styles.back}`} />
+          </div>
         </div>
+      </animated.div>
+      <div style={{ width: 0, height: 0 }}>
+        <ClipPath holeSize={13} />
+        <ClipPath holeSize={16.94} />
+        <ClipPath holeSize={18.86} />
+        <ClipPath holeSize={25} />
       </div>
-    </animated.div>
+    </>
   );
 }
 

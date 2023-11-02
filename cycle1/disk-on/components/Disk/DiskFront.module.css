@@ -1,0 +1,113 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  --cover-image: "";
+}
+
+.mainLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: url(#cd13);
+}
+
+.hologram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: var(--hologram1);
+}
+
+.opaque {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: #d9d9d999;
+}
+
+.blendLayer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 98.1818%;
+  height: 98.1818%;
+  transform: translate(-50%, -50%);
+
+  clip-path: url(#cd13);
+}
+
+.blend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0.6;
+  background: #bcbcbc7f;
+}
+
+.classic1 {
+  mix-blend-mode: hard-light;
+}
+
+.classic2 {
+  mix-blend-mode: hard-light;
+}
+
+.classic3 {
+  mix-blend-mode: normal;
+}
+
+.classic4 {
+  mix-blend-mode: overlay;
+}
+
+.classic5 {
+  mix-blend-mode: overlay;
+}
+
+.holeLayer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(100% / 220 * 42);
+  height: calc(100% / 220 * 42);
+  transform: translate(-50%, -50%);
+}
+
+.hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hole1 {
+  width: calc(100% / 42 * 30);
+  height: calc(100% / 42 * 30);
+  background-color: #ffffff;
+  opacity: 0.8;
+  clip-path: url(#cd74);
+}
+
+.hole2 {
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: multiply;
+  background-color: #000000;
+  opacity: 0.1;
+  clip-path: url(#cd15);
+}
