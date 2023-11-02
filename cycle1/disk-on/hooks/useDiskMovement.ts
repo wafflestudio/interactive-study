@@ -101,7 +101,7 @@ export const useDiskMovement = ({
       const pivot = getXAndYFromMouseEvent(e, "parent");
       store.grabDisk(id, pivot);
     },
-    [],
+    [id, store.grabbedDiskId, store.grabDisk],
   );
 
   // grab이 아닐 때 기본 위치 계산
