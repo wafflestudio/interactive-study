@@ -2,6 +2,7 @@ import {
   DISK_GAP,
   IDLE_DISK_STYLE,
   PICKED_DISK_STYLE,
+  PLAYING_DISK_STYLE,
   PREVIEWED_DISK_STYLE,
 } from "./constants";
 import { parseCoordinatesIfPercent, pivotCoordinate } from "./functions";
@@ -83,7 +84,7 @@ export const calculateCoordsAndSizeByArea = ({
     };
   }
   if (isPlaying) {
-    const { vertex, pivot, heightRatio } = PREVIEWED_DISK_STYLE;
+    const { vertex, pivot, heightRatio } = PLAYING_DISK_STYLE;
     const size = window.innerHeight * heightRatio;
     const coords = pivotCoordinate(
       parseCoordinatesIfPercent(vertex),
