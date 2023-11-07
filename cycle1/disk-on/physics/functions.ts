@@ -1,5 +1,4 @@
 import { MouseEventHandler } from "react";
-import { diskSize } from "./constants";
 import { Coordinates } from "./types";
 
 /**

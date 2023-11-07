@@ -6,7 +6,7 @@ import Disk from "@/components/disk-impl/Disk";
 import disks from "@/data/disks.json";
 import useInteractionStore from "@/hooks/useInteractionStore";
 import { Disk as DiskType } from "@/types/spring/disk";
-import { diskSize } from "@/physics/constants";
+import { DISK_SIZE } from "@/physics/constants";
 
 export default function Home() {
   const onGrabMove = useInteractionStore((state) => state.onGrabMove);
@@ -34,7 +34,7 @@ export default function Home() {
           key={id}
           id={id}
           index={index}
-          size={diskSize}
+          size={DISK_SIZE}
           imageUrl={imageUrl}
           frontType={frontType as DiskType["frontType"]}
           backType={backType as DiskType["backType"]}

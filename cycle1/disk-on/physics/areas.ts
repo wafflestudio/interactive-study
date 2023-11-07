@@ -1,4 +1,9 @@
-import { diskGap, diskSize } from "./constants";
+import {
+  DISK_GAP,
+  IDLE_DISK_STYLE,
+  PICKED_DISK_STYLE,
+  PREVIEWED_DISK_STYLE,
+} from "./constants";
 import { parseCoordinatesIfPercent, pivotCoordinate } from "./functions";
 import { Area, Coordinates } from "./types";
 
@@ -6,9 +11,10 @@ const cancelPickArea: Area = {
   min: parseCoordinatesIfPercent({ x: 0, y: 0 }),
   max: parseCoordinatesIfPercent({ x: 0.3, y: 1 }),
 };
+
 const previewArea: Area = {
   min: parseCoordinatesIfPercent({ x: 0.3, y: 0 }),
-  max: parseCoordinatesIfPercent({ x: 0.8, y: 1 }),
+  max: parseCoordinatesIfPercent({ x: 1, y: 1 }),
 };
 
 const cancelPreviewArea: Area = {
@@ -17,7 +23,7 @@ const cancelPreviewArea: Area = {
 };
 
 const playArea: Area = {
-  min: parseCoordinatesIfPercent({ x: 0.8, y: 0 }),
+  min: parseCoordinatesIfPercent({ x: 0.5, y: 0 }),
   max: parseCoordinatesIfPercent({ x: 1, y: 1 }),
 };
 
@@ -55,28 +61,21 @@ export const calculateCoordsAndSizeByArea = ({
   isPreviewed: boolean;
   isPlaying: boolean;
 }): { coords: Coordinates; size: number } => {
-  const initialY = diskGap * index;
-
   if (isPicked) {
-    const size = diskSize * 1.2;
-    const coords = pivotCoordinate(
-      {
-        x: size,
-        y: initialY,
-      },
-      size,
-    );
+    const { vertex, pivot, size } = PICKED_DISK_STYLE(index);
+    const coords = pivotCoordinate(vertex, size, pivot);
     return {
       coords,
       size,
     };
   }
   if (isPreviewed) {
-    const size = window.innerHeight * 0.8;
+    const { vertex, pivot, heightRatio } = PREVIEWED_DISK_STYLE;
+    const size = window.innerHeight * heightRatio;
     const coords = pivotCoordinate(
-      parseCoordinatesIfPercent({ x: 0.5, y: 0.5 }),
+      parseCoordinatesIfPercent(vertex),
       size,
-      "center",
+      pivot,
     );
     return {
       coords,
@@ -84,25 +83,21 @@ export const calculateCoordsAndSizeByArea = ({
     };
   }
   if (isPlaying) {
-    const size = window.innerHeight * 0.8;
+    const { vertex, pivot, heightRatio } = PREVIEWED_DISK_STYLE;
+    const size = window.innerHeight * heightRatio;
     const coords = pivotCoordinate(
-      parseCoordinatesIfPercent({ x: 1, y: 50 }),
+      parseCoordinatesIfPercent(vertex),
       size,
-      "rightTop",
+      pivot,
     );
     return {
       coords,
       size,
     };
   }
+  const { vertex, pivot, size } = IDLE_DISK_STYLE(index);
   return {
-    coords: pivotCoordinate(
-      {
-        x: 0,
-        y: initialY,
-      },
-      diskSize,
-    ),
-    size: diskSize,
+    coords: pivotCoordinate(vertex, size, pivot),
+    size,
   };
 };
