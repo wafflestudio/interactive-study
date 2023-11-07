@@ -93,7 +93,7 @@ export const useDiskMovement = ({
           ) / radius,
       });
     },
-    [id, movementApi, radius, store.grabbedDiskId],
+    [id, movementApi, radius, store.grabbedDiskId, store.playingDiskId],
   );
 
   /**
