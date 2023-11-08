@@ -2,8 +2,8 @@
 
 import styles from "./Disk.module.css";
 import { useSpring, animated } from "@react-spring/web";
-import DiskFront from "@/components/disk/DiskFront";
-import DiskBack from "@/components/disk/DiskBack";
+import DiskFront from "@/components/TestDisk/DiskFront";
+import DiskBack from "@/components/TestDisk/DiskBack";
 import { MouseEventHandler } from "react";
 
 type DiskProps = {
