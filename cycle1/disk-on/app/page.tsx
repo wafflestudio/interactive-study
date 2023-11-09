@@ -2,10 +2,9 @@
 
 import Player from "@/components/Player/Player";
 import styles from "./page.module.css";
-import Disk from "@/components/disk-impl/Disk";
+import Disk from "@/components/Disk/Disk";
 import disks from "@/data/disks.json";
 import useInteractionStore from "@/hooks/useInteractionStore";
-import { Disk as DiskType } from "@/types/spring/disk";
 import { DISK_SIZE } from "@/physics/constants";
 
 export default function Home() {
@@ -36,8 +35,8 @@ export default function Home() {
           index={index}
           size={DISK_SIZE}
           imageUrl={imageUrl}
-          frontType={frontType as DiskType["frontType"]}
-          backType={backType as DiskType["backType"]}
+          frontType={frontType as Parameters<typeof Disk>[0]["frontType"]}
+          backType={backType as Parameters<typeof Disk>[0]["backType"]}
         />
       ))}
     </main>

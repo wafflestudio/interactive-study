@@ -1,5 +1,4 @@
 import useInteractionStore from "@/hooks/useInteractionStore";
-import { Disk } from "@/types/spring/disk";
 import { useSpring } from "@react-spring/web";
 import {
   MouseEventHandler,
@@ -12,8 +11,8 @@ import { getXAndYFromMouseEvent, pivotCoordinate } from "@/physics/functions";
 import { calculateCoordsAndSizeByArea } from "@/physics/areas";
 
 type DiskHookParams = {
-  id: Disk["id"]; //
-  index: number; // decide
+  id: string;
+  index: number;
   size: number;
 };
 

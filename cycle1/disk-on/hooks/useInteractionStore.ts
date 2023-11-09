@@ -1,23 +1,22 @@
-import { Disk } from "@/types/spring/disk";
 import { create } from "zustand";
 import disks from "@/data/disks.json";
 import { Coordinates } from "@/physics/types";
 import { isInsideAreaCalled } from "@/physics/areas";
 
 type InteractionStore = {
-  diskIds: Disk["id"][];
+  diskIds: string[];
 
   // disk status
-  pickedDiskId: Disk["id"] | null; // disk aside list
-  previewedDiskId: Disk["id"] | null; // disk dropped center for preview
-  playingDiskId: Disk["id"] | null; // disk inside player
+  pickedDiskId: string | null; // disk aside list
+  previewedDiskId: string | null; // disk dropped center for preview
+  playingDiskId: string | null; // disk inside player
 
   // grab disk
-  grabbedDiskId: Disk["id"] | null;
+  grabbedDiskId: string | null;
   grabbedPivotCoords: Coordinates | null;
   cursorCoords: Coordinates | null;
-  pickDisk: (id: Disk["id"] | null) => void;
-  grabDisk: (id: Disk["id"] | null, grabbedPivot: Coordinates | null) => void;
+  pickDisk: (id: string | null) => void;
+  grabDisk: (id: string | null, grabbedPivot: Coordinates | null) => void;
   onGrabMove: (coords: Coordinates) => void;
   onMouseUp: () => void;
   onEmit: () => void;
