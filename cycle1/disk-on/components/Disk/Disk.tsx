@@ -22,7 +22,7 @@ import ClipPath from "@/utils/ClipPath";
  * --relative-y: 0;
  * --pointer-from-center: 0;
  */
-type DiskProps = {
+export type DiskProps = {
   index: number;
   id: string;
   imageUrl: string;

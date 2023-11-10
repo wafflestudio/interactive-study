@@ -81,7 +81,6 @@
     #396494 347.13385105133057deg
   );
   transform-style: preserve-3d;
-  perspective: 1000px;
 }
 
 .scene svg {
@@ -101,6 +100,7 @@
     var(--translate-y),
     var(--translate-z)
   );
+  perspective: 1000px;
 }
 
 .diskRotator {

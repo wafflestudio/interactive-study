@@ -2,7 +2,7 @@
 
 import Player from "@/components/Player/Player";
 import styles from "./page.module.css";
-import Disk from "@/components/Disk/Disk";
+import Disk, { DiskProps } from "@/components/Disk/Disk";
 import disks from "@/data/disks.json";
 import useInteractionStore from "@/hooks/useInteractionStore";
 import { DISK_SIZE } from "@/physics/constants";
@@ -35,8 +35,8 @@ export default function Home() {
           index={index}
           size={DISK_SIZE}
           imageUrl={imageUrl}
-          frontType={frontType as Parameters<typeof Disk>[0]["frontType"]}
-          backType={backType as Parameters<typeof Disk>[0]["backType"]}
+          frontType={frontType as DiskProps["frontType"]}
+          backType={backType as DiskProps["backType"]}
         />
       ))}
     </main>
