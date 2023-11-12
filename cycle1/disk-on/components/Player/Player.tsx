@@ -13,13 +13,16 @@ type PlayerProps = {
 export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
   return (
     <div className={cx("wrapper", { playing: isPlaying })}>
-      <img
-        className={cx("player")}
-        src="/player.png"
-        onClick={(e) => {
-          onEmit(e);
-        }}
-      />
+      <div className={cx("images")}>
+        <img
+          className={cx("button")}
+          src="Player_button.png"
+          onClick={(e) => {
+            onEmit(e);
+          }}
+        />
+        <img className={cx("base")} src="/Player_base.png" />
+      </div>
       {src && (
         <iframe
           className={cx("youtube")}
