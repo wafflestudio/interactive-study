@@ -6,6 +6,7 @@ import DiskFront from "@/components/Disk/DiskFront";
 import DiskBack from "@/components/Disk/DiskBack";
 import { useDiskMovement } from "@/hooks/useDiskMovement";
 import ClipPath from "@/utils/ClipPath";
+import useInteractionStore from "@/hooks/useInteractionStore";
 
 /**
  * style에 필요한 값
@@ -41,12 +42,14 @@ function Disk({
   frontType,
   backType,
 }: DiskProps) {
+  const playingDiskId = useInteractionStore((state) => state.playingDiskId);
+
   const {
     movement,
     handleMouseDownOnDisk,
-    handleMouseLeaveFromDisk,
     handleMouseMoveOnDisk,
     handleMouseClickOnDisk,
+    initializeRotation,
   } = useDiskMovement({
     size,
     id,
@@ -67,7 +70,9 @@ function Disk({
           onClick={handleMouseClickOnDisk}
           onMouseDown={handleMouseDownOnDisk}
           onMouseMove={handleMouseMoveOnDisk}
-          onMouseLeave={handleMouseLeaveFromDisk}
+          onMouseLeave={() => {
+            if (playingDiskId !== id) initializeRotation();
+          }}
         >
           <div className={styles.diskRotator}>
             <DiskFront type={frontType} imageUrl={imageUrl} />

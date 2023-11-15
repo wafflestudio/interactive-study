@@ -153,8 +153,22 @@ export const useDiskMovement = ({
       "--translate-y": `${y}px`,
       "--size": `${newSize}px`,
     });
+
     setSize(newSize);
     initializeRotation();
+
+    if (isPlaying) {
+      setTimeout(() => {
+        movementApi.start({
+          from: { "--rotate-z": "0deg" },
+          to: { "--rotate-z": "360deg" },
+          loop: true,
+          config: {
+            duration: 3000,
+          },
+        });
+      }, 15000);
+    }
   }, [
     id,
     movementApi,
@@ -195,7 +209,7 @@ export const useDiskMovement = ({
   return {
     handleMouseDownOnDisk,
     handleMouseMoveOnDisk,
-    handleMouseLeaveFromDisk: initializeRotation,
+    initializeRotation,
     handleMouseClickOnDisk,
     movement,
   };
