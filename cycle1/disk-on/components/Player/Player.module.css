@@ -9,13 +9,30 @@
   transition: 0.5s ease;
 }
 
-.wrapper.playing {
-  right: -13px;
-  cursor: pointer !important;
+.images {
+  position: absolute;
+  right: 0;
 }
 
-.player {
+.base {
+  position: relative;
   height: 85vh;
+}
+
+.button {
+  position: absolute;
+  top: 0;
+  left: -45px;
+  transition: 0.2s ease-out;
+}
+
+.playing .button:hover {
+  cursor: pointer;
+  transform: translateX(10px);
+}
+
+.wrapper.playing {
+  right: -13px;
 }
 
 .youtube {
