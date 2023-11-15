@@ -53,23 +53,13 @@ export const isInsideAreaCalled = (
 
 export const calculateCoordsAndSizeByArea = ({
   index,
-  isPicked,
   isPreviewed,
   isPlaying,
 }: {
   index: number;
-  isPicked: boolean;
   isPreviewed: boolean;
   isPlaying: boolean;
 }): { coords: Coordinates; size: number } => {
-  if (isPicked) {
-    const { vertex, pivot, size } = PICKED_DISK_STYLE(index);
-    const coords = pivotCoordinate(vertex, size, pivot);
-    return {
-      coords,
-      size,
-    };
-  }
   if (isPreviewed) {
     const { vertex, pivot, heightRatio } = PREVIEWED_DISK_STYLE;
     const size = window.innerHeight * heightRatio;

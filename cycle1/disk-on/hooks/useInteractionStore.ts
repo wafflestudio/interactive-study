@@ -15,7 +15,7 @@ type InteractionStore = {
   grabbedDiskId: string | null;
   grabbedPivotCoords: Coordinates | null;
   cursorCoords: Coordinates | null;
-  pickDisk: (id: string | null) => void;
+  previewDisk: (id: string | null) => void;
   grabDisk: (id: string | null, grabbedPivot: Coordinates | null) => void;
   onGrabMove: (coords: Coordinates) => void;
   onMouseUp: () => void;
@@ -31,17 +31,23 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
 
   grabbedPivotCoords: null,
   cursorCoords: null,
-  pickDisk: (id) => set({ pickedDiskId: id }),
+
+  // preview disk를 선택합니다.
+  previewDisk: (id) => set({ previewedDiskId: id }),
+
   grabDisk: (id, pivot) =>
     set({
       grabbedDiskId: id,
       grabbedPivotCoords: pivot ? pivot : null,
     }),
+
+  // grab 시에 cursorCoords를 변경합니다.
   onGrabMove: (coords) => set({ cursorCoords: coords }),
-  onMouseUp: () =>
+
+  onMouseUp: () => {
     set((state) => {
       if (!state.grabbedDiskId) return state;
-      if (!state.cursorCoords) return state;
+      if (!state.cursorCoords) return { ...state, grabbedDiskId: null };
       const clearGrabState = {
         grabbedDiskId: null,
         grabbedPivotCoords: null,
@@ -51,10 +57,7 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
         playingDiskId: null,
       };
       const coords = state.cursorCoords;
-      if (state.pickedDiskId === state.grabbedDiskId) {
-        if (isInsideAreaCalled("cancelPick", coords)) {
-          return { ...clearGrabState };
-        }
+      if (state.previewedDiskId === state.grabbedDiskId) {
         if (isInsideAreaCalled("preview", coords)) {
           return {
             ...clearGrabState,
@@ -77,7 +80,9 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
       }
 
       return clearGrabState;
-    }),
+    });
+  },
+
   onEmit: () =>
     set(() => {
       return {

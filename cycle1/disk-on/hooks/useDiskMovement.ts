@@ -26,6 +26,22 @@ export const useDiskMovement = ({
 
   const store = useInteractionStore((state) => state);
 
+  const isGrabbed = useMemo(
+    () => store.grabbedDiskId === id,
+    [store.grabbedDiskId, id],
+  );
+  const isPreviewed = useMemo(
+    () => store.previewedDiskId === id,
+    [store.previewedDiskId, id],
+  );
+  const isPlaying = useMemo(
+    () => store.playingDiskId === id,
+    [store.playingDiskId, id],
+  );
+  const isListed = useMemo(() => {
+    return !(isGrabbed || isPreviewed || isPlaying);
+  }, [isGrabbed, isPreviewed, isPlaying]);
+
   const [movement, movementApi] = useSpring(() => {
     return {
       from: {
@@ -55,9 +71,10 @@ export const useDiskMovement = ({
    */
   const handleMouseLeaveFromDisk: MouseEventHandler<HTMLDivElement> =
     useCallback(() => {
+      if (isGrabbed) return;
       movementApi.start({
         "--rotate-x": `0deg`,
-        "--rotate-y": `0deg`,
+        "--rotate-y": `${isListed ? 180 : 0}deg`,
         "--rotate-z": "0deg",
         "--pointer-x": `${radius}px`,
         "--pointer-y": `${radius}px`,
@@ -65,15 +82,15 @@ export const useDiskMovement = ({
         "--relative-y": 0,
         "--pointer-from-center": 0,
       });
-    }, [movementApi, radius]);
+    }, [isGrabbed, movementApi, isListed, radius]);
 
   /**
    * 마우스가 디스크 위에서 움직일 때 회전시킵니다
    */
   const handleMouseMoveOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
-      if (store.grabbedDiskId === id) return;
-      if (store.playingDiskId === id) return;
+      if (isGrabbed) return;
+      if (isPlaying) return;
       const { x: pointerX, y: pointerY } = getXAndYFromMouseEvent(e, "parent");
 
       const relativeX = (pointerX - radius) / radius;
@@ -81,7 +98,7 @@ export const useDiskMovement = ({
 
       movementApi.start({
         "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * -30 + 180}deg`,
+        "--rotate-y": `${-relativeX * -30 + (isListed ? 0 : 180)}deg`,
         "--pointer-x": `${pointerX}px`,
         "--pointer-y": `${pointerY}px`,
         "--relative-x": relativeX,
@@ -92,7 +109,7 @@ export const useDiskMovement = ({
           ) / radius,
       });
     },
-    [id, movementApi, radius, store.grabbedDiskId, store.playingDiskId],
+    [movementApi, radius, isGrabbed, isPlaying, isListed],
   );
 
   /**
@@ -100,16 +117,13 @@ export const useDiskMovement = ({
    */
   const handleMouseClickOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
-      if (
-        store.pickedDiskId !== id &&
-        store.previewedDiskId !== id &&
-        store.playingDiskId !== id
-      ) {
-        store.pickDisk(id);
+      // store.grabDisk(null, null);
+      if (!isPreviewed) {
+        store.previewDisk(id);
         return;
       }
     },
-    [id, store],
+    [id, isPreviewed, store],
   );
   /**
    * 디스크를 잡을 때
@@ -117,25 +131,24 @@ export const useDiskMovement = ({
   const handleMouseDownOnDisk: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       e.preventDefault();
-      if (store.grabbedDiskId) return;
-      if (store.pickedDiskId !== id && store.previewedDiskId !== id) return;
+      if (isGrabbed) return;
+      if (!isPreviewed) return;
       const pivot = getXAndYFromMouseEvent(e, "parent");
       store.grabDisk(id, pivot);
     },
-    [id, store],
+    [id, isGrabbed, isPreviewed, store],
   );
 
   // grab이 아닐 때 기본 위치 계산
   useEffect(() => {
-    if (store.grabbedDiskId === id) return;
+    if (isGrabbed) return;
     const {
       coords: { x, y },
       size: newSize,
     } = calculateCoordsAndSizeByArea({
       index,
-      isPicked: id === store.pickedDiskId,
-      isPreviewed: id === store.previewedDiskId,
-      isPlaying: id === store.playingDiskId,
+      isPreviewed: isPreviewed,
+      isPlaying: isPlaying,
     });
     movementApi.start({
       "--translate-x": `${x}px`,
@@ -143,22 +156,14 @@ export const useDiskMovement = ({
       "--size": `${newSize}px`,
     });
     setSize(newSize);
-  }, [
-    id,
-    movementApi,
-    store.grabbedDiskId,
-    store.pickedDiskId,
-    store.previewedDiskId,
-    store.playingDiskId,
-    index,
-  ]);
+  }, [id, movementApi, isGrabbed, isPreviewed, isPlaying, index]);
 
   // grab일 때 커서에 따라 디스크 위치 조정
   useEffect(() => {
     if (!store.grabbedDiskId) return;
     if (!store.cursorCoords) return;
     if (!store.grabbedPivotCoords) return;
-    if (store.grabbedDiskId !== id) return;
+    if (!isGrabbed) return;
 
     const { x, y } = pivotCoordinate(
       store.cursorCoords,
@@ -177,6 +182,7 @@ export const useDiskMovement = ({
     store.grabbedDiskId,
     store.grabbedPivotCoords,
     store.cursorCoords,
+    isGrabbed,
   ]);
 
   return {
