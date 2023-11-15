@@ -57,8 +57,8 @@ export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         />
       )} */}
-      <audio ref={diskSoundRef} src="musics/disk.mp3" />
-      {src && <audio ref={musicRef} src={src} />}
+      {isPlaying && <audio ref={diskSoundRef} src="musics/disk.mp3" />}
+      {isPlaying && src && <audio ref={musicRef} src={src} />}
     </div>
   );
 }

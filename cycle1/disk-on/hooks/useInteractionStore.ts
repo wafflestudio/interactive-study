@@ -35,11 +35,15 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
   previewDisk: (id) => set({ previewedDiskId: id, playingDiskId: null }),
   playDisk: (id) => set({ playingDiskId: id, previewedDiskId: null }),
 
-  grabDisk: (id, pivot) =>
+  grabDisk: (id, pivot) => {
+    if (get().playingDiskId) {
+      set({ playingDiskId: null });
+    }
     set({
       grabbedDiskId: id,
       grabbedPivotCoords: pivot ? pivot : null,
-    }),
+    });
+  },
 
   // grab 시에 cursorCoords를 변경합니다.
   onGrabMove: (coords) => set({ cursorCoords: coords }),
