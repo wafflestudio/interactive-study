@@ -4,7 +4,8 @@
   "scripts": {
     "paper": "yarn workspace paper",
     "disk-on": "yarn workspace disk-on",
-    "waffle-sans": "yarn workspace waffle-sans"
+    "waffle-sans": "yarn workspace waffle-sans",
+    "prettier:all": "yarn prettier . --write"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

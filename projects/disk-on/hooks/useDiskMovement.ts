@@ -1,14 +1,14 @@
-import useInteractionStore from "@/hooks/useInteractionStore";
-import { useSpring } from "@react-spring/web";
+import useInteractionStore from '@/hooks/useInteractionStore';
+import { calculateCoordsAndSizeByArea } from '@/physics/areas';
+import { getXAndYFromMouseEvent, pivotCoordinate } from '@/physics/functions';
+import { useSpring } from '@react-spring/web';
 import {
   MouseEventHandler,
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from "react";
-import { getXAndYFromMouseEvent, pivotCoordinate } from "@/physics/functions";
-import { calculateCoordsAndSizeByArea } from "@/physics/areas";
+} from 'react';
 
 type DiskHookParams = {
   id: string;
@@ -46,22 +46,22 @@ export const useDiskMovement = ({
     return {
       from: {
         // translations
-        "--translate-x": `${0}px`,
-        "--translate-y": `${0}px`,
-        "--translate-z": `0px`,
+        '--translate-x': `${0}px`,
+        '--translate-y': `${0}px`,
+        '--translate-z': `0px`,
 
         // rotations
-        "--rotate-x": "0deg",
-        "--rotate-y": "180deg",
-        "--rotate-z": "0deg",
-        "--pointer-x": `${radius}px`,
-        "--pointer-y": `${radius}px`,
-        "--relative-x": 0,
-        "--relative-y": 0,
-        "--pointer-from-center": 0,
+        '--rotate-x': '0deg',
+        '--rotate-y': '180deg',
+        '--rotate-z': '0deg',
+        '--pointer-x': `${radius}px`,
+        '--pointer-y': `${radius}px`,
+        '--relative-x': 0,
+        '--relative-y': 0,
+        '--pointer-from-center': 0,
 
         // size
-        "--size": `${initialSize}px`,
+        '--size': `${initialSize}px`,
       },
     };
   });
@@ -72,14 +72,14 @@ export const useDiskMovement = ({
   const initializeRotation = useCallback(() => {
     if (isGrabbed) return;
     movementApi.start({
-      "--rotate-x": `0deg`,
-      "--rotate-y": `${isListed ? 180 : 0}deg`,
-      "--rotate-z": "0deg",
-      "--pointer-x": `${radius}px`,
-      "--pointer-y": `${radius}px`,
-      "--relative-x": 0,
-      "--relative-y": 0,
-      "--pointer-from-center": 0,
+      '--rotate-x': `0deg`,
+      '--rotate-y': `${isListed ? 180 : 0}deg`,
+      '--rotate-z': '0deg',
+      '--pointer-x': `${radius}px`,
+      '--pointer-y': `${radius}px`,
+      '--relative-x': 0,
+      '--relative-y': 0,
+      '--pointer-from-center': 0,
     });
   }, [isGrabbed, movementApi, isListed, radius]);
 
@@ -90,19 +90,19 @@ export const useDiskMovement = ({
     (e) => {
       if (isGrabbed) return;
       if (isPlaying) return;
-      const { x: pointerX, y: pointerY } = getXAndYFromMouseEvent(e, "parent");
+      const { x: pointerX, y: pointerY } = getXAndYFromMouseEvent(e, 'parent');
 
       const relativeX = (pointerX - radius) / radius;
       const relativeY = (pointerY - radius) / radius;
 
       movementApi.start({
-        "--rotate-x": `${-relativeY * 30}deg`,
-        "--rotate-y": `${-relativeX * -30 + (isListed ? 0 : 180)}deg`,
-        "--pointer-x": `${pointerX}px`,
-        "--pointer-y": `${pointerY}px`,
-        "--relative-x": relativeX,
-        "--relative-y": relativeY,
-        "--pointer-from-center":
+        '--rotate-x': `${-relativeY * 30}deg`,
+        '--rotate-y': `${-relativeX * -30 + (isListed ? 0 : 180)}deg`,
+        '--pointer-x': `${pointerX}px`,
+        '--pointer-y': `${pointerY}px`,
+        '--relative-x': relativeX,
+        '--relative-y': relativeY,
+        '--pointer-from-center':
           Math.sqrt(
             Math.pow(pointerX - radius, 2) + Math.pow(pointerY - radius, 2),
           ) / radius,
@@ -131,7 +131,7 @@ export const useDiskMovement = ({
     (e) => {
       e.preventDefault();
       if (isGrabbed) return;
-      const pivot = getXAndYFromMouseEvent(e, "parent");
+      const pivot = getXAndYFromMouseEvent(e, 'parent');
       store.grabDisk(id, pivot);
     },
     [id, isGrabbed, store],
@@ -149,9 +149,9 @@ export const useDiskMovement = ({
       isPlaying: isPlaying,
     });
     movementApi.start({
-      "--translate-x": `${x}px`,
-      "--translate-y": `${y}px`,
-      "--size": `${newSize}px`,
+      '--translate-x': `${x}px`,
+      '--translate-y': `${y}px`,
+      '--size': `${newSize}px`,
     });
 
     setSize(newSize);
@@ -160,8 +160,8 @@ export const useDiskMovement = ({
     if (isPlaying) {
       setTimeout(() => {
         movementApi.start({
-          from: { "--rotate-z": "0deg" },
-          to: { "--rotate-z": "360deg" },
+          from: { '--rotate-z': '0deg' },
+          to: { '--rotate-z': '360deg' },
           loop: true,
           config: {
             duration: 3000,
@@ -193,8 +193,8 @@ export const useDiskMovement = ({
     );
 
     movementApi.start({
-      "--translate-x": `${x}px`,
-      "--translate-y": `${y}px`,
+      '--translate-x': `${x}px`,
+      '--translate-y': `${y}px`,
     });
   }, [
     id,

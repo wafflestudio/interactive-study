@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import Player from "@/components/Player/Player";
-import styles from "./page.module.css";
-import Disk, { DiskProps } from "@/components/Disk/Disk";
-import disks from "@/data/disks.json";
-import useInteractionStore from "@/hooks/useInteractionStore";
-import { DISK_SIZE } from "@/physics/constants";
+import Disk, { DiskProps } from '@/components/Disk/Disk';
+import Player from '@/components/Player/Player';
+import disks from '@/data/disks.json';
+import useInteractionStore from '@/hooks/useInteractionStore';
+import { DISK_SIZE } from '@/physics/constants';
+
+import styles from './page.module.css';
 
 export default function Home() {
   const onGrabMove = useInteractionStore((state) => state.onGrabMove);
@@ -35,8 +36,8 @@ export default function Home() {
           index={index}
           size={DISK_SIZE}
           imageUrl={imageUrl}
-          frontType={frontType as DiskProps["frontType"]}
-          backType={backType as DiskProps["backType"]}
+          frontType={frontType as DiskProps['frontType']}
+          backType={backType as DiskProps['backType']}
         />
       ))}
     </main>

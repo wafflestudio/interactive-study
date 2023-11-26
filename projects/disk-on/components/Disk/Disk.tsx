@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
-import styles from "./Disk.module.css";
-import { animated, SpringValue } from "@react-spring/web";
-import DiskFront from "@/components/Disk/DiskFront";
-import DiskBack from "@/components/Disk/DiskBack";
-import { useDiskMovement } from "@/hooks/useDiskMovement";
-import ClipPath from "@/utils/ClipPath";
-import useInteractionStore from "@/hooks/useInteractionStore";
+import DiskBack from '@/components/Disk/DiskBack';
+import DiskFront from '@/components/Disk/DiskFront';
+import { useDiskMovement } from '@/hooks/useDiskMovement';
+import useInteractionStore from '@/hooks/useInteractionStore';
+import ClipPath from '@/utils/ClipPath';
+import { SpringValue, animated } from '@react-spring/web';
+
+import styles from './Disk.module.css';
 
 /**
  * style에 필요한 값
@@ -27,8 +28,8 @@ export type DiskProps = {
   index: number;
   id: string;
   imageUrl: string;
-  frontType: "classic" | "paper" | "holographic";
-  backType: "normal" | "dim" | "bright";
+  frontType: 'classic' | 'paper' | 'holographic';
+  backType: 'normal' | 'dim' | 'bright';
   size?: number;
   style?: Record<string, SpringValue<string | number>>;
 };

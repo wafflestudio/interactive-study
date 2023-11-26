@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import disks from "@/data/disks.json";
-import { Coordinates } from "@/physics/types";
-import { isInsideAreaCalled } from "@/physics/areas";
+import disks from '@/data/disks.json';
+import { isInsideAreaCalled } from '@/physics/areas';
+import { Coordinates } from '@/physics/types';
+import { create } from 'zustand';
 
 type InteractionStore = {
   diskIds: string[];
@@ -62,19 +62,19 @@ const useInteractionStore = create<InteractionStore>()((set, get) => ({
       };
       const coords = state.cursorCoords;
       if (state.previewedDiskId !== state.grabbedDiskId) {
-        if (isInsideAreaCalled("preview", coords)) {
+        if (isInsideAreaCalled('preview', coords)) {
           return {
             ...clearGrabState,
             previewedDiskId: state.grabbedDiskId,
           };
         }
       } else {
-        if (isInsideAreaCalled("cancelPreview", coords)) {
+        if (isInsideAreaCalled('cancelPreview', coords)) {
           return {
             ...clearGrabState,
           };
         }
-        if (isInsideAreaCalled("play", coords)) {
+        if (isInsideAreaCalled('play', coords)) {
           return {
             ...clearGrabState,
             playingDiskId: state.grabbedDiskId,

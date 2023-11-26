@@ -1,6 +1,7 @@
-import classNames from "classnames/bind";
-import styles from "./Player.module.css";
-import { MouseEventHandler, useEffect, useMemo, useRef } from "react";
+import classNames from 'classnames/bind';
+import { MouseEventHandler, useEffect, useMemo, useRef } from 'react';
+
+import styles from './Player.module.css';
 
 const cx = classNames.bind(styles);
 
@@ -37,16 +38,16 @@ export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
     }
   }, [src, isPlaying, diskSoundRef, musicRef]);
   return (
-    <div className={cx("wrapper", { playing: isPlaying })}>
-      <div className={cx("images")}>
+    <div className={cx('wrapper', { playing: isPlaying })}>
+      <div className={cx('images')}>
         <img
-          className={cx("button")}
+          className={cx('button')}
           src="Player_button.png"
           onClick={(e) => {
             onEmit(e);
           }}
         />
-        <img className={cx("base")} src="/Player_base.png" />
+        <img className={cx('base')} src="/Player_base.png" />
       </div>
       {/* {src && (
         <iframe

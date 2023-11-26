@@ -4,9 +4,9 @@ import {
   PICKED_DISK_STYLE,
   PLAYING_DISK_STYLE,
   PREVIEWED_DISK_STYLE,
-} from "./constants";
-import { parseCoordinatesIfPercent, pivotCoordinate } from "./functions";
-import { Area, Coordinates } from "./types";
+} from './constants';
+import { parseCoordinatesIfPercent, pivotCoordinate } from './functions';
+import { Area, Coordinates } from './types';
 
 const cancelPickArea: Area = {
   min: parseCoordinatesIfPercent({ x: 0, y: 0 }),
@@ -36,17 +36,17 @@ const checkIfCoordinatesInsideArea = (
 };
 
 export const isInsideAreaCalled = (
-  area: "cancelPick" | "preview" | "cancelPreview" | "play",
+  area: 'cancelPick' | 'preview' | 'cancelPreview' | 'play',
   coords: Coordinates,
 ): boolean => {
   switch (area) {
-    case "cancelPick":
+    case 'cancelPick':
       return checkIfCoordinatesInsideArea(cancelPickArea, coords);
-    case "preview":
+    case 'preview':
       return checkIfCoordinatesInsideArea(previewArea, coords);
-    case "cancelPreview":
+    case 'cancelPreview':
       return checkIfCoordinatesInsideArea(cancelPreviewArea, coords);
-    case "play":
+    case 'play':
       return checkIfCoordinatesInsideArea(playArea, coords);
   }
 };

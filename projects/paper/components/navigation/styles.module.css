@@ -17,7 +17,7 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-family: 'Pretendard-Regular', serif;
   font-size: 24px;
@@ -31,7 +31,7 @@
   top: 12%;
   left: 30%;
   transform: translate(-50%, 0);
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-family: 'Pretendard-Regular', serif;
   font-size: 24px;
@@ -55,7 +55,7 @@
   left: 50%;
   z-index: 5;
   background: lightgray 50% / cover no-repeat;
-  box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.90);
+  box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.9);
   animation: 1.6s slide_1 ease-in-out forwards;
   transition: transform 0.3s ease;
   cursor: pointer;
@@ -110,7 +110,8 @@
 }
 
 @keyframes up_down {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(250deg) translate(34%, -120%);
   }
   50% {

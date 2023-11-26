@@ -7,7 +7,7 @@
 }
 
 .title {
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -27,7 +27,7 @@
 }
 
 .white_active {
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -36,12 +36,12 @@
   line-height: normal;
   width: 110px;
   height: 60px;
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
   border-radius: 50px;
 }
 
 .white_n_active {
-  color: #5C5C5C;
+  color: #5c5c5c;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -51,9 +51,8 @@
   width: 105px;
 }
 
-
 .blue_active {
-  color: #A0A0FF;
+  color: #a0a0ff;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -62,12 +61,12 @@
   line-height: normal;
   width: 100px;
   height: 60px;
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
   border-radius: 50px;
 }
 
 .blue_n_active {
-  color: #5C5C5C;
+  color: #5c5c5c;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -77,7 +76,7 @@
 }
 
 .back_active {
-  color: #FFA0A0;
+  color: #ffa0a0;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;
@@ -86,13 +85,13 @@
   line-height: normal;
   width: 110px;
   height: 60px;
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
   border-radius: 50px;
 }
 
 .back_n_active {
   width: 95px;
-  color: #5C5C5C;
+  color: #5c5c5c;
   text-align: center;
   font-family: Pretendard-Regular, serif;
   font-size: 20px;

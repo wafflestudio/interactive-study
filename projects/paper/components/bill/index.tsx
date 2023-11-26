@@ -233,8 +233,8 @@ export default function Bill({
                   fakeType === Fake.TYPE_4
                     ? fake4blueLightedHoloImage
                     : fakeType === Fake.TYPE_5
-                    ? fake5blueLightedHoloImage
-                    : blueLightedHoloImage
+                      ? fake5blueLightedHoloImage
+                      : blueLightedHoloImage
                 }
                 className={S.front_blue_lighted_holo}
                 alt={'holo image of bill'}

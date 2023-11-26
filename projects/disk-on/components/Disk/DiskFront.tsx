@@ -1,8 +1,9 @@
-import styles from "./DiskFront.module.css";
-import Image from "next/image";
+import Image from 'next/image';
+
+import styles from './DiskFront.module.css';
 
 type DiskFrontProps = {
-  type?: "classic" | "paper" | "holographic";
+  type?: 'classic' | 'paper' | 'holographic';
   imageUrl?: string;
 };
 
@@ -15,14 +16,14 @@ function ImageOrDiv({
 }) {
   if (imageUrl) {
     return (
-      <img src={imageUrl} className={className} alt={"앨범 커버 이미지"} />
+      <img src={imageUrl} className={className} alt={'앨범 커버 이미지'} />
     );
   } else {
     return <div className={className} />;
   }
 }
 
-function DiskFront({ type = "classic", imageUrl }: DiskFrontProps) {
+function DiskFront({ type = 'classic', imageUrl }: DiskFrontProps) {
   return (
     <div className={styles.container}>
       <div className={styles.mainLayer}>
@@ -30,7 +31,7 @@ function DiskFront({ type = "classic", imageUrl }: DiskFrontProps) {
         <div className={styles.opaque} />
       </div>
       <div className={styles.blendLayer}>
-        {type === "classic" && (
+        {type === 'classic' && (
           <>
             <ImageOrDiv
               imageUrl={imageUrl}
@@ -54,7 +55,7 @@ function DiskFront({ type = "classic", imageUrl }: DiskFrontProps) {
             />
           </>
         )}
-        {type === "paper" && (
+        {type === 'paper' && (
           <>
             <ImageOrDiv
               imageUrl={imageUrl}
@@ -66,7 +67,7 @@ function DiskFront({ type = "classic", imageUrl }: DiskFrontProps) {
             />
           </>
         )}
-        {type === "holographic" && (
+        {type === 'holographic' && (
           <>
             <ImageOrDiv
               imageUrl={imageUrl}
