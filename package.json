@@ -1,7 +1,15 @@
 {
+  "name": "interactive-study",
+  "packageManager": "yarn@4.0.2",
+  "scripts": {
+    "waffle-sans": "yarn workspace waffle-sans"
+  },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "prettier": "^3.1.0"
   },
-  "packageManager": "yarn@4.0.2"
+  "workspaces": [
+    "projects/**/*",
+    "libs/**/*"
+  ]
 }
