@@ -11,3 +11,8 @@ node_modules/**/*
 # yarn
 .yarn/**/*
 **/.yarn/**/*
+
+# git
+.git/**/*
+**/.git/**/*
+
