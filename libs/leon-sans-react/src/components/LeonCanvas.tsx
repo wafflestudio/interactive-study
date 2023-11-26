@@ -2,17 +2,24 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import LeonSans from '../leon-temp/leon';
 
+type Leon = any; // TODO: Leon 타입 확정하기
+
 type LeonCanvasProps = {
+  // leon config
   text: string;
   color?: string;
   size?: number;
   weight?: number;
+  // canvas config
   width?: number;
   height?: number;
   pixelRatio?: number;
+  // animation
+  dataRefs?: () => void;
+  dispatcher?: (data: { ctx: CanvasRenderingContext2D; leon: Leon }) => void;
 };
 
-export default function LeonCanvasWithoutMemoization({
+export default function LeonCanvas({
   text,
   color = '#000000',
   size = 60,
@@ -20,32 +27,41 @@ export default function LeonCanvasWithoutMemoization({
   width = 800,
   height = 600,
   pixelRatio = 2,
+  dispatcher,
 }: LeonCanvasProps) {
+  /**
+   * Stored Data
+   */
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const leonData = useRef<{
+  const dataRefs = useRef<{
     ctx: CanvasRenderingContext2D;
-    leon: any;
+    leon: Leon;
   } | null>(null);
 
+  /**
+   * Functions
+   */
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, leon: Leon) => {
+      ctx.clearRect(0, 0, width, height);
+      const x = (width - leon.rect.w) / 2;
+      const y = (height - leon.rect.h) / 2;
+      leon.position(x, y);
+      leon.draw(ctx);
+    },
+    [width, height],
+  );
+
   const animate = useCallback(() => {
-    // create loop
     requestAnimationFrame(animate);
+    if (!dataRefs.current) return;
+    const { ctx, leon } = dataRefs.current;
+    draw(ctx, leon);
+  }, [dataRefs, draw]);
 
-    if (!leonData.current) return;
-
-    // get data
-    const { ctx, leon } = leonData.current;
-
-    // clear canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // update and draw leon
-    const x = (width - leon.rect.w) / 2;
-    const y = (height - leon.rect.h) / 2;
-    leon.position(x, y);
-    leon.draw(ctx);
-  }, [leonData, width, height]);
-
+  /**
+   * Initiate Canvas
+   */
   useEffect(() => {
     // initiate
     if (canvasRef.current) {
@@ -57,10 +73,21 @@ export default function LeonCanvasWithoutMemoization({
        */
       const ctx = canvas.getContext('2d');
       const leon = new LeonSans({ text, color, size, weight });
-      if (ctx) leonData.current = { ctx, leon };
+      if (ctx) {
+        dataRefs.current = { ctx, leon };
+        if (dispatcher) dispatcher(dataRefs.current);
+      }
       requestAnimationFrame(animate);
     }
-  }, [canvasRef, text, color, size, weight, animate]);
+  }, [canvasRef]);
+
+  /**
+   * Update Leon
+   */
+  useEffect(() => {
+    if (!dataRefs.current) return;
+    dataRefs.current.leon.text = text;
+  }, [text]);
 
   return (
     <canvas
