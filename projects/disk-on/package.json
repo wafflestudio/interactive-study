@@ -26,5 +26,5 @@
     "sass": "^1.69.0",
     "typescript": "latest"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@4.0.2"
 }
