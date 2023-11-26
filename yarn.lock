@@ -3736,6 +3736,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"paper@workspace:projects/paper":
+  version: 0.0.0-use.local
+  resolution: "paper@workspace:projects/paper"
+  dependencies:
+    "@react-spring/web": "npm:^9.7.3"
+    "@types/node": "npm:latest"
+    "@types/react": "npm:latest"
+    "@types/react-dom": "npm:latest"
+    eslint: "npm:latest"
+    eslint-config-next: "npm:latest"
+    next: "npm:latest"
+    prettier: "npm:^3.0.3"
+    react: "npm:latest"
+    react-dom: "npm:latest"
+    typescript: "npm:latest"
+  languageName: unknown
+  linkType: soft
+
 "parent-module@npm:^1.0.0":
   version: 1.0.1
   resolution: "parent-module@npm:1.0.1"
