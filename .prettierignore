@@ -1,0 +1,13 @@
+# dist
+dist/**/*
+**/dist/**/*
+build/**/*
+**/build/**/*
+
+# node_modules
+node_modules/**/*
+**/node_modules/**/*
+
+# yarn
+.yarn/**/*
+**/.yarn/**/*
