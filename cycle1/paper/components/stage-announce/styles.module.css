@@ -1,0 +1,88 @@
+.bill_container {
+  position: relative;
+  width: 80%;
+  height: 20%;
+}
+
+.stage {
+  top: -290px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  position: absolute;
+  color: #000;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.stage_dark {
+  color: #fff;
+  top: -290px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  position: absolute;
+  text-align: center;
+  font-family: Pretendard-Regular, serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.bill_1 {
+  width: 40%;
+  max-width: 460px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  transform: rotate(245deg) translate(56%, -120%);
+}
+
+.bill_2 {
+  width: 40%;
+  max-width: 460px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  transform: rotate(255deg) translate(38%, -110%);
+}
+
+.bill_3 {
+  width: 40%;
+  max-width: 460px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  transform: rotate(265deg) translate(34%, -100%);
+}
+
+.bill_4 {
+  width: 40%;
+  max-width: 460px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: rotate(280deg) translate(19%, -90%);
+}
+
+.bill_5 {
+  width: 40%;
+  max-width: 460px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: rotate(300deg) translate(12%, -80%);
+}
