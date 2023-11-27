@@ -71,13 +71,16 @@ export default function LeonCanvas({
       /**
        * ?Question: 어째서 ctx가 null일 수 있지?
        */
-      const ctx = canvas.getContext('2d');
-      const leon = new LeonSans({ text, color, size, weight });
-      if (ctx) {
-        dataRefs.current = { ctx, leon };
-        if (dispatcher) dispatcher(dataRefs.current);
+      if (!dataRefs.current) {
+        const ctx = canvas.getContext('2d');
+        const leon = new LeonSans({ text, color: [color], size, weight });
+        if (ctx) {
+          ctx.scale(pixelRatio, pixelRatio);
+          dataRefs.current = { ctx, leon };
+          if (dispatcher) dispatcher(dataRefs.current);
+        }
+        requestAnimationFrame(animate);
       }
-      requestAnimationFrame(animate);
     }
   }, [canvasRef]);
 
