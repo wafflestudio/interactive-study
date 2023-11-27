@@ -1,4 +1,3 @@
-import { ROTATE_HORIZONTAL, ROTATE_NONE, ROTATE_VERTICAL } from './constants';
 import {
   getLatin1,
   getLatin2,
@@ -28,7 +27,6 @@ import {
   DATA_LU,
   DATA_LY,
 } from './lower';
-import { RawPathData } from './types.js';
 import {
   DATA_UA,
   DATA_UC,

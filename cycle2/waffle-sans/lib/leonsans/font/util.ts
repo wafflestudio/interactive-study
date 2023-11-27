@@ -1,7 +1,5 @@
 import { bezierTangent } from '../core/paths.js';
 import { Vector } from '../core/vector';
-import { FONT_HEIGHT } from './constants';
-import { CloneableFontData, Path, PathData, RawPathData } from './types';
 
 export function generateFontData(
   w: number,

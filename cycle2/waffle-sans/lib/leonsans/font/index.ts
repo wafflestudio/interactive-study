@@ -1,4 +1,3 @@
-import { TOFU } from './constants';
 import { LATIN } from './latin';
 import { LOWER } from './lower';
 import { NUMBER } from './number';

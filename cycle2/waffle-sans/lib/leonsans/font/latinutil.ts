@@ -1,4 +1,3 @@
-import { ROTATE_HORIZONTAL, ROTATE_VERTICAL, VERTEX_GAP2 } from './constants';
 import { getCurveR, getR } from './util.js';
 
 //À

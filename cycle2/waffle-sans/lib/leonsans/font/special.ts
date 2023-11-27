@@ -1,10 +1,3 @@
-import {
-  ROTATE_HORIZONTAL,
-  ROTATE_NONE,
-  ROTATE_VERTICAL,
-  VERTEX_GAP2,
-} from './constants';
-import { CloneableFontData } from './types';
 import { generateFontData, getCurveR, getR } from './util';
 
 export const SPECIAL: Record<string, CloneableFontData> = {

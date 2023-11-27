@@ -1,11 +1,3 @@
-import {
-  ROTATE_HORIZONTAL,
-  ROTATE_NONE,
-  ROTATE_VERTICAL,
-  VERTEX_GAP,
-  VERTEX_GAP2,
-} from './constants';
-import { RawPathData } from './types';
 import { generateFontData, getCurveR, getR } from './util';
 
 export const DATA_LA: RawPathData[] = [

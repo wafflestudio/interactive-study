@@ -1,9 +1,3 @@
-import {
-  ROTATE_HORIZONTAL,
-  ROTATE_NONE,
-  ROTATE_VERTICAL,
-  VERTEX_GAP,
-} from './constants';
 import { generateFontData, getCurveR, getR } from './util';
 
 export const NUMBER = {
