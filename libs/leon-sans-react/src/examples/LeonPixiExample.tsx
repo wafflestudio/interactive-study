@@ -6,12 +6,13 @@ import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 
 const canvasWidth = 800;
 const canvasHeight = 600;
+
 export default function LeonPixiExample() {
   const [text, setText] = useState('Leon Pixi');
   const dispatcher = usePixiDispatcher();
 
   const redraw = useCallback(() => {
-    dispatcher.update(({ leon }) => {
+    dispatcher.send(({ leon }) => {
       leon.updateDrawingPaths();
 
       for (let i = 0; i < leon.drawing.length; i++) {
@@ -33,14 +34,12 @@ export default function LeonPixiExample() {
 
   return (
     <div>
-      {text.length > 0 && (
-        <LeonPixi
-          text={text}
-          width={canvasWidth}
-          height={canvasHeight}
-          dispatcher={dispatcher}
-        />
-      )}
+      <LeonPixi
+        text={text}
+        width={canvasWidth}
+        height={canvasHeight}
+        dispatcher={dispatcher}
+      />
       <div>
         <input
           type="text"

@@ -1,27 +1,22 @@
-import * as PIXI from 'pixi.js';
 import { useCallback, useRef } from 'react';
 
-type Leon = any; // TODO: Leon 타입 확정하기
-type Data = {
-  leon: Leon;
-  canvas: HTMLCanvasElement;
-  renderer: PIXI.Renderer;
-  stage: PIXI.Container;
-  graphics: PIXI.Graphics;
-};
-type Updater = (params: Data) => void;
+import { PixiDataRefs } from '../types/DataRefs';
+import { PixiDispatcher } from '../types/Dispatcher';
 
-export const usePixiDispatcher = () => {
-  const dataRefs = useRef<Data | null>(null);
+export const usePixiDispatcher = (): PixiDispatcher => {
+  const dataRefs = useRef<PixiDataRefs | null>(null);
 
-  const update = useCallback((updater: Updater) => {
-    if (!dataRefs.current) return;
-    updater(dataRefs.current);
+  const initiate: PixiDispatcher['initiate'] = useCallback((refs) => {
+    dataRefs.current = refs;
   }, []);
 
-  const dispatcher = (refs: Data) => {
-    dataRefs.current = refs;
+  const send: PixiDispatcher['send'] = useCallback((callback) => {
+    if (!dataRefs.current) return;
+    callback(dataRefs.current);
+  }, []);
+
+  return {
+    initiate,
+    send,
   };
-  dispatcher.update = update;
-  return dispatcher;
 };

@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 import LeonSans from '../leon-temp/leon';
-
-type Leon = any; // TODO: Leon 타입 확정하기
+import { PixiDataRefs } from '../types/DataRefs';
+import { PixiHandlers } from '../types/Handler';
 
 type LeonPixiProps = {
   // leon config
@@ -12,6 +12,7 @@ type LeonPixiProps = {
   color?: string | number;
   size?: number;
   weight?: number;
+  isDraw?: boolean;
   // canvas config
   width?: number;
   height?: number;
@@ -19,53 +20,60 @@ type LeonPixiProps = {
   // animation
   dataRefs?: () => void;
   dispatcher?: ReturnType<typeof usePixiDispatcher>;
-};
+} & PixiHandlers;
 
 export default function LeonPixi({
   text,
   color = 0x000000,
   size = 60,
   weight = 400,
+  isDraw = true,
   width = 800,
   height = 600,
   pixelRatio = 2,
   dispatcher,
+  onAnimate,
 }: LeonPixiProps) {
+  /**
+   * Stored Refs
+   */
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dataRefs = useRef<{
-    leon: Leon;
-    canvas: HTMLCanvasElement;
-    renderer: PIXI.Renderer;
-    stage: PIXI.Container;
-    graphics: PIXI.Graphics;
-  } | null>(null);
+  const dataRefs = useRef<PixiDataRefs | null>(null);
+  const handlers = useRef<PixiHandlers>({});
 
   /**
    * Functions
    */
-  const draw = useCallback(
-    (
-      graphics: PIXI.Graphics,
-      renderer: PIXI.Renderer,
-      stage: PIXI.Container,
-      leon: Leon,
-    ) => {
+
+  const animate: FrameRequestCallback = useCallback(
+    (currentFrame) => {
+      // create loop
+      requestAnimationFrame(animate);
+
+      // parse dataRefs
+      if (!dataRefs.current) return;
+      const { graphics, renderer, stage, leon, isDraw } = dataRefs.current;
+
+      // clear canvas
+      graphics.clear();
+
+      // set position
       const x = (width - leon.rect.w) / 2;
       const y = (height - leon.rect.h) / 2;
       leon.position(x, y);
-      graphics.clear();
-      leon.drawPixi(graphics);
-      renderer.render(stage);
-    },
-    [width, height],
-  );
 
-  const animate = useCallback(() => {
-    requestAnimationFrame(animate);
-    if (!dataRefs.current) return;
-    const { graphics, renderer, stage, leon } = dataRefs.current;
-    draw(graphics, renderer, stage, leon);
-  }, [dataRefs, draw]);
+      // resolve handlers
+      if (handlers.current.onAnimate)
+        handlers.current.onAnimate(dataRefs.current, currentFrame);
+
+      // default draw function
+      if (isDraw) {
+        leon.drawPixi(graphics);
+        renderer.render(stage);
+      }
+    },
+    [dataRefs, width, height],
+  );
 
   /**
    * Initiate LeonPixi
@@ -98,9 +106,6 @@ export default function LeonPixi({
     const graphics = new PIXI.Graphics();
     stage.addChild(graphics);
 
-    // initiate dispatcher if exists
-    if (dispatcher) dispatcher({ leon, canvas, renderer, stage, graphics });
-
     // save dataRefs
     dataRefs.current = {
       canvas: canvasRef.current,
@@ -108,7 +113,10 @@ export default function LeonPixi({
       renderer,
       stage,
       graphics,
+      isDraw,
+      pixelRatio,
     };
+    if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 
     // start animation
     requestAnimationFrame(animate);
@@ -123,7 +131,16 @@ export default function LeonPixi({
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-  }, [dataRefs, text, color, size, weight]);
+    dataRefs.current.isDraw = isDraw;
+    dataRefs.current.pixelRatio = pixelRatio;
+  }, [dataRefs, text, color, size, weight, isDraw, pixelRatio]);
+
+  /**
+   * update handler
+   */
+  useEffect(() => {
+    handlers.current.onAnimate = onAnimate;
+  }, [onAnimate]);
 
   /**
    * Clenup on unmount

@@ -1,20 +1,22 @@
 import { useCallback, useRef } from 'react';
 
-type Leon = any; // TODO: Leon 타입 확정하기
-type Data = { ctx: CanvasRenderingContext2D; leon: Leon };
-type Updater = (params: Data) => void;
+import { CanvasDataRefs } from '../types/DataRefs';
+import { CanvasDispatcher } from '../types/Dispatcher';
 
-export const useDispatcher = () => {
-  const dataRefs = useRef<Data | null>(null);
+export const useDispatcher = (): CanvasDispatcher => {
+  const dataRefs = useRef<CanvasDataRefs | null>(null);
 
-  const update = useCallback((updater: Updater) => {
-    if (!dataRefs.current) return;
-    updater(dataRefs.current);
+  const initiate: CanvasDispatcher['initiate'] = useCallback((refs) => {
+    dataRefs.current = refs;
   }, []);
 
-  const dispatcher = (refs: Data) => {
-    dataRefs.current = refs;
+  const send: CanvasDispatcher['send'] = useCallback((callback) => {
+    if (!dataRefs.current) return;
+    callback(dataRefs.current);
+  }, []);
+
+  return {
+    initiate,
+    send,
   };
-  dispatcher.update = update;
-  return dispatcher;
 };
