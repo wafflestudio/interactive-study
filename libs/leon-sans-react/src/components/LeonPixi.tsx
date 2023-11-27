@@ -18,7 +18,6 @@ type LeonPixiProps = {
   height?: number;
   pixelRatio?: number;
   // animation
-  dataRefs?: () => void;
   dispatcher?: ReturnType<typeof usePixiDispatcher>;
 } & PixiHandlers;
 

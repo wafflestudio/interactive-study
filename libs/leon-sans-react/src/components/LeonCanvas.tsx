@@ -22,7 +22,6 @@ type LeonCanvasProps = {
   height?: number;
   pixelRatio?: number;
   // animation
-  dataRefs?: () => void;
   dispatcher?: CanvasDispatcher;
 } & CanvasHandlers;
 
