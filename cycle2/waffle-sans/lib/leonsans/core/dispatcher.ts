@@ -1,4 +1,6 @@
 export class Dispatcher {
+  handlers_: Record<string, { listeners: Array<Function> }>;
+
   constructor() {
     this.handlers_ = {
       update: {
@@ -7,21 +9,7 @@ export class Dispatcher {
     };
   }
 
-  on(event, callback) {
-    if (typeof callback !== 'function') {
-      console.error(
-        `The listener callback must be a function, the given type is ${typeof callback}`,
-      );
-      return false;
-    }
-
-    if (typeof event !== 'string') {
-      console.error(
-        `The event name must be a string, the given type is ${typeof event}`,
-      );
-      return false;
-    }
-
+  on(event: string, callback: Function) {
     if (this.handlers_[event] === undefined) {
       this.handlers_[event] = {
         listeners: [],
@@ -31,7 +19,7 @@ export class Dispatcher {
     this.handlers_[event].listeners.push(callback);
   }
 
-  off(event, callback) {
+  off(event: string, callback: Function) {
     if (this.handlers_[event] === undefined) {
       console.error(`This event: ${event} does not exist`);
       return false;
@@ -44,7 +32,7 @@ export class Dispatcher {
     );
   }
 
-  dispatch(event, data) {
+  dispatch(event: string, data: any) {
     this.handlers_[event].listeners.forEach((listener) => {
       listener(data);
     });

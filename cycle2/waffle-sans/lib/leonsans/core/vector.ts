@@ -1,4 +1,3 @@
-import { Command, Path, PathRatio } from '../font/types';
 import { Model } from './model.js';
 import { Point } from './point';
 

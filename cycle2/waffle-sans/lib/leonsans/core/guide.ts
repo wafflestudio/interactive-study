@@ -1,5 +1,3 @@
-import { RECT_RATIO } from './util.js';
-
 /**
  * @name getGuide
  * @property {Object} - typo data object from 'font/index.js'
@@ -7,7 +5,7 @@ import { RECT_RATIO } from './util.js';
  * @returns {Object} the guide pos array
  * @description get a guide pos
  */
-export function getGuide(d, scale) {
+export function getGuide(d: FontData, scale: number): GuidePosition[] {
   let guide = [],
     ggap = 10,
     i,
@@ -34,7 +32,7 @@ export function getGuide(d, scale) {
  * @returns {Object} the guide pos array
  * @description get a guide pos
  */
-export function getGrid(d, scale) {
+export function getGrid(d: FontData, scale: number): number[] {
   let grid = [],
     i,
     gvy = [98, 340, 815];

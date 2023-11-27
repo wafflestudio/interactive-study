@@ -1,4 +1,4 @@
-export function setAlignGapX(sw, tw) {
+export function setAlignGapX(sw: number, tw: number): AlignGapX {
   return {
     c: (sw - tw) / 2,
     r: sw - tw,
@@ -6,7 +6,7 @@ export function setAlignGapX(sw, tw) {
   };
 }
 
-export function getAlignGapX(align, alignGapX) {
+export function getAlignGapX(align: Align, alignGapX: AlignGapX): number {
   if (align == 'center') {
     return alignGapX.c;
   } else if (align == 'right') {

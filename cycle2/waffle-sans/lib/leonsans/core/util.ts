@@ -1,19 +1,8 @@
-const DEFAULT_FONT_SIZE = 500;
-export const MIN_FONT_WEIGHT = 1;
-export const MAX_FONT_WEIGHT = 900;
-const MAX_LINE_WIDTH = 70;
-const FONT_WEIGHT_LIMIT = 80;
-const FR_1 = 1;
-const FR_2 = 0.78;
-export const RECT_RATIO = 0.49;
-const MAX_SHAKE = 120;
-export const PI2 = 2 * Math.PI;
-
-export function getAmplitude(amplitude, scale) {
+export function getAmplitude(amplitude: number, scale: number) {
   return MAX_SHAKE * amplitude * scale;
 }
 
-export function getFontW(weight) {
+export function getFontW(weight: number) {
   return (
     ((MAX_LINE_WIDTH - MIN_FONT_WEIGHT) / (MAX_FONT_WEIGHT - MIN_FONT_WEIGHT)) *
       (weight - MIN_FONT_WEIGHT) +
@@ -21,13 +10,13 @@ export function getFontW(weight) {
   );
 }
 
-export function getWeightRatio(fontW) {
+export function getWeightRatio(fontW: number) {
   return (
     (1 / (FONT_WEIGHT_LIMIT - MIN_FONT_WEIGHT)) * (fontW - MIN_FONT_WEIGHT)
   );
 }
 
-export function getCircleRound(fontW) {
+export function getCircleRound(fontW: number) {
   return (
     ((58 - 4) / (FONT_WEIGHT_LIMIT - MIN_FONT_WEIGHT)) *
       (fontW - MIN_FONT_WEIGHT) +
@@ -35,30 +24,30 @@ export function getCircleRound(fontW) {
   );
 }
 
-export function getScale(size) {
+export function getScale(size: number) {
   return size / DEFAULT_FONT_SIZE;
 }
 
-export function getLineW(fontW, scale) {
+export function getLineW(fontW: number, scale: number) {
   let lw = fontW * scale;
   if (lw < 1) lw = 1;
   //if (weight == 1) lw = 1
   return lw;
 }
 
-export function getTracking(tracking, scale) {
+export function getTracking(tracking: number, scale: number) {
   return tracking * 50 * scale;
 }
 
-export function getLeading(leading, scale) {
+export function getLeading(leading: number, scale: number) {
   return leading * 50 * scale;
 }
 
-export function getFontRatio(weightRatio) {
+export function getFontRatio(weightRatio: number) {
   return (FR_2 - FR_1) * weightRatio + FR_1;
 }
 
-export function getRect(d, scale, x = 0, y = 0) {
+export function getRect(d: any, scale: number, x = 0, y = 0): Rect {
   const w = d.rect.w * RECT_RATIO * scale;
   const h = (d.rect.h + 220) * RECT_RATIO * scale;
   return {
@@ -99,7 +88,7 @@ export function getGap(d, weightRatio) {
  * @returns {Object} center position x and y
  * @description get a center position of a typo
  */
-export function getCenter(w, h, scale) {
+export function getCenter(w: number, h: number, scale: number) {
   const x = w / 2;
   const y = (h - (220 - 90) * RECT_RATIO * scale) / 2;
   return {
@@ -116,7 +105,11 @@ export function getCenter(w, h, scale) {
  * @returns {Object} ratio range
  * @description save ratio range to control each line's coordinate
  */
-export function getRange(d, weightRatio, circleRound) {
+export function getRange(
+  d: any,
+  weightRatio: number,
+  circleRound: number,
+): RatioRange {
   const gx1 = d.ratio.x1;
   const gx2 = d.ratio.x2;
   const gy1 = d.ratio.y1;
@@ -133,14 +126,20 @@ export function getRange(d, weightRatio, circleRound) {
   };
 }
 
-export function getCurrent(v, vmax, vmin, max, min) {
+export function getCurrent(
+  v: number,
+  vmax: number,
+  vmin: number,
+  max: number,
+  min: number,
+) {
   let value = ((max - min) / (vmax - vmin)) * (v - vmin) + min;
   if (value < min) value = min;
   else if (value > max) value = max;
   return value;
 }
 
-export function getLines(data) {
+export function getLines(data: any) {
   const total = data.typo.p.length;
   const lines = [];
   let i, j, k, j_total;
@@ -171,7 +170,7 @@ export function getLines(data) {
         maxDrawing: ltRatio,
         minDrawing: prevRatio,
         closePath: d3.ratio.c,
-        stroke: (ctx, d) => {
+        stroke: (ctx: CanvasRenderingContext2D, d: any) => {
           let dv = getCurrent(
             d.drawing.value,
             d.maxDrawing,
@@ -196,7 +195,7 @@ export function getLines(data) {
   return lines;
 }
 
-export function addRectToPaths(path, data) {
+export function addRectToPaths(path: any[], data: any) {
   const total = path.length;
   const arr = [];
   let i, cp, p;
@@ -212,7 +211,7 @@ export function randomBrightColor() {
   return 'hsl(' + 360 * Math.random() + ',' + '100%,' + '50%)';
 }
 
-export function shuffle(oldArray) {
+export function shuffle(oldArray: any[]) {
   let newArray = oldArray.slice(),
     len = newArray.length,
     i = len,
