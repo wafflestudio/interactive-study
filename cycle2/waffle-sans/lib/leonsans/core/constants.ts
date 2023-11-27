@@ -1,0 +1,10 @@
+const DEFAULT_FONT_SIZE = 500;
+const MIN_FONT_WEIGHT = 1;
+const MAX_FONT_WEIGHT = 900;
+const MAX_LINE_WIDTH = 70;
+const FONT_WEIGHT_LIMIT = 80;
+const FR_1 = 1;
+const FR_2 = 0.78;
+const RECT_RATIO = 0.49;
+const MAX_SHAKE = 120;
+const PI2 = 2 * Math.PI;
