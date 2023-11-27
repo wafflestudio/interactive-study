@@ -1,4 +1,7 @@
-export function getLengths(item, model) {
+import { Model } from './model';
+import { Point } from './point';
+
+export function getLengths(item, model: Model) {
   const total = item.typo.p.length;
   let c,
     p,
@@ -20,7 +23,7 @@ export function getLengths(item, model) {
   };
 }
 
-function getEachPath(item, points, model) {
+function getEachPath(item, points: Point[], model: Model) {
   const total = points.length;
   let i,
     p,

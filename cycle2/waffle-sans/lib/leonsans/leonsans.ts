@@ -5,20 +5,63 @@
  *
  * @license Copyright (c) 2019, Jongmin Kim. All rights reserved.
  **/
-import { Dispatcher } from './core/dispatcher.js';
-import { MIN_FONT_WEIGHT, MAX_FONT_WEIGHT, shuffle } from './core/util.js';
-import { Lines } from './draw/canvas/lines.js';
-import { Points } from './draw/canvas/points.js';
-import { Grids } from './draw/canvas/grids.js';
-import { Wave } from './draw/canvas/wave.js';
-import { Pattern } from './draw/canvas/pattern.js';
+import { Dispatcher } from './core/dispatcher';
+import { Model } from './core/model';
+import { shuffle } from './core/util';
 import { Color } from './draw/canvas/color.js';
 import { Colorful } from './draw/canvas/colorful.js';
-import { PixiLines } from './draw/pixi/lines.js';
+import { Grids } from './draw/canvas/grids.js';
+import { Lines } from './draw/canvas/lines.js';
+import { Pattern } from './draw/canvas/pattern.js';
+import { Points } from './draw/canvas/points.js';
+import { Wave } from './draw/canvas/wave.js';
 import { PixiColor } from './draw/pixi/color.js';
-import { Model } from './core/model.js';
+import { PixiLines } from './draw/pixi/lines.js';
+
+type LeonSansProps = {
+  text?: string;
+  size?: number;
+  weight?: number;
+  color?: string[];
+  colorful?: string[];
+  tracking?: number;
+  leading?: number;
+  align?: Align;
+  pathGap?: number;
+  amplitude?: number;
+  width?: number;
+  breakWord?: boolean;
+  fps?: number;
+  isPath?: boolean;
+  isWave?: boolean;
+};
 
 export default class LeonSans extends Dispatcher {
+  size_: number;
+  weight_: number;
+  color_: string[];
+  colorful_: string[];
+  tracking_: number;
+  leading_: number;
+  pathGap_: number;
+  amplitude_: number;
+  width_: number;
+  breakWord_: boolean;
+  fps_: number;
+  fpsTime_: number;
+  isPath_: boolean;
+  isWave_: boolean;
+  model: Model | null;
+  str_: string | null;
+  time_: number | null;
+  isFps_: boolean;
+  isForceRander_: boolean;
+  updateID_: number;
+  dPathsID_: number | null;
+  pPathsID_: number | null;
+  wPathsID_: number | null;
+  guideID_: number | null;
+
   constructor({
     text = '',
     size = 500,
@@ -43,7 +86,7 @@ export default class LeonSans extends Dispatcher {
     fps = 30,
     isPath = false,
     isWave = false,
-  } = {}) {
+  }: LeonSansProps = {}) {
     super();
 
     this.size_ = size;
@@ -80,13 +123,13 @@ export default class LeonSans extends Dispatcher {
     this.model.align = align;
   }
 
-  on(event, callback) {
+  on(event: string, callback: Function) {
     super.on(event, callback);
     this.update();
   }
 
-  off(event, callback) {
-    super.off(event, callback);
+  off(event: string, callback: Function) {
+    return super.off(event, callback);
   }
 
   get text() {
@@ -318,7 +361,7 @@ export default class LeonSans extends Dispatcher {
    * Update paths for pattern
    * @param {boolean} force - Force execution
    */
-  updatePatternPaths(force) {
+  updatePatternPaths(force?: boolean) {
     if (this.isPath_ && (force || this.pPathsID_ != this.updateID_)) {
       this.pPathsID_ = this.updateID_;
       this.model.updatePatternPaths(this.pathGap_);
@@ -331,7 +374,7 @@ export default class LeonSans extends Dispatcher {
    * Update paths for wave effect
    * @param {boolean} force - Force execution
    */
-  updateWavePaths(force) {
+  updateWavePaths(force?: boolean) {
     if (this.isWave_ && (force || this.wPathsID_ != this.updateID_)) {
       this.wPathsID_ = this.updateID_;
       this.model.updateWavePaths(this.pathGap_);

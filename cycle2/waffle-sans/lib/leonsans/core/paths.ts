@@ -1,6 +1,6 @@
-import { getCurrent } from './util.js';
-import { ROTATE_NONE } from '../font/util.js';
-import { Point } from './point.js';
+import { Model } from './model';
+import { Point } from './point';
+import { getCurrent } from './util';
 
 let prevPoint = null;
 
@@ -12,8 +12,13 @@ let prevPoint = null;
  * @returns {Array} Returns paths array
  * @description get a guide pos
  */
-export function getPaths(model, data, pathGap, isPattern) {
-  const lines = data.pointsLength.lines;
+export function getPaths(
+  model: Model,
+  data: ModelData,
+  pathGap: number,
+  isPattern: boolean,
+) {
+  const lines = data.pointsLength!.lines;
   const scale = model.scale;
   let total = lines.length,
     i,

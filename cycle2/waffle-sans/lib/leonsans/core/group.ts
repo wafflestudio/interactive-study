@@ -1,8 +1,13 @@
-import { getRect } from './util.js';
 import { typo } from '../font/index.js';
+import { getRect } from './util.js';
 
-export function getTextGroup(text, scale, width, isBreakAll) {
-  let group;
+export function getTextGroup(
+  text: string,
+  scale: number,
+  width: number,
+  isBreakAll: boolean,
+) {
+  let group: string[];
   if (text.indexOf('\n') > 0) {
     group = text.split('\n');
   } else if (text.indexOf('\\n') > 0) {
@@ -15,46 +20,35 @@ export function getTextGroup(text, scale, width, isBreakAll) {
   else return breakWord(group, scale, width);
 }
 
-function keepAll(group) {
-  const textGroup = [];
+function keepAll(group: string[]) {
+  const textGroup: string[][] = [];
   const total = group.length;
-  let i;
-  for (i = 0; i < total; i++) {
+  for (let i = 0; i < total; i++) {
     textGroup[i] = group[i].split('');
   }
   return textGroup;
 }
 
-function breakWord(group, scale, width) {
-  let g2,
-    g3,
-    t,
-    m_rect,
-    tw = 0,
-    tw2 = 0,
-    i,
-    j,
-    k,
-    total,
-    j_total,
-    k_total,
-    index = 0;
-  const tg = [];
-  total = group.length;
-  for (i = 0; i < total; i++) {
-    g2 = group[i].split(' ');
+function breakWord(group: string[], scale: number, width: number) {
+  let tw: number = 0,
+    tw2: number = 0,
+    index: number = 0;
+  const tg: string[][] = [];
+  const total = group.length;
+  for (let i = 0; i < total; i++) {
+    let g2 = group[i].split(' ');
     tg[index] = [];
-    j_total = g2.length;
-    for (j = 0; j < j_total; j++) {
+    const j_total = g2.length;
+    for (let j = 0; j < j_total; j++) {
       tw2 = 0;
-      g3 = g2[j];
-      k_total = g3.length;
-      for (k = 0; k < k_total; k++) {
-        t = typo(g3[k]);
+      const g3 = g2[j];
+      const k_total = g3.length;
+      for (let k = 0; k < k_total; k++) {
+        const t = typo(g3[k]);
         m_rect = getRect(t, scale);
         tw2 += m_rect.w;
       }
-      t = typo(' ');
+      const t = typo(' ');
       m_rect = getRect(t, scale);
       tw2 += m_rect.w;
       tw += tw2;
@@ -70,9 +64,9 @@ function breakWord(group, scale, width) {
   }
 
   total = tg.length;
-  const textGroup = [];
-  for (i = 0; i < total; i++) {
-    t = tg[i].join(' ').split('');
+  const textGroup: string[][] = [];
+  for (let i = 0; i < total; i++) {
+    const t = tg[i].join(' ').split('');
     if (t.length > 0) {
       textGroup.push(t);
     }
@@ -81,7 +75,7 @@ function breakWord(group, scale, width) {
   return textGroup;
 }
 
-function breakAll(group, scale, width) {
+function breakAll(group: string[], scale: number, width: number) {
   let t,
     i,
     total,

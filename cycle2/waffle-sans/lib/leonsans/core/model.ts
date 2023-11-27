@@ -1,26 +1,38 @@
+import { typo } from '../font/index';
+import { getAlignGapX, setAlignGapX } from './align';
+import { getTextGroup } from './group';
+import { getGrid, getGuide } from './guide';
+import { getLengths } from './length';
+import { getPaths } from './paths';
 import {
-  getFontW,
-  getWeightRatio,
+  addRectToPaths,
+  getCenter,
   getCircleRound,
+  getFontRatio,
+  getFontW,
+  getLeading,
+  getLineW,
+  getLines,
+  getRange,
+  getRect,
   getScale,
   getTracking,
-  getLeading,
-  getFontRatio,
-  getLineW,
-  getRect,
-  getCenter,
-  getRange,
-  getLines,
-  addRectToPaths,
-} from './util.js';
-import { getGuide, getGrid } from './guide.js';
-import { getTextGroup } from './group.js';
-import { setAlignGapX, getAlignGapX } from './align.js';
-import { typo } from '../font/index.js';
-import { getLengths } from './length.js';
-import { getPaths } from './paths.js';
+  getWeightRatio,
+} from './util';
 
 export class Model {
+  lineWidth_: number;
+  drawing_: any[];
+  data_: ModelData[] | null;
+  paths_: any;
+  lines_: any;
+  rect_: Rect;
+  align_: Align;
+  scale_: number;
+  fontRatio_: number;
+  drawingPaths?: any;
+  wavePaths?: any;
+
   constructor() {
     this.lineWidth_ = 1;
     this.drawing_ = [];
@@ -85,7 +97,7 @@ export class Model {
     return this.align_;
   }
 
-  position(x, y) {
+  position(x: number, y: number) {
     if (this.rect_.x != x || this.rect_.y != y) {
       this.rect_.x = x;
       this.rect_.y = y;
@@ -116,7 +128,7 @@ export class Model {
     }
   }
 
-  updatePatternPaths(pathGap) {
+  updatePatternPaths(pathGap: number) {
     const total = this.data_.length;
     let i, d;
     for (i = 0; i < total; i++) {
@@ -125,7 +137,7 @@ export class Model {
     }
   }
 
-  updateWavePaths(pathGap) {
+  updateWavePaths(pathGap: number) {
     const total = this.data_.length;
     let i, d;
     for (i = 0; i < total; i++) {
@@ -144,7 +156,15 @@ export class Model {
     }
   }
 
-  update(text, width, breakWord, weight, size, tracking, leading) {
+  update(
+    text: string,
+    width: number,
+    breakWord: boolean,
+    weight: number,
+    size: number,
+    tracking: number,
+    leading: number,
+  ) {
     const fontW = getFontW(weight);
     const weightRatio = getWeightRatio(fontW);
     const circleRound = getCircleRound(fontW);
@@ -159,38 +179,28 @@ export class Model {
 
     const textGroup = getTextGroup(text, scale, width, breakWord);
 
-    let total = textGroup.length;
+    const total = textGroup.length;
     const total2 = total - 1;
-    let i,
-      j,
-      j_total,
-      j_total2,
-      gt,
-      t,
-      str,
-      m_rect,
-      s_pos,
-      tw = 0,
-      th = 0,
-      tx = 0,
-      ty = 0,
-      maxW = 0,
+    let maxW = 0,
       maxH = 0,
-      tmp = [];
-    for (i = 0; i < total; i++) {
-      gt = textGroup[i];
-      j_total = gt.length;
-      j_total2 = j_total - 1;
-      tw = 0;
-      tx = 0;
+      tmp: { tw: number; arr: ModelData[] }[] = [];
+
+    for (let i = 0; i < total; i++) {
+      const gt = textGroup[i];
+      const j_total = gt.length;
+      const j_total2 = j_total - 1;
+      let tw = 0;
+      let th = 0;
+      let tx = 0;
+      let ty = 0;
       tmp[i] = {
         tw: 0,
         arr: [],
       };
-      for (j = 0; j < j_total; j++) {
-        str = gt[j];
-        t = typo(str);
-        m_rect = getRect(t, scale);
+      for (let j = 0; j < j_total; j++) {
+        const str = gt[j];
+        const fontData = typo(str);
+        const m_rect = getRect(fontData, scale);
         tw += m_rect.w;
         th = m_rect.h;
         if (j < j_total2) {
@@ -201,18 +211,18 @@ export class Model {
         }
         m_rect.x = tx;
         m_rect.y = ty;
-        s_pos = {
+        let s_pos = {
           x: tx,
           y: ty,
         };
 
         tmp[i].arr[j] = {
           str: str,
-          typo: t,
+          typo: fontData,
           rect: m_rect,
           originPos: s_pos,
           center: getCenter(m_rect.w, m_rect.h, scale),
-          range: getRange(t, weightRatio, circleRound),
+          range: getRange(fontData, weightRatio, circleRound),
         };
 
         tx = tw;
@@ -227,7 +237,7 @@ export class Model {
     this.rect_.h = maxH;
 
     this.drawing_ = [];
-    const arr = [];
+    const arr: ModelData[] = [];
     let aGapX, drawing;
     for (const a of tmp) {
       aGapX = setAlignGapX(maxW, a.tw);
