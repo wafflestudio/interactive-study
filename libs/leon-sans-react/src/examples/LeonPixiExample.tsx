@@ -11,6 +11,9 @@ export default function LeonPixiExample() {
   const [text, setText] = useState('Leon Pixi');
   const dispatcher = usePixiDispatcher();
 
+  /**
+   * 글자 다시 쓰는 애니메이션
+   */
   const redraw = useCallback(() => {
     dispatcher.send(({ leon }) => {
       leon.updateDrawingPaths();
