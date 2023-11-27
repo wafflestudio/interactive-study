@@ -1,14 +1,13 @@
 import {
-  generateFontData,
   ROTATE_HORIZONTAL,
   ROTATE_VERTICAL,
   VERTEX_GAP,
   VERTEX_GAP2,
-  getR,
-  getCurveR,
-} from './util.js';
+} from './constants';
+import { RawPathData } from './types';
+import { generateFontData, getCurveR, getR } from './util.js';
 
-export const DATA_UA = [
+export const DATA_UA: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -79,7 +78,7 @@ export const DATA_UA = [
   },
 ];
 
-export const DATA_UC = [
+export const DATA_UC: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -100,7 +99,7 @@ export const DATA_UC = [
   },
 ];
 
-export const DATA_UD = [
+export const DATA_UD: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -168,7 +167,7 @@ export const DATA_UD = [
   },
 ];
 
-export const DATA_UE = [
+export const DATA_UE: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -239,7 +238,7 @@ export const DATA_UE = [
   },
 ];
 
-export const DATA_UG = [
+export const DATA_UG: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -301,7 +300,7 @@ export const DATA_UG = [
   },
 ];
 
-export const DATA_UH = [
+export const DATA_UH: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -376,7 +375,7 @@ export const DATA_UH = [
   },
 ];
 
-export const DATA_UI = [
+export const DATA_UI: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -403,7 +402,7 @@ export const DATA_UI = [
   },
 ];
 
-export const DATA_UJ = [
+export const DATA_UJ: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -452,7 +451,7 @@ export const DATA_UJ = [
   },
 ];
 
-export const DATA_UN = [
+export const DATA_UN: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -519,7 +518,7 @@ export const DATA_UN = [
   },
 ];
 
-export const DATA_UO = [
+export const DATA_UO: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -586,7 +585,7 @@ export const DATA_UO = [
   },
 ];
 
-export const DATA_US = [
+export const DATA_US: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -609,7 +608,7 @@ export const DATA_US = [
   },
 ];
 
-export const DATA_UU = [
+export const DATA_UU: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -667,7 +666,7 @@ export const DATA_UU = [
   },
 ];
 
-export const DATA_UY = [
+export const DATA_UY: RawPathData[] = [
   {
     d: -1,
     v: [

@@ -1,13 +1,8 @@
-import {
-  ROTATE_HORIZONTAL,
-  ROTATE_VERTICAL,
-  VERTEX_GAP2,
-  getR,
-  getCurveR,
-} from './util.js';
+import { ROTATE_HORIZONTAL, ROTATE_VERTICAL, VERTEX_GAP2 } from './constants';
+import { getCurveR, getR } from './util.js';
 
 //À
-export function getLatin1(x, y) {
+export function getLatin1(x: number, y: number) {
   const tx = x;
   const ty = -60 + y;
   return [
@@ -39,7 +34,7 @@ export function getLatin1(x, y) {
   ];
 }
 //Á
-export function getLatin2(x, y) {
+export function getLatin2(x: number, y: number) {
   const tx = x;
   const ty = -60 + y;
   return [
@@ -71,7 +66,7 @@ export function getLatin2(x, y) {
   ];
 }
 //Â
-export function getLatin3(x, y) {
+export function getLatin3(x: number, y: number) {
   const tx = -68 + x;
   const ty = 0 + y;
   return [
@@ -126,7 +121,7 @@ export function getLatin3(x, y) {
   ];
 }
 //Ã
-export function getLatin4(x, y) {
+export function getLatin4(x: number, y: number) {
   const tx = x - 76.24;
   const ty = y;
   return [
@@ -213,7 +208,7 @@ export function getLatin4(x, y) {
   ];
 }
 //Ä
-export function getLatin5(x, y) {
+export function getLatin5(x: number, y: number) {
   return [
     {
       d: 1,
@@ -246,7 +241,7 @@ export function getLatin5(x, y) {
   ];
 }
 //Ŭ
-export function getLatin6(x, y) {
+export function getLatin6(x: number, y: number) {
   const tx = x - 57;
   const ty = y;
   return [
@@ -258,6 +253,7 @@ export function getLatin6(x, y) {
           112.7 + tx,
           0.0 + ty,
           {
+            // @ts-ignore FIXME 기존 코드에서도 발생하던 에러임
             r: getCurveR(
               112.7 + tx,
               0.0 + ty + tx,
@@ -356,7 +352,7 @@ export function getLatin6(x, y) {
   ];
 }
 //Å
-export function getLatin7(x, y) {
+export function getLatin7(x: number, y: number) {
   const tx = 88 + x;
   const ty = -116 + y;
   const scale = 0.5;
@@ -428,7 +424,7 @@ export function getLatin7(x, y) {
   ];
 }
 //Ð
-export function getLatin8(x, y) {
+export function getLatin8(x: number, y: number) {
   return [
     {
       d: 1,
@@ -458,7 +454,7 @@ export function getLatin8(x, y) {
   ];
 }
 //Ç
-export function getLatin9(x, y) {
+export function getLatin9(x: number, y: number) {
   return [
     {
       d: -1,
@@ -491,7 +487,7 @@ export function getLatin9(x, y) {
   ];
 }
 //Ą
-export function getLatin10(x, y) {
+export function getLatin10(x: number, y: number) {
   return [
     {
       d: -1,
@@ -541,7 +537,7 @@ export function getLatin10(x, y) {
 }
 
 //Ċ
-export function getLatin11(x, y) {
+export function getLatin11(x: number, y: number) {
   return [
     {
       d: 1,
@@ -561,7 +557,7 @@ export function getLatin11(x, y) {
 }
 
 //Č
-export function getLatin12(x, y) {
+export function getLatin12(x: number, y: number) {
   const tx = -68 + x;
   const ty = y;
   return [
@@ -617,7 +613,7 @@ export function getLatin12(x, y) {
 }
 
 //ď
-export function getLatin13(x, y) {
+export function getLatin13(x: number, y: number) {
   return [
     {
       d: -1,
@@ -646,7 +642,7 @@ export function getLatin13(x, y) {
   ];
 }
 //Ē
-export function getLatin14(x, y) {
+export function getLatin14(x: number, y: number) {
   return [
     {
       d: 1,

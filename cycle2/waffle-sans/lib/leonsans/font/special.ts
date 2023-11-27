@@ -1,14 +1,13 @@
 import {
-  generateFontData,
   ROTATE_HORIZONTAL,
-  ROTATE_VERTICAL,
   ROTATE_NONE,
-  getR,
-  getCurveR,
+  ROTATE_VERTICAL,
   VERTEX_GAP2,
-} from './util.js';
+} from './constants';
+import { CloneableFontData } from './types';
+import { generateFontData, getCurveR, getR } from './util';
 
-export const SPECIAL = {
+export const SPECIAL: Record<string, CloneableFontData> = {
   ' ': generateFontData(336, 0, 0, 0, 0, 0, 0, [
     {
       d: 1,

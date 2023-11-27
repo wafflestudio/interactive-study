@@ -1,15 +1,14 @@
 import {
-  generateFontData,
   ROTATE_HORIZONTAL,
-  ROTATE_VERTICAL,
   ROTATE_NONE,
+  ROTATE_VERTICAL,
   VERTEX_GAP,
   VERTEX_GAP2,
-  getR,
-  getCurveR,
-} from './util.js';
+} from './constants';
+import { RawPathData } from './types';
+import { generateFontData, getCurveR, getR } from './util';
 
-export const DATA_LA = [
+export const DATA_LA: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -92,7 +91,7 @@ export const DATA_LA = [
   },
 ];
 
-export const DATA_LC = [
+export const DATA_LC: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -156,7 +155,7 @@ export const DATA_LC = [
   },
 ];
 
-export const DATA_LD = [
+export const DATA_LD: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -237,7 +236,7 @@ export const DATA_LD = [
   },
 ];
 
-export const DATA_LE = [
+export const DATA_LE: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -321,7 +320,7 @@ export const DATA_LE = [
   },
 ];
 
-export const DATA_LG = [
+export const DATA_LG: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -420,7 +419,7 @@ export const DATA_LG = [
   },
 ];
 
-export const DATA_LH = [
+export const DATA_LH: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -492,7 +491,7 @@ export const DATA_LH = [
   },
 ];
 
-export const DATA_LN = [
+export const DATA_LN: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -565,7 +564,7 @@ export const DATA_LN = [
   },
 ];
 
-export const DATA_LO = [
+export const DATA_LO: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -632,7 +631,7 @@ export const DATA_LO = [
   },
 ];
 
-export const DATA_LS = [
+export const DATA_LS: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -713,7 +712,7 @@ export const DATA_LS = [
   },
 ];
 
-export const DATA_LU = [
+export const DATA_LU: RawPathData[] = [
   {
     d: -1,
     v: [
@@ -785,7 +784,7 @@ export const DATA_LU = [
   },
 ];
 
-export const DATA_LY = [
+export const DATA_LY: RawPathData[] = [
   {
     d: -1,
     v: [

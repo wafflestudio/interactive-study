@@ -1,16 +1,19 @@
-import { Vector } from '../core/vector.js';
 import { bezierTangent } from '../core/paths.js';
+import { Vector } from '../core/vector';
+import { FONT_HEIGHT } from './constants';
+import { CloneableFontData, Path, PathData, RawPathData } from './types';
 
-export const ROTATE_HORIZONTAL = 180 * (Math.PI / 180);
-export const ROTATE_VERTICAL = 90 * (Math.PI / 180);
-export const ROTATE_NONE = -100;
-export const VERTEX_GAP = 3;
-export const VERTEX_GAP2 = VERTEX_GAP / 2;
-export const TOFU = 'tofu';
-const FONT_HEIGHT = 824;
-
-export function generateFontData(w, fw, fh, x1, x2, y1, y2, path) {
-  const arr = [];
+export function generateFontData(
+  w: number,
+  fw: number,
+  fh: number,
+  x1: number,
+  x2: number,
+  y1: number,
+  y2: number,
+  path: RawPathData[],
+): CloneableFontData {
+  const arr: PathData[] = [];
   const total = path.length;
   let i;
   for (i = 0; i < total; i++) {
@@ -62,16 +65,14 @@ export function generateFontData(w, fw, fh, x1, x2, y1, y2, path) {
   };
 }
 
-function setCenter(arr, fw, fh) {
+function setCenter(arr: Path[], fw: number, fh: number) {
   const total = arr.length;
   const cx = fw / 2;
   const cy = fh / 2;
-  let mp,
-    i,
-    ct = [];
+  let ct = [];
 
-  for (i = 0; i < total; i++) {
-    mp = arr[i];
+  for (let i = 0; i < total; i++) {
+    const mp: Path = arr[i];
     mp[1] -= cx;
     mp[2] -= cy;
     if (mp[0] == 'b') {
@@ -86,13 +87,23 @@ function setCenter(arr, fw, fh) {
   return ct;
 }
 
-export function getR(x1, y1, x2, y2) {
+export function getR(x1: number, y1: number, x2: number, y2: number) {
   const x = x1 - x2;
   const y = y1 - y2;
   return -Math.atan2(x, y);
 }
 
-export function getCurveR(x1, y1, x2, y2, x3, y3, x4, y4, t) {
+export function getCurveR(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  t: number,
+) {
   const x = bezierTangent(x1, x2, x3, x4, t);
   const y = bezierTangent(y1, y2, y3, y4, t);
   return -Math.atan2(x, y);

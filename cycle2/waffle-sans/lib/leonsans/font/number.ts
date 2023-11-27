@@ -1,12 +1,10 @@
 import {
-  generateFontData,
   ROTATE_HORIZONTAL,
-  ROTATE_VERTICAL,
   ROTATE_NONE,
+  ROTATE_VERTICAL,
   VERTEX_GAP,
-  getR,
-  getCurveR,
-} from './util.js';
+} from './constants';
+import { generateFontData, getCurveR, getR } from './util';
 
 export const NUMBER = {
   0: generateFontData(660, 270, 360, 0, 0, 0, 0, [

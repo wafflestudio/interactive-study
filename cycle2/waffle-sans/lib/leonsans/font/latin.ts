@@ -1,11 +1,4 @@
-import {
-  generateFontData,
-  ROTATE_HORIZONTAL,
-  ROTATE_VERTICAL,
-  ROTATE_NONE,
-  getR,
-  getCurveR,
-} from './util.js';
+import { ROTATE_HORIZONTAL, ROTATE_NONE, ROTATE_VERTICAL } from './constants';
 import {
   getLatin1,
   getLatin2,
@@ -21,7 +14,21 @@ import {
   getLatin12,
   getLatin13,
   getLatin14,
-} from './latinutil.js';
+} from './latinutil';
+import {
+  DATA_LA,
+  DATA_LC,
+  DATA_LD,
+  DATA_LE,
+  DATA_LG,
+  DATA_LH,
+  DATA_LN,
+  DATA_LO,
+  DATA_LS,
+  DATA_LU,
+  DATA_LY,
+} from './lower';
+import { RawPathData } from './types.js';
 import {
   DATA_UA,
   DATA_UC,
@@ -37,21 +44,9 @@ import {
   DATA_UU,
   DATA_UY,
 } from './upper.js';
-import {
-  DATA_LA,
-  DATA_LC,
-  DATA_LD,
-  DATA_LE,
-  DATA_LG,
-  DATA_LH,
-  DATA_LN,
-  DATA_LO,
-  DATA_LS,
-  DATA_LU,
-  DATA_LY,
-} from './lower.js';
+import { generateFontData, getCurveR, getR } from './util';
 
-const DATA_LI = [
+const DATA_LI: RawPathData[] = [
   {
     d: 1,
     v: [
@@ -76,7 +71,7 @@ const DATA_LI = [
   },
 ];
 
-const DATA_LJ = [
+const DATA_LJ: RawPathData[] = [
   {
     d: 1,
     v: [
