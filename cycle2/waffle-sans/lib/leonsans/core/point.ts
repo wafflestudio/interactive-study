@@ -1,9 +1,18 @@
-export function Point(mp) {
-  Object.assign(this, mp);
-}
+import { Vector } from './vector';
 
-Object.assign(Point.prototype, {
-  addRect: function (rect) {
+export class Point extends Vector {
+  rx?: number;
+  ry?: number;
+  sx?: number;
+  sy?: number;
+  radius?: number;
+
+  // @ts-ignore
+  constructor(mp: Vector) {
+    super(mp);
+  }
+
+  addRect(rect: any) {
     const vv = new Point(this);
     vv.x = this.x + rect.x;
     vv.y = this.y + rect.y;
@@ -15,7 +24,7 @@ Object.assign(Point.prototype, {
     vv.ry = this.ry + rect.y;
     vv.sx = this.sx + rect.x;
     vv.sy = this.sy + rect.y;
-    if (vv.radius < 0.5) vv.radius = 0.5;
+    if (vv.radius !== undefined && vv.radius < 0.5) vv.radius = 0.5;
     return vv;
-  },
-});
+  }
+}
