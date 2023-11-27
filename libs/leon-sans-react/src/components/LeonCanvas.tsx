@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import { useDispatcher } from '../hooks/useDispatcher';
 import LeonSans from '../leon-temp/leon';
 
 type Leon = any; // TODO: Leon 타입 확정하기
@@ -16,7 +17,7 @@ type LeonCanvasProps = {
   pixelRatio?: number;
   // animation
   dataRefs?: () => void;
-  dispatcher?: (data: { ctx: CanvasRenderingContext2D; leon: Leon }) => void;
+  dispatcher?: ReturnType<typeof useDispatcher>;
 };
 
 export default function LeonCanvas({
@@ -60,27 +61,27 @@ export default function LeonCanvas({
   }, [dataRefs, draw]);
 
   /**
-   * Initiate Canvas
+   * Initiate LeonCanvas
+   * canvasRef는 마운트 되었지만, dataRefs는 생성되지 않았을 때 한 번만 실행된다
    */
   useEffect(() => {
     // initiate
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
+    if (!canvasRef.current || dataRefs.current) return;
+    const canvas = canvasRef.current;
 
-      // create ctx and leon instance, and store them as state
+    // create ctx and leon instance, and store them as state
+    if (!dataRefs.current) {
+      const ctx = canvas.getContext('2d');
+      const leon = new LeonSans({ text, color: [color], size, weight });
       /**
        * ?Question: 어째서 ctx가 null일 수 있지?
        */
-      if (!dataRefs.current) {
-        const ctx = canvas.getContext('2d');
-        const leon = new LeonSans({ text, color: [color], size, weight });
-        if (ctx) {
-          ctx.scale(pixelRatio, pixelRatio);
-          dataRefs.current = { ctx, leon };
-          if (dispatcher) dispatcher(dataRefs.current);
-        }
-        requestAnimationFrame(animate);
+      if (ctx) {
+        ctx.scale(pixelRatio, pixelRatio);
+        dataRefs.current = { ctx, leon };
+        if (dispatcher) dispatcher(dataRefs.current);
       }
+      requestAnimationFrame(animate);
     }
   }, [canvasRef]);
 
@@ -90,7 +91,20 @@ export default function LeonCanvas({
   useEffect(() => {
     if (!dataRefs.current) return;
     dataRefs.current.leon.text = text;
-  }, [text]);
+    dataRefs.current.leon.color = [color];
+    dataRefs.current.leon.size = size;
+    dataRefs.current.leon.weight = weight;
+  }, [text, color, size, weight]);
+
+  /**
+   * Clenup on unmount
+   */
+  useEffect(
+    () => () => {
+      dataRefs.current = null;
+    },
+    [],
+  );
 
   return (
     <canvas

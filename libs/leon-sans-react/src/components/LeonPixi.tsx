@@ -68,42 +68,50 @@ export default function LeonPixi({
   }, [dataRefs, draw]);
 
   /**
-   * Init Renderer
+   * Initiate LeonPixi
+   * canvasRef는 마운트 되었지만, dataRefs는 생성되지 않았을 때 한 번만 실행된다
    */
   useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const renderer = new PIXI.Renderer({
-        width,
-        height,
-        resolution: pixelRatio,
-        antialias: true,
-        autoDensity: true,
-        powerPreference: 'high-performance',
-        view: canvas,
-        background: 0xffffff,
-      });
-      const leon = new LeonSans({
-        text,
-        color: [color],
-        size,
-        weight,
-      });
+    if (!canvasRef.current || dataRefs.current) return;
+    const canvas = canvasRef.current;
 
-      const stage = new PIXI.Container();
-      const graphics = new PIXI.Graphics();
-      stage.addChild(graphics);
-      if (dispatcher) dispatcher({ leon, canvas, renderer, stage, graphics });
+    // create leon
+    const leon = new LeonSans({
+      text,
+      color: [color],
+      size,
+      weight,
+    });
 
-      dataRefs.current = {
-        canvas: canvasRef.current,
-        leon,
-        renderer,
-        stage,
-        graphics,
-      };
-      requestAnimationFrame(animate);
-    }
+    // create pixi
+    const renderer = new PIXI.Renderer({
+      width,
+      height,
+      resolution: pixelRatio,
+      antialias: true,
+      autoDensity: true,
+      powerPreference: 'high-performance',
+      view: canvas,
+      background: 0xffffff,
+    });
+    const stage = new PIXI.Container();
+    const graphics = new PIXI.Graphics();
+    stage.addChild(graphics);
+
+    // initiate dispatcher if exists
+    if (dispatcher) dispatcher({ leon, canvas, renderer, stage, graphics });
+
+    // save dataRefs
+    dataRefs.current = {
+      canvas: canvasRef.current,
+      leon,
+      renderer,
+      stage,
+      graphics,
+    };
+
+    // start animation
+    requestAnimationFrame(animate);
   }, [canvasRef]);
 
   /**
@@ -112,7 +120,20 @@ export default function LeonPixi({
   useEffect(() => {
     if (!dataRefs.current) return;
     dataRefs.current.leon.text = text;
-  }, [dataRefs, text]);
+    dataRefs.current.leon.color = [color];
+    dataRefs.current.leon.size = size;
+    dataRefs.current.leon.weight = weight;
+  }, [dataRefs, text, color, size, weight]);
+
+  /**
+   * Clenup on unmount
+   */
+  useEffect(
+    () => () => {
+      dataRefs.current = null;
+    },
+    [],
+  );
 
   return <canvas ref={canvasRef} style={{ width, height }} />;
 }

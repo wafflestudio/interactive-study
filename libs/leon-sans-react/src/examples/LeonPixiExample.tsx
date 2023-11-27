@@ -33,12 +33,14 @@ export default function LeonPixiExample() {
 
   return (
     <div>
-      <LeonPixi
-        text={text}
-        width={canvasWidth}
-        height={canvasHeight}
-        dispatcher={dispatcher}
-      />
+      {text.length > 0 && (
+        <LeonPixi
+          text={text}
+          width={canvasWidth}
+          height={canvasHeight}
+          dispatcher={dispatcher}
+        />
+      )}
       <div>
         <input
           type="text"
