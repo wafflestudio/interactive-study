@@ -1,6 +1,6 @@
 import { generateFontData, getCurveR, getR } from './util';
 
-export const SPECIAL: Record<string, CloneableFontData> = {
+export const SPECIAL = {
   ' ': generateFontData(336, 0, 0, 0, 0, 0, 0, [
     {
       d: 1,

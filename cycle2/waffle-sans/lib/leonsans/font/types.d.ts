@@ -31,6 +31,7 @@ declare global {
   };
 
   type FontData = {
+    v?: string;
     rect: {
       w: number;
       h: number;

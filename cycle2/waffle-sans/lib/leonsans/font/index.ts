@@ -4,10 +4,10 @@ import { NUMBER } from './number';
 import { SPECIAL } from './special';
 import { UPPER } from './upper';
 
-const DATA = Object.assign({}, UPPER, LOWER, NUMBER, SPECIAL, LATIN);
+const DATA = { ...UPPER, ...LOWER, ...NUMBER, ...SPECIAL, ...LATIN };
 
 export function typo(v: string) {
-  const t = DATA[v] || DATA[TOFU];
+  const t = v in DATA ? DATA[v as keyof typeof DATA] : DATA[TOFU];
   const clone = t.clone();
   clone.v = v;
   return clone;
