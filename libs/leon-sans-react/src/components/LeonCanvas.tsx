@@ -101,6 +101,8 @@ export default function LeonCanvas({
    */
   useEffect(
     () => () => {
+      if (!dataRefs.current) return;
+      dataRefs.current.ctx.scale(1 / pixelRatio, 1 / pixelRatio);
       dataRefs.current = null;
     },
     [],
