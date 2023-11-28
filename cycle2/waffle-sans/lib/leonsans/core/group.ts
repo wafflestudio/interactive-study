@@ -1,12 +1,22 @@
 import { typo } from '../font/index.js';
 import { getRect } from './util.js';
 
+/**
+ * 먼저 전체 문자열(text)을 명시적인 줄바꿈 문자('\n')로 나누고, 크기(scale)과 너비(width)를
+ * 고려하여 추가적인 줄바꿈을 수행한 뒤, 각 줄의 문자열(string)을 문자(char) 배열로 변환한
+ * 배열을 반환합니다.
+ * @param text 전체 문자열
+ * @param scale 문자열의 크기
+ * @param width 줄바꿈의 기준이 되는 너비
+ * @param isBreakAll 단어 중간에서 줄바꿈을 허용할지 여부
+ * @returns 각 줄의 문자열(string)을 문자(char) 배열로 변환한 배열
+ */
 export function getTextGroup(
   text: string,
   scale: number,
   width: number,
   isBreakAll: boolean,
-) {
+): char[][] {
   let group: string[];
   if (text.indexOf('\n') > 0) {
     group = text.split('\n');
@@ -20,8 +30,14 @@ export function getTextGroup(
   else return breakWord(group, scale, width);
 }
 
-function keepAll(group: string[]) {
-  const textGroup: string[][] = [];
+/**
+ * 너비를 무시하고 명시적인 줄바꿈으로만 나누어진 문자열(string)을 문자(char) 배열로 변환한
+ * 배열을 반환합니다.
+ * @param group 명시적인 줄바꿈으로 쪼개진 문자열(string) 배열
+ * @returns 각 줄의 문자열(string)을 문자(char) 배열로 변환한 배열
+ */
+function keepAll(group: string[]): char[][] {
+  const textGroup: char[][] = [];
   const total = group.length;
   for (let i = 0; i < total; i++) {
     textGroup[i] = group[i].split('');
@@ -29,44 +45,54 @@ function keepAll(group: string[]) {
   return textGroup;
 }
 
-function breakWord(group: string[], scale: number, width: number) {
-  let tw: number = 0,
-    tw2: number = 0,
-    index: number = 0;
-  const tg: string[][] = [];
-  const total = group.length;
-  for (let i = 0; i < total; i++) {
-    let g2 = group[i].split(' ');
-    tg[index] = [];
-    const j_total = g2.length;
-    for (let j = 0; j < j_total; j++) {
-      tw2 = 0;
-      const g3 = g2[j];
-      const k_total = g3.length;
-      for (let k = 0; k < k_total; k++) {
-        const t = typo(g3[k]);
-        m_rect = getRect(t, scale);
-        tw2 += m_rect.w;
+/**
+ * 너비를 고려하되, 단어 중간에는 줄바꿈을 수행하지 않는 문자열(string)을 문자(char) 배열로
+ * 변환한 배열을 반환합니다.
+ * @param group 명시적인 줄바꿈으로 쪼개진 문자열(string) 배열
+ * @param scale 문자열의 크기
+ * @param width 줄바꿈의 기준이 되는 너비
+ * @returns
+ */
+function breakWord(group: string[], scale: number, width: number): char[][] {
+  let lineWidth: number = 0, // 현재 줄의 너비
+    wordWidth: number = 0, // 현재 단어의 너비
+    index: number = 0, // 실질적인 줄바꿈을 수행한 줄의 인덱스
+    fontRect: Rect,
+    fontData: FontData;
+  const groupWithImplicitLineBreak: string[][] = []; // 실질적인 줄바꿈으로 쪼개진 문자열(string)을 단어(string)의 배열로 변환한 배열
+  for (const line of group) {
+    let wordGroup = line.split(' '); // 각 줄을 단어 단위로 쪼갬
+    groupWithImplicitLineBreak[index] = []; // index 번째 줄의 문자들을 담을 배열
+    for (const word of wordGroup) {
+      wordWidth = 0;
+      for (const character of word) {
+        fontData = typo(character); // 문자를 FontData로 변환
+        fontRect = getRect(fontData, scale); // 문자의 크기를 계산 (여기서 x, y는 의미없는 값)
+        wordWidth += fontRect.w; // 문자의 너비를 누적
       }
-      const t = typo(' ');
-      m_rect = getRect(t, scale);
-      tw2 += m_rect.w;
-      tw += tw2;
-      if (tw > width) {
+      fontData = typo(' ');
+      fontRect = getRect(fontData, scale);
+      wordWidth += fontRect.w;
+      lineWidth += wordWidth;
+
+      // 현재 줄의 너비가 기준 너비를 초과하면 줄바꿈을 수행하고
+      // 현재 줄의 너비를 현재 단어의 너비로 초기화한 뒤,
+      // 현재 단어를 다음 줄의 첫 번째 단어로 추가
+      if (lineWidth > width) {
         index += 1;
-        tw = tw2;
-        tg[index] = [];
+        lineWidth = wordWidth;
+        groupWithImplicitLineBreak[index] = [];
       }
-      tg[index].push(g3);
+      groupWithImplicitLineBreak[index].push(word);
     }
     index += 1;
-    tw = 0;
+    lineWidth = 0;
   }
 
-  total = tg.length;
-  const textGroup: string[][] = [];
-  for (let i = 0; i < total; i++) {
-    const t = tg[i].join(' ').split('');
+  // 암시적인 줄바꿈이 추가된 문자열(string) 그룹룹 문자(char) 배열의 그룹으로 변환
+  const textGroup: char[][] = [];
+  for (const line of groupWithImplicitLineBreak) {
+    const t = line.join(' ').split('');
     if (t.length > 0) {
       textGroup.push(t);
     }
@@ -75,50 +101,43 @@ function breakWord(group: string[], scale: number, width: number) {
   return textGroup;
 }
 
-function breakAll(group: string[], scale: number, width: number) {
-  let t,
-    i,
-    total,
-    j,
-    j_total,
-    m_rect,
-    g2,
-    g3,
-    tw = 0,
-    index = 0,
-    tx = 0;
-  const tg = [];
+/**
+ * 너비를 고려하며, 단어 중간에서도 줄바꿈을 수행한 문자열(string)을 문자(char) 배열로 변환된
+ * 배열을 반환합니다.
+ * @param group 명시적인 줄바꿈으로 쪼개진 문자열(string) 배열
+ * @param scale 문자열 크기
+ * @param width 줄바꿈의 기준이 되는 너꿈
+ * @returns
+ */
+function breakAll(group: string[], scale: number, width: number): char[][] {
+  const textGroupWithoutTrimed: char[][] = [];
 
-  total = group.length;
-  for (i = 0; i < total; i++) {
-    g2 = group[i];
-    tw = 0;
-    tx = 0;
-    tg[index] = [];
-    j_total = g2.length;
-    for (j = 0; j < j_total; j++) {
-      g3 = g2[j];
-      t = typo(g3);
-      m_rect = getRect(t, scale);
-      tw += m_rect.w;
-      tg[index].push(g3);
-      if (tw >= width) {
+  for (const line of group) {
+    let lineWidth = 0;
+    let index = 0;
+    textGroupWithoutTrimed[index] = [];
+    for (const character of line) {
+      const fontData = typo(character);
+      const fontRect = getRect(fontData, scale);
+      lineWidth += fontRect.w;
+      textGroupWithoutTrimed[index].push(character);
+      if (lineWidth >= width) {
         index += 1;
-        tw = m_rect.w;
-        tg[index] = [];
+        lineWidth = fontRect.w;
+        textGroupWithoutTrimed[index] = [];
       }
     }
     index += 1;
   }
 
+  // 각 줄의 맨 처음, 맨 끝에 있는 공백을 하나씩만 제거하고
+  // 비어있는 줄은 제거
   const textGroup = [];
-  total = tg.length;
-  for (i = 0; i < total; i++) {
-    t = tg[i];
-    if (t.length > 0) {
-      if (t[0] == ' ') t.shift();
-      if (t[t.length - 1] == ' ') t.pop();
-      if (t.length > 0) textGroup.push(t);
+  for (const text of textGroupWithoutTrimed) {
+    if (text.length > 0) {
+      if (text[0] == ' ') text.shift();
+      if (text[text.length - 1] == ' ') text.pop();
+      if (text.length > 0) textGroup.push(text);
     }
   }
   return textGroup;
