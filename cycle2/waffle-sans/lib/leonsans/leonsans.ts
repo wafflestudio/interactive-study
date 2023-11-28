@@ -5,6 +5,8 @@
  *
  * @license Copyright (c) 2019, Jongmin Kim. All rights reserved.
  **/
+import { Graphics } from 'pixi.js';
+
 import { Dispatcher } from './core/dispatcher';
 import { Model } from './core/model';
 import { shuffle } from './core/util';
@@ -51,8 +53,8 @@ export default class LeonSans extends Dispatcher {
   fpsTime_: number;
   isPath_: boolean;
   isWave_: boolean;
-  model: Model | null;
-  str_: string | null;
+  model: Model;
+  str_: string;
   time_: number | null;
   isFps_: boolean;
   isForceRander_: boolean;
@@ -106,7 +108,7 @@ export default class LeonSans extends Dispatcher {
 
     this.model = new Model();
 
-    this.str_ = null;
+    this.str_ = '';
 
     this.time_ = null;
     this.isFps_ = false;
@@ -404,7 +406,7 @@ export default class LeonSans extends Dispatcher {
     this.isPath_ = false;
     this.isWave_ = false;
 
-    this.str_ = null;
+    this.str_ = '';
 
     this.time_ = null;
     this.isFps_ = false;
@@ -421,14 +423,14 @@ export default class LeonSans extends Dispatcher {
 
   dispose() {
     this.reset();
-    this.model = null;
+    this.model = new Model();
   }
 
   /**
    * Draw text in WebGL with PIXI.js
    * @param {PIXI.Graphics} graphics
    */
-  drawPixi(graphics) {
+  drawPixi(graphics: Graphics) {
     const total = this.model.data.length;
     let i, d, color;
     for (i = 0; i < total; i++) {
@@ -442,7 +444,7 @@ export default class LeonSans extends Dispatcher {
    * Draw text in the Canvas element.
    * @param {CanvasRenderingContext2D} ctx
    */
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = this.lineWidth;
     const total = this.model.data.length;
     let i, d;
@@ -457,7 +459,7 @@ export default class LeonSans extends Dispatcher {
    * Draw the colorful effect.
    * @param {CanvasRenderingContext2D} ctx
    */
-  drawColorful(ctx) {
+  drawColorful(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = this.lineWidth;
     Colorful(ctx, this.model, this.colorful_);
   }
@@ -467,7 +469,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @param {DOMHighResTimeStamp} t time stemp from requestAnimationFrame()
    */
-  wave(ctx, t) {
+  wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp) {
     ctx.lineWidth = this.lineWidth;
 
     if (t) {
@@ -504,7 +506,7 @@ export default class LeonSans extends Dispatcher {
    * @param {number} w pattern width
    * @param {number} h pattern height
    */
-  pattern(ctx, w, h) {
+  pattern(ctx: CanvasRenderingContext2D, w: number, h: number) {
     const tw = w * this.model.scale;
     const th = h * this.model.scale;
 
@@ -520,7 +522,7 @@ export default class LeonSans extends Dispatcher {
    * Draw grid for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  grid(ctx) {
+  grid(ctx: CanvasRenderingContext2D) {
     this.updateGuide();
 
     const total = this.model.data.length;
@@ -535,7 +537,7 @@ export default class LeonSans extends Dispatcher {
    * Draw circles at each drawing point and lines for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  point(ctx) {
+  point(ctx: CanvasRenderingContext2D) {
     const total = this.model.data.length;
     let i, d;
     for (i = 0; i < total; i++) {
@@ -549,7 +551,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @private
    */
-  box(ctx) {
+  box(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.strokeStyle = '#0b90dc';

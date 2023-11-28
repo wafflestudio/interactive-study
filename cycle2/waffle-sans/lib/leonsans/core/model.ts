@@ -23,7 +23,7 @@ import {
 export class Model {
   lineWidth_: number;
   drawing_: any[];
-  data_: ModelData[] | null;
+  data_: ModelData[];
   paths_: any;
   lines_: any;
   rect_: Rect;
@@ -36,7 +36,7 @@ export class Model {
   constructor() {
     this.lineWidth_ = 1;
     this.drawing_ = [];
-    this.data_ = null;
+    this.data_ = [];
     this.paths_ = null;
     this.lines_ = null;
     this.rect_ = {
@@ -295,7 +295,7 @@ export class Model {
   reset() {
     this.lineWidth_ = 1;
     this.drawing_ = [];
-    this.data_ = null;
+    this.data_ = [];
     this.paths_ = null;
     this.lines_ = null;
     this.rect_ = {

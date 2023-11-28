@@ -47,9 +47,9 @@ export function getFontRatio(weightRatio: number) {
   return (FR_2 - FR_1) * weightRatio + FR_1;
 }
 
-export function getRect(d: any, scale: number, x = 0, y = 0): Rect {
-  const w = d.rect.w * RECT_RATIO * scale;
-  const h = (d.rect.h + 220) * RECT_RATIO * scale;
+export function getRect(data: FontData, scale: number, x = 0, y = 0): Rect {
+  const w = data.rect.w * RECT_RATIO * scale;
+  const h = (data.rect.h + 220) * RECT_RATIO * scale;
   return {
     x: x,
     y: y,

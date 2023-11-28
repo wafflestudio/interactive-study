@@ -6,7 +6,7 @@ declare global {
   type ArcCommand = 'a';
   type BezierCommand = 'b';
 
-  type Command = MoveCommand | LineCommand | ArcCommand | BezierCommand;
+  type PathCommand = MoveCommand | LineCommand | ArcCommand | BezierCommand;
 
   type PathRatio = {
     x?: number;
@@ -18,7 +18,7 @@ declare global {
     v?: number; // 1 is vertex, it's only for the vertex shape like V, W, A
   };
 
-  type Path = [Command, ...number, PathRatio?];
+  type Path = [PathCommand, ...number, PathRatio?];
 
   type RawPathData = {
     d: 1 | -1;
