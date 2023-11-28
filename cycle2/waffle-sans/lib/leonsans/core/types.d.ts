@@ -65,3 +65,23 @@ declare type ModelData = {
   guide?: any;
   grid?: any;
 };
+
+declare type char = string;
+
+declare type LineData = {
+  type: PathCommand;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  x3?: number;
+  y3?: number;
+  x4?: number;
+  y4?: number;
+  distance: number;
+  radius: number;
+  rotation: number;
+  pat: number;
+  fix: number;
+  vt: number;
+};
