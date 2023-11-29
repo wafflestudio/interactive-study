@@ -2,13 +2,13 @@ import { Model } from './model';
 import { Vector } from './vector';
 
 /**
- * 주어진 모델 데이터의 path들의 길이들을 계산합다다.
+ * 주어진 모델 데이터의 각 path들에 포함된 라인들과
  *
  * @param data - The model data.
  * @param model - The model.
  * @returns An object containing the maximum length, an array of lines for each path, and an array of lengths for each path.
  */
-export function getLengths(data: ModelData, model: Model) {
+export function getLengths(data: ModelData, model: Model): LinesLengths {
   let c,
     linesArray = [],
     lengths = [],
@@ -21,7 +21,7 @@ export function getLengths(data: ModelData, model: Model) {
   }
   return {
     max,
-    lines: linesArray,
+    linesArray,
     lengths,
   };
 }

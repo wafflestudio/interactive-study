@@ -16,9 +16,11 @@ export function getGuide(d: FontData, scale: number): GuidePosition[] {
     gvy = ggap * i + 90;
     guide[i] = {
       x1: gvx * RECT_RATIO * scale,
-      x2: (d.rect.w - gvx * 2) * RECT_RATIO * scale,
+      x2: (d.rect.width - gvx * 2) * RECT_RATIO * scale,
       y1: gvy * RECT_RATIO * scale,
-      y2: (d.rect.h - gvy) * RECT_RATIO * scale - i * ggap * RECT_RATIO * scale,
+      y2:
+        (d.rect.height - gvy) * RECT_RATIO * scale -
+        i * ggap * RECT_RATIO * scale,
     };
   }
 

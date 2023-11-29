@@ -1,10 +1,23 @@
 import { bezierTangent } from '../core/paths.js';
 import { Vector } from '../core/vector';
 
+/**
+ * Generates font data based on the provided parameters.
+ *
+ * @param fontWidth The width of the font.
+ * @param contentWidth The width of the font's frame.
+ * @param contentHeight The height of the font's frame.
+ * @param x1 The x-coordinate of the starting point of the font's ratio.
+ * @param x2 The x-coordinate of the ending point of the font's ratio.
+ * @param y1 The y-coordinate of the starting point of the font's ratio.
+ * @param y2 The y-coordinate of the ending point of the font's ratio.
+ * @param path An array of raw path data.
+ * @returns The generated font data.
+ */
 export function generateFontData(
-  w: number,
-  fw: number,
-  fh: number,
+  fontWidth: number,
+  contentWidth: number,
+  contentHeight: number,
   x1: number,
   x2: number,
   y1: number,
@@ -17,16 +30,16 @@ export function generateFontData(
   for (i = 0; i < total; i++) {
     arr.push({
       d: path[i].d,
-      v: setCenter(path[i].v, fw, fh),
+      v: setCenter(path[i].v, contentWidth, contentHeight),
     });
   }
 
   return {
     rect: {
-      w: w,
-      h: FONT_HEIGHT,
-      fw: fw,
-      fh: fh,
+      width: fontWidth,
+      height: FONT_HEIGHT,
+      contentWidth,
+      contentHeight,
     },
     ratio: {
       x1: x1,
@@ -45,10 +58,10 @@ export function generateFontData(
       }
       const v = {
         rect: {
-          w: w,
-          h: FONT_HEIGHT,
-          fw: fw,
-          fh: fh,
+          width: fontWidth,
+          height: FONT_HEIGHT,
+          contentWidth,
+          contentHeight,
         },
         ratio: {
           x1: x1,
@@ -63,10 +76,10 @@ export function generateFontData(
   };
 }
 
-function setCenter(arr: Path[], fw: number, fh: number) {
+function setCenter(arr: Path[], contentWidth: number, contentHeight: number) {
   const total = arr.length;
-  const cx = fw / 2;
-  const cy = fh / 2;
+  const cx = contentWidth / 2;
+  const cy = contentHeight / 2;
   let ct = [];
 
   for (let i = 0; i < total; i++) {

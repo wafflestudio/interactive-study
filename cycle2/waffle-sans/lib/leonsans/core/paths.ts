@@ -18,9 +18,9 @@ export function getPaths(
   pathGap: number,
   isPattern: boolean,
 ) {
-  const lines = data.pointsLength!.lines;
+  const linesArray = data.pointsLength!.linesArray;
   const scale = model.scale;
-  let total = lines.length,
+  let total = linesArray.length,
     i,
     j_total,
     j,
@@ -32,7 +32,7 @@ export function getPaths(
     paths2 = [];
 
   for (i = 0; i < total; i++) {
-    line = lines[i];
+    line = linesArray[i];
     prevPoint = null;
     arr.push(getDotPos(line, pathGap, scale));
   }

@@ -33,10 +33,10 @@ declare global {
   type FontData = {
     v?: string;
     rect: {
-      w: number;
-      h: number;
-      fw: number;
-      fh: number;
+      width: number;
+      height: number;
+      contentWidth: number;
+      contentHeight: number;
     };
     ratio: {
       x1: number;
