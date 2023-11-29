@@ -18,4 +18,6 @@ export type PixiDataRefs = {
   leon: Leon;
   pixelRatio: number;
   isDraw: boolean;
+  particles?: PIXI.Sprite[];
+  particleContainer?: PIXI.ParticleContainer;
 };
