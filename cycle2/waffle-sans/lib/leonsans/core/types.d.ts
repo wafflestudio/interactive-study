@@ -31,36 +31,41 @@ declare type Rect = {
 declare type Align = 'center' | 'right' | 'left';
 
 declare type AlignGapX = {
-  c: number;
-  r: number;
-  l: number;
+  center: number;
+  right: number;
+  left: number;
 };
 
-declare type Line = {
-  type: string;
-  rotation: number;
-  pat: number;
-  fix: number;
-  vt: number;
+declare type CommonLineData = {
+  distance: number; // Length of the line
+  radius?: number;
+  rotation?: number;
+  hide?: 1 | 0;
+  fixed?: 1 | 0;
+  vertex?: 1 | 0;
 };
 
-declare type LineData = {
-  type: PathCommand;
+declare type SimpleLineData = CommonLineData & {
+  type: Exclude<PathCommand, typeof BEZIER_COMMAND>;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  x3?: number;
-  y3?: number;
-  x4?: number;
-  y4?: number;
-  distance: number;
-  radius: number;
-  rotation: number;
-  pat: number;
-  fix: number;
-  vt: number;
 };
+
+declare type BezierCurveData = CommonLineData & {
+  type: typeof BEZIER_COMMAND;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  x3: number;
+  y3: number;
+  x4: number;
+  y4: number;
+};
+
+declare type LineData = SimpleLineData | BezierCurveData;
 
 declare type LinesLengths = {
   max: number;
@@ -70,18 +75,21 @@ declare type LinesLengths = {
 
 declare type ModelData = {
   str: string;
-  typo: FontData;
+  typo: Typo;
   rect: Rect;
   originPos: Position;
   center: Position;
   range: RatioRange;
-  alignGapX?: AlignGapX;
+  alignGapX: AlignGapX;
   pointsLength?: LinesLengths;
   drawingPaths?: any;
   rawPaths?: any;
   rawWavePaths?: any;
-  guide?: any;
-  grid?: any;
+  paths?: any;
+  wavePaths?: any;
+  guide?: GuidePosition[];
+  grid?: number[];
+  drawing?: any;
 };
 
 declare type char = string;

@@ -1,18 +1,53 @@
 import { Vector } from './vector';
 
-export class Point extends Vector {
+type PointProps = {
+  type?: PathCommand;
+  x: number;
+  y: number;
+  x2?: number;
+  y2?: number;
+  x3?: number;
+  y3?: number;
   rx?: number;
   ry?: number;
   sx?: number;
   sy?: number;
+  ratio?: PathRatio;
   radius?: number;
+  rotation?: number;
+  hide?: number;
+  fixed?: number;
+  distance?: number;
+  vetex?: number;
+  start?: number;
+};
 
-  // @ts-ignore
-  constructor(mp: Vector) {
-    super(mp);
+export class Point {
+  type?: PathCommand;
+  x!: number;
+  y!: number;
+  x2?: number;
+  y2?: number;
+  x3?: number;
+  y3?: number;
+  rx?: number;
+  ry?: number;
+  sx?: number;
+  sy?: number;
+  ratio?: PathRatio;
+  radius?: number;
+  rotation?: number;
+  hide?: 1 | 0;
+  fixed?: 1 | 0;
+  distance?: number;
+  vetex?: number; // 1에 가까울 수록 vertex와 가까움. 1이면 vertex이고, Pattern에서 사용
+  start?: number;
+
+  constructor(mp: PointProps) {
+    Object.assign(this, mp as PointProps);
   }
 
-  addRect(rect: any) {
+  addRect(rect: any): Point {
     const vv = new Point(this);
     vv.x = this.x + rect.x;
     vv.y = this.y + rect.y;
@@ -24,7 +59,8 @@ export class Point extends Vector {
     vv.ry = this.ry + rect.y;
     vv.sx = this.sx + rect.x;
     vv.sy = this.sy + rect.y;
-    if (vv.radius !== undefined && vv.radius < 0.5) vv.radius = 0.5;
+    vv.radius = vv.radius ?? 0.5;
+    if (vv.radius < 0.5) vv.radius = 0.5;
     return vv;
   }
 }

@@ -2,88 +2,68 @@ import { Model } from './model';
 import { Point } from './point';
 import { getCurrent } from './util';
 
-let prevPoint = null;
+type Curve = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  x3: number;
+  y3: number;
+  x4: number;
+  y4: number;
+};
 
 /**
+ * TODO get a guide pos
  * @name getPaths
- * @property {Model} model - mode.js
- * @property {Object} data - data object
- * @property {Number} pathGap
- * @returns {Array} Returns paths array
- * @description get a guide pos
+ * @param model Model object
+ * @param data ModelData object
+ * @param pathGap gap between paths
+ * @param isPattern whether it's a pattern or not
+ * @returns Returns paths array
  */
 export function getPaths(
   model: Model,
   data: ModelData,
   pathGap: number,
   isPattern: boolean,
-) {
-  const linesArray = data.pointsLength!.linesArray;
-  const scale = model.scale;
-  let total = linesArray.length,
-    i,
-    j_total,
-    j,
-    line,
-    lg,
-    direction,
-    arr = [],
-    paths = [],
-    paths2 = [];
+): Point[][] {
+  return data
+    .pointsLength!.linesArray.map((lines) => {
+      return getDotPos(lines, pathGap, model.scale);
+    })
+    .reduce((pathsArray, lines, i) => {
+      const paths: Point[] = isPattern
+        ? lines.filter((line) => line.rotation != ROTATE_NONE && !line.hide)
+        : lines.filter((line) => line.rotation != ROTATE_NONE);
 
-  for (i = 0; i < total; i++) {
-    line = linesArray[i];
-    prevPoint = null;
-    arr.push(getDotPos(line, pathGap, scale));
-  }
-
-  total = arr.length;
-  for (i = 0; i < total; i++) {
-    lg = arr[i];
-    j_total = lg.length;
-
-    paths2 = [];
-    for (j = 0; j < j_total; j++) {
-      line = lg[j];
-      if (line.rotation != ROTATE_NONE) {
-        if (isPattern) {
-          // If the 'p' value of the font data is 1, it's not included in the pattern paths.
-          if (!line.pat) {
-            paths2.push(line);
-          }
-        } else {
-          paths2.push(line);
-        }
+      const direction = data.typo.p[i].d;
+      if (direction == 1) {
+        paths.reverse();
       }
-    }
-    direction = data.typo.p[i].d;
-    if (direction == 1) {
-      paths2.reverse();
-    }
 
-    if (paths2.length > 0) {
-      paths2[0].start = 1;
-      Array.prototype.push.apply(paths, paths2);
-    }
-  }
-
-  return paths;
+      if (paths.length > 0) {
+        paths[0].start = 1;
+        pathsArray.push(paths);
+      }
+      return pathsArray;
+    }, [] as Point[][]);
 }
 
-function getDotPos(lines, pathGap, scale) {
-  const total = lines.length;
-  let i, j, j_total;
-  let line;
-  let curPoint;
-  let num, pp;
-  let arr = [];
-  let isFirst = 1;
-  let pgap = 1;
-  if (pathGap > -1) pgap = getCurrent(pathGap, 1, 0, 80, 10) * scale;
+/**
+ * TODO
+ * @param lines
+ * @param pathGap
+ * @param scale
+ * @returns
+ */
+function getDotPos(lines: LineData[], pathGap: number, scale: number): Point[] {
+  const arr: Point[] = [];
+  const pgap = pathGap > -1 ? getCurrent(pathGap, 1, 0, 80, 10) * scale : 1;
+  let isFirst = true;
 
-  for (i = 0; i < total; i++) {
-    line = lines[i];
-
+  lines.reduce<Point | null>((prevPoint, line) => {
+    let curPoint: Point | null = null;
     if (line.type == 'a') {
       arr.push(
         new Point({
@@ -91,8 +71,8 @@ function getDotPos(lines, pathGap, scale) {
           y: line.y1,
           rotation: 0,
           type: 'a',
-          pat: line.pat,
-          fix: line.fix,
+          hide: line.hide,
+          fixed: line.fixed,
           radius: line.radius,
         }),
       );
@@ -103,86 +83,107 @@ function getDotPos(lines, pathGap, scale) {
         y: line.y1,
         rotation: line.rotation,
         type: line.type,
-        pat: line.pat,
-        fix: line.fix,
+        hide: line.hide,
+        fixed: line.fixed,
       });
-      pp = setPointValues(curPoint, prevPoint, line, 1);
-      if (pp != null) {
+      curPoint = setPointValues(curPoint, prevPoint, line, 1);
+      if (curPoint != null) {
         if (isFirst) {
-          pp.type = 'm';
-          isFirst = 0;
+          curPoint.type = 'm';
+          isFirst = false;
         }
-        arr.push(pp);
+        arr.push(curPoint);
       }
-      prevPoint = new Point(curPoint); //Object.assign({}, curPoint)
     } else {
-      j_total = Math.ceil(line.distance / pgap);
+      let numOfPoints = Math.ceil(line.distance / pgap);
 
-      if (j_total < 3) j_total = 3;
-      if (line.vt) j_total = 2;
+      if (line.vertex) numOfPoints = 2;
+      else if (numOfPoints < 3) numOfPoints = 3;
 
-      for (j = 1; j < j_total; j++) {
-        num = j / (j_total - 1);
+      for (let j = 1; j < numOfPoints; j++) {
+        const vertexScore = j / (numOfPoints - 1);
         if (line.type == 'b') {
-          curPoint = getCubicBezierXYatT(line, num);
+          curPoint = getCubicBezierXYatT(line, vertexScore);
         } else {
           curPoint = new Point({
-            x: line.x1 + (line.x2 - line.x1) * num,
-            y: line.y1 + (line.y2 - line.y1) * num,
+            x: line.x1 + (line.x2 - line.x1) * vertexScore,
+            y: line.y1 + (line.y2 - line.y1) * vertexScore,
             type: line.type,
           });
         }
 
-        if (line.rotation != 0 && num == 1) curPoint.rotation = line.rotation;
+        if (line.rotation != 0 && vertexScore == 1)
+          curPoint.rotation = line.rotation;
 
-        if (line.pat && num == 1) curPoint.pat = line.pat;
+        if (line.hide && vertexScore == 1) curPoint.hide = line.hide;
 
-        if (line.fix && num == 1) curPoint.fix = line.fix;
+        if (line.fixed && vertexScore == 1) curPoint.fixed = line.fixed;
 
-        if (j_total > 0) {
-          pp = setPointValues(curPoint, prevPoint, line, num);
-          if (pp != null) {
+        if (numOfPoints > 0) {
+          curPoint = setPointValues(
+            curPoint,
+            prevPoint,
+            line,
+            vertexScore === 1 ? 1 : 0,
+          );
+          if (curPoint != null) {
             if (isFirst) {
-              pp.type = 'm';
-              isFirst = 0;
+              curPoint.type = 'm';
+              isFirst = false;
             }
-            arr.push(pp);
+            arr.push(curPoint);
           }
         }
-        prevPoint = new Point(curPoint); //Object.assign({}, curPoint)
       }
     }
-  }
+    return curPoint;
+  }, null);
+
   return arr;
 }
 
-function setPointValues(cur, prev, line, num) {
-  cur.type = line.type;
-  cur.distance = line.distance;
-  cur.num = num;
+/**
+ * Set the distance, rotation, and type of the point.
+ * @param cur current point
+ * @param prev previous point
+ * @param line line data
+ * @param vertex if the point is a vertex, the value is 1
+ * @returns current point {@link cur} or null if the point is not a vertex
+ */
+function setPointValues(
+  cur: Point,
+  prev: Point | null,
+  line: LineData,
+  vertex: 1 | 0,
+): Point | null {
+  const pp = new Point(cur);
+  pp.type = line.type;
+  pp.distance = line.distance;
+  pp.vetex = vertex;
 
-  if (!prev || cur.rotation != null) {
-    cur.rotation = cur.rotation;
-  } else {
-    const dx = cur.x - prev.x;
-    const dy = cur.y - prev.y;
-    const rad = Math.atan2(dx, dy);
-    cur.rotation = -rad;
+  if (prev && pp.rotation === null) {
+    const dx = pp.x - prev.x;
+    const dy = pp.y - prev.y;
+    pp.rotation = -Math.atan2(dx, dy); // prev -> cur 로의 기울기
   }
 
-  if (cur.rotation == ROTATE_NONE) {
+  if (pp.rotation == ROTATE_NONE) {
     return null;
   } else {
-    return cur;
+    return pp;
   }
 }
 
-function getCubicBezierXYatT(line, t) {
-  const x = CubicN(line.x1, line.x2, line.x3, line.x4, t);
-  const y = CubicN(line.y1, line.y2, line.y3, line.y4, t);
-  const tx = bezierTangent(line.x1, line.x2, line.x3, line.x4, t);
-  const ty = bezierTangent(line.y1, line.y2, line.y3, line.y4, t);
-  const rotation = -Math.atan2(tx, ty);
+/**
+ * Calculate the position and rotation of the bezier curve at interval {@link t}
+ * @param curve bezier curve
+ * @param t an interval between 0 and 1
+ * @returns
+ */
+function getCubicBezierXYatT(curve: Curve, t: number) {
+  const x = partialBezier(curve.x1, curve.x2, curve.x3, curve.x4, t);
+  const y = partialBezier(curve.y1, curve.y2, curve.y3, curve.y4, t);
+  const rotation = getCubicBezierTangent(curve, t);
 
   return new Point({
     x: x,
@@ -191,24 +192,68 @@ function getCubicBezierXYatT(line, t) {
   });
 }
 
-function CubicN(a, b, c, d, t) {
+/**
+ * Calculate the position on the bezier curve at interval {@link t}
+ * @param s start point of the curve
+ * @param c1 first control point
+ * @param c2 second control point
+ * @param e end point of the curve
+ * @param t an interval between 0 and 1
+ * @returns
+ */
+function partialBezier(
+  s: number,
+  c1: number,
+  c2: number,
+  e: number,
+  t: number,
+) {
   const t2 = t * t;
   const t3 = t2 * t;
   return (
-    a +
-    (-a * 3 + t * (3 * a - a * t)) * t +
-    (3 * b + t * (-6 * b + b * 3 * t)) * t +
-    (c * 3 - c * 3 * t) * t2 +
-    d * t3
+    s +
+    (-s * 3 + t * (3 * s - s * t)) * t +
+    (3 * c1 + t * (-6 * c1 + c1 * 3 * t)) * t +
+    (c2 * 3 - c2 * 3 * t) * t2 +
+    e * t3
   );
 }
 
-//http://qaru.site/questions/10657973/quadratic-curve-with-rope-pattern
-//https://stackoverflow.com/questions/32322966/quadratic-curve-with-rope-pattern
-export function bezierTangent(a, b, c, d, t) {
+/**
+ * Calculate the tangent of the bezier curve at interval {@link t}
+ * @param curve bezier curve
+ * @param t an interval between 0 and 1
+ * @returns
+ */
+export function getCubicBezierTangent(curve: Curve, t: number) {
+  const dx_dt = partialBezierTangent(curve.x1, curve.x2, curve.x3, curve.x4, t);
+  const dy_dt = partialBezierTangent(curve.y1, curve.y2, curve.y3, curve.y4, t);
+  return -Math.atan2(dx_dt, dy_dt);
+}
+
+/**
+ * Partial differential of bezier curve at interval {@link t}
+ * It is used to calculate the rotation of the bezier curve.
+ * https://stackoverflow.com/questions/32322966/quadratic-curve-with-rope-pattern
+ * https://math.stackexchange.com/questions/2417451/tangent-to-a-bezier-cubic-curve
+ * @param s start point of the curve
+ * @param c1 first control point
+ * @param c2 second control point
+ * @param e end point of the curve
+ * @param t an interval between 0 and 1
+ * @returns
+ */
+export function partialBezierTangent(
+  s: number,
+  c1: number,
+  c2: number,
+  e: number,
+  t: number,
+) {
+  const t2 = t * t;
   return (
-    3 * t * t * (-a + 3 * b - 3 * c + d) +
-    6 * t * (a - 2 * b + c) +
-    3 * (-a + b)
+    3 * t2 * (-s + 3 * c1 - 3 * c2 + e) +
+    6 * t * (s - 2 * c1 + c2) +
+    3 * (-s + c1)
   );
 }

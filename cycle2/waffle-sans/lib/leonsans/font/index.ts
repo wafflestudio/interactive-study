@@ -4,11 +4,23 @@ import { NUMBER } from './number';
 import { SPECIAL } from './special';
 import { UPPER } from './upper';
 
-const DATA = { ...UPPER, ...LOWER, ...NUMBER, ...SPECIAL, ...LATIN };
+const TYPO_DATA: Record<char, CloneableTypo> = {
+  ...UPPER,
+  ...LOWER,
+  ...NUMBER,
+  ...SPECIAL,
+  ...LATIN,
+};
 
-export function typo(v: string) {
-  const t = v in DATA ? DATA[v as keyof typeof DATA] : DATA[TOFU];
-  const clone = t.clone();
-  clone.v = v;
-  return clone;
+/**
+ * 문자(길이가 1인 string)를 받아 해당 문자에 맞는 Typo 객체를 반환합니다.
+ * 적절한 객체가 없을 경우, 폴백으로 Tofu 객체를 반환합니다.
+ * @param character 변환하고 싶은 문자
+ * @returns 문자로 부터 변환된 객체
+ */
+export function getTypo(character: char): Typo {
+  const originalFont = TYPO_DATA[character] ?? TYPO_DATA[TOFU];
+  const clonedFont = originalFont.clone();
+  clonedFont.character = character;
+  return clonedFont;
 }

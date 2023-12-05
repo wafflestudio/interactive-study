@@ -1,4 +1,4 @@
-import { generateFontData, getCurveR, getR } from './util';
+import { generateFontData, getCurveR, getRotation } from './util';
 
 export const NUMBER = {
   0: generateFontData(660, 270, 360, 0, 0, 0, 0, [
@@ -11,7 +11,7 @@ export const NUMBER = {
           180,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -78,7 +78,7 @@ export const NUMBER = {
           {
             x: -2,
             y: 2,
-            r: getR(0, 51, 76 - VERTEX_GAP, 0),
+            r: getRotation(0, 51, 76 - VERTEX_GAP, 0),
           },
         ],
         [
@@ -87,7 +87,7 @@ export const NUMBER = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -147,7 +147,7 @@ export const NUMBER = {
           356 - VERTEX_GAP,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -250,7 +250,7 @@ export const NUMBER = {
           180,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -319,7 +319,7 @@ export const NUMBER = {
           0,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             v: 1,
           },
         ],
@@ -329,7 +329,7 @@ export const NUMBER = {
           276 - VERTEX_GAP,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -428,7 +428,7 @@ export const NUMBER = {
           176.4,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             v: 1,
           },
         ],
@@ -462,7 +462,7 @@ export const NUMBER = {
           272.3,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -583,7 +583,7 @@ export const NUMBER = {
           180,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -681,7 +681,7 @@ export const NUMBER = {
           180,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -698,7 +698,7 @@ export const NUMBER = {
           88,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],

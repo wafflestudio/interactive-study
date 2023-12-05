@@ -1,6 +1,6 @@
-import { generateFontData, getCurveR, getR } from './util.js';
+import { generateFontData, getCurveR, getRotation } from './util.js';
 
-export const DATA_UA: RawPathData[] = [
+export const DATA_UA: TypoData[] = [
   {
     d: -1,
     v: [
@@ -11,24 +11,24 @@ export const DATA_UA: RawPathData[] = [
         {
           x: 0.55,
           y: 0.3,
-          r: getR(0, 352, 145 - VERTEX_GAP2, 0),
+          r: getRotation(0, 352, 145 - HALF_VERTEX_GAP, 0),
         },
       ],
       [
         'l',
-        145 - VERTEX_GAP2,
+        145 - HALF_VERTEX_GAP,
         0,
         {
-          r: getR(0, 352, 145 - VERTEX_GAP2, 0),
+          r: getRotation(0, 352, 145 - HALF_VERTEX_GAP, 0),
           f: 1,
         },
       ],
       [
         'l',
-        145 + VERTEX_GAP2,
+        145 + HALF_VERTEX_GAP,
         0,
         {
-          r: getR(290, 352, 145 + VERTEX_GAP2, 0),
+          r: getRotation(290, 352, 145 + HALF_VERTEX_GAP, 0),
           f: 1,
           v: 1,
         },
@@ -54,7 +54,7 @@ export const DATA_UA: RawPathData[] = [
         237,
         {
           r: ROTATE_VERTICAL,
-          p: 1,
+          h: 1,
         },
       ],
       [
@@ -63,7 +63,7 @@ export const DATA_UA: RawPathData[] = [
         237,
         {
           r: ROTATE_VERTICAL,
-          p: 1,
+          h: 1,
           f: 1,
         },
       ],
@@ -71,7 +71,7 @@ export const DATA_UA: RawPathData[] = [
   },
 ];
 
-export const DATA_UC: RawPathData[] = [
+export const DATA_UC: TypoData[] = [
   {
     d: 1,
     v: [
@@ -92,7 +92,7 @@ export const DATA_UC: RawPathData[] = [
   },
 ];
 
-export const DATA_UD: RawPathData[] = [
+export const DATA_UD: TypoData[] = [
   {
     d: -1,
     v: [
@@ -160,7 +160,7 @@ export const DATA_UD: RawPathData[] = [
   },
 ];
 
-export const DATA_UE: RawPathData[] = [
+export const DATA_UE: TypoData[] = [
   {
     d: -1,
     v: [
@@ -213,7 +213,7 @@ export const DATA_UE: RawPathData[] = [
         164,
         {
           r: ROTATE_VERTICAL,
-          p: 1,
+          h: 1,
           x: 0.5,
         },
       ],
@@ -231,7 +231,7 @@ export const DATA_UE: RawPathData[] = [
   },
 ];
 
-export const DATA_UG: RawPathData[] = [
+export const DATA_UG: TypoData[] = [
   {
     d: 1,
     v: [
@@ -293,7 +293,7 @@ export const DATA_UG: RawPathData[] = [
   },
 ];
 
-export const DATA_UH: RawPathData[] = [
+export const DATA_UH: TypoData[] = [
   {
     d: -1,
     v: [
@@ -351,7 +351,7 @@ export const DATA_UH: RawPathData[] = [
         164,
         {
           r: ROTATE_VERTICAL,
-          p: 1,
+          h: 1,
         },
       ],
       [
@@ -361,14 +361,14 @@ export const DATA_UH: RawPathData[] = [
         {
           r: ROTATE_VERTICAL,
           f: 1,
-          p: 1,
+          h: 1,
         },
       ],
     ],
   },
 ];
 
-export const DATA_UI: RawPathData[] = [
+export const DATA_UI: TypoData[] = [
   {
     d: 1,
     v: [
@@ -395,7 +395,7 @@ export const DATA_UI: RawPathData[] = [
   },
 ];
 
-export const DATA_UJ: RawPathData[] = [
+export const DATA_UJ: TypoData[] = [
   {
     d: 1,
     v: [
@@ -444,7 +444,7 @@ export const DATA_UJ: RawPathData[] = [
   },
 ];
 
-export const DATA_UN: RawPathData[] = [
+export const DATA_UN: TypoData[] = [
   {
     d: -1,
     v: [
@@ -472,7 +472,7 @@ export const DATA_UN: RawPathData[] = [
         0,
         {
           r: ROTATE_HORIZONTAL,
-          p: 1,
+          h: 1,
           f: 1,
           v: 1,
         },
@@ -483,7 +483,7 @@ export const DATA_UN: RawPathData[] = [
         351,
         {
           r: ROTATE_HORIZONTAL,
-          p: 1,
+          h: 1,
           f: 1,
         },
       ],
@@ -511,7 +511,7 @@ export const DATA_UN: RawPathData[] = [
   },
 ];
 
-export const DATA_UO: RawPathData[] = [
+export const DATA_UO: TypoData[] = [
   {
     d: 1,
     v: [
@@ -521,7 +521,7 @@ export const DATA_UO: RawPathData[] = [
         180,
         {
           r: ROTATE_HORIZONTAL,
-          p: 1,
+          h: 1,
           f: 1,
         },
       ],
@@ -578,7 +578,7 @@ export const DATA_UO: RawPathData[] = [
   },
 ];
 
-export const DATA_US: RawPathData[] = [
+export const DATA_US: TypoData[] = [
   {
     d: 1,
     v: [
@@ -601,7 +601,7 @@ export const DATA_US: RawPathData[] = [
   },
 ];
 
-export const DATA_UU: RawPathData[] = [
+export const DATA_UU: TypoData[] = [
   {
     d: 1,
     v: [
@@ -659,7 +659,7 @@ export const DATA_UU: RawPathData[] = [
   },
 ];
 
-export const DATA_UY: RawPathData[] = [
+export const DATA_UY: TypoData[] = [
   {
     d: -1,
     v: [
@@ -670,7 +670,7 @@ export const DATA_UY: RawPathData[] = [
         {
           x: 0.6,
           y: 0.3,
-          r: getR(0, 0, 135, 186),
+          r: getRotation(0, 0, 135, 186),
         },
       ],
       [
@@ -703,7 +703,7 @@ export const DATA_UY: RawPathData[] = [
         186,
         {
           r: ROTATE_HORIZONTAL,
-          p: 1,
+          h: 1,
         },
       ],
       [
@@ -740,7 +740,7 @@ export const UPPER = {
           164,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -749,7 +749,7 @@ export const UPPER = {
           164,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -904,7 +904,7 @@ export const UPPER = {
           164,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             x: 0.5,
           },
         ],
@@ -996,25 +996,25 @@ export const UPPER = {
           {
             x: 0.7,
             y: 0.7,
-            r: getR(212, 0, 0, 164 - VERTEX_GAP2),
+            r: getRotation(212, 0, 0, 164 - HALF_VERTEX_GAP),
           },
         ],
         [
           'l',
           0,
-          164 - VERTEX_GAP2,
+          164 - HALF_VERTEX_GAP,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
           'l',
           0,
-          164 + VERTEX_GAP2,
+          164 + HALF_VERTEX_GAP,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             v: 1,
           },
         ],
@@ -1091,26 +1091,31 @@ export const UPPER = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
             v: 1,
           },
         ],
         [
           'l',
-          165 - VERTEX_GAP2,
+          165 - HALF_VERTEX_GAP,
           330,
           {
-            r: getR(165 - VERTEX_GAP2, 330, 165 - VERTEX_GAP2, 330),
+            r: getRotation(
+              165 - HALF_VERTEX_GAP,
+              330,
+              165 - HALF_VERTEX_GAP,
+              330,
+            ),
             f: 1,
           },
         ],
         [
           'l',
-          165 + VERTEX_GAP2,
+          165 + HALF_VERTEX_GAP,
           330,
           {
-            r: getR(165 + VERTEX_GAP2, 330, 330 - VERTEX_GAP, 0),
+            r: getRotation(165 + HALF_VERTEX_GAP, 330, 330 - VERTEX_GAP, 0),
             f: 1,
             v: 1,
           },
@@ -1121,7 +1126,7 @@ export const UPPER = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -1227,7 +1232,7 @@ export const UPPER = {
           186,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
       ],
@@ -1243,7 +1248,7 @@ export const UPPER = {
           180,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -1309,7 +1314,7 @@ export const UPPER = {
           {
             x: 0.5,
             y: 0.5,
-            r: getR(222, 222, 360, 360),
+            r: getRotation(222, 222, 360, 360),
           },
         ],
         [
@@ -1335,7 +1340,7 @@ export const UPPER = {
           186,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -1398,8 +1403,8 @@ export const UPPER = {
           139,
           186,
           {
-            p: 1,
-            r: getR(139, 186, 232, 352),
+            h: 1,
+            r: getRotation(139, 186, 232, 352),
           },
         ],
         [
@@ -1459,7 +1464,7 @@ export const UPPER = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -1496,24 +1501,24 @@ export const UPPER = {
           {
             x: 0.6,
             y: 0.1,
-            r: getR(0, 0, 135 - VERTEX_GAP2, 352),
+            r: getRotation(0, 0, 135 - HALF_VERTEX_GAP, 352),
           },
         ],
         [
           'l',
-          135 - VERTEX_GAP2,
+          135 - HALF_VERTEX_GAP,
           352,
           {
-            r: getR(0, 0, 135 - VERTEX_GAP2, 352),
+            r: getRotation(0, 0, 135 - HALF_VERTEX_GAP, 352),
             f: 1,
           },
         ],
         [
           'l',
-          135 + VERTEX_GAP2,
+          135 + HALF_VERTEX_GAP,
           352,
           {
-            r: getR(135 + VERTEX_GAP2, 352, 270, 0),
+            r: getRotation(135 + HALF_VERTEX_GAP, 352, 270, 0),
             f: 1,
             v: 1,
           },
@@ -1542,62 +1547,72 @@ export const UPPER = {
           {
             x: 0.6,
             y: 0.05,
-            r: getR(0, 0, 86 - VERTEX_GAP2, 352),
+            r: getRotation(0, 0, 86 - HALF_VERTEX_GAP, 352),
           },
         ],
         [
           'l',
-          86 - VERTEX_GAP2,
+          86 - HALF_VERTEX_GAP,
           352,
           {
-            r: getR(0, 0, 86 - VERTEX_GAP2, 352),
+            r: getRotation(0, 0, 86 - HALF_VERTEX_GAP, 352),
             f: 1,
           },
         ],
         [
           'l',
-          86 + VERTEX_GAP2,
+          86 + HALF_VERTEX_GAP,
           352,
           {
-            r: getR(86 + VERTEX_GAP2, 352, 195 - VERTEX_GAP2, 0),
+            r: getRotation(86 + HALF_VERTEX_GAP, 352, 195 - HALF_VERTEX_GAP, 0),
             f: 1,
             v: 1,
           },
         ],
         [
           'l',
-          195 - VERTEX_GAP2,
+          195 - HALF_VERTEX_GAP,
           0,
           {
-            r: getR(86 + VERTEX_GAP2, 352, 195 - VERTEX_GAP2, 0),
+            r: getRotation(86 + HALF_VERTEX_GAP, 352, 195 - HALF_VERTEX_GAP, 0),
             f: 1,
           },
         ],
         [
           'l',
-          195 + VERTEX_GAP2,
+          195 + HALF_VERTEX_GAP,
           0,
           {
-            r: getR(195 + VERTEX_GAP2, 0, 304 - VERTEX_GAP2, 352),
+            r: getRotation(
+              195 + HALF_VERTEX_GAP,
+              0,
+              304 - HALF_VERTEX_GAP,
+              352,
+            ),
             f: 1,
             v: 1,
           },
         ],
         [
           'l',
-          304 - VERTEX_GAP2,
+          304 - HALF_VERTEX_GAP,
           352,
           {
-            r: getR(195 + VERTEX_GAP2, 0, 304 - VERTEX_GAP2, 352),
+            r: getRotation(
+              195 + HALF_VERTEX_GAP,
+              0,
+              304 - HALF_VERTEX_GAP,
+              352,
+            ),
             f: 1,
           },
         ],
         [
           'l',
-          304 + VERTEX_GAP2,
+          304 + HALF_VERTEX_GAP,
           352,
           {
-            r: getR(304 + VERTEX_GAP2, 352, 390, 0),
+            r: getRotation(304 + HALF_VERTEX_GAP, 352, 390, 0),
             f: 1,
             v: 1,
           },
@@ -1626,7 +1641,7 @@ export const UPPER = {
           {
             x: 0.5,
             y: 0.3,
-            r: getR(10, 0, 270, 352),
+            r: getRotation(10, 0, 270, 352),
           },
         ],
         [
@@ -1651,7 +1666,7 @@ export const UPPER = {
           {
             x: 0.5,
             y: 0.3,
-            r: getR(260, 0, 0, 352),
+            r: getRotation(260, 0, 0, 352),
           },
         ],
         [
@@ -1705,7 +1720,7 @@ export const UPPER = {
           0 + VERTEX_GAP,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             v: 1,
           },
         ],
@@ -1715,7 +1730,7 @@ export const UPPER = {
           352 - VERTEX_GAP,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [

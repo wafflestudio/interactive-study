@@ -8,7 +8,7 @@ export function Pattern(ctx, data, w, h) {
   let i, p;
   for (i = 0; i < total; i++) {
     p = data.paths[i];
-    if (p.num == 1) {
+    if (p.vertex == 1) {
       ctx.fillStyle = '#ff00c5';
     } else {
       ctx.fillStyle = '#ff95f8';

@@ -1,19 +1,17 @@
 /**
  * @name getGuide
- * @property {Object} - typo data object from 'font/index.js'
- * @property {Number} - scale
+ * @param d - typo data object from 'font/index.js'
+ * @param scale
  * @returns {Object} the guide pos array
  * @description get a guide pos
  */
-export function getGuide(d: FontData, scale: number): GuidePosition[] {
-  let guide = [],
-    ggap = 10,
-    i,
-    gvx,
-    gvy;
-  for (i = 0; i < 6; i++) {
-    gvx = ggap * i + 20;
-    gvy = ggap * i + 90;
+export function getGuide(d: Typo, scale: number): GuidePosition[] {
+  let guide: GuidePosition[] = [];
+  const ggap = 10;
+
+  for (let i = 0; i < 6; i++) {
+    const gvx = ggap * i + 20;
+    const gvy = ggap * i + 90;
     guide[i] = {
       x1: gvx * RECT_RATIO * scale,
       x2: (d.rect.width - gvx * 2) * RECT_RATIO * scale,
@@ -34,7 +32,7 @@ export function getGuide(d: FontData, scale: number): GuidePosition[] {
  * @returns {Object} the guide pos array
  * @description get a guide pos
  */
-export function getGrid(d: FontData, scale: number): number[] {
+export function getGrid(d: Typo, scale: number): number[] {
   let grid = [],
     i,
     gvy = [98, 340, 815];

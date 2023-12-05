@@ -1,4 +1,4 @@
-import { typo } from '../font/index.js';
+import { getTypo } from '../font/index.js';
 import { getRect } from './util.js';
 
 /**
@@ -58,7 +58,7 @@ function breakWord(group: string[], scale: number, width: number): char[][] {
     wordWidth: number = 0, // 현재 단어의 너비
     index: number = 0, // 실질적인 줄바꿈을 수행한 줄의 인덱스
     fontRect: Rect,
-    fontData: FontData;
+    fontData: Typo;
   const groupWithImplicitLineBreak: string[][] = []; // 실질적인 줄바꿈으로 쪼개진 문자열(string)을 단어(string)의 배열로 변환한 배열
   for (const line of group) {
     let wordGroup = line.split(' '); // 각 줄을 단어 단위로 쪼갬
@@ -66,11 +66,11 @@ function breakWord(group: string[], scale: number, width: number): char[][] {
     for (const word of wordGroup) {
       wordWidth = 0;
       for (const character of word) {
-        fontData = typo(character); // 문자를 FontData로 변환
+        fontData = getTypo(character); // 문자를 FontData로 변환
         fontRect = getRect(fontData, scale); // 문자의 크기를 계산 (여기서 x, y는 의미없는 값)
         wordWidth += fontRect.w; // 문자의 너비를 누적
       }
-      fontData = typo(' ');
+      fontData = getTypo(' ');
       fontRect = getRect(fontData, scale);
       wordWidth += fontRect.w;
       lineWidth += wordWidth;
@@ -117,7 +117,7 @@ function breakAll(group: string[], scale: number, width: number): char[][] {
     let index = 0;
     textGroupWithoutTrimed[index] = [];
     for (const character of line) {
-      const fontData = typo(character);
+      const fontData = getTypo(character);
       const fontRect = getRect(fontData, scale);
       lineWidth += fontRect.w;
       textGroupWithoutTrimed[index].push(character);

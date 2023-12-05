@@ -42,9 +42,9 @@ import {
   DATA_UU,
   DATA_UY,
 } from './upper.js';
-import { generateFontData, getCurveR, getR } from './util';
+import { generateFontData, getCurveR, getRotation } from './util';
 
-const DATA_LI: RawPathData[] = [
+const DATA_LI: TypoData[] = [
   {
     d: 1,
     v: [
@@ -69,7 +69,7 @@ const DATA_LI: RawPathData[] = [
   },
 ];
 
-const DATA_LJ: RawPathData[] = [
+const DATA_LJ: TypoData[] = [
   {
     d: 1,
     v: [
@@ -155,7 +155,7 @@ export const LATIN = {
           {
             x: 0.5,
             f: 1,
-            r: getR(234.0, 0.0, 0.0, 352.0),
+            r: getRotation(234.0, 0.0, 0.0, 352.0),
           },
         ],
         [
@@ -179,7 +179,7 @@ export const LATIN = {
           0.0,
           {
             x: 0.5,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -211,7 +211,7 @@ export const LATIN = {
           237.0,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -221,7 +221,7 @@ export const LATIN = {
           {
             f: 1,
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
       ],
@@ -235,7 +235,7 @@ export const LATIN = {
           164.0,
           {
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
             x: 0.5,
           },
         ],
@@ -408,7 +408,7 @@ export const LATIN = {
           106.1,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
       ],
@@ -1161,7 +1161,7 @@ export const LATIN = {
             0,
             360,
             {
-              r: getR(0, 360, 360, 0),
+              r: getRotation(0, 360, 360, 0),
               f: 1,
               x: 0,
               y: 1,
@@ -1247,7 +1247,7 @@ export const LATIN = {
             0,
             232,
             {
-              r: getR(0, 232, 232, 0),
+              r: getRotation(0, 232, 232, 0),
               f: 1,
               x: 0,
               y: 1,

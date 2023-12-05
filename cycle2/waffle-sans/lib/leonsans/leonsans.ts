@@ -314,6 +314,11 @@ export default class LeonSans extends Dispatcher {
     return this.model.wavePaths;
   }
 
+  /**
+   * 리온 산스의 위치를 설정합니다.
+   * @param x x 좌표
+   * @param y y 좌표
+   */
   position(x = 0, y = 0) {
     if (this.model.position(x, y)) {
       this.updateID_++;

@@ -1,4 +1,4 @@
-import { getCurveR, getR } from './util.js';
+import { getCurveR, getRotation } from './util.js';
 
 //À
 export function getLatin1(x: number, y: number) {
@@ -15,7 +15,7 @@ export function getLatin1(x: number, y: number) {
           {
             x: 0,
             y: 0,
-            r: getR(-40 + tx, ty, 0 + tx, 60 + ty),
+            r: getRotation(-40 + tx, ty, 0 + tx, 60 + ty),
           },
         ],
         [
@@ -47,7 +47,7 @@ export function getLatin2(x: number, y: number) {
           {
             x: 0,
             y: 0,
-            r: getR(40 + tx, ty, 0 + tx, 60 + ty),
+            r: getRotation(40 + tx, ty, 0 + tx, 60 + ty),
           },
         ],
         [
@@ -77,17 +77,17 @@ export function getLatin3(x: number, y: number) {
           0 + tx,
           50 + ty,
           {
-            r: getR(0 + tx, 50 + ty, 68 - VERTEX_GAP2 + tx, 0 + ty),
+            r: getRotation(0 + tx, 50 + ty, 68 - HALF_VERTEX_GAP + tx, 0 + ty),
             y: 0,
             x: 0,
           },
         ],
         [
           'l',
-          68 - VERTEX_GAP2 + tx,
+          68 - HALF_VERTEX_GAP + tx,
           0 + ty,
           {
-            r: getR(0 + tx, 50 + ty, 68 - VERTEX_GAP2 + tx, 0 + ty),
+            r: getRotation(0 + tx, 50 + ty, 68 - HALF_VERTEX_GAP + tx, 0 + ty),
             y: 0,
             x: 0,
             f: 1,
@@ -95,10 +95,15 @@ export function getLatin3(x: number, y: number) {
         ],
         [
           'l',
-          68 + VERTEX_GAP2 + tx,
+          68 + HALF_VERTEX_GAP + tx,
           0 + ty,
           {
-            r: getR(68 + VERTEX_GAP2 + tx, 0 + ty, 68 + 68 + tx, 50 + ty),
+            r: getRotation(
+              68 + HALF_VERTEX_GAP + tx,
+              0 + ty,
+              68 + 68 + tx,
+              50 + ty,
+            ),
             y: 0,
             x: 0,
             f: 1,
@@ -252,7 +257,7 @@ export function getLatin6(x: number, y: number) {
           112.7 + tx,
           0.0 + ty,
           {
-            // @ts-ignore FIXME 기존 코드에서도 발생하던 에러임
+            // FIXME 기존 코드에서도 발생하던 에러임
             r: getCurveR(
               112.7 + tx,
               0.0 + ty + tx,
@@ -568,17 +573,17 @@ export function getLatin12(x: number, y: number) {
           0 + tx,
           ty,
           {
-            r: getR(0 + tx, ty, 68 - VERTEX_GAP2 + tx, 50 + ty),
+            r: getRotation(0 + tx, ty, 68 - HALF_VERTEX_GAP + tx, 50 + ty),
             y: 0,
             x: 0,
           },
         ],
         [
           'l',
-          68 - VERTEX_GAP2 + tx,
+          68 - HALF_VERTEX_GAP + tx,
           50 + ty,
           {
-            r: getR(0 + tx, ty, 68 - VERTEX_GAP2 + tx, 50 + ty),
+            r: getRotation(0 + tx, ty, 68 - HALF_VERTEX_GAP + tx, 50 + ty),
             y: 0,
             x: 0,
             f: 1,
@@ -586,10 +591,15 @@ export function getLatin12(x: number, y: number) {
         ],
         [
           'l',
-          68 + VERTEX_GAP2 + tx,
+          68 + HALF_VERTEX_GAP + tx,
           50 + ty,
           {
-            r: getR(68 + VERTEX_GAP2 + tx, 50 + ty, 68 + 68 + tx, ty),
+            r: getRotation(
+              68 + HALF_VERTEX_GAP + tx,
+              50 + ty,
+              68 + 68 + tx,
+              ty,
+            ),
             y: 0,
             x: 0,
             f: 1,

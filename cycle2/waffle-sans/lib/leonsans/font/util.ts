@@ -1,4 +1,4 @@
-import { bezierTangent } from '../core/paths.js';
+import { partialBezierTangent } from '../core/paths.js';
 import { Vector } from '../core/vector';
 
 /**
@@ -22,17 +22,12 @@ export function generateFontData(
   x2: number,
   y1: number,
   y2: number,
-  path: RawPathData[],
-): CloneableFontData {
-  const arr: PathData[] = [];
-  const total = path.length;
-  let i;
-  for (i = 0; i < total; i++) {
-    arr.push({
-      d: path[i].d,
-      v: setCenter(path[i].v, contentWidth, contentHeight),
-    });
-  }
+  path: TypoData[],
+): CloneableTypo {
+  const p: TypoPath[] = path.map((d) => ({
+    d: d.d,
+    v: setCenter(d.v, contentWidth, contentHeight),
+  }));
 
   return {
     rect: {
@@ -42,21 +37,14 @@ export function generateFontData(
       contentHeight,
     },
     ratio: {
-      x1: x1,
-      x2: x2,
-      y1: y1,
-      y2: y2,
+      x1,
+      x2,
+      y1,
+      y2,
     },
-    p: arr,
+    p: p,
     clone: () => {
-      const arr2 = [];
-      for (let i = 0; i < arr.length; i++) {
-        arr2[i] = {
-          d: arr[i].d,
-          v: arr[i].v,
-        };
-      }
-      const v = {
+      const newFontData = {
         rect: {
           width: fontWidth,
           height: FONT_HEIGHT,
@@ -64,41 +52,49 @@ export function generateFontData(
           contentHeight,
         },
         ratio: {
-          x1: x1,
-          x2: x2,
-          y1: y1,
-          y2: y2,
+          x1,
+          x2,
+          y1,
+          y2,
         },
-        p: arr2,
+        p: p.slice(),
       };
-      return v;
+      return newFontData;
     },
   };
 }
 
-function setCenter(arr: Path[], contentWidth: number, contentHeight: number) {
-  const total = arr.length;
-  const cx = contentWidth / 2;
-  const cy = contentHeight / 2;
-  let ct = [];
+function setCenter(
+  arr: TypoPathData[],
+  contentWidth: number,
+  contentHeight: number,
+) {
+  const centerX = contentWidth / 2; // 중앙 x 좌표
+  const centerY = contentHeight / 2; // 중앙 y 좌표
 
-  for (let i = 0; i < total; i++) {
-    const mp: Path = arr[i];
-    mp[1] -= cx;
-    mp[2] -= cy;
-    if (mp[0] == 'b') {
-      mp[3] -= cx;
-      mp[4] -= cy;
-      mp[5] -= cx;
-      mp[6] -= cy;
+  // 중앙 좌표가 0, 0이 되도록 좌표를 이동
+  return arr.map((data) => {
+    data[1] -= centerX;
+    data[2] -= centerY;
+    if (data[0] === 'b') {
+      data[3] -= centerX;
+      data[4] -= centerY;
+      data[5] -= centerX;
+      data[6] -= centerY;
     }
-    ct.push(new Vector(mp));
-  }
-
-  return ct;
+    return new Vector(data);
+  });
 }
 
-export function getR(x1: number, y1: number, x2: number, y2: number) {
+/**
+ * 두 점이 x축에 대해 이루는 각도를 구한다.
+ * @param x1 첫 번째 점의 x 좌표
+ * @param y1 첫 번째 점의 y 좌표
+ * @param x2 두 번째 점의 x 좌표
+ * @param y2 두 번째 점의 y 좌표
+ * @returns
+ */
+export function getRotation(x1: number, y1: number, x2: number, y2: number) {
   const x = x1 - x2;
   const y = y1 - y2;
   return -Math.atan2(x, y);
@@ -115,7 +111,7 @@ export function getCurveR(
   y4: number,
   t: number,
 ) {
-  const x = bezierTangent(x1, x2, x3, x4, t);
-  const y = bezierTangent(y1, y2, y3, y4, t);
+  const x = partialBezierTangent(x1, x2, x3, x4, t);
+  const y = partialBezierTangent(y1, y2, y3, y4, t);
   return -Math.atan2(x, y);
 }

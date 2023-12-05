@@ -1,4 +1,4 @@
-import { typo } from '../font/index';
+import { getTypo } from '../font/index';
 import { getAlignGapX, setAlignGapX } from './align';
 import { getTextGroup } from './group';
 import { getGrid, getGuide } from './guide';
@@ -97,6 +97,11 @@ export class Model {
     return this.align_;
   }
 
+  /**
+   * 리온 산스의 위치를 설정합니다.
+   * @param x x 좌표
+   * @param y y 좌표
+   */
   position(x: number, y: number) {
     if (this.rect_.x != x || this.rect_.y != y) {
       this.rect_.x = x;
@@ -108,11 +113,11 @@ export class Model {
     }
   }
 
+  /**
+   * Set position of each typo
+   */
   setPosition() {
-    const total = this.data_.length;
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.data_[i];
+    for (const d of this.data_) {
       d.rect.x =
         d.originPos.x + this.rect_.x + getAlignGapX(this.align_, d.alignGapX);
       d.rect.y = d.originPos.y + this.rect_.y;
@@ -120,10 +125,7 @@ export class Model {
   }
 
   updateDrawingPaths() {
-    const total = this.data_.length;
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.data_[i];
+    for (const d of this.data_) {
       d.drawingPaths = addRectToPaths(getPaths(this, d, -1, false), d);
     }
   }
@@ -147,10 +149,7 @@ export class Model {
   }
 
   updateGuide() {
-    const total = this.data_.length;
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.data_[i];
+    for (const d of this.data_) {
       d.guide = getGuide(d.typo, this.scale);
       d.grid = getGrid(d.typo, this.scale);
     }
@@ -199,8 +198,8 @@ export class Model {
       };
       for (let j = 0; j < j_total; j++) {
         const str = gt[j];
-        const fontData = typo(str);
-        const m_rect = getRect(fontData, scale);
+        const typo = getTypo(str);
+        const m_rect = getRect(typo, scale);
         tw += m_rect.w;
         th = m_rect.h;
         if (j < j_total2) {
@@ -211,18 +210,18 @@ export class Model {
         }
         m_rect.x = tx;
         m_rect.y = ty;
-        let s_pos = {
+        let startPosition = {
           x: tx,
           y: ty,
         };
 
         tmp[i].arr[j] = {
           str: str,
-          typo: fontData,
+          typo: typo,
           rect: m_rect,
-          originPos: s_pos,
+          originPos: startPosition,
           center: getCenter(m_rect.w, m_rect.h, scale),
-          range: getRange(fontData, weightRatio, circleRound),
+          range: getRange(typo, weightRatio, circleRound),
         };
 
         tx = tw;

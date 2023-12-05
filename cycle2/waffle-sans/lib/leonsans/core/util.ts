@@ -47,7 +47,7 @@ export function getFontRatio(weightRatio: number) {
   return (FR_2 - FR_1) * weightRatio + FR_1;
 }
 
-export function getRect(data: FontData, scale: number, x = 0, y = 0): Rect {
+export function getRect(data: Typo, scale: number, x = 0, y = 0): Rect {
   const w = data.rect.width * RECT_RATIO * scale;
   const h = (data.rect.height + 220) * RECT_RATIO * scale;
   return {
@@ -106,7 +106,7 @@ export function getCenter(w: number, h: number, scale: number) {
  * @description save ratio range to control each line's coordinate
  */
 export function getRange(
-  d: any,
+  d: Typo,
   weightRatio: number,
   circleRound: number,
 ): RatioRange {

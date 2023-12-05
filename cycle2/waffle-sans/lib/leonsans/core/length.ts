@@ -9,15 +9,15 @@ import { Vector } from './vector';
  * @returns An object containing the maximum length, an array of lines for each path, and an array of lengths for each path.
  */
 export function getLengths(data: ModelData, model: Model): LinesLengths {
-  let c,
-    linesArray = [],
-    lengths = [],
-    max = 0;
+  let linesArray: LineData[][] = [];
+  let lengths: number[] = [];
+  let max = 0;
+
   for (const path of data.typo.p) {
-    c = getEachPath(data, path.v, model);
-    max += c.length;
+    const c = getEachPath(data, path.v, model);
     linesArray.push(c.lines);
     lengths.push(c.length);
+    max += c.length;
   }
   return {
     max,
@@ -61,31 +61,38 @@ function getEachPath(data: ModelData, points: Vector[], model: Model) {
       line.x2 = point.x;
       line.y2 = point.y;
 
-      if (_point.type == 'b') {
+      if (line.type == 'b') {
         line.x3 = point.x2;
         line.y3 = point.y2;
         line.x4 = point.x3;
         line.y4 = point.y3;
+        const bezierCurve = line as BezierCurveData;
         line.distance = cubicBezierLength(
-          line.x1!,
-          line.y1!,
-          line.x2,
-          line.y2,
-          line.x3!,
-          line.y3!,
-          line.x4!,
-          line.y4!,
+          bezierCurve.x1,
+          bezierCurve.y1,
+          bezierCurve.x2,
+          bezierCurve.y2,
+          bezierCurve.x3,
+          bezierCurve.y3,
+          bezierCurve.x4,
+          bezierCurve.y4,
         );
       } else {
-        line.distance = distance(line.x1!, line.y1!, line.x2, line.y2);
+        const simpleLine = line as SimpleLineData;
+        line.distance = distance(
+          simpleLine.x1,
+          simpleLine.y1,
+          simpleLine.x2,
+          simpleLine.y2,
+        );
       }
     }
 
     line.type = _point.type;
     line.rotation = _point.ratio.r;
-    line.pat = _point.ratio.p;
-    line.fix = _point.ratio.f;
-    line.vt = _point.ratio.v;
+    line.hide = _point.ratio.h;
+    line.fixed = _point.ratio.f;
+    line.vertex = _point.ratio.v;
 
     lines.push(line as LineData);
     length += line.distance;

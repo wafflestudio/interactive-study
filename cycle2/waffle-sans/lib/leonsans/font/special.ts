@@ -1,4 +1,4 @@
-import { generateFontData, getCurveR, getR } from './util';
+import { generateFontData, getCurveR, getRotation } from './util';
 
 export const SPECIAL = {
   ' ': generateFontData(336, 0, 0, 0, 0, 0, 0, [
@@ -53,7 +53,7 @@ export const SPECIAL = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
             c: 1,
           },
@@ -69,7 +69,7 @@ export const SPECIAL = {
           0,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
             f: 1,
           },
         ],
@@ -298,7 +298,7 @@ export const SPECIAL = {
           251.9,
           92.9,
           {
-            r: getR(251.9, 92.9, 238.5, 181.7),
+            r: getRotation(251.9, 92.9, 238.5, 181.7),
           },
         ],
         [
@@ -367,7 +367,7 @@ export const SPECIAL = {
           0,
           {
             y: 0,
-            r: getR(70 + 47, 0, 0 + 47, 352),
+            r: getRotation(70 + 47, 0, 0 + 47, 352),
           },
         ],
         [
@@ -390,7 +390,7 @@ export const SPECIAL = {
           0,
           {
             y: 0,
-            r: getR(70 + 150 + 47, 0, 0 + 150 + 47, 352),
+            r: getRotation(70 + 150 + 47, 0, 0 + 150 + 47, 352),
           },
         ],
         [
@@ -462,7 +462,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 0,
-            r: getR(289.1 + 18, 5.1, 62.9 + 18, 354.9),
+            r: getRotation(289.1 + 18, 5.1, 62.9 + 18, 354.9),
           },
         ],
         [
@@ -486,7 +486,7 @@ export const SPECIAL = {
           73,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -550,7 +550,7 @@ export const SPECIAL = {
           287,
           {
             r: ROTATE_HORIZONTAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -615,24 +615,24 @@ export const SPECIAL = {
           0,
           150,
           {
-            r: getR(0, 150, 88 - VERTEX_GAP2, 0),
+            r: getRotation(0, 150, 88 - HALF_VERTEX_GAP, 0),
           },
         ],
         [
           'l',
-          88 - VERTEX_GAP2,
+          88 - HALF_VERTEX_GAP,
           0,
           {
-            r: getR(0, 150, 88 - VERTEX_GAP2, 0),
+            r: getRotation(0, 150, 88 - HALF_VERTEX_GAP, 0),
             f: 1,
           },
         ],
         [
           'l',
-          88 + VERTEX_GAP2,
+          88 + HALF_VERTEX_GAP,
           0,
           {
-            r: getR(88 + VERTEX_GAP2, 0, 88 + 88, 150),
+            r: getRotation(88 + HALF_VERTEX_GAP, 0, 88 + 88, 150),
             f: 1,
             v: 1,
           },
@@ -665,7 +665,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 0,
-            r: getR(0, 0, 176.8, 176.8),
+            r: getRotation(0, 0, 176.8, 176.8),
           },
         ],
         [
@@ -690,7 +690,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 0,
-            r: getR(176.8, 0, 0, 176.88),
+            r: getRotation(176.8, 0, 0, 176.88),
           },
         ],
         [
@@ -750,25 +750,25 @@ export const SPECIAL = {
           150,
           236,
           {
-            r: getR(150, 236, 0, 118 + VERTEX_GAP2),
+            r: getRotation(150, 236, 0, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           0,
-          118 + VERTEX_GAP2,
+          118 + HALF_VERTEX_GAP,
           {
-            r: getR(150, 236, 0, 118 + VERTEX_GAP2),
+            r: getRotation(150, 236, 0, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           0,
-          118 - VERTEX_GAP2,
+          118 - HALF_VERTEX_GAP,
           {
-            r: getR(0, 118 - VERTEX_GAP2, 150, 0),
+            r: getRotation(0, 118 - HALF_VERTEX_GAP, 150, 0),
             f: 1,
             v: 1,
           },
@@ -784,25 +784,25 @@ export const SPECIAL = {
           150 + 160,
           236,
           {
-            r: getR(150 + 160, 236, 0 + 160, 118 + VERTEX_GAP2),
+            r: getRotation(150 + 160, 236, 0 + 160, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           0 + 160,
-          118 + VERTEX_GAP2,
+          118 + HALF_VERTEX_GAP,
           {
-            r: getR(150 + 160, 236, 0 + 160, 118 + VERTEX_GAP2),
+            r: getRotation(150 + 160, 236, 0 + 160, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           0 + 160,
-          118 - VERTEX_GAP2,
+          118 - HALF_VERTEX_GAP,
           {
-            r: getR(0 + 160, 118 - VERTEX_GAP2, 150 + 160, 0),
+            r: getRotation(0 + 160, 118 - HALF_VERTEX_GAP, 150 + 160, 0),
             f: 1,
             v: 1,
           },
@@ -820,25 +820,25 @@ export const SPECIAL = {
           0,
           236,
           {
-            r: getR(0, 236, 150, 118 + VERTEX_GAP2),
+            r: getRotation(0, 236, 150, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           150,
-          118 + VERTEX_GAP2,
+          118 + HALF_VERTEX_GAP,
           {
-            r: getR(0, 236, 0, 118 + VERTEX_GAP2),
+            r: getRotation(0, 236, 0, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           150,
-          118 - VERTEX_GAP2,
+          118 - HALF_VERTEX_GAP,
           {
-            r: getR(150, 118 - VERTEX_GAP2, 0, 0),
+            r: getRotation(150, 118 - HALF_VERTEX_GAP, 0, 0),
             f: 1,
             v: 1,
           },
@@ -854,25 +854,25 @@ export const SPECIAL = {
           0 + 160,
           236,
           {
-            r: getR(0 + 160, 236, 150 + 160, 118 + VERTEX_GAP2),
+            r: getRotation(0 + 160, 236, 150 + 160, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           150 + 160,
-          118 + VERTEX_GAP2,
+          118 + HALF_VERTEX_GAP,
           {
-            r: getR(0, 236, 0, 118 + VERTEX_GAP2),
+            r: getRotation(0, 236, 0, 118 + HALF_VERTEX_GAP),
             f: 1,
           },
         ],
         [
           'l',
           150 + 160,
-          118 - VERTEX_GAP2,
+          118 - HALF_VERTEX_GAP,
           {
-            r: getR(150 + 160, 118 - VERTEX_GAP2, 0 + 160, 0),
+            r: getRotation(150 + 160, 118 - HALF_VERTEX_GAP, 0 + 160, 0),
             f: 1,
             v: 1,
           },
@@ -892,7 +892,7 @@ export const SPECIAL = {
           {
             x: 0.5,
             y: 0.5,
-            r: getR(257.9, 355, 52.8, 135.3),
+            r: getRotation(257.9, 355, 52.8, 135.3),
             f: 1,
           },
         ],
@@ -976,7 +976,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 0,
-            r: getR(0, 53, 183.6, 159),
+            r: getRotation(0, 53, 183.6, 159),
           },
         ],
         [
@@ -1001,7 +1001,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 0,
-            r: getR(0, 159, 183.6, 53),
+            r: getRotation(0, 159, 183.6, 53),
           },
         ],
         [
@@ -1199,7 +1199,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 2,
-            r: getR(8 / 2, 350, 8 / 2 - 10, 80 + 350),
+            r: getRotation(8 / 2, 350, 8 / 2 - 10, 80 + 350),
           },
         ],
         [
@@ -1232,7 +1232,7 @@ export const SPECIAL = {
           {
             x: 0,
             y: 2,
-            r: getR(10, 350, 0, 80 + 350),
+            r: getRotation(10, 350, 0, 80 + 350),
           },
         ],
         [
@@ -1541,7 +1541,7 @@ export const SPECIAL = {
           {
             x: -0.5,
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -1648,7 +1648,7 @@ export const SPECIAL = {
           {
             x: -0.5,
             r: ROTATE_VERTICAL,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -1791,7 +1791,7 @@ export const SPECIAL = {
           {
             x: -1,
             y: 0.3,
-            r: getR(90, 0, 0, 176),
+            r: getRotation(90, 0, 0, 176),
           },
         ],
         [
@@ -1827,7 +1827,7 @@ export const SPECIAL = {
           {
             x: -1,
             y: 0.3,
-            r: getR(0, 0, 90, 176),
+            r: getRotation(0, 0, 90, 176),
           },
         ],
         [
@@ -1861,7 +1861,7 @@ export const SPECIAL = {
           0,
           352,
           {
-            r: getR(0, 352, 130, 0),
+            r: getRotation(0, 352, 130, 0),
             f: 1,
             y: 0,
           },
@@ -1995,7 +1995,7 @@ export const SPECIAL = {
             x: 0,
             r: ROTATE_VERTICAL,
             f: 1,
-            p: 1,
+            h: 1,
           },
         ],
         [
@@ -2042,7 +2042,7 @@ export const SPECIAL = {
             x: 0,
             r: ROTATE_VERTICAL,
             f: 1,
-            p: 1,
+            h: 1,
           },
         ],
       ],

@@ -1,6 +1,25 @@
 import { Model } from './model.js';
 import { Point } from './point';
 
+type VectorProps = {
+  type: PathCommand;
+  x: number;
+  y: number;
+  x2?: number;
+  y2?: number;
+  x3?: number;
+  y3?: number;
+  ratio: PathRatio;
+};
+
+function isVectorProps(obj: any): obj is VectorProps {
+  return (
+    obj.type in PATH_COMMANDS &&
+    typeof obj.x === 'number' &&
+    typeof obj.y === 'number'
+  );
+}
+
 export class Vector {
   type: PathCommand;
   x: number;
@@ -11,80 +30,50 @@ export class Vector {
   y3?: number;
   ratio: PathRatio;
 
-  constructor(mp: Path | Vector) {
-    if (mp instanceof Vector) {
-      this.type = mp.type;
-      this.x = mp.x;
-      this.y = mp.y;
-      this.x2 = mp.x2;
-      this.y2 = mp.y2;
-      this.x3 = mp.x3;
-      this.y3 = mp.y3;
-      this.ratio = mp.ratio;
+  constructor(obj: TypoPathData | VectorProps) {
+    if (isVectorProps(obj)) {
+      this.type = obj.type;
+      this.x = obj.x;
+      this.y = obj.y;
+      this.x2 = obj.x2;
+      this.y2 = obj.y2;
+      this.x3 = obj.x3;
+      this.y3 = obj.y3;
+      this.ratio = obj.ratio;
       return;
     }
 
-    this.type = mp[0];
+    this.type = obj[0];
 
-    this.x = mp[1] || 0;
-    this.y = mp[2] || 0;
+    this.x = obj[1] ?? 0;
+    this.y = obj[2] ?? 0;
 
-    if (this.type == 'b') {
-      this.x2 = mp[3] || 0;
-      this.y2 = mp[4] || 0;
-      this.x3 = mp[5] || 0;
-      this.y3 = mp[6] || 0;
-      if (mp[7] == null) {
-        this.ratio = {
-          x: 1,
-          y: 1,
-          r: 0,
-          p: 0,
-          f: 0,
-          c: 0,
-          v: 0,
-        };
-      } else {
-        this.ratio = {};
-        this.ratio.x = mp[7].x == null ? 1 : mp[7].x;
-        this.ratio.y = mp[7].y == null ? 1 : mp[7].y;
-        this.ratio.r = mp[7].r || 0;
-        this.ratio.p = mp[7].p || 0;
-        this.ratio.f = mp[7].f || 0;
-        this.ratio.c = mp[7].c || 0;
-        this.ratio.v = mp[7].v || 0;
-      }
-    } else {
-      if (mp[3] == null) {
-        this.ratio = {
-          x: 1,
-          y: 1,
-          r: 0,
-          p: 0,
-          f: 0,
-          c: 0,
-          v: 0,
-        };
-      } else {
-        this.ratio = {};
-        this.ratio.x = mp[3].x == null ? 1 : mp[3].x;
-        this.ratio.y = mp[3].y == null ? 1 : mp[3].y;
-        this.ratio.r = mp[3].r || 0;
-        this.ratio.p = mp[3].p || 0;
-        this.ratio.f = mp[3].f || 0;
-        this.ratio.c = mp[3].c || 0;
-        this.ratio.v = mp[3].v || 0;
-      }
+    if (obj[0] === 'b') {
+      this.x2 = obj[3] ?? 0;
+      this.y2 = obj[4] ?? 0;
+      this.x3 = obj[5] ?? 0;
+      this.y3 = obj[6] ?? 0;
     }
+
+    let pathRatio = obj[0] === 'b' ? obj[7] : obj[3];
+    this.ratio = {
+      x: pathRatio?.x ?? 1,
+      y: pathRatio?.y ?? 1,
+      r: pathRatio?.r ?? 0,
+      h: pathRatio?.h ?? 0,
+      f: pathRatio?.f ?? 0,
+      c: pathRatio?.c ?? 0,
+      v: pathRatio?.v ?? 0,
+    };
   }
 
   convert(data: ModelData, model: Model) {
     const x = this.convertX(this.x, data, this.ratio, model);
     const y = this.convertY(this.y, data, this.ratio, model);
-    const x2 = this.convertX(this.x2, data, this.ratio, model);
-    const y2 = this.convertY(this.y2, data, this.ratio, model);
-    const x3 = this.convertX(this.x3, data, this.ratio, model);
-    const y3 = this.convertY(this.y3, data, this.ratio, model);
+    const x2 = this.convertX(this.x2!, data, this.ratio, model);
+    const y2 = this.convertY(this.y2!, data, this.ratio, model);
+    const x3 = this.convertX(this.x3!, data, this.ratio, model);
+    const y3 = this.convertY(this.y3!, data, this.ratio, model);
     const rd = this.convertR(this.type, data, model);
 
     const vv = new Point(this);
@@ -105,27 +94,17 @@ export class Vector {
     return rd;
   }
 
-  private convertX(
-    x: number | undefined,
-    data: ModelData,
-    ratio: PathRatio,
-    model: Model,
-  ) {
+  private convertX(x: number, data: ModelData, ratio: PathRatio, model: Model) {
     const rr = data.range.r * ratio.x!;
     const gx = (data.range.gx2 - data.range.gx1) * rr + data.range.gx1;
     const fr = (data.range.fr2 - data.range.fr1) * rr + data.range.fr1;
-    return data.center.x + (x! - gx) * model.scale * fr; // + data.rect.x
+    return data.center.x + (x - gx) * model.scale * fr; // + data.rect.x
   }
 
-  private convertY(
-    y: number | undefined,
-    data: ModelData,
-    ratio: PathRatio,
-    model: Model,
-  ) {
+  private convertY(y: number, data: ModelData, ratio: PathRatio, model: Model) {
     const rr = data.range.r * ratio.y!;
     const gy = (data.range.gy2 - data.range.gy1) * rr + data.range.gy1;
     const fr = (data.range.fr2 - data.range.fr1) * rr + data.range.fr1;
-    return data.center.y + (y! - gy) * model.scale * fr; // + data.rect.y
+    return data.center.y + (y - gy) * model.scale * fr; // + data.rect.y
   }
 }
