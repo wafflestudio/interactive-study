@@ -1,3 +1,5 @@
+import { Point } from './point';
+
 export function getAmplitude(amplitude: number, scale: number) {
   return MAX_SHAKE * amplitude * scale;
 }
@@ -11,9 +13,7 @@ export function getFontW(weight: number) {
 }
 
 export function getWeightRatio(fontW: number) {
-  return (
-    (1 / (FONT_WEIGHT_LIMIT - MIN_FONT_WEIGHT)) * (fontW - MIN_FONT_WEIGHT)
-  );
+  return (fontW - MIN_FONT_WEIGHT) / (FONT_WEIGHT_LIMIT - MIN_FONT_WEIGHT);
 }
 
 export function getCircleRound(fontW: number) {
@@ -44,17 +44,17 @@ export function getLeading(leading: number, scale: number) {
 }
 
 export function getFontRatio(weightRatio: number) {
-  return (FR_2 - FR_1) * weightRatio + FR_1;
+  return (FONT_RATIO_2 - FONT_RATIO_1) * weightRatio + FONT_RATIO_1;
 }
 
-export function getRect(data: Typo, scale: number, x = 0, y = 0): Rect {
+export function getScaledRect(data: Typo, scale: number, x = 0, y = 0): Rect {
   const w = data.rect.width * RECT_RATIO * scale;
   const h = (data.rect.height + 220) * RECT_RATIO * scale;
   return {
-    x: x,
-    y: y,
-    w: w,
-    h: h,
+    x,
+    y,
+    w,
+    h,
   };
 }
 
@@ -117,8 +117,8 @@ export function getRange(
   return {
     r: weightRatio,
     cr: circleRound,
-    fr1: FR_1,
-    fr2: FR_2,
+    fr1: FONT_RATIO_1,
+    fr2: FONT_RATIO_2,
     gx1: gx1,
     gx2: gx2,
     gy1: gy1,
@@ -139,37 +139,29 @@ export function getCurrent(
   return value;
 }
 
-export function getLines(data: any) {
-  const total = data.typo.p.length;
-  const lines = [];
-  let i, j, k, j_total;
-  let d2, d3, cp, dir, lt, ltRatio, prevRatio;
-  for (i = 0; i < total; i++) {
-    d2 = data.typo.p[i];
-    j_total = d2.cv.length;
-    for (j = 0; j < j_total; j++) {
-      d3 = d2.cv[j];
+export function getLines(data: ModelData): ModelDataLine[] {
+  return data.typo.p.flatMap((d2, i) =>
+    d2.cv!.map((d3: Point) => {
       // add current position to all points
-      cp = d3.addRect(data.rect);
-      dir = d2.d;
-      lt = data.pointsLength.lengths[i];
-      ltRatio = lt / data.pointsLength.max;
-      prevRatio = 0;
+      const cp = d3.addRect(data.rect);
+      const dir = d2.d;
+      const lt = data.pointsLength!.lengths[i];
+      let prevRatio = 0;
       if (i > 0) {
-        for (k = 0; k < i; k++) {
-          prevRatio += data.pointsLength.lengths[k] / data.pointsLength.max;
+        for (let k = 0; k < i; k++) {
+          prevRatio += data.pointsLength!.lengths[k] / data.pointsLength!.max;
         }
       }
-      ltRatio += prevRatio;
+      let ltRatio = lt / data.pointsLength!.max + prevRatio;
 
-      lines.push({
+      return {
         pos: cp,
-        drawing: data.drawing,
+        drawing: data.drawing!,
         direction: dir,
         lengths: lt,
         maxDrawing: ltRatio,
         minDrawing: prevRatio,
-        closePath: d3.ratio.c,
+        closePath: d3.ratio!.c,
         stroke: (ctx: CanvasRenderingContext2D, d: any) => {
           let dv = getCurrent(
             d.drawing.value,
@@ -188,40 +180,34 @@ export function getLines(data: any) {
             ctx.stroke();
           }
         },
-      });
-    }
-  }
-
-  return lines;
+      };
+    }),
+  );
 }
 
-export function addRectToPaths(path: any[], data: any) {
-  const total = path.length;
-  const arr = [];
-  let i, cp, p;
-  for (i = 0; i < total; i++) {
-    p = path[i];
-    cp = p.addRect(data.rect);
-    arr.push(cp);
-  }
-  return arr;
+/**
+ *
+ * @param path
+ * @param data
+ * @returns
+ */
+export function addRectToPaths(path: Point[], data: ModelData): Point[] {
+  return path.map((p) => p.addRect(data.rect));
 }
 
-export function randomBrightColor() {
+/**
+ *
+ * @returns random bright color as a css hsl format
+ */
+export function randomBrightColor(): string {
   return 'hsl(' + 360 * Math.random() + ',' + '100%,' + '50%)';
 }
 
-export function shuffle(oldArray: any[]) {
-  let newArray = oldArray.slice(),
-    len = newArray.length,
-    i = len,
-    p,
-    t;
-  while (i--) {
-    p = (Math.random() * len) | 0;
-    t = newArray[i];
-    newArray[i] = newArray[p];
-    newArray[p] = t;
-  }
-  return newArray;
+/**
+ * copy the array and shuffle it
+ * @param oldArray array to be shuffled
+ * @returns shuffled array
+ */
+export function shuffle<T>(oldArray: T[]): T[] {
+  return oldArray.slice().sort(() => Math.random() - 0.5);
 }

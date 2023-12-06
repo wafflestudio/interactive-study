@@ -47,18 +47,18 @@ export class Point {
     Object.assign(this, mp as PointProps);
   }
 
-  addRect(rect: any): Point {
+  addRect(rect: Rect): Point {
     const vv = new Point(this);
     vv.x = this.x + rect.x;
     vv.y = this.y + rect.y;
-    vv.x2 = this.x2 + rect.x;
-    vv.y2 = this.y2 + rect.y;
-    vv.x3 = this.x3 + rect.x;
-    vv.y3 = this.y3 + rect.y;
-    vv.rx = this.rx + rect.x;
-    vv.ry = this.ry + rect.y;
-    vv.sx = this.sx + rect.x;
-    vv.sy = this.sy + rect.y;
+    vv.x2 = this.x2! + rect.x;
+    vv.y2 = this.y2! + rect.y;
+    vv.x3 = this.x3! + rect.x;
+    vv.y3 = this.y3! + rect.y;
+    vv.rx = this.rx! + rect.x;
+    vv.ry = this.ry! + rect.y;
+    vv.sx = this.sx! + rect.x;
+    vv.sy = this.sy! + rect.y;
     vv.radius = vv.radius ?? 0.5;
     if (vv.radius < 0.5) vv.radius = 0.5;
     return vv;

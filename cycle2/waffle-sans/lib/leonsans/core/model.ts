@@ -4,6 +4,7 @@ import { getTextGroup } from './group';
 import { getGrid, getGuide } from './guide';
 import { getLengths } from './length';
 import { getPaths } from './paths';
+import { Point } from './point';
 import {
   addRectToPaths,
   getCenter,
@@ -14,31 +15,31 @@ import {
   getLineW,
   getLines,
   getRange,
-  getRect,
   getScale,
+  getScaledRect,
   getTracking,
   getWeightRatio,
 } from './util';
 
 export class Model {
   lineWidth_: number;
-  drawing_: any[];
+  drawing_: Drawing[];
   data_: ModelData[];
-  paths_: any;
-  lines_: any;
+  paths_: Point[] | null;
+  // lines_: ModelDataLine | null;
   rect_: Rect;
   align_: Align;
   scale_: number;
   fontRatio_: number;
-  drawingPaths?: any;
-  wavePaths?: any;
+  drawingPaths?: Point[];
+  wavePaths?: Point[];
 
   constructor() {
     this.lineWidth_ = 1;
     this.drawing_ = [];
     this.data_ = [];
     this.paths_ = null;
-    this.lines_ = null;
+    // this.lines_ = null;
     this.rect_ = {
       x: 0,
       y: 0,
@@ -58,13 +59,13 @@ export class Model {
     return this.paths_;
   }
 
-  get lines() {
-    return this.lines_;
-  }
+  // get lines() {
+  //   return this.lines_;
+  // }
 
-  set lines(v) {
-    this.lines_ = v;
-  }
+  // set lines(v) {
+  //   this.lines_ = v;
+  // }
 
   get lineWidth() {
     return this.lineWidth_;
@@ -119,7 +120,7 @@ export class Model {
   setPosition() {
     for (const d of this.data_) {
       d.rect.x =
-        d.originPos.x + this.rect_.x + getAlignGapX(this.align_, d.alignGapX);
+        d.originPos.x + this.rect_.x + getAlignGapX(this.align_, d.alignGapX!);
       d.rect.y = d.originPos.y + this.rect_.y;
     }
   }
@@ -178,73 +179,67 @@ export class Model {
 
     const textGroup = getTextGroup(text, scale, width, breakWord);
 
-    const total = textGroup.length;
-    const total2 = total - 1;
-    let maxW = 0,
-      maxH = 0,
-      tmp: { tw: number; arr: ModelData[] }[] = [];
+    let maxW = 0; // max width
+    let maxH = 0; // max height
 
-    for (let i = 0; i < total; i++) {
-      const gt = textGroup[i];
-      const j_total = gt.length;
-      const j_total2 = j_total - 1;
-      let tw = 0;
-      let th = 0;
-      let tx = 0;
-      let ty = 0;
-      tmp[i] = {
-        tw: 0,
-        arr: [],
-      };
-      for (let j = 0; j < j_total; j++) {
-        const str = gt[j];
+    let tx = 0; // total x
+    let ty = 0; // total y
+
+    const tmp = textGroup.map((word, i) => {
+      let tw = 0; // total width
+      let th = 0; // total height
+
+      const arr: ModelData[] = word.map((str, j) => {
         const typo = getTypo(str);
-        const m_rect = getRect(typo, scale);
-        tw += m_rect.w;
-        th = m_rect.h;
-        if (j < j_total2) {
+        const scaledRect = getScaledRect(typo, scale);
+        tw += scaledRect.w;
+        th = scaledRect.h;
+        if (j < word.length - 1) {
           tw += m_tracking;
         }
-        if (i < total2) {
+        if (i < textGroup.length - 1) {
           th += m_leading;
         }
-        m_rect.x = tx;
-        m_rect.y = ty;
+        scaledRect.x = tx;
+        scaledRect.y = ty;
         let startPosition = {
           x: tx,
           y: ty,
         };
 
-        tmp[i].arr[j] = {
+        const res = {
           str: str,
           typo: typo,
-          rect: m_rect,
+          rect: scaledRect,
           originPos: startPosition,
-          center: getCenter(m_rect.w, m_rect.h, scale),
+          center: getCenter(scaledRect.w, scaledRect.h, scale),
           range: getRange(typo, weightRatio, circleRound),
         };
-
         tx = tw;
-      }
+        return res;
+      });
+
       ty += th;
-      tmp[i].tw = tw;
       maxW = Math.max(maxW, tw);
       maxH += th;
-    }
+
+      return {
+        tw,
+        arr,
+      };
+    });
 
     this.rect_.w = maxW;
     this.rect_.h = maxH;
 
     this.drawing_ = [];
     const arr: ModelData[] = [];
-    let aGapX, drawing;
     for (const a of tmp) {
-      aGapX = setAlignGapX(maxW, a.tw);
       for (const b of a.arr) {
-        b.alignGapX = aGapX;
+        b.alignGapX = setAlignGapX(maxW, a.tw);
         b.pointsLength = getLengths(b, this);
         arr.push(b);
-        drawing = {
+        const drawing: Drawing = {
           value: 1,
         };
         this.drawing_.push(drawing);
@@ -265,30 +260,21 @@ export class Model {
   }
 
   updatePathsForRect() {
-    const total = this.data_.length;
-    const paths = [];
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.data_[i];
+    this.paths_ = this.data_.flatMap((d) => {
       if (d.rawWavePaths) {
         d.wavePaths = addRectToPaths(d.rawWavePaths, d);
       }
       if (d.rawPaths) {
         d.paths = addRectToPaths(d.rawPaths, d);
-        Array.prototype.push.apply(paths, d.paths);
       }
-    }
-
-    this.paths_ = paths;
+      return d.paths ?? [];
+    });
   }
 
   updateLinesForRect() {
-    const total = this.data_.length;
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.data_[i];
+    this.data_.forEach((d) => {
       d.lines = getLines(d);
-    }
+    });
   }
 
   reset() {
@@ -296,7 +282,7 @@ export class Model {
     this.drawing_ = [];
     this.data_ = [];
     this.paths_ = null;
-    this.lines_ = null;
+    // this.lines_ = null;
     this.rect_ = {
       x: 0,
       y: 0,

@@ -27,15 +27,15 @@ export function getPaths(
   data: ModelData,
   pathGap: number,
   isPattern: boolean,
-): Point[][] {
+): Point[] {
   return data
     .pointsLength!.linesArray.map((lines) => {
       return getDotPos(lines, pathGap, model.scale);
     })
-    .reduce((pathsArray, lines, i) => {
+    .flatMap((lineGroup, i) => {
       const paths: Point[] = isPattern
-        ? lines.filter((line) => line.rotation != ROTATE_NONE && !line.hide)
-        : lines.filter((line) => line.rotation != ROTATE_NONE);
+        ? lineGroup.filter((line) => line.rotation != ROTATE_NONE && !line.hide)
+        : lineGroup.filter((line) => line.rotation != ROTATE_NONE);
 
       const direction = data.typo.p[i].d;
       if (direction == 1) {
@@ -44,10 +44,9 @@ export function getPaths(
 
       if (paths.length > 0) {
         paths[0].start = 1;
-        pathsArray.push(paths);
       }
-      return pathsArray;
-    }, [] as Point[][]);
+      return paths;
+    }, [] as Point[]);
 }
 
 /**

@@ -1,95 +1,114 @@
-declare type Position = {
-  x: number;
-  y: number;
-};
+import { Point } from './point';
 
-declare type GuidePosition = {
-  x1: number;
-  x2: number;
-  y1: number;
-  y2: number;
-};
+declare global {
+  type Position = {
+    x: number;
+    y: number;
+  };
 
-declare type RatioRange = {
-  r: number;
-  cr: number;
-  fr1: number;
-  fr2: number;
-  gx1: number;
-  gx2: number;
-  gy1: number;
-  gy2: number;
-};
+  type GuidePosition = {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+  };
 
-declare type Rect = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-};
+  type RatioRange = {
+    r: number;
+    cr: number;
+    fr1: number;
+    fr2: number;
+    gx1: number;
+    gx2: number;
+    gy1: number;
+    gy2: number;
+  };
 
-declare type Align = 'center' | 'right' | 'left';
+  type Rect = {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
 
-declare type AlignGapX = {
-  center: number;
-  right: number;
-  left: number;
-};
+  type Align = 'center' | 'right' | 'left';
 
-declare type CommonLineData = {
-  distance: number; // Length of the line
-  radius?: number;
-  rotation?: number;
-  hide?: 1 | 0;
-  fixed?: 1 | 0;
-  vertex?: 1 | 0;
-};
+  type AlignGapX = {
+    center: number;
+    right: number;
+    left: number;
+  };
 
-declare type SimpleLineData = CommonLineData & {
-  type: Exclude<PathCommand, typeof BEZIER_COMMAND>;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-};
+  type CommonLineData = {
+    distance: number; // Length of the line
+    radius?: number;
+    rotation?: number;
+    hide?: 1 | 0;
+    fixed?: 1 | 0;
+    vertex?: 1 | 0;
+  };
 
-declare type BezierCurveData = CommonLineData & {
-  type: typeof BEZIER_COMMAND;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  x3: number;
-  y3: number;
-  x4: number;
-  y4: number;
-};
+  type SimpleLineData = CommonLineData & {
+    type: Exclude<PathCommand, typeof BEZIER_COMMAND>;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+  };
 
-declare type LineData = SimpleLineData | BezierCurveData;
+  type BezierCurveData = CommonLineData & {
+    type: typeof BEZIER_COMMAND;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x3: number;
+    y3: number;
+    x4: number;
+    y4: number;
+  };
 
-declare type LinesLengths = {
-  max: number;
-  linesArray: LineData[][];
-  lengths: number[];
-};
+  type LineData = SimpleLineData | BezierCurveData;
 
-declare type ModelData = {
-  str: string;
-  typo: Typo;
-  rect: Rect;
-  originPos: Position;
-  center: Position;
-  range: RatioRange;
-  alignGapX: AlignGapX;
-  pointsLength?: LinesLengths;
-  drawingPaths?: any;
-  rawPaths?: any;
-  rawWavePaths?: any;
-  paths?: any;
-  wavePaths?: any;
-  guide?: GuidePosition[];
-  grid?: number[];
-  drawing?: any;
-};
+  type LinesLengths = {
+    max: number;
+    linesArray: LineData[][];
+    lengths: number[];
+  };
 
-declare type char = string;
+  type ModelDataLine = {
+    pos: Point;
+    drawing: Drawing;
+    lengths: number;
+    maxDrawing: number;
+    minDrawing: number;
+    closePath: 1 | 0;
+    stroke(ctx: CanvasRenderingContext2D, d: ModelDataLine): void;
+  };
+
+  type Drawing = {
+    value: number;
+  };
+
+  type ModelData = {
+    str: string;
+    typo: Typo;
+    rect: Rect;
+    originPos: Position;
+    center: Position;
+    range: RatioRange;
+    alignGapX?: AlignGapX;
+    pointsLength?: LinesLengths;
+    drawingPaths?: Point[];
+    rawPaths?: Point[];
+    rawWavePaths?: Point[];
+    paths?: Point[];
+    wavePaths?: Point[];
+    guide?: GuidePosition[];
+    grid?: number[];
+    drawing?: Drawing;
+    lines?: ModelDataLine[];
+  };
+
+  type char = string;
+}

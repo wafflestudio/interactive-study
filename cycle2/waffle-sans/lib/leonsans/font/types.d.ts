@@ -41,6 +41,7 @@ declare global {
   type TypoPath = {
     d: 1 | -1; // direction
     v: Vector[];
+    cv?: Point[];
   };
 
   type Typo = {
