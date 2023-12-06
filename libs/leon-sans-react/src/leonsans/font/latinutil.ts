@@ -1,3 +1,8 @@
+import {
+  HALF_VERTEX_GAP,
+  ROTATE_HORIZONTAL,
+  ROTATE_VERTICAL,
+} from './constants';
 import { getCurveR, getRotation } from './util.js';
 
 //À

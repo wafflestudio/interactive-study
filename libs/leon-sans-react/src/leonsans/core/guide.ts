@@ -1,3 +1,5 @@
+import { RECT_RATIO } from './constants';
+
 /**
  * @name getGuide
  * @param d - typo data object from 'font/index.js'
@@ -6,7 +8,7 @@
  * @description get a guide pos
  */
 export function getGuide(d: Typo, scale: number): GuidePosition[] {
-  let guide: GuidePosition[] = [];
+  const guide: GuidePosition[] = [];
   const ggap = 10;
 
   for (let i = 0; i < 6; i++) {
@@ -33,10 +35,9 @@ export function getGuide(d: Typo, scale: number): GuidePosition[] {
  * @description get a guide pos
  */
 export function getGrid(d: Typo, scale: number): number[] {
-  let grid = [],
-    i,
+  const grid = [],
     gvy = [98, 340, 815];
-  for (i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     grid[i] = gvy[i] * RECT_RATIO * scale;
   }
 

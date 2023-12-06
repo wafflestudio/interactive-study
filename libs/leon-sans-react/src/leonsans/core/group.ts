@@ -50,7 +50,7 @@ function breakWord(group: string[], scale: number, width: number): char[][] {
     fontData: Typo;
   const groupWithImplicitLineBreak: string[][] = []; // 실질적인 줄바꿈으로 쪼개진 문자열(string)을 단어(string)의 배열로 변환한 배열
   for (const line of group) {
-    let wordGroup = line.split(' '); // 각 줄을 단어 단위로 쪼갬
+    const wordGroup = line.split(' '); // 각 줄을 단어 단위로 쪼갬
     groupWithImplicitLineBreak[index] = []; // index 번째 줄의 문자들을 담을 배열
     for (const word of wordGroup) {
       wordWidth = 0;

@@ -1,17 +1,14 @@
-export function Grids(ctx, data) {
+export function Grids(ctx: CanvasRenderingContext2D, data: ModelData) {
   ctx.save();
 
   ctx.beginPath();
   ctx.lineWidth = 1;
   ctx.strokeStyle = '#aaaaaa';
-  let i,
-    total = data.guide.length,
-    grid;
-  for (i = 0; i < total; i++) {
-    grid = data.rect.y + data.grid[i];
-    ctx.moveTo(data.rect.x, grid);
-    ctx.lineTo(data.rect.x + data.rect.w, grid);
-  }
+
+  data.grid?.forEach((grid) => {
+    ctx.moveTo(data.rect.x + grid, data.rect.y);
+    ctx.lineTo(data.rect.x + grid, data.rect.y + data.rect.h);
+  });
   ctx.stroke();
 
   ctx.lineWidth = 1;

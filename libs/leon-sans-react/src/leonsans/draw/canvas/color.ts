@@ -1,4 +1,9 @@
-export function Color(ctx, no, data, color) {
+export function Color(
+  ctx: CanvasRenderingContext2D,
+  no: number,
+  data: ModelData,
+  color: string[],
+) {
   let c_total = color.length;
   const cur = (no + c_total * (Math.abs((no / 10) | 0) + 1)) % c_total;
   if (Array.isArray(color[cur])) {

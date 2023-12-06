@@ -1,3 +1,9 @@
+import {
+  HALF_VERTEX_GAP,
+  ROTATE_HORIZONTAL,
+  ROTATE_NONE,
+  ROTATE_VERTICAL,
+} from './constants';
 import { generateFontData, getCurveR, getRotation } from './util';
 
 export const SPECIAL = {

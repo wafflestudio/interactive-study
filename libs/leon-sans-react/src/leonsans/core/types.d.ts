@@ -1,3 +1,4 @@
+import { BEZIER_COMMAND } from '../font/constants';
 import { Point } from './point';
 
 declare global {
@@ -79,6 +80,7 @@ declare global {
   type ModelDataLine = {
     pos: Point;
     drawing: Drawing;
+    direction: 1 | -1;
     lengths: number;
     maxDrawing: number;
     minDrawing: number;

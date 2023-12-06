@@ -1,3 +1,14 @@
+import {
+  DEFAULT_FONT_SIZE,
+  FONT_RATIO_1,
+  FONT_RATIO_2,
+  FONT_WEIGHT_LIMIT,
+  MAX_FONT_WEIGHT,
+  MAX_LINE_WIDTH,
+  MAX_SHAKE,
+  MIN_FONT_WEIGHT,
+  RECT_RATIO,
+} from './constants';
 import { Point } from './point';
 
 export function getAmplitude(amplitude: number, scale: number) {
@@ -152,7 +163,7 @@ export function getLines(data: ModelData): ModelDataLine[] {
           prevRatio += data.pointsLength!.lengths[k] / data.pointsLength!.max;
         }
       }
-      let ltRatio = lt / data.pointsLength!.max + prevRatio;
+      const ltRatio = lt / data.pointsLength!.max + prevRatio;
 
       return {
         pos: cp,
@@ -162,8 +173,8 @@ export function getLines(data: ModelData): ModelDataLine[] {
         maxDrawing: ltRatio,
         minDrawing: prevRatio,
         closePath: d3.ratio!.c,
-        stroke: (ctx: CanvasRenderingContext2D, d: any) => {
-          let dv = getCurrent(
+        stroke: (ctx: CanvasRenderingContext2D, d: ModelDataLine) => {
+          const dv = getCurrent(
             d.drawing.value,
             d.maxDrawing,
             d.minDrawing,

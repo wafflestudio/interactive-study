@@ -202,7 +202,7 @@ export class Model {
         }
         scaledRect.x = tx;
         scaledRect.y = ty;
-        let startPosition = {
+        const startPosition = {
           x: tx,
           y: ty,
         };

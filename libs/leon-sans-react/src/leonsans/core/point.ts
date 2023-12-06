@@ -1,5 +1,3 @@
-import { Vector } from './vector';
-
 type PointProps = {
   type?: PathCommand;
   x: number;
@@ -40,7 +38,7 @@ export class Point {
   hide?: 1 | 0;
   fixed?: 1 | 0;
   distance?: number;
-  vetex?: number; // 1에 가까울 수록 vertex와 가까움. 1이면 vertex이고, Pattern에서 사용
+  vertex?: number; // 1에 가까울 수록 vertex와 가까움. 1이면 vertex이고, Pattern에서 사용
   start?: number;
 
   constructor(mp: PointProps) {

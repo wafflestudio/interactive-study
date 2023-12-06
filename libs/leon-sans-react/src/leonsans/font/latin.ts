@@ -1,3 +1,4 @@
+import { ROTATE_HORIZONTAL, ROTATE_NONE, ROTATE_VERTICAL } from './constants';
 import {
   getLatin1,
   getLatin2,

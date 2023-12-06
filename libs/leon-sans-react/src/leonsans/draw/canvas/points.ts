@@ -1,30 +1,22 @@
-import { PI2 } from '../../core/util.js';
-
-export function Points(ctx, data) {
+export function Points(ctx: CanvasRenderingContext2D, data: ModelData) {
   ctx.save();
   ctx.lineWidth = 1;
-  let total = data.lines.length;
-  let i;
-  for (i = 0; i < total; i++) {
-    eachLine_(ctx, data.lines[i]);
-  }
+  data.lines?.forEach((line) => eachLine_(ctx, line));
   ctx.restore();
 
   ctx.save();
   ctx.lineWidth = 1;
-  total = data.typo.p.length;
-  for (i = 0; i < total; i++) {
-    eachPoint_(ctx, data.typo.p[i], data);
-  }
+  data.typo.p.forEach((p) => eachPoint_(ctx, p, data));
   ctx.restore();
 }
 
-function eachPoint_(ctx, p, data) {
-  const total = p.v.length;
-  let i, mp, cp;
-  for (i = 0; i < total; i++) {
-    mp = p.cv[i];
-    cp = mp.addRect(data.rect);
+function eachPoint_(
+  ctx: CanvasRenderingContext2D,
+  p: TypoPath,
+  data: ModelData,
+) {
+  p.cv?.forEach((mp) => {
+    const cp = mp.addRect(data.rect);
     if (mp.type == 'b') {
       ctx.fillStyle = '#ff2a00';
       ctx.beginPath();
@@ -51,10 +43,10 @@ function eachPoint_(ctx, p, data) {
       ctx.fill();
       ctx.stroke();
     }
-  }
+  });
 }
 
-function eachLine_(ctx, d) {
+function eachLine_(ctx: CanvasRenderingContext2D, d: ModelDataLine) {
   const pos = d.pos;
   if (pos.type != 'a') {
     if (pos.type == 'm') {
@@ -64,7 +56,7 @@ function eachLine_(ctx, d) {
     } else if (pos.type == 'l') {
       ctx.lineTo(pos.x, pos.y);
     } else if (pos.type == 'b') {
-      ctx.bezierCurveTo(pos.x, pos.y, pos.x2, pos.y2, pos.x3, pos.y3);
+      ctx.bezierCurveTo(pos.x, pos.y, pos.x2!, pos.y2!, pos.x3!, pos.y3!);
     }
     ctx.stroke();
   }

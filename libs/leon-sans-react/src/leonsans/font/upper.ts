@@ -1,3 +1,9 @@
+import {
+  HALF_VERTEX_GAP,
+  ROTATE_HORIZONTAL,
+  ROTATE_VERTICAL,
+  VERTEX_GAP,
+} from './constants';
 import { generateFontData, getCurveR, getRotation } from './util.js';
 
 export const DATA_UA: TypoData[] = [

@@ -1,3 +1,10 @@
+import {
+  HALF_VERTEX_GAP,
+  ROTATE_HORIZONTAL,
+  ROTATE_NONE,
+  ROTATE_VERTICAL,
+  VERTEX_GAP,
+} from './constants';
 import { generateFontData, getCurveR, getRotation } from './util';
 
 export const DATA_LA: TypoData[] = [

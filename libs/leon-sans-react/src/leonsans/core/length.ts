@@ -9,8 +9,8 @@ import { Vector } from './vector';
  * @returns An object containing the maximum length, an array of lines for each path, and an array of lengths for each path.
  */
 export function getLengths(data: ModelData, model: Model): LinesLengths {
-  let linesArray: LineData[][] = [];
-  let lengths: number[] = [];
+  const linesArray: LineData[][] = [];
+  const lengths: number[] = [];
   let max = 0;
 
   for (const path of data.typo.p) {
@@ -34,7 +34,7 @@ export function getLengths(data: ModelData, model: Model): LinesLengths {
  * @returns 선들과 그들의 길이의 합
  */
 function getEachPath(data: ModelData, points: Vector[], model: Model) {
-  let lines: LineData[] = [];
+  const lines: LineData[] = [];
   let length = 0;
   let prev: Vector | undefined;
 

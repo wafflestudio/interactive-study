@@ -1,5 +1,6 @@
 import { partialBezierTangent } from '../core/paths.js';
 import { Vector } from '../core/vector.js';
+import { BEZIER_COMMAND, FONT_HEIGHT } from './constants.js';
 
 /**
  * Generates font data based on the provided parameters.
@@ -76,7 +77,7 @@ function setCenter(
   return arr.map((data) => {
     data[1] -= centerX;
     data[2] -= centerY;
-    if (data[0] === 'b') {
+    if (data[0] === BEZIER_COMMAND) {
       data[3] -= centerX;
       data[4] -= centerY;
       data[5] -= centerX;

@@ -1,3 +1,4 @@
+import { PATH_COMMANDS } from '../font/constants.js';
 import { Model } from './model.js';
 import { Point } from './point.js';
 
@@ -55,7 +56,7 @@ export class Vector {
       this.y3 = obj[6] ?? 0;
     }
 
-    let pathRatio = obj[0] === 'b' ? obj[7] : obj[3];
+    const pathRatio = obj[0] === 'b' ? obj[7] : obj[3];
     this.ratio = {
       x: pathRatio?.x ?? 1,
       y: pathRatio?.y ?? 1,

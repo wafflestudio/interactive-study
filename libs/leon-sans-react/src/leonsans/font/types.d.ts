@@ -1,4 +1,5 @@
 import { Vector } from '../core/vector';
+import { BEZIER_COMMAND, PATH_COMMANDS } from './constants';
 
 declare global {
   type PathCommand = (typeof PATH_COMMANDS)[number];

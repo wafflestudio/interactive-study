@@ -7,6 +7,7 @@
  **/
 import { Graphics } from 'pixi.js';
 
+import { MAX_FONT_WEIGHT, MIN_FONT_WEIGHT } from './core/constants.js';
 import { Dispatcher } from './core/dispatcher';
 import { Model } from './core/model';
 import { shuffle } from './core/util';
@@ -125,14 +126,14 @@ export default class LeonSans extends Dispatcher {
     this.model.align = align;
   }
 
-  on(event: string, callback: Function) {
-    super.on(event, callback);
-    this.update();
-  }
+  // on(event: string, callback: Function) {
+  //   super.on(event, callback);
+  //   this.update();
+  // }
 
-  off(event: string, callback: Function) {
-    return super.off(event, callback);
-  }
+  // off(event: string, callback: Function) {
+  //   return super.off(event, callback);
+  // }
 
   get text() {
     return this.str_;

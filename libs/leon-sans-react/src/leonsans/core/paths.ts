@@ -1,3 +1,4 @@
+import { ROTATE_NONE } from '../font/constants';
 import { Model } from './model';
 import { Point } from './point';
 import { getCurrent } from './util';
@@ -158,7 +159,7 @@ function setPointValues(
   const pp = new Point(cur);
   pp.type = line.type;
   pp.distance = line.distance;
-  pp.vetex = vertex;
+  pp.vertex = vertex;
 
   if (prev && pp.rotation === null) {
     const dx = pp.x - prev.x;
