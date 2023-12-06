@@ -1,5 +1,5 @@
 import { Model } from './model.js';
-import { Point } from './point';
+import { Point } from './point.js';
 
 type VectorProps = {
   type: PathCommand;

@@ -1,5 +1,5 @@
 import { partialBezierTangent } from '../core/paths.js';
-import { Vector } from '../core/vector';
+import { Vector } from '../core/vector.js';
 
 /**
  * Generates font data based on the provided parameters.
