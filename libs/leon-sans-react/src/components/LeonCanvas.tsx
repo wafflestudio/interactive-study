@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-// import LeonSans from '../leon-temp/leon';
-import LeonSansType from '../leonsans/leonsans';
+import LeonSans from '../leonsans/leonsans';
+// import LeonSans from '../leonsans-js/leonsans.js';
 import { CanvasDataRefs } from '../types/DataRefs';
 import { CanvasDispatcher } from '../types/Dispatcher';
 import { CanvasHandlers } from '../types/Handler';
@@ -90,7 +90,7 @@ export default function LeonCanvas({
     // create ctx and leon instance, and store them as dataRefs
     if (!dataRefs.current) {
       const ctx = canvas.getContext('2d');
-      const leon = new LeonSansType({
+      const leon = new LeonSans({
         text,
         color: [color],
         size,

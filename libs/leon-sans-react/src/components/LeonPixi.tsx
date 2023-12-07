@@ -2,7 +2,8 @@ import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-import LeonSans from '../leon-temp/leon';
+import LeonSans from '../leonsans/leonsans';
+// import LeonSans from '../leonsans-js/leonsans.js';
 import { PixiDataRefs } from '../types/DataRefs';
 import { PixiHandlers } from '../types/Handler';
 
