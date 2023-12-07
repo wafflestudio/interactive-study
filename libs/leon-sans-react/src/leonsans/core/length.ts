@@ -19,6 +19,7 @@ export function getLengths(data: ModelData, model: Model): LinesLengths {
     lengths.push(c.length);
     max += c.length;
   }
+
   return {
     max,
     linesArray,
@@ -36,21 +37,20 @@ export function getLengths(data: ModelData, model: Model): LinesLengths {
 function getEachPath(data: ModelData, points: Vector[], model: Model) {
   const lines: LineData[] = [];
   let length = 0;
-  let prev: Vector | undefined;
 
-  for (const _point of points) {
+  points.reduce<Vector | null>((prevVector, curVector) => {
     const line: Partial<LineData> = {};
-    const point = _point.convert(data, model);
+    const curPoint = curVector.convert(data, model);
 
-    if (prev === undefined || _point.type == 'a') {
-      line.x1 = point.x;
-      line.y1 = point.y;
+    if (!prevVector || curVector.type == 'a') {
+      line.x1 = curPoint.x;
+      line.y1 = curPoint.y;
       line.distance = 0;
-      line.radius = point.radius;
+      line.radius = curPoint.radius;
     } else {
-      const prevPoint = prev.convert(data, model);
+      const prevPoint = prevVector.convert(data, model);
 
-      if (prev.type == 'b') {
+      if (prevVector.type == 'b') {
         line.x1 = prevPoint.x3;
         line.y1 = prevPoint.y3;
       } else {
@@ -58,16 +58,16 @@ function getEachPath(data: ModelData, points: Vector[], model: Model) {
         line.y1 = prevPoint.y;
       }
 
-      line.x2 = point.x;
-      line.y2 = point.y;
+      line.x2 = curPoint.x;
+      line.y2 = curPoint.y;
 
-      if (line.type == 'b') {
-        line.x3 = point.x2;
-        line.y3 = point.y2;
-        line.x4 = point.x3;
-        line.y4 = point.y3;
+      if (curVector.type == 'b') {
         const bezierCurve = line as BezierCurveData;
-        line.distance = cubicBezierLength(
+        bezierCurve.x3 = curPoint.x2!;
+        bezierCurve.y3 = curPoint.y2!;
+        bezierCurve.x4 = curPoint.x3!;
+        bezierCurve.y4 = curPoint.y3!;
+        bezierCurve.distance = cubicBezierLength(
           bezierCurve.x1,
           bezierCurve.y1,
           bezierCurve.x2,
@@ -88,17 +88,17 @@ function getEachPath(data: ModelData, points: Vector[], model: Model) {
       }
     }
 
-    line.type = _point.type;
-    line.rotation = _point.ratio.r;
-    line.hide = _point.ratio.h;
-    line.fixed = _point.ratio.f;
-    line.vertex = _point.ratio.v;
+    line.type = curVector.type;
+    line.rotation = curVector.ratio.r;
+    line.hide = curVector.ratio.h;
+    line.fixed = curVector.ratio.f;
+    line.vertex = curVector.ratio.v;
 
     lines.push(line as LineData);
     length += line.distance;
 
-    prev = _point;
-  }
+    return curVector;
+  }, null);
 
   return {
     lines,
