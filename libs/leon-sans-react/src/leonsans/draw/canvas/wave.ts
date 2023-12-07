@@ -17,7 +17,7 @@ export function Wave(
   const m_amplitude = getAmplitude(amplitude, scale);
   const saveDot: Point[] = [];
   ctx.beginPath();
-  data.wavePaths?.reduce((prev, p) => {
+  data.wavePaths!.reduce<Point | null>((prev, p) => {
     if (fps) {
       const ranx = Math.random() * m_amplitude - m_amplitude / 2;
       const rany = Math.random() * m_amplitude - m_amplitude / 2;
@@ -45,7 +45,7 @@ export function Wave(
       }
     }
     return p;
-  });
+  }, null);
   ctx.stroke();
 
   saveDot.map((p) => {
