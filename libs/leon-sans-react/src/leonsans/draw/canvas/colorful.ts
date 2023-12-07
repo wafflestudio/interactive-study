@@ -1,3 +1,4 @@
+import { PI2 } from '../../core/constants.js';
 import { cubicBezierLength, distance } from '../../core/length.js';
 import { Model } from '../../core/model.js';
 import { getCurrent } from '../../core/util.js';

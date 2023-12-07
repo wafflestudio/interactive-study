@@ -1,3 +1,4 @@
+import { PI2 } from '../../core/constants.js';
 import { Point } from '../../core/point.js';
 import { getAmplitude } from '../../core/util.js';
 

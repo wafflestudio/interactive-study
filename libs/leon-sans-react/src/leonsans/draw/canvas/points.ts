@@ -1,3 +1,5 @@
+import { PI2 } from '../../core/constants';
+
 export function Points(ctx: CanvasRenderingContext2D, data: ModelData) {
   ctx.save();
   ctx.lineWidth = 1;

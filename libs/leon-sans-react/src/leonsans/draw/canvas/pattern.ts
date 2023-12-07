@@ -1,3 +1,5 @@
+import { PI2 } from '../../core/constants';
+
 export function Pattern(
   ctx: CanvasRenderingContext2D,
   data: ModelData,

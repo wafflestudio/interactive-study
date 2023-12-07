@@ -1,3 +1,5 @@
+import { PI2 } from '../../core/constants';
+
 export function Lines(ctx: CanvasRenderingContext2D, data: ModelData) {
   data.lines?.forEach((line) => {
     const pos = line.pos;
