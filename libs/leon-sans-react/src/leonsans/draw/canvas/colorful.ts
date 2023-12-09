@@ -91,7 +91,7 @@ function draw(
   line: ModelDataLine,
   length: number,
   max: number,
-  d: ModelData,
+  d: Pick<ModelData, 'drawing'>,
   prevRatio: number,
 ) {
   const ltRatio = length / max;

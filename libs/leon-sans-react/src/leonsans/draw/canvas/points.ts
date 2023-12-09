@@ -1,9 +1,12 @@
 import { PI2 } from '../../core/constants';
 
-export function Points(ctx: CanvasRenderingContext2D, data: ModelData) {
+export function Points(
+  ctx: CanvasRenderingContext2D,
+  data: Pick<ModelData, 'lines' | 'typo' | 'rect'>,
+) {
   ctx.save();
   ctx.lineWidth = 1;
-  data.lines?.forEach((line) => eachLine_(ctx, line));
+  data.lines.forEach((line) => eachLine_(ctx, line));
   ctx.restore();
 
   ctx.save();
@@ -15,7 +18,7 @@ export function Points(ctx: CanvasRenderingContext2D, data: ModelData) {
 function eachPoint_(
   ctx: CanvasRenderingContext2D,
   p: TypoPath,
-  data: ModelData,
+  data: Pick<ModelData, 'rect'>,
 ) {
   p.cv?.forEach((mp) => {
     const cp = mp.addRect(data.rect);

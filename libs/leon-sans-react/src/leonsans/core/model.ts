@@ -200,6 +200,13 @@ export class Model {
           center: getCenter(scaledRect.w, scaledRect.h, scale),
           range: getRange(typo, weightRatio, circleRound),
           lines: [],
+          paths: [],
+          wavePaths: [],
+          guide: [],
+          grid: [],
+          relativePaths: [],
+          relativeWavePaths: [],
+          drawingPaths: [],
         };
         tx = tw;
         return res;
@@ -247,12 +254,8 @@ export class Model {
 
   updatePathsForRect() {
     this.data_.forEach((d) => {
-      if (d.relativeWavePaths) {
-        d.wavePaths = addRectToPaths(d.relativeWavePaths, d);
-      }
-      if (d.relativePaths) {
-        d.paths = addRectToPaths(d.relativePaths, d);
-      }
+      d.wavePaths = addRectToPaths(d.relativeWavePaths, d);
+      d.paths = addRectToPaths(d.relativePaths, d);
     });
   }
 

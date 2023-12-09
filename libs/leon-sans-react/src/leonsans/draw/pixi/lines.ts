@@ -4,12 +4,12 @@ import { Point } from '../../core/point';
 
 export function PixiLines(
   graphics: Graphics,
-  data: ModelData,
+  data: Pick<ModelData, 'lines' | 'drawing' | 'drawingPaths'>,
   lineW: number,
   color: ColorSource,
 ) {
   if (data.drawing.value == 1) {
-    data.lines?.forEach((line) => {
+    data.lines.forEach((line) => {
       eachLine_(graphics, line, lineW, color);
     });
   } else {

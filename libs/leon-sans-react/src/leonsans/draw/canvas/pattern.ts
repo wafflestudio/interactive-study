@@ -2,7 +2,7 @@ import { PI2 } from '../../core/constants';
 
 export function Pattern(
   ctx: CanvasRenderingContext2D,
-  data: ModelData,
+  data: Pick<ModelData, 'paths' | 'drawing'>,
   w: number,
   h: number,
 ) {

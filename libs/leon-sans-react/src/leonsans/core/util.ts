@@ -150,7 +150,9 @@ export function getCurrent(
   return value;
 }
 
-export function getLines(data: ModelData): ModelDataLine[] {
+export function getLines(
+  data: Pick<ModelData, 'typo' | 'rect' | 'pointsLength' | 'drawing'>,
+): ModelDataLine[] {
   return data.typo.p.flatMap((d2, i) =>
     d2.cv!.map((d3: Point) => {
       // add current position to all points
@@ -202,7 +204,10 @@ export function getLines(data: ModelData): ModelDataLine[] {
  * @param data
  * @returns
  */
-export function addRectToPaths(path: Point[], data: ModelData): Point[] {
+export function addRectToPaths(
+  path: Point[],
+  data: Pick<ModelData, 'rect'>,
+): Point[] {
   return path.map((p) => p.addRect(data.rect));
 }
 

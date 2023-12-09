@@ -1,7 +1,10 @@
 import { PI2 } from '../../core/constants';
 
-export function Lines(ctx: CanvasRenderingContext2D, data: ModelData) {
-  data.lines?.forEach((line) => {
+export function Lines(
+  ctx: CanvasRenderingContext2D,
+  data: Pick<ModelData, 'lines' | 'drawing'>,
+) {
+  data.lines.forEach((line) => {
     const pos = line.pos;
     if (pos.type == 'a') {
       ctx.beginPath();

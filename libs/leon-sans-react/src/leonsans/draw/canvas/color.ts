@@ -1,7 +1,7 @@
 export function Color(
   ctx: CanvasRenderingContext2D,
-  index: number, // 몇 번째 데이터
-  data: ModelData, // 데이터
+  index: number, // 몇 번째 데이터?
+  data: Pick<ModelData, 'rect'>,
   colorSet: (string | string[])[],
 ) {
   let c_total = colorSet.length;

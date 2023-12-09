@@ -100,13 +100,13 @@ declare global {
     alignGapX: AlignGapX;
     pointsLength: LinesLengths;
     drawing: Drawing;
-    drawingPaths?: Point[];
-    relativePaths?: Point[];
-    relativeWavePaths?: Point[];
-    paths?: Point[];
-    wavePaths?: Point[];
-    guide?: GuidePosition[];
-    grid?: number[];
+    drawingPaths: Point[];
+    relativePaths: Point[];
+    relativeWavePaths: Point[];
+    paths: Point[];
+    wavePaths: Point[];
+    guide: GuidePosition[];
+    grid: number[];
     lines: ModelDataLine[];
   };
 

@@ -1,11 +1,14 @@
-export function Grids(ctx: CanvasRenderingContext2D, data: ModelData) {
+export function Grids(
+  ctx: CanvasRenderingContext2D,
+  data: Pick<ModelData, 'grid' | 'rect'>,
+) {
   ctx.save();
 
   ctx.beginPath();
   ctx.lineWidth = 1;
   ctx.strokeStyle = '#aaaaaa';
 
-  data.grid?.forEach((grid) => {
+  data.grid.forEach((grid) => {
     ctx.moveTo(data.rect.x + grid, data.rect.y);
     ctx.lineTo(data.rect.x + grid, data.rect.y + data.rect.h);
   });

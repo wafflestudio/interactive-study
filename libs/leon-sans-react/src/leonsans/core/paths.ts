@@ -25,7 +25,7 @@ type Curve = {
  */
 export function getPaths(
   model: Model,
-  data: ModelData,
+  data: Pick<ModelData, 'pointsLength' | 'typo'>,
   pathGap: number,
   isPattern: boolean,
 ): Point[] {
