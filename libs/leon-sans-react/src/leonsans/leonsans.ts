@@ -42,16 +42,16 @@ type LeonSansProps = {
 export default class LeonSans extends Dispatcher {
   size_: number; // Size of the font
   weight_: number; // Weight of the font
-  color_: (string | string[])[]; // Color of the font
-  colorful_: string[]; //
-  tracking_: number;
-  leading_: number;
-  pathGap_: number;
-  amplitude_: number;
-  width_: number;
-  breakWord_: boolean;
-  fps_: number;
-  fpsTime_: number;
+  color_: (string | string[])[]; // Color of the font. if some element are array, them will be used as a gradient color.
+  colorful_: string[];
+  tracking_: number; // Tracking of the font
+  leading_: number; // Leading of the font
+  pathGap_: number; // Gap between paths
+  amplitude_: number; // Amplitude of the wave
+  width_: number; // Max width of the text
+  breakWord_: boolean; // Break word
+  fps_: number; // FPS for wave effect
+  fpsTime_: number; // Time for FPS
   isPath_: boolean;
   isWave_: boolean;
   model: Model;
@@ -438,8 +438,8 @@ export default class LeonSans extends Dispatcher {
    * Draw text in the Canvas element.
    * @param {CanvasRenderingContext2D} ctx
    */
-  draw(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp) {
-    if (this.isWave_) {
+  draw(ctx: CanvasRenderingContext2D, t?: DOMHighResTimeStamp) {
+    if (this.isWave_ && t) {
       this.wave(ctx, t);
     } else {
       ctx.lineWidth = this.lineWidth;
@@ -467,15 +467,13 @@ export default class LeonSans extends Dispatcher {
   wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp) {
     ctx.lineWidth = this.lineWidth;
 
-    if (t) {
-      if (!this.time_) this.time_ = t;
-      const p = t - this.time_;
-      if (p > this.fpsTime_ || this.isForceRender_) {
-        this.time_ = t;
-        this.isFps_ = true;
-      } else {
-        this.isFps_ = false;
-      }
+    if (!this.time_) this.time_ = t;
+    const p = t - this.time_;
+    if (p > this.fpsTime_ || this.isForceRender_) {
+      this.time_ = t;
+      this.isFps_ = true;
+    } else {
+      this.isFps_ = false;
     }
     this.isForceRender_ = false;
 

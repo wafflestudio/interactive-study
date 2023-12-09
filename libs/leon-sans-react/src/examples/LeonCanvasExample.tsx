@@ -3,7 +3,8 @@ import { useCallback, useState } from 'react';
 
 import LeonCanvas from '../components/LeonCanvas';
 import { useDispatcher } from '../hooks/useDispatcher';
-import { CanvasDataRefs } from '../types/DataRefs';
+
+// import { CanvasDataRefs } from '../types/DataRefs';
 
 const canvasWidth = 800;
 const canvasHeight = 600;
@@ -32,9 +33,9 @@ export default function LeonCanvasExample() {
     });
   }, [dispatcher]);
 
-  const wave = useCallback(({ leon, ctx }: CanvasDataRefs, t: number) => {
-    leon.wave(ctx, t);
-  }, []);
+  // const wave = useCallback(({ leon, ctx }: CanvasDataRefs, t: number) => {
+  //   leon.wave(ctx, t);
+  // }, []);
 
   return (
     <div>
@@ -43,10 +44,9 @@ export default function LeonCanvasExample() {
         width={canvasWidth}
         height={canvasHeight}
         dispatcher={dispatcher}
-        isDraw={!isWave}
         isWave={isWave}
         weight={isWave ? 1 : 400}
-        onAnimate={isWave ? wave : undefined}
+        // onAnimate={isWave ? wave : undefined}
         pathGap={0.3}
         amplitude={0.3}
         fps={30}
