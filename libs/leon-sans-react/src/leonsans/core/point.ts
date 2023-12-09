@@ -45,20 +45,19 @@ export class Point {
     Object.assign(this, mp as PointProps);
   }
 
-  addRect(rect: Rect): Point {
+  addRect(pos: Position): Point {
     const vv = new Point(this);
-    vv.x = this.x + rect.x;
-    vv.y = this.y + rect.y;
-    vv.x2 = this.x2! + rect.x;
-    vv.y2 = this.y2! + rect.y;
-    vv.x3 = this.x3! + rect.x;
-    vv.y3 = this.y3! + rect.y;
-    vv.rx = this.rx! + rect.x;
-    vv.ry = this.ry! + rect.y;
-    vv.sx = this.sx! + rect.x;
-    vv.sy = this.sy! + rect.y;
-    vv.radius = vv.radius ?? 0.5;
-    if (vv.radius < 0.5) vv.radius = 0.5;
+    vv.x = this.x + pos.x;
+    vv.y = this.y + pos.y;
+    vv.x2 = this.x2! + pos.x;
+    vv.y2 = this.y2! + pos.y;
+    vv.x3 = this.x3! + pos.x;
+    vv.y3 = this.y3! + pos.y;
+    vv.rx = this.rx! + pos.x;
+    vv.ry = this.ry! + pos.y;
+    vv.sx = this.sx! + pos.x;
+    vv.sy = this.sy! + pos.y;
+    vv.radius = Math.max(vv.radius ?? 0.5, 0.5);
     return vv;
   }
 }

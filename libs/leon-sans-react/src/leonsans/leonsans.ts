@@ -25,7 +25,7 @@ type LeonSansProps = {
   text?: string;
   size?: number;
   weight?: number;
-  color?: string[];
+  color?: (string | string[])[];
   colorful?: string[];
   tracking?: number;
   leading?: number;
@@ -40,10 +40,10 @@ type LeonSansProps = {
 };
 
 export default class LeonSans extends Dispatcher {
-  size_: number;
-  weight_: number;
-  color_: string[];
-  colorful_: string[];
+  size_: number; // Size of the font
+  weight_: number; // Weight of the font
+  color_: (string | string[])[]; // Color of the font
+  colorful_: string[]; //
   tracking_: number;
   leading_: number;
   pathGap_: number;
@@ -58,12 +58,12 @@ export default class LeonSans extends Dispatcher {
   str_: string;
   time_: number | null;
   isFps_: boolean;
-  isForceRander_: boolean;
-  updateID_: number;
-  dPathsID_: number | null;
-  pPathsID_: number | null;
-  wPathsID_: number | null;
-  guideID_: number | null;
+  isForceRender_: boolean;
+  updateId_: number;
+  drawingPathsId_: number;
+  patternPathsId_: number;
+  wavePathsId_: number;
+  guideId_: number;
 
   constructor({
     text = '',
@@ -89,7 +89,7 @@ export default class LeonSans extends Dispatcher {
     fps = 30,
     isPath = false,
     isWave = false,
-  }: LeonSansProps = {}) {
+  }: LeonSansProps) {
     super();
 
     this.size_ = size;
@@ -113,13 +113,13 @@ export default class LeonSans extends Dispatcher {
 
     this.time_ = null;
     this.isFps_ = false;
-    this.isForceRander_ = false;
+    this.isForceRender_ = false;
 
-    this.updateID_ = 0;
-    this.dPathsID_ = null;
-    this.pPathsID_ = null;
-    this.wPathsID_ = null;
-    this.guideID_ = null;
+    this.updateId_ = 0;
+    this.drawingPathsId_ = 0;
+    this.patternPathsId_ = 0;
+    this.wavePathsId_ = 0;
+    this.guideId_ = 0;
 
     this.text = text;
 
@@ -153,7 +153,7 @@ export default class LeonSans extends Dispatcher {
     if (this.size_ == v) return;
     this.size_ = v;
     this.update();
-    this.isForceRander_ = true;
+    this.isForceRender_ = true;
   }
 
   get weight() {
@@ -169,7 +169,7 @@ export default class LeonSans extends Dispatcher {
     if (this.weight_ == v) return;
     this.weight_ = v;
     this.update();
-    this.isForceRander_ = true;
+    this.isForceRender_ = true;
   }
 
   get color() {
@@ -189,7 +189,7 @@ export default class LeonSans extends Dispatcher {
     if (this.tracking_ == v) return;
     this.tracking_ = v;
     this.update();
-    this.isForceRander_ = true;
+    this.isForceRender_ = true;
   }
 
   get leading() {
@@ -200,7 +200,7 @@ export default class LeonSans extends Dispatcher {
     if (this.leading_ == v) return;
     this.leading_ = v;
     this.update();
-    this.isForceRander_ = true;
+    this.isForceRender_ = true;
   }
 
   get align() {
@@ -210,7 +210,7 @@ export default class LeonSans extends Dispatcher {
   set align(v) {
     if (this.model.align != v) {
       this.model.align = v;
-      this.updateID_++;
+      this.updateId_++;
       this.updateSignal();
     }
   }
@@ -224,7 +224,7 @@ export default class LeonSans extends Dispatcher {
       this.pathGap_ = v;
       this.updatePatternPaths(true);
       this.updateWavePaths(true);
-      this.isForceRander_ = true;
+      this.isForceRender_ = true;
     }
   }
 
@@ -303,18 +303,6 @@ export default class LeonSans extends Dispatcher {
     return this.model.data;
   }
 
-  get paths() {
-    return this.model.paths;
-  }
-
-  get drawingPaths() {
-    return this.model.drawingPaths;
-  }
-
-  get wavePaths() {
-    return this.model.wavePaths;
-  }
-
   /**
    * 리온 산스의 위치를 설정합니다.
    * @param x x 좌표
@@ -322,13 +310,13 @@ export default class LeonSans extends Dispatcher {
    */
   position(x = 0, y = 0) {
     if (this.model.position(x, y)) {
-      this.updateID_++;
+      this.updateId_++;
       this.updateSignal();
     }
   }
 
   update() {
-    this.updateID_++;
+    this.updateId_++;
 
     this.model.update(
       this.str_,
@@ -349,8 +337,8 @@ export default class LeonSans extends Dispatcher {
   }
 
   updateGuide() {
-    if (this.guideID_ != this.updateID_) {
-      this.guideID_ = this.updateID_;
+    if (this.guideId_ != this.updateId_) {
+      this.guideId_ = this.updateId_;
       this.model.updateGuide();
     }
   }
@@ -359,8 +347,8 @@ export default class LeonSans extends Dispatcher {
    * Update paths for drawing in WebGL (PIXI.js). It's very expensive, only call when it needs.
    */
   updateDrawingPaths() {
-    if (this.dPathsID_ != this.updateID_) {
-      this.dPathsID_ = this.updateID_;
+    if (this.drawingPathsId_ != this.updateId_) {
+      this.drawingPathsId_ = this.updateId_;
       this.model.updateDrawingPaths();
     }
   }
@@ -370,10 +358,10 @@ export default class LeonSans extends Dispatcher {
    * @param {boolean} force - Force execution
    */
   updatePatternPaths(force?: boolean) {
-    if (this.isPath_ && (force || this.pPathsID_ != this.updateID_)) {
-      this.pPathsID_ = this.updateID_;
+    if (this.isPath_ && (force || this.patternPathsId_ != this.updateId_)) {
+      this.patternPathsId_ = this.updateId_;
       this.model.updatePatternPaths(this.pathGap_);
-      this.isForceRander_ = true;
+      this.isForceRender_ = true;
       this.updateSignal();
     }
   }
@@ -383,10 +371,10 @@ export default class LeonSans extends Dispatcher {
    * @param {boolean} force - Force execution
    */
   updateWavePaths(force?: boolean) {
-    if (this.isWave_ && (force || this.wPathsID_ != this.updateID_)) {
-      this.wPathsID_ = this.updateID_;
+    if (this.isWave_ && (force || this.wavePathsId_ != this.updateId_)) {
+      this.wavePathsId_ = this.updateId_;
       this.model.updateWavePaths(this.pathGap_);
-      this.isForceRander_ = true;
+      this.isForceRender_ = true;
       this.updateSignal();
     }
   }
@@ -416,13 +404,13 @@ export default class LeonSans extends Dispatcher {
 
     this.time_ = null;
     this.isFps_ = false;
-    this.isForceRander_ = false;
+    this.isForceRender_ = false;
 
-    this.updateID_ = 0;
-    this.dPathsID_ = null;
-    this.pPathsID_ = null;
-    this.wPathsID_ = null;
-    this.guideID_ = null;
+    this.updateId_ = 0;
+    this.drawingPathsId_ = 0;
+    this.patternPathsId_ = 0;
+    this.wavePathsId_ = 0;
+    this.guideId_ = 0;
 
     this.model.reset();
   }
@@ -450,14 +438,15 @@ export default class LeonSans extends Dispatcher {
    * Draw text in the Canvas element.
    * @param {CanvasRenderingContext2D} ctx
    */
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.lineWidth = this.lineWidth;
-    const total = this.model.data.length;
-    let i, d;
-    for (i = 0; i < total; i++) {
-      d = this.model.data[i];
-      Color(ctx, i, d, this.color_);
-      Lines(ctx, d);
+  draw(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp) {
+    if (this.isWave_) {
+      this.wave(ctx, t);
+    } else {
+      ctx.lineWidth = this.lineWidth;
+      this.model.data.forEach((data, index) => {
+        Color(ctx, index, data, this.color_);
+        Lines(ctx, data);
+      });
     }
   }
 
@@ -481,14 +470,14 @@ export default class LeonSans extends Dispatcher {
     if (t) {
       if (!this.time_) this.time_ = t;
       const p = t - this.time_;
-      if (p > this.fpsTime_ || this.isForceRander_) {
+      if (p > this.fpsTime_ || this.isForceRender_) {
         this.time_ = t;
         this.isFps_ = true;
       } else {
         this.isFps_ = false;
       }
     }
-    this.isForceRander_ = false;
+    this.isForceRender_ = false;
 
     const total = this.model.data.length;
     let i, d;

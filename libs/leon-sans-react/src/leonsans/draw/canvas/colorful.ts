@@ -21,17 +21,17 @@ export function Colorful(
   let max, length, prevRatio;
   for (i = 0; i < total; i++) {
     d = model.data[i];
-    max = d.pointsLength!.max;
+    max = d.pointsLength.max;
     prevRatio = 0;
-    j_total = d.lines!.length;
+    j_total = d.lines.length;
     prev = null;
     for (j = 0; j < j_total; j++) {
-      line = d.lines![j];
+      line = d.lines[j];
       pos = line.pos;
       if (pos.type == 'a') {
         setColor(ctx);
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, pos.radius! * d.drawing!.value, 0, PI2);
+        ctx.arc(pos.x, pos.y, pos.radius! * d.drawing.value, 0, PI2);
         ctx.fill();
         ctx.closePath();
       } else if (pos.type == 'm') {
@@ -95,9 +95,9 @@ function draw(
   prevRatio: number,
 ) {
   const ltRatio = length / max;
-  let dv = getCurrent(d.drawing!.value, prevRatio + ltRatio, prevRatio, 1, 0);
+  let dv = getCurrent(d.drawing.value, prevRatio + ltRatio, prevRatio, 1, 0);
   if (line.direction == 1) {
-    dv = getCurrent(1 - d.drawing!.value, prevRatio, prevRatio + ltRatio, 1, 0);
+    dv = getCurrent(1 - d.drawing.value, prevRatio, prevRatio + ltRatio, 1, 0);
   }
   if (dv > 0) {
     const frac = length * dv;

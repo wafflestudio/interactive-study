@@ -8,15 +8,15 @@ export function PixiLines(
   lineW: number,
   color: ColorSource,
 ) {
-  if (data.drawing!.value == 1) {
+  if (data.drawing.value == 1) {
     data.lines?.forEach((line) => {
       eachLine_(graphics, line, lineW, color);
     });
   } else {
     data.drawingPaths
-      ?.slice(0, data.drawingPaths.length * data.drawing!.value)
+      ?.slice(0, data.drawingPaths.length * data.drawing.value)
       .forEach((path) => {
-        eachPath_(graphics, path, lineW, color, data.drawing!.value);
+        eachPath_(graphics, path, lineW, color, data.drawing.value);
       });
   }
 }
@@ -63,7 +63,7 @@ function eachPath_(
       graphics.lineStyle(lineW, color, 1);
       graphics.moveTo(pos.x, pos.y);
     } else {
-      graphics.lineTo(pos.x, pos.y, 1);
+      graphics.lineTo(pos.x, pos.y);
     }
   }
 }

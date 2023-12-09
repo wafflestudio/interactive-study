@@ -8,7 +8,10 @@ import { Vector } from './vector';
  * @param model - The model.
  * @returns An object containing the maximum length, an array of lines for each path, and an array of lengths for each path.
  */
-export function getLengths(data: ModelData, model: Model): LinesLengths {
+export function getLengths(
+  data: Pick<ModelData, 'range' | 'center' | 'typo'>,
+  model: Model,
+): LinesLengths {
   const linesArray: LineData[][] = [];
   const lengths: number[] = [];
   let max = 0;
@@ -34,7 +37,11 @@ export function getLengths(data: ModelData, model: Model): LinesLengths {
  * @param model 점델
  * @returns 선들과 그들의 길이의 합
  */
-function getEachPath(data: ModelData, points: Vector[], model: Model) {
+function getEachPath(
+  data: Pick<ModelData, 'range' | 'center'>,
+  points: Vector[],
+  model: Model,
+) {
   const lines: LineData[] = [];
   let length = 0;
 
@@ -95,7 +102,7 @@ function getEachPath(data: ModelData, points: Vector[], model: Model) {
     line.vertex = curVector.ratio.v;
 
     lines.push(line as LineData);
-    length += line.distance;
+    length += line.distance!;
 
     return curVector;
   }, null);

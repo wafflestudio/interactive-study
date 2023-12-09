@@ -25,9 +25,7 @@ declare global {
     gy2: number;
   };
 
-  type Rect = {
-    x: number;
-    y: number;
+  type Rect = Position & {
     w: number;
     h: number;
   };
@@ -99,17 +97,17 @@ declare global {
     originPos: Position;
     center: Position;
     range: RatioRange;
-    alignGapX?: AlignGapX;
-    pointsLength?: LinesLengths;
+    alignGapX: AlignGapX;
+    pointsLength: LinesLengths;
+    drawing: Drawing;
     drawingPaths?: Point[];
-    rawPaths?: Point[];
-    rawWavePaths?: Point[];
+    relativePaths?: Point[];
+    relativeWavePaths?: Point[];
     paths?: Point[];
     wavePaths?: Point[];
     guide?: GuidePosition[];
     grid?: number[];
-    drawing?: Drawing;
-    lines?: ModelDataLine[];
+    lines: ModelDataLine[];
   };
 
   type char = string;

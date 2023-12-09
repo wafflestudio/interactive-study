@@ -4,7 +4,6 @@ import { getTextGroup } from './group';
 import { getGrid, getGuide } from './guide';
 import { getLengths } from './length';
 import { getPaths } from './paths';
-import { Point } from './point';
 import {
   addRectToPaths,
   getCenter,
@@ -25,21 +24,15 @@ export class Model {
   lineWidth_: number;
   drawing_: Drawing[];
   data_: ModelData[];
-  paths_: Point[] | null;
-  // lines_: ModelDataLine | null;
   rect_: Rect;
   align_: Align;
   scale_: number;
   fontRatio_: number;
-  drawingPaths?: Point[];
-  wavePaths?: Point[];
 
   constructor() {
     this.lineWidth_ = 1;
     this.drawing_ = [];
     this.data_ = [];
-    this.paths_ = null;
-    // this.lines_ = null;
     this.rect_ = {
       x: 0,
       y: 0,
@@ -54,18 +47,6 @@ export class Model {
   get data() {
     return this.data_;
   }
-
-  get paths() {
-    return this.paths_;
-  }
-
-  // get lines() {
-  //   return this.lines_;
-  // }
-
-  // set lines(v) {
-  //   this.lines_ = v;
-  // }
 
   get lineWidth() {
     return this.lineWidth_;
@@ -120,7 +101,7 @@ export class Model {
   setPosition() {
     for (const d of this.data_) {
       d.rect.x =
-        d.originPos.x + this.rect_.x + getAlignGapX(this.align_, d.alignGapX!);
+        d.originPos.x + this.rect_.x + getAlignGapX(this.align_, d.alignGapX);
       d.rect.y = d.originPos.y + this.rect_.y;
     }
   }
@@ -136,7 +117,7 @@ export class Model {
     let i, d;
     for (i = 0; i < total; i++) {
       d = this.data_[i];
-      d.rawPaths = getPaths(this, d, pathGap, true);
+      d.relativePaths = getPaths(this, d, pathGap, true);
     }
   }
 
@@ -145,7 +126,7 @@ export class Model {
     let i, d;
     for (i = 0; i < total; i++) {
       d = this.data_[i];
-      d.rawWavePaths = getPaths(this, d, pathGap, false);
+      d.relativeWavePaths = getPaths(this, d, pathGap, false);
     }
   }
 
@@ -189,7 +170,11 @@ export class Model {
       let tw = 0; // total width
       let th = 0; // total height
 
-      const arr: ModelData[] = word.map((str, j) => {
+      const arr: (Omit<ModelData, 'alignGapX' | 'pointsLength' | 'drawing'> & {
+        alignGapX?: AlignGapX;
+        pointsLength?: LinesLengths;
+        drawing?: Drawing;
+      })[] = word.map((str, j) => {
         const typo = getTypo(str);
         const scaledRect = getScaledRect(typo, scale);
         tw += scaledRect.w;
@@ -214,6 +199,7 @@ export class Model {
           originPos: startPosition,
           center: getCenter(scaledRect.w, scaledRect.h, scale),
           range: getRange(typo, weightRatio, circleRound),
+          lines: [],
         };
         tx = tw;
         return res;
@@ -238,12 +224,12 @@ export class Model {
       for (const b of a.arr) {
         b.alignGapX = setAlignGapX(maxW, a.tw);
         b.pointsLength = getLengths(b, this);
-        arr.push(b);
         const drawing: Drawing = {
           value: 1,
         };
         this.drawing_.push(drawing);
         b.drawing = drawing;
+        arr.push(b as ModelData);
 
         // add converted Vector
         for (const c of b.typo.p) {
@@ -260,14 +246,13 @@ export class Model {
   }
 
   updatePathsForRect() {
-    this.paths_ = this.data_.flatMap((d) => {
-      if (d.rawWavePaths) {
-        d.wavePaths = addRectToPaths(d.rawWavePaths, d);
+    this.data_.forEach((d) => {
+      if (d.relativeWavePaths) {
+        d.wavePaths = addRectToPaths(d.relativeWavePaths, d);
       }
-      if (d.rawPaths) {
-        d.paths = addRectToPaths(d.rawPaths, d);
+      if (d.relativePaths) {
+        d.paths = addRectToPaths(d.relativePaths, d);
       }
-      return d.paths ?? [];
     });
   }
 
@@ -281,8 +266,6 @@ export class Model {
     this.lineWidth_ = 1;
     this.drawing_ = [];
     this.data_ = [];
-    this.paths_ = null;
-    // this.lines_ = null;
     this.rect_ = {
       x: 0,
       y: 0,

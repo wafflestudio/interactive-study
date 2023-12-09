@@ -29,8 +29,8 @@ export function getPaths(
   pathGap: number,
   isPattern: boolean,
 ): Point[] {
-  return data
-    .pointsLength!.linesArray.map((lines) => {
+  return data.pointsLength.linesArray
+    .map((lines) => {
       return getDotPos(lines, pathGap, model.scale);
     })
     .flatMap((lineGroup, i) => {

@@ -5,7 +5,7 @@ export function Lines(ctx: CanvasRenderingContext2D, data: ModelData) {
     const pos = line.pos;
     if (pos.type == 'a') {
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, pos.radius! * data.drawing!.value, 0, PI2);
+      ctx.arc(pos.x, pos.y, pos.radius! * data.drawing.value, 0, PI2);
       ctx.fill();
       ctx.closePath();
     } else if (pos.type == 'm') {

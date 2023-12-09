@@ -7,7 +7,6 @@ export type CanvasDataRefs = {
   ctx: CanvasRenderingContext2D;
   leon: LeonSans;
   pixelRatio: number;
-  isDraw: boolean;
 };
 
 export type PixiDataRefs = {

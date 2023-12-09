@@ -1,13 +1,15 @@
 export function Color(
   ctx: CanvasRenderingContext2D,
-  no: number,
-  data: ModelData,
-  color: string[],
+  index: number, // 몇 번째 데이터
+  data: ModelData, // 데이터
+  colorSet: (string | string[])[],
 ) {
-  let c_total = color.length;
-  const cur = (no + c_total * (Math.abs((no / 10) | 0) + 1)) % c_total;
-  if (Array.isArray(color[cur])) {
-    c_total = color[cur].length;
+  let c_total = colorSet.length;
+  const currentIndex =
+    (index + c_total * (Math.abs((index / 10) | 0) + 1)) % c_total;
+  const currentColor = colorSet[currentIndex];
+  if (Array.isArray(currentColor)) {
+    c_total = currentColor.length;
     const vv = 1 / (c_total + 1);
     const g = ctx.createLinearGradient(
       data.rect.x,
@@ -16,15 +18,15 @@ export function Color(
       data.rect.y + data.rect.h,
     );
     let i;
-    g.addColorStop(vv, color[cur][0]);
+    g.addColorStop(vv, currentColor[0]);
     for (i = 0; i < c_total; i++) {
-      g.addColorStop(vv * (i + 1), color[cur][i]);
+      g.addColorStop(vv * (i + 1), currentColor[i]);
     }
-    g.addColorStop(vv * (c_total + 1), color[cur][c_total - 1]);
+    g.addColorStop(vv * (c_total + 1), currentColor[c_total - 1]);
     ctx.strokeStyle = g;
     ctx.fillStyle = g;
   } else {
-    ctx.strokeStyle = color[cur];
-    ctx.fillStyle = color[cur];
+    ctx.strokeStyle = currentColor;
+    ctx.fillStyle = currentColor;
   }
 }

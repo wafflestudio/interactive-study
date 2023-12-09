@@ -68,7 +68,7 @@ export class Vector {
     };
   }
 
-  convert(data: ModelData, model: Model) {
+  convert(data: Pick<ModelData, 'range' | 'center'>, model: Model) {
     const x = this.convertX(this.x, data, this.ratio, model);
     const y = this.convertY(this.y, data, this.ratio, model);
     const x2 = this.convertX(this.x2!, data, this.ratio, model);
@@ -89,20 +89,34 @@ export class Vector {
     return vv;
   }
 
-  private convertR(type: PathCommand, data: ModelData, model: Model) {
+  private convertR(
+    type: PathCommand,
+    data: Pick<ModelData, 'range' | 'center'>,
+    model: Model,
+  ) {
     let rd = 0;
     if (type == 'a') rd = data.range.cr * model.scale * model.fontRatio;
     return rd;
   }
 
-  private convertX(x: number, data: ModelData, ratio: PathRatio, model: Model) {
+  private convertX(
+    x: number,
+    data: Pick<ModelData, 'range' | 'center'>,
+    ratio: PathRatio,
+    model: Model,
+  ) {
     const rr = data.range.r * ratio.x!;
     const gx = (data.range.gx2 - data.range.gx1) * rr + data.range.gx1;
     const fr = (data.range.fr2 - data.range.fr1) * rr + data.range.fr1;
     return data.center.x + (x - gx) * model.scale * fr; // + data.rect.x
   }
 
-  private convertY(y: number, data: ModelData, ratio: PathRatio, model: Model) {
+  private convertY(
+    y: number,
+    data: Pick<ModelData, 'range' | 'center'>,
+    ratio: PathRatio,
+    model: Model,
+  ) {
     const rr = data.range.r * ratio.y!;
     const gy = (data.range.gy2 - data.range.gy1) * rr + data.range.gy1;
     const fr = (data.range.fr2 - data.range.fr1) * rr + data.range.fr1;

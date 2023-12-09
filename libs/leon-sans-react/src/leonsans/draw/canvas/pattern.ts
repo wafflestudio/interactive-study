@@ -7,7 +7,7 @@ export function Pattern(
   h: number,
 ) {
   data.paths
-    ?.slice(0, Math.round(data.paths.length * data.drawing!.value))
+    ?.slice(0, Math.round(data.paths.length * data.drawing.value))
     .forEach((p) => {
       if (p.vertex == 1) {
         ctx.fillStyle = '#ff00c5';

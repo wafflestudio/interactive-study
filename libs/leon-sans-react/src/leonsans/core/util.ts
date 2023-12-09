@@ -156,18 +156,18 @@ export function getLines(data: ModelData): ModelDataLine[] {
       // add current position to all points
       const cp = d3.addRect(data.rect);
       const dir = d2.d;
-      const lt = data.pointsLength!.lengths[i];
+      const lt = data.pointsLength.lengths[i];
       let prevRatio = 0;
       if (i > 0) {
         for (let k = 0; k < i; k++) {
-          prevRatio += data.pointsLength!.lengths[k] / data.pointsLength!.max;
+          prevRatio += data.pointsLength.lengths[k] / data.pointsLength.max;
         }
       }
-      const ltRatio = lt / data.pointsLength!.max + prevRatio;
+      const ltRatio = lt / data.pointsLength.max + prevRatio;
 
       return {
         pos: cp,
-        drawing: data.drawing!,
+        drawing: data.drawing,
         direction: dir,
         lengths: lt,
         maxDrawing: ltRatio,
