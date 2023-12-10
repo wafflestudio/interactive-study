@@ -161,7 +161,7 @@ function setPointValues(
   pp.distance = line.distance;
   pp.vertex = vertex;
 
-  if (prev && pp.rotation === null) {
+  if (prev && !pp.rotation) {
     const dx = pp.x - prev.x;
     const dy = pp.y - prev.y;
     pp.rotation = -Math.atan2(dx, dy); // prev -> cur 로의 기울기
