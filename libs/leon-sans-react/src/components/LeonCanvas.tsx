@@ -99,7 +99,6 @@ export default function LeonCanvas({
         amplitude,
         fps,
       });
-      console.debug('leon.data: ', leon.data);
       /**
        * ?Question: 어째서 ctx가 null일 수 있지?
        */

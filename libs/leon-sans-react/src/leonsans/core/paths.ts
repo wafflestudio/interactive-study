@@ -120,12 +120,7 @@ function getDotPos(lines: LineData[], pathGap: number, scale: number): Point[] {
         if (line.fixed && vertexScore == 1) curPoint.fixed = line.fixed;
 
         if (numOfPoints > 0) {
-          curPoint = setPointValues(
-            curPoint,
-            prevPoint,
-            line,
-            vertexScore === 1 ? 1 : 0,
-          );
+          curPoint = setPointValues(curPoint, prevPoint, line, vertexScore);
           if (curPoint != null) {
             if (isFirst) {
               curPoint.type = 'm';
@@ -154,7 +149,7 @@ function setPointValues(
   cur: Point,
   prev: Point | null,
   line: LineData,
-  vertex: 1 | 0,
+  vertex: number,
 ): Point | null {
   const pp = new Point(cur);
   pp.type = line.type;

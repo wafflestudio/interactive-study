@@ -12,43 +12,44 @@ export function Wave(
   scale: number,
   amplitude: number,
   weight: number,
-  fps: boolean,
+  updatePath: boolean,
 ) {
   const m_amplitude = getAmplitude(amplitude, scale);
   const saveDot: Point[] = [];
   ctx.beginPath();
-  data.wavePaths.reduce<Point | null>((prev, p) => {
-    if (fps) {
+
+  data.wavePaths.reduce<Point | null>((prev, cur) => {
+    if (updatePath) {
       const ranx = Math.random() * m_amplitude - m_amplitude / 2;
       const rany = Math.random() * m_amplitude - m_amplitude / 2;
-      p.rx = p.x + ranx * COS(p.rotation!);
-      p.ry = p.y + ranx * SIN(p.rotation!);
-      p.sx = p.x + ranx;
-      p.sy = p.y + rany;
+      cur.rx = cur.x + ranx * COS(cur.rotation!);
+      cur.ry = cur.y + ranx * SIN(cur.rotation!);
+      cur.sx = cur.x + ranx;
+      cur.sy = cur.y + rany;
     }
 
-    if (p.type == 'a') {
-      saveDot.push(p);
-    } else if (p.start == 1) {
-      ctx.moveTo(p.x, p.y);
-    } else if (p.fixed) {
-      ctx.lineTo(p.x, p.y);
+    if (cur.type == 'a') {
+      saveDot.push(cur);
+    } else if (cur.start == 1) {
+      ctx.moveTo(cur.x, cur.y);
+    } else if (cur.fixed) {
+      ctx.lineTo(cur.x, cur.y);
     } else {
       if (weight < THIN_LIMIT) {
         if (prev) {
-          const qx = prev.x + (p.x - prev.x) * 0.5;
-          const qy = prev.y + (p.y - prev.y) * 0.5;
-          ctx.quadraticCurveTo(qx, qy, p.rx!, p.ry!);
+          const qx = prev.x + (cur.x - prev.x) * 0.5;
+          const qy = prev.y + (cur.y - prev.y) * 0.5;
+          ctx.quadraticCurveTo(qx, qy, cur.rx!, cur.ry!);
         }
       } else {
-        ctx.lineTo(p.rx!, p.ry!);
+        ctx.lineTo(cur.rx!, cur.ry!);
       }
     }
-    return p;
+    return cur;
   }, null);
   ctx.stroke();
 
-  saveDot.map((p) => {
+  saveDot.forEach((p) => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius!, 0, PI2);
     ctx.fill();

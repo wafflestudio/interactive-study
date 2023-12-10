@@ -40,30 +40,30 @@ type LeonSansProps = {
 };
 
 export default class LeonSans extends Dispatcher {
-  size_: number; // Size of the font
-  weight_: number; // Weight of the font
-  color_: (string | string[])[]; // Color of the font. if some element are array, them will be used as a gradient color.
-  colorful_: string[];
-  tracking_: number; // Tracking of the font
-  leading_: number; // Leading of the font
-  pathGap_: number; // Gap between paths
-  amplitude_: number; // Amplitude of the wave
-  width_: number; // Max width of the text
-  breakWord_: boolean; // Break word
-  fps_: number; // FPS for wave effect
-  fpsTime_: number; // Time for FPS
-  isPath_: boolean;
-  isWave_: boolean;
-  model: Model;
-  str_: string;
-  time_: number | null;
-  isFps_: boolean;
-  isForceRender_: boolean;
-  updateId_: number;
-  drawingPathsId_: number;
-  patternPathsId_: number;
-  wavePathsId_: number;
-  guideId_: number;
+  private size_: number; // Size of the font
+  private weight_: number; // Weight of the font
+  private color_: (string | string[])[]; // Color of the font. if some element are array, them will be used as a gradient color.
+  private colorful_: string[];
+  private tracking_: number; // Tracking of the font
+  private leading_: number; // Leading of the font
+  private pathGap_: number; // Gap between paths
+  private amplitude_: number; // Amplitude of the wave
+  private width_: number; // Max width of the text
+  private breakWord_: boolean; // Break word
+  private fps_: number; // Frames per second
+  private frameInterval_: number; // Milliseconds per frame
+  private isPath_: boolean;
+  private isWave_: boolean;
+  private model: Model;
+  private str_: string;
+  private time_: number; // Last time of rendering
+  private isOutdated_: boolean;
+  private isForceRender_: boolean;
+  private updateId_: number;
+  private drawingPathsId_: number;
+  private patternPathsId_: number;
+  private wavePathsId_: number;
+  private guideId_: number;
 
   constructor({
     text = '',
@@ -103,7 +103,7 @@ export default class LeonSans extends Dispatcher {
     this.width_ = width;
     this.breakWord_ = breakWord;
     this.fps_ = fps;
-    this.fpsTime_ = 1000 / this.fps_;
+    this.frameInterval_ = 1000 / this.fps_;
     this.isPath_ = isPath;
     this.isWave_ = isWave;
 
@@ -111,8 +111,8 @@ export default class LeonSans extends Dispatcher {
 
     this.str_ = '';
 
-    this.time_ = null;
-    this.isFps_ = false;
+    this.time_ = 0;
+    this.isOutdated_ = false;
     this.isForceRender_ = false;
 
     this.updateId_ = 0;
@@ -284,7 +284,7 @@ export default class LeonSans extends Dispatcher {
 
   set fps(v) {
     this.fps_ = v;
-    this.fpsTime_ = 1000 / this.fps_;
+    this.frameInterval_ = 1000 / this.fps_;
   }
 
   get lineWidth() {
@@ -396,14 +396,14 @@ export default class LeonSans extends Dispatcher {
     this.width_ = 0;
     this.breakWord_ = false;
     this.fps_ = 30;
-    this.fpsTime_ = 1000 / this.fps_;
+    this.frameInterval_ = 1000 / this.fps_;
     this.isPath_ = false;
     this.isWave_ = false;
 
     this.str_ = '';
 
-    this.time_ = null;
-    this.isFps_ = false;
+    this.time_ = 0;
+    this.isOutdated_ = false;
     this.isForceRender_ = false;
 
     this.updateId_ = 0;
@@ -468,12 +468,12 @@ export default class LeonSans extends Dispatcher {
     ctx.lineWidth = this.lineWidth;
 
     if (!this.time_) this.time_ = t;
-    const p = t - this.time_;
-    if (p > this.fpsTime_ || this.isForceRender_) {
+    const elapsedTime = t - this.time_;
+    if (elapsedTime > this.frameInterval_ || this.isForceRender_) {
       this.time_ = t;
-      this.isFps_ = true;
+      this.isOutdated_ = true;
     } else {
-      this.isFps_ = false;
+      this.isOutdated_ = false;
     }
     this.isForceRender_ = false;
 
@@ -488,7 +488,7 @@ export default class LeonSans extends Dispatcher {
         this.model.scale,
         this.amplitude_,
         this.weight_,
-        this.isFps_,
+        this.isOutdated_,
       );
     }
   }

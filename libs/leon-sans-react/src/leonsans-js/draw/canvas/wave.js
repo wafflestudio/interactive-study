@@ -7,12 +7,7 @@ const THIN_LIMIT = 110;
 const COS = Math.cos;
 const SIN = Math.sin;
 
-let a = true;
-
 export function Wave(ctx, data, scale, amplitude, weight, fps) {
-    if (a) {
-        a = false;
-    }
     const total = data.wavePaths.length;
     const m_amplitude = getAmplitude(amplitude, scale);
     let i, p, prev, qx, qy, saveDot = [];
