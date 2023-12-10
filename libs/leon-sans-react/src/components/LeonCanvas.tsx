@@ -12,9 +12,12 @@ type LeonCanvasProps = {
   color?: string;
   size?: number;
   weight?: number;
-  isDraw?: boolean;
-  // wave config
+  // optional effect
+  isPattern?: boolean;
   isWave?: boolean;
+  hasGrid?: boolean;
+  hasPoint?: boolean;
+  hasBox?: boolean;
   pathGap?: number;
   amplitude?: number;
   fps?: number;
@@ -31,7 +34,11 @@ export default function LeonCanvas({
   color = '#000000',
   size = 60,
   weight = 400,
+  isPattern = false,
   isWave = false,
+  hasGrid = false,
+  hasPoint = false,
+  hasBox = false,
   pathGap = 0.5,
   amplitude = 0.5,
   fps = 30,
@@ -52,7 +59,7 @@ export default function LeonCanvas({
    * Functions
    */
   const animate: FrameRequestCallback = useCallback(
-    (currentFrame) => {
+    (currentTime) => {
       // create loop
       requestAnimationFrame(animate);
 
@@ -70,10 +77,10 @@ export default function LeonCanvas({
 
       // resolve handlers
       if (handlers.current.onAnimate)
-        handlers.current.onAnimate(dataRefs.current, currentFrame);
+        handlers.current.onAnimate(dataRefs.current, currentTime);
 
       // default draw function
-      leon.draw(ctx, currentFrame);
+      leon.draw(ctx, { t: currentTime });
     },
     [dataRefs, width, height, handlers],
   );
@@ -94,7 +101,11 @@ export default function LeonCanvas({
         color: [color],
         size,
         weight,
+        isPattern,
         isWave,
+        hasGrid,
+        hasPoint,
+        hasBox,
         pathGap,
         amplitude,
         fps,

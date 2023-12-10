@@ -101,9 +101,9 @@ declare global {
     pointsLength: LinesLengths;
     drawing: Drawing;
     drawingPaths: Point[];
-    relativePaths: Point[];
+    relativePatternPaths: Point[];
     relativeWavePaths: Point[];
-    paths: Point[];
+    patternPaths: Point[];
     wavePaths: Point[];
     guide: GuidePosition[];
     grid: number[];

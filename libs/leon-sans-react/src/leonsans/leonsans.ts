@@ -35,8 +35,11 @@ type LeonSansProps = {
   width?: number;
   breakWord?: boolean;
   fps?: number;
-  isPath?: boolean;
+  isPattern?: boolean;
   isWave?: boolean;
+  hasGrid?: boolean;
+  hasPoint?: boolean;
+  hasBox?: boolean;
 };
 
 export default class LeonSans extends Dispatcher {
@@ -52,13 +55,16 @@ export default class LeonSans extends Dispatcher {
   private breakWord_: boolean; // Break word
   private fps_: number; // Frames per second
   private frameInterval_: number; // Milliseconds per frame
-  private isPath_: boolean;
-  private isWave_: boolean;
+  private isPattern_: boolean; // If true, it will be rendered using pattern effect
+  private isWave_: boolean; // If true, it will be rendered using wave effect
+  private hasGrid_: boolean; // If true, it will render grid
+  private hasPoint_: boolean; // If true, it will render point
+  private hasBox_: boolean; // If true, it will render box
   private model: Model;
-  private str_: string;
+  private str_: string; // Text
   private time_: number; // Last time of rendering
-  private isOutdated_: boolean;
-  private isForceRender_: boolean;
+  private isOutdated_: boolean; // If it's outdated, it needs to be re-rendered
+  private isForceRender_: boolean; // Force re-rendering although it's not outdated
   private updateId_: number;
   private drawingPathsId_: number;
   private patternPathsId_: number;
@@ -87,8 +93,11 @@ export default class LeonSans extends Dispatcher {
     width = 0,
     breakWord = false,
     fps = 30,
-    isPath = false,
+    isPattern = false,
     isWave = false,
+    hasGrid = false,
+    hasPoint = false,
+    hasBox = false,
   }: LeonSansProps) {
     super();
 
@@ -104,8 +113,11 @@ export default class LeonSans extends Dispatcher {
     this.breakWord_ = breakWord;
     this.fps_ = fps;
     this.frameInterval_ = 1000 / this.fps_;
-    this.isPath_ = isPath;
+    this.isPattern_ = isPattern;
     this.isWave_ = isWave;
+    this.hasGrid_ = hasGrid;
+    this.hasPoint_ = hasPoint;
+    this.hasBox_ = hasBox;
 
     this.model = new Model();
 
@@ -260,12 +272,12 @@ export default class LeonSans extends Dispatcher {
     return this.breakWord_;
   }
 
-  get isPath() {
-    return this.isPath_;
+  get isPattern() {
+    return this.isPattern_;
   }
 
-  set isPath(v) {
-    this.isPath_ = v;
+  set isPattern(v) {
+    this.isPattern_ = v;
     this.updatePatternPaths(true);
   }
 
@@ -276,6 +288,30 @@ export default class LeonSans extends Dispatcher {
   set isWave(v) {
     this.isWave_ = v;
     this.updateWavePaths(true);
+  }
+
+  get hasGrid() {
+    return this.hasGrid_;
+  }
+
+  set hasGrid(v) {
+    this.hasGrid_ = v;
+  }
+
+  get hasPoint() {
+    return this.hasPoint_;
+  }
+
+  set hasPoint(v) {
+    this.hasPoint_ = v;
+  }
+
+  get hasBox() {
+    return this.hasBox_;
+  }
+
+  set hasBox(v) {
+    this.hasBox_ = v;
   }
 
   get fps() {
@@ -328,7 +364,7 @@ export default class LeonSans extends Dispatcher {
       this.leading_,
     );
 
-    if (this.isPath_ || this.isWave_) {
+    if (this.isPattern_ || this.isWave_) {
       this.updatePatternPaths();
       this.updateWavePaths();
     } else {
@@ -358,7 +394,7 @@ export default class LeonSans extends Dispatcher {
    * @param {boolean} force - Force execution
    */
   updatePatternPaths(force?: boolean) {
-    if (this.isPath_ && (force || this.patternPathsId_ != this.updateId_)) {
+    if (this.isPattern_ && (force || this.patternPathsId_ != this.updateId_)) {
       this.patternPathsId_ = this.updateId_;
       this.model.updatePatternPaths(this.pathGap_);
       this.isForceRender_ = true;
@@ -397,8 +433,9 @@ export default class LeonSans extends Dispatcher {
     this.breakWord_ = false;
     this.fps_ = 30;
     this.frameInterval_ = 1000 / this.fps_;
-    this.isPath_ = false;
+    this.isPattern_ = false;
     this.isWave_ = false;
+    this.hasGrid_ = false;
 
     this.str_ = '';
 
@@ -436,11 +473,22 @@ export default class LeonSans extends Dispatcher {
 
   /**
    * Draw text in the Canvas element.
-   * @param {CanvasRenderingContext2D} ctx
+   * @param ctx
+   * @param t time stemp from requestAnimationFrame(). [Default: Date.now()]
+   * @param w width of the pattern. [Default: 40]
+   * @param h height of the pattern. [Default: 10]
    */
-  draw(ctx: CanvasRenderingContext2D, t?: DOMHighResTimeStamp) {
-    if (this.isWave_ && t) {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    { t, w, h }: { t?: DOMHighResTimeStamp; w?: number; h?: number } = {},
+  ) {
+    if (this.hasGrid_) this.grid(ctx);
+    if (this.hasPoint_) this.point(ctx);
+    if (this.hasBox_) this.box(ctx);
+    if (this.isWave_) {
       this.wave(ctx, t);
+    } else if (this.isPattern_ && w && h) {
+      this.pattern(ctx, w, h);
     } else {
       ctx.lineWidth = this.lineWidth;
       this.model.data.forEach((data, index) => {
@@ -464,11 +512,12 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @param {DOMHighResTimeStamp} t time stemp from requestAnimationFrame()
    */
-  wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp) {
+  wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp = Date.now()) {
     ctx.lineWidth = this.lineWidth;
 
     if (!this.time_) this.time_ = t;
     const elapsedTime = t - this.time_;
+    // 아래 조건 충족 시 Wave를 새로 그린다.
     if (elapsedTime > this.frameInterval_ || this.isForceRender_) {
       this.time_ = t;
       this.isOutdated_ = true;
@@ -499,7 +548,7 @@ export default class LeonSans extends Dispatcher {
    * @param {number} w pattern width
    * @param {number} h pattern height
    */
-  pattern(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  pattern(ctx: CanvasRenderingContext2D, w: number = 40, h: number = 10) {
     const tw = w * this.model.scale;
     const th = h * this.model.scale;
 

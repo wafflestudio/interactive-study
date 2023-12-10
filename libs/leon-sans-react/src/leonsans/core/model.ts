@@ -117,7 +117,7 @@ export class Model {
     let i, d;
     for (i = 0; i < total; i++) {
       d = this.data_[i];
-      d.relativePaths = getPaths(this, d, pathGap, true);
+      d.relativePatternPaths = getPaths(this, d, pathGap, true);
     }
   }
 
@@ -170,11 +170,7 @@ export class Model {
       let tw = 0; // total width
       let th = 0; // total height
 
-      const arr: (Omit<ModelData, 'alignGapX' | 'pointsLength' | 'drawing'> & {
-        alignGapX?: AlignGapX;
-        pointsLength?: LinesLengths;
-        drawing?: Drawing;
-      })[] = word.map((str, j) => {
+      const arr = word.map((str, j) => {
         const typo = getTypo(str);
         const scaledRect = getScaledRect(typo, scale);
         tw += scaledRect.w;
@@ -192,7 +188,11 @@ export class Model {
           y: ty,
         };
 
-        const res = {
+        const res: Omit<ModelData, 'alignGapX' | 'pointsLength' | 'drawing'> & {
+          alignGapX?: AlignGapX;
+          pointsLength?: LinesLengths;
+          drawing?: Drawing;
+        } = {
           str: str,
           typo: typo,
           rect: scaledRect,
@@ -200,11 +200,11 @@ export class Model {
           center: getCenter(scaledRect.w, scaledRect.h, scale),
           range: getRange(typo, weightRatio, circleRound),
           lines: [],
-          paths: [],
+          patternPaths: [],
           wavePaths: [],
           guide: [],
           grid: [],
-          relativePaths: [],
+          relativePatternPaths: [],
           relativeWavePaths: [],
           drawingPaths: [],
         };
@@ -255,7 +255,7 @@ export class Model {
   updatePathsForRect() {
     this.data_.forEach((d) => {
       d.wavePaths = addRectToPaths(d.relativeWavePaths, d);
-      d.paths = addRectToPaths(d.relativePaths, d);
+      d.patternPaths = addRectToPaths(d.relativePatternPaths, d);
     });
   }
 

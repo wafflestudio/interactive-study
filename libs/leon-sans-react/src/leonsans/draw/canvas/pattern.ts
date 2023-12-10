@@ -2,12 +2,12 @@ import { PI2 } from '../../core/constants';
 
 export function Pattern(
   ctx: CanvasRenderingContext2D,
-  data: Pick<ModelData, 'paths' | 'drawing'>,
+  data: Pick<ModelData, 'patternPaths' | 'drawing'>,
   w: number,
   h: number,
 ) {
-  data.paths
-    ?.slice(0, Math.round(data.paths.length * data.drawing.value))
+  data.patternPaths
+    ?.slice(0, Math.round(data.patternPaths.length * data.drawing.value))
     .forEach((p) => {
       if (p.vertex == 1) {
         ctx.fillStyle = '#ff00c5';
