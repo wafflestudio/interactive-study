@@ -1,6 +1,5 @@
+import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
-
-import LeonSans from '../leonsans/leonsans';
 
 export type CanvasDataRefs = {
   canvas: HTMLCanvasElement;

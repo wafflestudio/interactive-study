@@ -1,7 +1,6 @@
+import LeonSans from 'leonsans';
 import { useCallback, useEffect, useRef } from 'react';
 
-import LeonSans from '../leonsans/leonsans';
-// import LeonSans from '../leonsans-js/leonsans.js';
 import { CanvasDataRefs } from '../types/DataRefs';
 import { CanvasDispatcher } from '../types/Dispatcher';
 import { CanvasHandlers } from '../types/Handler';
