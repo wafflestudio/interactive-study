@@ -163,29 +163,30 @@ export class Model {
     let maxW = 0; // max width
     let maxH = 0; // max height
 
-    let tx = 0; // total x
-    let ty = 0; // total y
+    // Start position of each word
+    let currentX = 0;
+    let currentY = 0;
 
     const tmp = textGroup.map((word, i) => {
-      let tw = 0; // total width
-      let th = 0; // total height
+      let wordWidth = 0; // total width
+      let wordHeight = 0; // total height
 
       const arr = word.map((str, j) => {
         const typo = getTypo(str);
         const scaledRect = getScaledRect(typo, scale);
-        tw += scaledRect.w;
-        th = scaledRect.h;
+        wordWidth += scaledRect.w;
+        wordHeight = scaledRect.h;
         if (j < word.length - 1) {
-          tw += m_tracking;
+          wordWidth += m_tracking;
         }
         if (i < textGroup.length - 1) {
-          th += m_leading;
+          wordHeight += m_leading;
         }
-        scaledRect.x = tx;
-        scaledRect.y = ty;
+        scaledRect.x = currentX;
+        scaledRect.y = currentY;
         const startPosition = {
-          x: tx,
-          y: ty,
+          x: currentX,
+          y: currentY,
         };
 
         const res: Omit<ModelData, 'alignGapX' | 'pointsLength' | 'drawing'> & {
@@ -208,16 +209,16 @@ export class Model {
           relativeWavePaths: [],
           drawingPaths: [],
         };
-        tx = tw;
+        currentX = wordWidth;
         return res;
       });
 
-      ty += th;
-      maxW = Math.max(maxW, tw);
-      maxH += th;
+      currentY += wordHeight;
+      maxW = Math.max(maxW, wordWidth);
+      maxH += wordHeight;
 
       return {
-        tw,
+        tw: wordWidth,
         arr,
       };
     });
