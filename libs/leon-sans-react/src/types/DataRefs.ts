@@ -1,13 +1,11 @@
+import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
-
-type Leon = any; // TODO: Leon 타입 확정하기
 
 export type CanvasDataRefs = {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  leon: Leon;
+  leon: LeonSans;
   pixelRatio: number;
-  isDraw: boolean;
 };
 
 export type PixiDataRefs = {
@@ -15,7 +13,7 @@ export type PixiDataRefs = {
   renderer: PIXI.Renderer;
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
-  leon: Leon;
+  leon: LeonSans;
   pixelRatio: number;
   isDraw: boolean;
 };

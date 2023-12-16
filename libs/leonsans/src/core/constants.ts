@@ -1,0 +1,10 @@
+export const DEFAULT_FONT_SIZE = 500;
+export const MIN_FONT_WEIGHT = 1;
+export const MAX_FONT_WEIGHT = 900;
+export const MAX_LINE_WIDTH = 70;
+export const FONT_WEIGHT_LIMIT = 80;
+export const FONT_RATIO_1 = 1;
+export const FONT_RATIO_2 = 0.78;
+export const RECT_RATIO = 0.49;
+export const MAX_SHAKE = 120;
+export const PI2 = 2 * Math.PI;

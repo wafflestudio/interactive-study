@@ -1,15 +1,15 @@
+import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-import LeonSans from '../leon-temp/leon';
 import { PixiDataRefs } from '../types/DataRefs';
 import { PixiHandlers } from '../types/Handler';
 
 type LeonPixiProps = {
   // leon config
   text: string;
-  color?: string | number;
+  color?: string;
   size?: number;
   weight?: number;
   isDraw?: boolean;
@@ -23,7 +23,7 @@ type LeonPixiProps = {
 
 export default function LeonPixi({
   text,
-  color = 0x000000,
+  color = '#000000',
   size = 60,
   weight = 400,
   isDraw = true,

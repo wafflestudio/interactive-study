@@ -1,6 +1,6 @@
+import LeonSans from 'leonsans';
 import { useCallback, useEffect, useRef } from 'react';
 
-import LeonSans from '../leon-temp/leon';
 import { CanvasDataRefs } from '../types/DataRefs';
 import { CanvasDispatcher } from '../types/Dispatcher';
 import { CanvasHandlers } from '../types/Handler';
@@ -11,9 +11,12 @@ type LeonCanvasProps = {
   color?: string;
   size?: number;
   weight?: number;
-  isDraw?: boolean;
-  // wave config
+  // optional effect
+  isPattern?: boolean;
   isWave?: boolean;
+  hasGrid?: boolean;
+  hasPoint?: boolean;
+  hasBox?: boolean;
   pathGap?: number;
   amplitude?: number;
   fps?: number;
@@ -30,11 +33,14 @@ export default function LeonCanvas({
   color = '#000000',
   size = 60,
   weight = 400,
-  isDraw = true,
+  isPattern = false,
   isWave = false,
-  pathGap,
-  amplitude,
-  fps,
+  hasGrid = false,
+  hasPoint = false,
+  hasBox = false,
+  pathGap = 0.5,
+  amplitude = 0.5,
+  fps = 30,
   width = 800,
   height = 600,
   pixelRatio = 2,
@@ -52,13 +58,13 @@ export default function LeonCanvas({
    * Functions
    */
   const animate: FrameRequestCallback = useCallback(
-    (currentFrame) => {
+    (currentTime) => {
       // create loop
       requestAnimationFrame(animate);
 
       // parse dataRefs
       if (!dataRefs.current) return;
-      const { ctx, leon, isDraw } = dataRefs.current;
+      const { ctx, leon } = dataRefs.current;
 
       // clear canvas
       ctx.clearRect(0, 0, width, height);
@@ -70,10 +76,10 @@ export default function LeonCanvas({
 
       // resolve handlers
       if (handlers.current.onAnimate)
-        handlers.current.onAnimate(dataRefs.current, currentFrame);
+        handlers.current.onAnimate(dataRefs.current, currentTime);
 
       // default draw function
-      if (isDraw) leon.draw(ctx);
+      leon.draw(ctx, { t: currentTime });
     },
     [dataRefs, width, height, handlers],
   );
@@ -94,7 +100,11 @@ export default function LeonCanvas({
         color: [color],
         size,
         weight,
+        isPattern,
         isWave,
+        hasGrid,
+        hasPoint,
+        hasBox,
         pathGap,
         amplitude,
         fps,
@@ -104,7 +114,7 @@ export default function LeonCanvas({
        */
       if (ctx) {
         ctx.scale(pixelRatio, pixelRatio); // pixelRatio에 맞게 canvas 크기 조절
-        dataRefs.current = { canvas, ctx, leon, isDraw, pixelRatio }; // dataRefs 저장
+        dataRefs.current = { canvas, ctx, leon, pixelRatio }; // dataRefs 저장
         if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
         if (onAnimate) handlers.current.onAnimate = onAnimate;
       }
@@ -125,20 +135,8 @@ export default function LeonCanvas({
     dataRefs.current.leon.pathGap = pathGap;
     dataRefs.current.leon.amplitude = amplitude;
     dataRefs.current.leon.fps = fps;
-    dataRefs.current.isDraw = isDraw;
     dataRefs.current.pixelRatio = pixelRatio;
-  }, [
-    text,
-    color,
-    size,
-    weight,
-    isWave,
-    pathGap,
-    amplitude,
-    fps,
-    isDraw,
-    pixelRatio,
-  ]);
+  }, [text, color, size, weight, isWave, pathGap, amplitude, fps, pixelRatio]);
 
   /**
    * update handler
