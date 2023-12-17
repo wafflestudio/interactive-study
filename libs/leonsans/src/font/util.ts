@@ -1,7 +1,7 @@
 import { partialBezierTangent } from '../core/paths.js';
 import { Vector } from '../core/vector.js';
 import { BEZIER_COMMAND, FONT_HEIGHT } from './constants.js';
-import { CloneableTypo, TypoData, TypoPath, TypoPathData } from './types.js';
+import { Typo, TypoData, TypoPath, TypoPathData } from './types.js';
 
 /**
  * Generates font data based on the provided parameters.
@@ -25,7 +25,7 @@ export function generateFontData(
   y1: number,
   y2: number,
   path: TypoData[],
-): CloneableTypo {
+): Typo {
   const p: TypoPath[] = path.map((d) => ({
     d: d.d,
     v: setCenter(d.v, contentWidth, contentHeight),
@@ -45,24 +45,8 @@ export function generateFontData(
       y2,
     },
     p: p,
-    clone: () => {
-      const newFontData = {
-        rect: {
-          width: fontWidth,
-          height: FONT_HEIGHT,
-          contentWidth,
-          contentHeight,
-        },
-        ratio: {
-          x1,
-          x2,
-          y1,
-          y2,
-        },
-        p: p.slice(),
-      };
-      return newFontData;
-    },
+    // Use anonymous function for dynamic this binding
+    clone() { return Object.assign({}, this); },
   };
 }
 

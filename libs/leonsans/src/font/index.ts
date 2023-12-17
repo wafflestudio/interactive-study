@@ -4,10 +4,10 @@ import { LATIN } from './latin';
 import { LOWER } from './lower';
 import { NUMBER } from './number';
 import { SPECIAL } from './special';
-import { Typo, CloneableTypo } from './types';
+import { Typo } from './types';
 import { UPPER } from './upper';
 
-const TYPO_DATA: Record<char, CloneableTypo> = {
+const TYPO_DATA: Record<char, Typo> = {
   ...UPPER,
   ...LOWER,
   ...NUMBER,
