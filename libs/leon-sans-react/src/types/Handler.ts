@@ -1,15 +1,14 @@
 import { CanvasDataRefs, PixiDataRefs } from './DataRefs';
 
-type DataRefs = CanvasDataRefs | PixiDataRefs;
-
-type OnAnimate<Params extends DataRefs> = (
-  callback: (params: Params, currentFrame: number) => void,
-) => void;
+export type onAnimateCallback<Type extends 'canvas' | 'pixi'> = {
+  canvas: (params: CanvasDataRefs, currentFrame: number) => void;
+  pixi: (params: PixiDataRefs, currentFrame: number) => void;
+}[Type];
 
 export type CanvasHandlers = {
-  onAnimate?: Parameters<OnAnimate<CanvasDataRefs>>[0];
+  onAnimate?: onAnimateCallback<'canvas'>;
 };
 
 export type PixiHandlers = {
-  onAnimate?: Parameters<OnAnimate<PixiDataRefs>>[0];
+  onAnimate?: onAnimateCallback<'pixi'>;
 };

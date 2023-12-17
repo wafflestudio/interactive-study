@@ -12,7 +12,6 @@ type LeonPixiProps = {
   color?: string;
   size?: number;
   weight?: number;
-  isDraw?: boolean;
   // canvas config
   width?: number;
   height?: number;
@@ -26,7 +25,6 @@ export default function LeonPixi({
   color = '#000000',
   size = 60,
   weight = 400,
-  isDraw = true,
   width = 800,
   height = 600,
   pixelRatio = 2,
@@ -51,7 +49,7 @@ export default function LeonPixi({
 
       // parse dataRefs
       if (!dataRefs.current) return;
-      const { graphics, renderer, stage, leon, isDraw } = dataRefs.current;
+      const { graphics, renderer, stage, leon } = dataRefs.current;
 
       // clear canvas
       graphics.clear();
@@ -66,10 +64,8 @@ export default function LeonPixi({
         handlers.current.onAnimate(dataRefs.current, currentFrame);
 
       // default draw function
-      if (isDraw) {
-        leon.drawPixi(graphics);
-        renderer.render(stage);
-      }
+      leon.drawPixi(graphics);
+      renderer.render(stage);
     },
     [dataRefs, width, height],
   );
@@ -112,7 +108,6 @@ export default function LeonPixi({
       renderer,
       stage,
       graphics,
-      isDraw,
       pixelRatio,
     };
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
@@ -130,9 +125,8 @@ export default function LeonPixi({
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-    dataRefs.current.isDraw = isDraw;
     dataRefs.current.pixelRatio = pixelRatio;
-  }, [dataRefs, text, color, size, weight, isDraw, pixelRatio]);
+  }, [dataRefs, text, color, size, weight, pixelRatio]);
 
   /**
    * update handler
