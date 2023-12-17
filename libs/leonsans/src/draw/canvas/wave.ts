@@ -1,5 +1,6 @@
 import { PI2 } from '../../core/constants.js';
 import { Point } from '../../core/point.js';
+import { ModelData } from '../../core/types.js';
 import { getAmplitude } from '../../core/util.js';
 
 const THIN_LIMIT = 110;

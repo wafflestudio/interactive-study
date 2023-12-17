@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { ModelData } from '../../core/types';
 
 type ColorSource = PIXI.ColorSource;
 

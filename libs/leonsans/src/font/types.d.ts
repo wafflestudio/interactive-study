@@ -1,10 +1,9 @@
 import { Vector } from '../core/vector';
 import { BEZIER_COMMAND, PATH_COMMANDS } from './constants';
 
-declare global {
-  type PathCommand = (typeof PATH_COMMANDS)[number];
+  export type PathCommand = (typeof PATH_COMMANDS)[number];
 
-  type PathRatio = {
+  export type PathRatio = {
     x: number;
     y: number;
     r: number; // rotation : if the rotation is ROTATE_NONE, it will hide in the 'pattern' and 'paths'
@@ -14,14 +13,14 @@ declare global {
     v: 1 | 0; // 1 is vertex, it's only for the vertex shape like V, W, A
   };
 
-  type SimplePathData = [
+  export type SimplePathData = [
     Exclude<PathCommand, typeof BEZIER_COMMAND>,
     number, // x
     number, // y
     Partial<PathRatio>?,
   ];
 
-  type BezierPathData = [
+  export type BezierPathData = [
     typeof BEZIER_COMMAND,
     number, // x1
     number, // y1
@@ -32,20 +31,20 @@ declare global {
     Partial<PathRatio>?,
   ];
 
-  type TypoPathData = SimplePathData | BezierPathData;
+  export type TypoPathData = SimplePathData | BezierPathData;
 
-  type TypoData = {
+  export type TypoData = {
     d: 1 | -1; // direction
     v: TypoPathData[];
   };
 
-  type TypoPath = {
+  export type TypoPath = {
     d: 1 | -1; // direction
     v: Vector[];
     cv?: Point[];
   };
 
-  type Typo = {
+  export type Typo = {
     character?: char;
     rect: {
       width: number;
@@ -62,7 +61,6 @@ declare global {
     p: TypoPath[];
   };
 
-  type CloneableTypo = Typo & {
+  export type CloneableTypo = Typo & {
     clone: () => Typo;
   };
-}

@@ -1,4 +1,5 @@
 import { Model } from './model';
+import { BezierCurveData, LineData, LinesLengths, ModelData, SimpleLineData } from './types';
 import { Vector } from './vector';
 
 /**

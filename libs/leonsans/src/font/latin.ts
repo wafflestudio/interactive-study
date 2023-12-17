@@ -28,6 +28,7 @@ import {
   DATA_LU,
   DATA_LY,
 } from './lower';
+import { TypoData } from './types';
 import {
   DATA_UA,
   DATA_UC,

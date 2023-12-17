@@ -20,6 +20,7 @@ import { Points } from './draw/canvas/points.js';
 import { Wave } from './draw/canvas/wave.js';
 import { PixiColor } from './draw/pixi/color.js';
 import { PixiLines } from './draw/pixi/lines.js';
+import { Align } from './core/types.js';
 
 type LeonSansProps = {
   text?: string;
@@ -138,14 +139,14 @@ export default class LeonSans extends Dispatcher {
     this.model.align = align;
   }
 
-  // on(event: string, callback: Function) {
-  //   super.on(event, callback);
-  //   this.update();
-  // }
+  on(event: string, callback: Function) {
+    super.on(event, callback);
+    this.update();
+  }
 
-  // off(event: string, callback: Function) {
-  //   return super.off(event, callback);
-  // }
+  off(event: string, callback: Function) {
+    return super.off(event, callback);
+  }
 
   get text() {
     return this.str_;

@@ -1,20 +1,21 @@
 import { BEZIER_COMMAND } from '../font/constants';
+import { PathCommand, Typo } from '../font/types';
 import { Point } from './point';
 
-declare global {
-  type Position = {
+
+export type Position = {
     x: number;
     y: number;
   };
 
-  type GuidePosition = {
+  export type GuidePosition = {
     x1: number;
     x2: number;
     y1: number;
     y2: number;
   };
 
-  type RatioRange = {
+  export type RatioRange = {
     r: number;
     cr: number;
     fr1: number;
@@ -25,20 +26,20 @@ declare global {
     gy2: number;
   };
 
-  type Rect = Position & {
+  export type Rect = Position & {
     w: number;
     h: number;
   };
 
-  type Align = 'center' | 'right' | 'left';
+  export type Align = 'center' | 'right' | 'left';
 
-  type AlignGapX = {
+  export type AlignGapX = {
     center: number;
     right: number;
     left: number;
   };
 
-  type CommonLineData = {
+  export type CommonLineData = {
     distance: number; // Length of the line
     radius?: number;
     rotation?: number;
@@ -47,7 +48,7 @@ declare global {
     vertex?: 1 | 0;
   };
 
-  type SimpleLineData = CommonLineData & {
+  export type SimpleLineData = CommonLineData & {
     type: Exclude<PathCommand, typeof BEZIER_COMMAND>;
     x1: number;
     y1: number;
@@ -55,7 +56,7 @@ declare global {
     y2: number;
   };
 
-  type BezierCurveData = CommonLineData & {
+  export type BezierCurveData = CommonLineData & {
     type: typeof BEZIER_COMMAND;
     x1: number;
     y1: number;
@@ -67,15 +68,15 @@ declare global {
     y4: number;
   };
 
-  type LineData = SimpleLineData | BezierCurveData;
+  export type LineData = SimpleLineData | BezierCurveData;
 
-  type LinesLengths = {
+  export type LinesLengths = {
     max: number;
     linesArray: LineData[][];
     lengths: number[];
   };
 
-  type ModelDataLine = {
+  export type ModelDataLine = {
     pos: Point;
     drawing: Drawing;
     direction: 1 | -1;
@@ -86,11 +87,12 @@ declare global {
     stroke(ctx: CanvasRenderingContext2D, d: ModelDataLine): void;
   };
 
-  type Drawing = {
+  export type Drawing = {
     value: number;
+    pos?: Position;
   };
 
-  type ModelData = {
+  export type ModelData = {
     str: string;
     typo: Typo;
     rect: Rect;
@@ -110,5 +112,4 @@ declare global {
     lines: ModelDataLine[];
   };
 
-  type char = string;
-}
+  export type char = string;

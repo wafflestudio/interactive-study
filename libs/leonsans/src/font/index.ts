@@ -1,8 +1,10 @@
+import { char } from '../core/types';
 import { TOFU } from './constants';
 import { LATIN } from './latin';
 import { LOWER } from './lower';
 import { NUMBER } from './number';
 import { SPECIAL } from './special';
+import { Typo, CloneableTypo } from './types';
 import { UPPER } from './upper';
 
 const TYPO_DATA: Record<char, CloneableTypo> = {

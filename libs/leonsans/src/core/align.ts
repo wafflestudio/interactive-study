@@ -1,3 +1,5 @@
+import { Align, AlignGapX } from "./types";
+
 export function setAlignGapX(sw: number, tw: number): AlignGapX {
   return {
     center: (sw - tw) / 2,

@@ -1,4 +1,6 @@
 import { getTypo } from '../font/index.js';
+import { Typo } from '../font/types.js';
+import { Rect, char } from './types.js';
 import { getScaledRect } from './util.js';
 
 /**

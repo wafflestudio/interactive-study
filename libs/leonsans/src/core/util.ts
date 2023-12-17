@@ -1,3 +1,4 @@
+import { Typo } from '../font/types';
 import {
   DEFAULT_FONT_SIZE,
   FONT_RATIO_1,
@@ -10,6 +11,7 @@ import {
   RECT_RATIO,
 } from './constants';
 import { Point } from './point';
+import { ModelData, ModelDataLine, RatioRange, Rect } from './types';
 
 export function getAmplitude(amplitude: number, scale: number) {
   return MAX_SHAKE * amplitude * scale;

@@ -1,3 +1,5 @@
+import { ModelData } from "../../core/types";
+
 export function Color(
   ctx: CanvasRenderingContext2D,
   index: number, // 몇 번째 데이터?

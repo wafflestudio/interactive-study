@@ -1,4 +1,6 @@
+import { Typo } from '../font/types';
 import { RECT_RATIO } from './constants';
+import { GuidePosition } from './types';
 
 /**
  * @name getGuide

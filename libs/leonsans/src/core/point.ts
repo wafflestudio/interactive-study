@@ -1,3 +1,6 @@
+import { PathCommand, PathRatio } from "../font/types";
+import { Position } from "./types";
+
 type PointProps = {
   type?: PathCommand;
   x: number;

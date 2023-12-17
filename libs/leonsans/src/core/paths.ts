@@ -1,6 +1,7 @@
 import { ROTATE_NONE } from '../font/constants';
 import { Model } from './model';
 import { Point } from './point';
+import { LineData, ModelData } from './types';
 import { getCurrent } from './util';
 
 type Curve = {

@@ -1,3 +1,5 @@
+import { ModelData } from "../../core/types";
+
 export function Grids(
   ctx: CanvasRenderingContext2D,
   data: Pick<ModelData, 'grid' | 'rect'>,

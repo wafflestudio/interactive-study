@@ -1,6 +1,8 @@
 import { PATH_COMMANDS } from '../font/constants.js';
+import { PathCommand, PathRatio, TypoPathData } from '../font/types.js';
 import { Model } from './model.js';
 import { Point } from './point.js';
+import { ModelData } from './types.js';
 
 type VectorProps = {
   type: PathCommand;

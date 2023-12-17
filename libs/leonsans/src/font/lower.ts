@@ -5,6 +5,7 @@ import {
   ROTATE_VERTICAL,
   VERTEX_GAP,
 } from './constants';
+import { TypoData } from './types';
 import { generateFontData, getCurveR, getRotation } from './util';
 
 export const DATA_LA: TypoData[] = [

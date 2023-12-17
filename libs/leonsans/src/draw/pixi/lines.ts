@@ -1,6 +1,7 @@
 import { ColorSource, Graphics } from 'pixi.js';
 
 import { Point } from '../../core/point';
+import { ModelData, ModelDataLine } from '../../core/types';
 
 export function PixiLines(
   graphics: Graphics,

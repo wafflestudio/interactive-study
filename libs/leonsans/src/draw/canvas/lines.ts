@@ -1,4 +1,5 @@
 import { PI2 } from '../../core/constants';
+import { ModelData } from '../../core/types';
 
 export function Lines(
   ctx: CanvasRenderingContext2D,
