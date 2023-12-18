@@ -1,5 +1,6 @@
 import { PI2 } from '../../core/constants';
 import { ModelData, ModelDataLine } from '../../core/types';
+import { TypoPath } from '../../font/types';
 
 export function Points(
   ctx: CanvasRenderingContext2D,

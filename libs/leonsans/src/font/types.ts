@@ -1,3 +1,5 @@
+import { Point } from '../core/point'
+import { char } from '../core/types';
 import { Vector } from '../core/vector';
 import { BEZIER_COMMAND, PATH_COMMANDS } from './constants';
 

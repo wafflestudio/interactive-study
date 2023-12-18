@@ -4,7 +4,14 @@ import { getTextGroup } from './group';
 import { getGrid, getGuide } from './guide';
 import { getLengths } from './length';
 import { getPaths } from './paths';
-import { Align, AlignGapX, Drawing, LinesLengths, ModelData, Rect } from './types';
+import {
+  Align,
+  AlignGapX,
+  Drawing,
+  LinesLengths,
+  ModelData,
+  Rect,
+} from './types';
 import {
   addRectToPaths,
   getCenter,
