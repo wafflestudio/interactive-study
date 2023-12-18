@@ -1,5 +1,5 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { Point } from 'leonsans';
+import { ModelData, Point } from 'leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -16,7 +16,7 @@ function randomIdx(arr: unknown[]) {
 }
 
 export default function LeonPixiExample() {
-  const [text, setText] = useState('Leon Pixi');
+  // const [text, setText] = useState('Leon Pixi');
   const dispatcher = usePixiDispatcher();
 
   const leaves = useRef<PIXI.SpriteSource[]>([]);
@@ -65,6 +65,20 @@ export default function LeonPixiExample() {
     [dispatcher, makeContainer],
   );
 
+  const drawBranch = useCallback((typo: ModelData) => {
+    gsap.fromTo(
+      typo.drawing,
+      {
+        value: 0,
+      },
+      {
+        value: 1,
+        ease: Power0.easeNone,
+        duration: 1,
+      },
+    );
+  }, []);
+
   /**
    * 글자 다시 쓰는 애니메이션
    */
@@ -74,23 +88,39 @@ export default function LeonPixiExample() {
 
       for (let i = 0; i < leon.drawing.length; i++) {
         gsap.killTweensOf(leon.drawing[i]);
-        gsap.fromTo(
-          leon.drawing[i],
-          {
-            value: 0,
-          },
-          {
-            value: 1,
-            ease: Power0.easeNone,
-            duration: 1,
-          },
-        );
+        drawBranch(leon.data[i]);
       }
 
       removeAllContainers();
       leon.data.forEach((d) => drawLeaves(d.drawingPaths));
     });
   }, [dispatcher, drawLeaves, removeAllContainers]);
+
+  const setText = useCallback(
+    (text: string) => {
+      dispatcher.send(({ leon }) => {
+        leon.text = text;
+        leon.updateDrawingPaths();
+        const lastTypo = leon.data[leon.data.length - 1]
+        drawLeaves(lastTypo.drawingPaths);
+        drawBranch(lastTypo);
+
+        // set position
+        const x = (canvasWidth - leon.rect.w) / 2;
+        const y = (canvasHeight - leon.rect.h) / 2;
+        leon.position(x, y);
+      });
+    },
+    [dispatcher],
+  );
+
+  const moveLeft = useCallback(() => {
+    dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
+  }, [dispatcher]);
+
+  const moveRight = useCallback(() => {
+    dispatcher.send(({ leon }) => leon.position(leon.rect.x + 10, leon.rect.y));
+  }, [dispatcher]);
 
   /**
    * 마운트 될 때 잎사귀 데이터를 미리 로드
@@ -119,7 +149,7 @@ export default function LeonPixiExample() {
   return (
     <div>
       <LeonPixi
-        text={text}
+        text={'Leon Pixi'}
         color={'#704234'}
         size={130}
         width={canvasWidth}
@@ -130,10 +160,13 @@ export default function LeonPixiExample() {
       <div>
         <input
           type="text"
-          value={text}
+          // value="Leon Pixi"
+          placeholder="Leon Pixi"
           onChange={(e) => setText(e.target.value)}
         />
         <button onClick={() => redraw()}>다시 쓰기</button>
+        <button onClick={() => moveLeft()}>{'<'}</button>
+        <button onClick={() => moveRight()}>{'>'}</button>
       </div>
     </div>
   );

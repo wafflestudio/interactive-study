@@ -54,11 +54,6 @@ export default function LeonPixi({
       // clear canvas
       graphics.clear();
 
-      // set position
-      const x = (width - leon.rect.w) / 2;
-      const y = (height - leon.rect.h) / 2;
-      leon.position(x, y);
-
       // resolve handlers
       if (handlers.current.onAnimate)
         handlers.current.onAnimate(dataRefs.current, currentFrame);
@@ -85,6 +80,11 @@ export default function LeonPixi({
       size,
       weight,
     });
+
+    // set position
+    const x = (width - leon.rect.w) / 2;
+    const y = (height - leon.rect.h) / 2;
+    leon.position(x, y);
 
     // create pixi
     const renderer = new PIXI.Renderer({
