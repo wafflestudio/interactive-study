@@ -1,5 +1,5 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { CHARSET, ModelData, Point } from 'leonsans';
+import { CHARSET, ModelData } from 'leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -28,14 +28,21 @@ export default function LeonPixiExample() {
   const canvasHeight = windowSize[1];
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const isInitialized = useRef<boolean>(false);
   const dispatcher = usePixiDispatcher();
 
   const leafSources = useRef<PIXI.SpriteSource[]>([]);
   const leafContainers = useRef<PIXI.Container[]>([]);
 
-  const removeAllContainers = () => {
-    leafContainers.current.forEach((c) => c.destroy());
-    leafContainers.current = [];
+  const removeContainers = (
+    start: number = 0,
+    end: number = leafContainers.current.length,
+  ) => {
+    leafContainers.current.slice(start, end).forEach((c) => c.destroy());
+    leafContainers.current = [
+      ...leafContainers.current.slice(0, start),
+      ...leafContainers.current.slice(end),
+    ];
   };
 
   const makeContainer = useCallback(
@@ -117,7 +124,7 @@ export default function LeonPixiExample() {
         drawTypo(leon.data[i]);
       }
 
-      removeAllContainers();
+      removeContainers();
       leon.data.forEach((d) => drawLeaves(d, makeContainer()));
       console.log(leon);
     });
@@ -147,7 +154,7 @@ export default function LeonPixiExample() {
   /**
    * n번째 위치에 글자 추가하기
    */
-  const addText = useCallback(
+  const inserText = useCallback(
     (text: string, idx: number) => {
       dispatcher.send(({ leon }) => {
         // add text
@@ -158,11 +165,10 @@ export default function LeonPixiExample() {
         const y = (canvasHeight - leon.rect.h) / 2;
         leon.position(x, y);
 
-        // draw
+        // update paths
         leon.updateDrawingPaths();
-        leafContainers.current.forEach((container, idx) => {
-          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-        });
+
+        // draw
         drawTypo(leon.data[idx]);
         drawLeaves(leon.data[idx], makeContainer(idx));
         leafContainers.current.forEach((container, idx) => {
@@ -180,9 +186,35 @@ export default function LeonPixiExample() {
     ],
   );
 
+  const deleteText = useCallback(
+    (idx: number, newText: string) => {
+      dispatcher.send(({ leon }) => {
+        // calculate number of deleted characters
+        const n = leon.text.length - newText.length;
+
+        // delete text
+        leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
+        removeContainers(idx, idx + n);
+
+        // recalculate position of new text
+        const x = (canvasWidth - leon.rect.w) / 2;
+        const y = (canvasHeight - leon.rect.h) / 2;
+        leon.position(x, y);
+
+        // update paths
+        leon.updateDrawingPaths();
+
+        // draw
+        leafContainers.current.forEach((container, idx) => {
+          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+        });
+      });
+    },
+    [canvasHeight, canvasWidth, dispatcher],
+  );
+
   const moveLeft = useCallback(() => {
-    // dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
-    leafContainers.current.forEach((c) => c.position.set(c.x - 10, c.y));
+    dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
   }, [dispatcher]);
 
   const moveRight = useCallback(() => {
@@ -202,6 +234,7 @@ export default function LeonPixiExample() {
         );
         leafSources.current.push(leaf);
       }
+      redraw();
     })();
   }, []);
 
@@ -216,7 +249,7 @@ export default function LeonPixiExample() {
         ),
       );
     });
-  }, [dispatcher]);
+  }, []);
 
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
@@ -271,10 +304,14 @@ export default function LeonPixiExample() {
                 );
                 return;
               }
-              addText(data!, inputRef.current!.selectionStart! - 1);
-            } else if (inputType.startsWith('delete')) {
+              inserText(data!, inputRef.current!.selectionStart! - 1);
+            } else if (
+              inputType.startsWith('delete') &&
+              e.currentTarget.value.length > 0
+            ) {
               // delete text
-              const firstDeleteIdx = inputRef.current!.selectionStart! - 1;
+              const deletedIdx = inputRef.current!.selectionStart!;
+              deleteText(deletedIdx, e.currentTarget.value);
             } else {
               // replace text
               replaceText(e.currentTarget.value);
