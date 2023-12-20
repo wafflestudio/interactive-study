@@ -62,7 +62,7 @@ export default function LeonPixi({
       leon.drawPixi(graphics);
       renderer.render(stage);
     },
-    [dataRefs, width, height],
+    [dataRefs],
   );
 
   /**
@@ -114,7 +114,7 @@ export default function LeonPixi({
 
     // start animation
     requestAnimationFrame(animate);
-  }, [canvasRef]);
+  }, [canvasRef]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    *  Update Leon

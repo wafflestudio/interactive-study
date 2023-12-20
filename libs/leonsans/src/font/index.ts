@@ -15,6 +15,8 @@ const TYPO_DATA: Record<char, Typo> = {
   ...LATIN,
 };
 
+export const CHARSET = Object.keys(TYPO_DATA);
+
 /**
  * 문자(길이가 1인 string)를 받아 해당 문자에 맞는 Typo 객체를 반환합니다.
  * 적절한 객체가 없을 경우, 폴백으로 Tofu 객체를 반환합니다.

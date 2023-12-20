@@ -1,71 +1,97 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { ModelData, Point } from 'leonsans';
+import { CHARSET, ModelData, Point } from 'leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 
-// import { onAnimateCallback } from '../types/Handler';
+const TYPO_EASING = Power0.easeNone;
+const TYPO_DRAWING_DURATION = 1;
 
-const canvasWidth = 800;
-const canvasHeight = 600;
+const LEAVES_EASING = Power3.easeOut;
+const LEAVES_DRAWING_SPEED = 1;
+const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
+
+const INITIAL_TEXT = 'Leon Pixi';
 
 function randomIdx(arr: unknown[]) {
   return Math.floor(Math.random() * arr.length);
 }
 
 export default function LeonPixiExample() {
-  // const [text, setText] = useState('Leon Pixi');
+  const [windowSize, setWindowSize] = useState<[number, number]>([
+    window.innerWidth,
+    window.innerHeight - 100,
+  ]);
+  const canvasWidth = windowSize[0];
+  const canvasHeight = windowSize[1];
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const dispatcher = usePixiDispatcher();
 
-  const leaves = useRef<PIXI.SpriteSource[]>([]);
+  const leafSources = useRef<PIXI.SpriteSource[]>([]);
   const leafContainers = useRef<PIXI.Container[]>([]);
 
-  const removeAllContainers = useCallback(() => {
+  const removeAllContainers = () => {
     leafContainers.current.forEach((c) => c.destroy());
     leafContainers.current = [];
-  }, []);
+  };
 
-  const makeContainer = useCallback(() => {
-    const container = new PIXI.Container();
-    leafContainers.current.push(container);
-    dispatcher.send(({ stage }) => stage.addChild(container));
-    return container;
-  }, [dispatcher]);
+  const makeContainer = useCallback(
+    (idx: number = leafContainers.current.length) => {
+      const container = new PIXI.Container();
+      dispatcher.send(({ leon, stage }) => {
+        leafContainers.current = [
+          ...leafContainers.current.slice(0, idx),
+          container,
+          ...leafContainers.current.slice(idx),
+        ];
+        container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+        stage.addChild(container);
+      });
+      return container;
+    },
+    [dispatcher],
+  );
 
   const drawLeaves = useCallback(
-    (points: Point[]) => {
-      const container = makeContainer();
-
+    (typo: ModelData, container: PIXI.Container) => {
       dispatcher.send(({ leon }) => {
-        container.position.set(leon.rect.x, leon.rect.y);
-        points
+        typo.drawingPaths
           .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
           .forEach((pos, i, every) => {
             const total = every.length;
-            const d = leaves.current[randomIdx(leaves.current)];
-            const leaf = PIXI.Sprite.from(d);
-            leaf.anchor.set(0.5);
-            leaf.x = pos.x - leon.rect.x;
-            leaf.y = pos.y - leon.rect.y;
-            leaf.scale.set(0);
+            const source = leafSources.current[randomIdx(leafSources.current)];
+            const leafSprite = PIXI.Sprite.from(source);
+            leafSprite.anchor.set(0.5);
+            console.log(pos.x, leon.rect.x);
+            leafSprite.x = pos.x - typo.rect.x;
+            leafSprite.y = pos.y - typo.rect.y;
             const scale = leon.scale * 0.3;
-            container.addChild(leaf);
-            gsap.to(leaf.scale, {
-              delay: (i / total) * 1 + 0.95,
-              x: scale,
-              y: scale,
-              ease: Power3.easeOut,
-              duration: 0.5,
-            });
+            container.addChild(leafSprite);
+            gsap.fromTo(
+              leafSprite.scale,
+              {
+                x: 0,
+                y: 0,
+              },
+              {
+                x: scale,
+                y: scale,
+                ease: LEAVES_EASING,
+                duration: 0.5,
+                delay:
+                  (i / total) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
+              },
+            );
           });
       });
     },
-    [dispatcher, makeContainer],
+    [dispatcher],
   );
 
-  const drawBranch = useCallback((typo: ModelData) => {
+  const drawTypo = useCallback((typo: ModelData) => {
     gsap.fromTo(
       typo.drawing,
       {
@@ -73,8 +99,8 @@ export default function LeonPixiExample() {
       },
       {
         value: 1,
-        ease: Power0.easeNone,
-        duration: 1,
+        ease: TYPO_EASING,
+        duration: TYPO_DRAWING_DURATION,
       },
     );
   }, []);
@@ -88,34 +114,75 @@ export default function LeonPixiExample() {
 
       for (let i = 0; i < leon.drawing.length; i++) {
         gsap.killTweensOf(leon.drawing[i]);
-        drawBranch(leon.data[i]);
+        drawTypo(leon.data[i]);
       }
 
       removeAllContainers();
-      leon.data.forEach((d) => drawLeaves(d.drawingPaths));
+      leon.data.forEach((d) => drawLeaves(d, makeContainer()));
+      console.log(leon);
     });
-  }, [dispatcher, drawLeaves, removeAllContainers]);
+  }, [dispatcher, drawTypo, drawLeaves, makeContainer]);
 
-  const setText = useCallback(
-    (text: string) => {
+  /**
+   * 글자를 교체하고 다시 그리기
+   */
+  const replaceText = useCallback(
+    (newText: string) => {
       dispatcher.send(({ leon }) => {
-        leon.text = text;
-        leon.updateDrawingPaths();
-        const lastTypo = leon.data[leon.data.length - 1]
-        drawLeaves(lastTypo.drawingPaths);
-        drawBranch(lastTypo);
+        // set text
+        leon.text = newText;
 
-        // set position
+        // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
         const y = (canvasHeight - leon.rect.h) / 2;
         leon.position(x, y);
       });
+
+      // redraw
+      redraw();
     },
-    [dispatcher],
+    [dispatcher, canvasWidth, canvasHeight, redraw],
+  );
+
+  /**
+   * n번째 위치에 글자 추가하기
+   */
+  const addText = useCallback(
+    (text: string, idx: number) => {
+      dispatcher.send(({ leon }) => {
+        // add text
+        leon.text = leon.text.slice(0, idx) + text + leon.text.slice(idx);
+
+        // recalculate position of new text
+        const x = (canvasWidth - leon.rect.w) / 2;
+        const y = (canvasHeight - leon.rect.h) / 2;
+        leon.position(x, y);
+
+        // draw
+        leon.updateDrawingPaths();
+        leafContainers.current.forEach((container, idx) => {
+          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+        });
+        drawTypo(leon.data[idx]);
+        drawLeaves(leon.data[idx], makeContainer(idx));
+        leafContainers.current.forEach((container, idx) => {
+          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+        });
+      });
+    },
+    [
+      canvasHeight,
+      canvasWidth,
+      dispatcher,
+      drawLeaves,
+      drawTypo,
+      makeContainer,
+    ],
   );
 
   const moveLeft = useCallback(() => {
-    dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
+    // dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
+    leafContainers.current.forEach((c) => c.position.set(c.x - 10, c.y));
   }, [dispatcher]);
 
   const moveRight = useCallback(() => {
@@ -126,17 +193,22 @@ export default function LeonPixiExample() {
    * 마운트 될 때 잎사귀 데이터를 미리 로드
    */
   useEffect(() => {
-    if (leaves.current.length != 0) return;
+    if (leafSources.current.length != 0) return;
     // using IIFE to use async/await
     (async () => {
       for (let i = 1; i <= 20; i++) {
         const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
           `leaves/leaf_${i}.svg`,
         );
-        leaves.current.push(leaf);
+        leafSources.current.push(leaf);
       }
     })();
+  }, []);
 
+  /**
+   * leonsans에 update 이벤트 핸들러 등록
+   */
+  useEffect(() => {
     dispatcher.send(({ leon }) => {
       leon.on('update', () =>
         leafContainers.current.forEach((c) =>
@@ -144,25 +216,70 @@ export default function LeonPixiExample() {
         ),
       );
     });
+  }, [dispatcher]);
+
+  /**
+   * 마운트될 때 input에 INITIAL_TEXT 적용
+   */
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.value = INITIAL_TEXT;
+  }, []);
+
+  /**
+   * window resize
+   */
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize([window.innerWidth, window.innerHeight - 100]);
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (
     <div>
       <LeonPixi
-        text={'Leon Pixi'}
+        text={INITIAL_TEXT}
         color={'#704234'}
         size={130}
         width={canvasWidth}
         height={canvasHeight}
         dispatcher={dispatcher}
-        // onAnimate={animateLeaves}
       />
       <div>
         <input
+          ref={inputRef}
           type="text"
-          // value="Leon Pixi"
-          placeholder="Leon Pixi"
-          onChange={(e) => setText(e.target.value)}
+          onInput={(e) => {
+            const inputEvent = e.nativeEvent as InputEvent;
+            const data = inputEvent.data;
+            const inputType = inputEvent.inputType;
+            if (
+              inputType === 'insertText' ||
+              inputType === 'insertCompositionText'
+            ) {
+              const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
+              if (!isValid) {
+                alert(`${data}는 허용되지 않는 문자입니다.`);
+                inputRef.current!.value = inputRef.current!.value.replace(
+                  data!,
+                  '',
+                );
+                return;
+              }
+              addText(data!, inputRef.current!.selectionStart! - 1);
+            } else if (inputType.startsWith('delete')) {
+              // delete text
+              const firstDeleteIdx = inputRef.current!.selectionStart! - 1;
+            } else {
+              // replace text
+              replaceText(e.currentTarget.value);
+            }
+          }}
         />
         <button onClick={() => redraw()}>다시 쓰기</button>
         <button onClick={() => moveLeft()}>{'<'}</button>
