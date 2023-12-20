@@ -53,7 +53,6 @@ export default function LeonPixiExample() {
           container,
           ...leafContainers.current.slice(idx),
         ];
-        if (!leon.data[idx]) return; // FIXME 줄바꿈 임시 로직
         container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
         stage.addChild(container);
       });
@@ -64,7 +63,6 @@ export default function LeonPixiExample() {
 
   const drawLeaves = useCallback(
     (typo: ModelData, container: PIXI.Container) => {
-      if (!typo) return; // FIXME 줄바꿈 임시 로직
       dispatcher.send(({ leon }) => {
         typo.drawingPaths
           .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
@@ -177,7 +175,6 @@ export default function LeonPixiExample() {
         drawTypo(leon.data[idx]);
         drawLeaves(leon.data[idx], makeContainer(idx));
         leafContainers.current.forEach((container, idx) => {
-          if (!leon.data[idx]) return; // FIXME 줄바꿈 임시 로직
           container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
         });
       });
@@ -226,26 +223,21 @@ export default function LeonPixiExample() {
   );
 
   const onInputHandler = useCallback(
-    (e) => {
+    (e: React.FormEvent<HTMLInputElement>) => {
       const newText: string = e.currentTarget.value;
       const caretIdx = inputRef.current!.selectionStart!;
       const inputEvent = e.nativeEvent as InputEvent;
       const data = inputEvent.data;
       const inputType = inputEvent.inputType;
       if (inputType === 'insertText' || inputType === 'insertCompositionText') {
-        const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
+        // FIXME 줄바꿈 일단 막아놓음
+        const isValid = CHARSET.includes(data!) || ' '.includes(data!);
         if (!isValid) {
           alert(`"${data}"는 허용되지 않는 문자입니다.`);
           inputRef.current!.value = inputRef.current!.value.replace(data!, '');
           return;
         }
-        if (data == '\\') {
-          // FIXME 줄바꿈 임시 로직
-          inputRef.current!.value = inputRef.current!.value.slice(0, caretIdx) + 'n' + inputRef.current!.value.slice(caretIdx);
-          inserText('\\n', inputRef.current!.selectionStart! - 1);
-        } else {
-          inserText(data!, inputRef.current!.selectionStart! - 1);
-        }
+        inserText(data!, inputRef.current!.selectionStart! - 1);
       } else if (
         inputType.startsWith('delete') &&
         e.currentTarget.value.length > 0
