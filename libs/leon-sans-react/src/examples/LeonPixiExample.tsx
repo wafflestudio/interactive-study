@@ -2,7 +2,7 @@ import gsap, { Power0, Power3 } from 'gsap';
 import { CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
@@ -15,6 +15,13 @@ const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
 const INITIAL_TEXT = 'Leon Pixi';
+
+const ornamentConfig = {
+  period: 10,
+  scale: [0.8, 0.2],
+  probability: [0.01, 0.001],
+  radius: 30,
+};
 
 function randomIdx(arr: unknown[]) {
   return Math.floor(Math.random() * arr.length);
@@ -44,6 +51,8 @@ export default function LeonPixiExample() {
       ...leafContainers.current.slice(end),
     ];
   };
+
+  const ornaments = useRef<PIXI.SpriteSource[]>([]);
 
   const updatePositions = (leon: LeonSans) => {
     leafContainers.current.forEach((container, idx) => {
@@ -101,6 +110,35 @@ export default function LeonPixiExample() {
                   (i / total) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
               },
             );
+          });
+
+        // draw ornament
+        points
+          .filter(
+            (pos, i) =>
+              pos.type == 'a' ||
+              i % ornamentConfig.period === ornamentConfig.period - 1,
+          )
+          .forEach((pos, i, every) => {
+            const index = Math.random() < 0.5 ? 0 : 1;
+            const scale = leon.scale * ornamentConfig.scale[index];
+            const radius = leon.scale * ornamentConfig.radius;
+            const total = every.length;
+            const o = ornaments.current[index];
+            const ornament = PIXI.Sprite.from(o);
+            ornament.anchor.set(0.5);
+            ornament.x = pos.x - leon.rect.x + radius * (Math.random() - 0.5);
+            ornament.y = pos.y - leon.rect.y + radius * (Math.random() - 0.5);
+            ornament.scale.set(0);
+            container.addChild(ornament);
+
+            gsap.to(ornament.scale, {
+              delay: (i / total) * 1 + 0.95,
+              x: scale,
+              y: scale,
+              ease: Power3.easeOut,
+              duration: 0.5,
+            });
           });
       });
     },
@@ -255,12 +293,15 @@ export default function LeonPixiExample() {
           const isValid = CHARSET.includes(data!) || ' '.includes(data!);
           if (!isValid) {
             alert(`"${data}"는 허용되지 않는 문자입니다.`);
-            inputRef.current!.value = inputRef.current!.value.replace(data!, '');
+            inputRef.current!.value = inputRef.current!.value.replace(
+              data!,
+              '',
+            );
             return;
           }
 
           if (inputRef.current?.value.length !== leon.text.length + 1) {
-            replaceText(data!)
+            replaceText(data!);
           } else {
             inserText(data!, caretIdx - 1);
           }
@@ -282,11 +323,10 @@ export default function LeonPixiExample() {
             );
             return;
           }
-  
+
           replaceText(newText);
         }
-
-      })
+      });
     },
     [deleteText, inserText, replaceText],
   );
@@ -319,6 +359,17 @@ export default function LeonPixiExample() {
         leafSources.current.push(leaf);
       }
       redraw();
+
+      // save ornament
+      const sampleOrnament1 = await PIXI.Assets.load<PIXI.SpriteSource>(
+        'ornaments/sample_1.svg',
+      );
+      const sampleOrnament2 = await PIXI.Assets.load<PIXI.SpriteSource>(
+        'ornaments/sample_2.svg',
+      );
+
+      ornaments.current.push(sampleOrnament1);
+      ornaments.current.push(sampleOrnament2);
     })();
   }, []);
 
