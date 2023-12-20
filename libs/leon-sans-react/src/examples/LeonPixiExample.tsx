@@ -28,7 +28,6 @@ export default function LeonPixiExample() {
   const canvasHeight = windowSize[1];
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const isInitialized = useRef<boolean>(false);
   const dispatcher = usePixiDispatcher();
 
   const leafSources = useRef<PIXI.SpriteSource[]>([]);
@@ -54,6 +53,7 @@ export default function LeonPixiExample() {
           container,
           ...leafContainers.current.slice(idx),
         ];
+        if (!leon.data[idx]) return; // FIXME 줄바꿈 임시 로직
         container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
         stage.addChild(container);
       });
@@ -64,6 +64,7 @@ export default function LeonPixiExample() {
 
   const drawLeaves = useCallback(
     (typo: ModelData, container: PIXI.Container) => {
+      if (!typo) return; // FIXME 줄바꿈 임시 로직
       dispatcher.send(({ leon }) => {
         typo.drawingPaths
           .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
@@ -72,7 +73,6 @@ export default function LeonPixiExample() {
             const source = leafSources.current[randomIdx(leafSources.current)];
             const leafSprite = PIXI.Sprite.from(source);
             leafSprite.anchor.set(0.5);
-            console.log(pos.x, leon.rect.x);
             leafSprite.x = pos.x - typo.rect.x;
             leafSprite.y = pos.y - typo.rect.y;
             const scale = leon.scale * 0.3;
@@ -99,6 +99,7 @@ export default function LeonPixiExample() {
   );
 
   const drawTypo = useCallback((typo: ModelData) => {
+    if (!typo) return;
     gsap.fromTo(
       typo.drawing,
       {
@@ -126,18 +127,19 @@ export default function LeonPixiExample() {
 
       removeContainers();
       leon.data.forEach((d) => drawLeaves(d, makeContainer()));
-      console.log(leon);
     });
   }, [dispatcher, drawTypo, drawLeaves, makeContainer]);
 
   /**
    * 글자를 교체하고 다시 그리기
+   *
+   * @param text 교체할 텍스트
    */
   const replaceText = useCallback(
-    (newText: string) => {
+    (text: string) => {
       dispatcher.send(({ leon }) => {
         // set text
-        leon.text = newText;
+        leon.text = text;
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
@@ -153,6 +155,9 @@ export default function LeonPixiExample() {
 
   /**
    * n번째 위치에 글자 추가하기
+   *
+   * @param text 추가할 글자
+   * @param idx 추가할 위치
    */
   const inserText = useCallback(
     (text: string, idx: number) => {
@@ -172,6 +177,7 @@ export default function LeonPixiExample() {
         drawTypo(leon.data[idx]);
         drawLeaves(leon.data[idx], makeContainer(idx));
         leafContainers.current.forEach((container, idx) => {
+          if (!leon.data[idx]) return; // FIXME 줄바꿈 임시 로직
           container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
         });
       });
@@ -186,11 +192,17 @@ export default function LeonPixiExample() {
     ],
   );
 
+  /**
+   * n번째 위치의 글자 삭제하기
+   *
+   * @param idx 삭제할 위치
+   * @param text 삭제 후 남은 텍스트
+   */
   const deleteText = useCallback(
-    (idx: number, newText: string) => {
+    (idx: number, text: string) => {
       dispatcher.send(({ leon }) => {
         // calculate number of deleted characters
-        const n = leon.text.length - newText.length;
+        const n = leon.text.length - text.length;
 
         // delete text
         leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
@@ -211,6 +223,52 @@ export default function LeonPixiExample() {
       });
     },
     [canvasHeight, canvasWidth, dispatcher],
+  );
+
+  const onInputHandler = useCallback(
+    (e) => {
+      const newText: string = e.currentTarget.value;
+      const caretIdx = inputRef.current!.selectionStart!;
+      const inputEvent = e.nativeEvent as InputEvent;
+      const data = inputEvent.data;
+      const inputType = inputEvent.inputType;
+      if (inputType === 'insertText' || inputType === 'insertCompositionText') {
+        const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
+        if (!isValid) {
+          alert(`"${data}"는 허용되지 않는 문자입니다.`);
+          inputRef.current!.value = inputRef.current!.value.replace(data!, '');
+          return;
+        }
+        if (data == '\\') {
+          // FIXME 줄바꿈 임시 로직
+          inputRef.current!.value = inputRef.current!.value.slice(0, caretIdx) + 'n' + inputRef.current!.value.slice(caretIdx);
+          inserText('\\n', inputRef.current!.selectionStart! - 1);
+        } else {
+          inserText(data!, inputRef.current!.selectionStart! - 1);
+        }
+      } else if (
+        inputType.startsWith('delete') &&
+        e.currentTarget.value.length > 0
+      ) {
+        // delete text
+        deleteText(caretIdx, e.currentTarget.value);
+      } else {
+        // replace text
+        const isValid = newText
+          .split('')
+          .every((c) => CHARSET.includes(c) || ' \\'.includes(c));
+        if (!isValid) {
+          alert(`"${newText}"에는 허용되지 않는 문자가 포함되어 있습니다.`);
+          inputRef.current!.value = inputRef.current!.value.replace(
+            newText,
+            '',
+          );
+          return;
+        }
+        replaceText(newText);
+      }
+    },
+    [deleteText, inserText, replaceText],
   );
 
   const moveLeft = useCallback(() => {
@@ -284,40 +342,7 @@ export default function LeonPixiExample() {
         dispatcher={dispatcher}
       />
       <div>
-        <input
-          ref={inputRef}
-          type="text"
-          onInput={(e) => {
-            const inputEvent = e.nativeEvent as InputEvent;
-            const data = inputEvent.data;
-            const inputType = inputEvent.inputType;
-            if (
-              inputType === 'insertText' ||
-              inputType === 'insertCompositionText'
-            ) {
-              const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
-              if (!isValid) {
-                alert(`${data}는 허용되지 않는 문자입니다.`);
-                inputRef.current!.value = inputRef.current!.value.replace(
-                  data!,
-                  '',
-                );
-                return;
-              }
-              inserText(data!, inputRef.current!.selectionStart! - 1);
-            } else if (
-              inputType.startsWith('delete') &&
-              e.currentTarget.value.length > 0
-            ) {
-              // delete text
-              const deletedIdx = inputRef.current!.selectionStart!;
-              deleteText(deletedIdx, e.currentTarget.value);
-            } else {
-              // replace text
-              replaceText(e.currentTarget.value);
-            }
-          }}
-        />
+        <input ref={inputRef} type="text" onInput={onInputHandler} />
         <button onClick={() => redraw()}>다시 쓰기</button>
         <button onClick={() => moveLeft()}>{'<'}</button>
         <button onClick={() => moveRight()}>{'>'}</button>
