@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
+import LeonSans from 'leonsans/src/leonsans';
 
 const TYPO_EASING = Power0.easeNone;
 const TYPO_DRAWING_DURATION = 1;
@@ -43,6 +44,12 @@ export default function LeonPixiExample() {
       ...leafContainers.current.slice(end),
     ];
   };
+
+  const updatePositions = (leon: LeonSans) => {
+    leafContainers.current.forEach((container, idx) => {
+      container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+    });
+  }
 
   const makeContainer = useCallback(
     (idx: number = leafContainers.current.length) => {
@@ -174,9 +181,7 @@ export default function LeonPixiExample() {
         // draw
         drawTypo(leon.data[idx]);
         drawLeaves(leon.data[idx], makeContainer(idx));
-        leafContainers.current.forEach((container, idx) => {
-          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-        });
+        updatePositions(leon);
       });
     },
     [
@@ -214,9 +219,7 @@ export default function LeonPixiExample() {
         leon.updateDrawingPaths();
 
         // draw
-        leafContainers.current.forEach((container, idx) => {
-          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-        });
+        updatePositions(leon);
       });
     },
     [canvasHeight, canvasWidth, dispatcher],
@@ -264,11 +267,17 @@ export default function LeonPixiExample() {
   );
 
   const moveLeft = useCallback(() => {
-    dispatcher.send(({ leon }) => leon.position(leon.rect.x - 10, leon.rect.y));
+    dispatcher.send(({ leon }) => {
+      leon.position(leon.rect.x + 10, leon.rect.y);
+      updatePositions(leon);
+    });
   }, [dispatcher]);
 
   const moveRight = useCallback(() => {
-    dispatcher.send(({ leon }) => leon.position(leon.rect.x + 10, leon.rect.y));
+    dispatcher.send(({ leon }) => {
+      leon.position(leon.rect.x + 10, leon.rect.y);
+      updatePositions(leon);
+    });
   }, [dispatcher]);
 
   /**
@@ -291,15 +300,13 @@ export default function LeonPixiExample() {
   /**
    * leonsans에 update 이벤트 핸들러 등록
    */
-  useEffect(() => {
-    dispatcher.send(({ leon }) => {
-      leon.on('update', () =>
-        leafContainers.current.forEach((c) =>
-          c.position.set(leon.rect.x, leon.rect.y),
-        ),
-      );
-    });
-  }, []);
+  // useEffect(() => {
+  //   dispatcher.send(({ leon }) => {
+  //     leafContainers.current.forEach((container, idx) => {
+  //       container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+  //     });
+  //   });
+  // }, []);
 
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
