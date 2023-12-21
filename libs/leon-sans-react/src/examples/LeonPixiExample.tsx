@@ -1,11 +1,11 @@
 import gsap, { Power0, Power3 } from 'gsap';
 import { CHARSET, ModelData } from 'leonsans';
+import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-import LeonSans from 'leonsans/src/leonsans';
 
 const TYPO_EASING = Power0.easeNone;
 const TYPO_DRAWING_DURATION = 1;
@@ -28,7 +28,7 @@ export default function LeonPixiExample() {
   const canvasWidth = windowSize[0];
   const canvasHeight = windowSize[1];
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatcher = usePixiDispatcher();
 
   const leafSources = useRef<PIXI.SpriteSource[]>([]);
@@ -47,9 +47,11 @@ export default function LeonPixiExample() {
 
   const updatePositions = (leon: LeonSans) => {
     leafContainers.current.forEach((container, idx) => {
-      container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+      // FIXME : \n 처리
+      if (leon.data[idx] !== undefined)
+        container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
     });
-  }
+  };
 
   const makeContainer = useCallback(
     (idx: number = leafContainers.current.length) => {
@@ -60,7 +62,9 @@ export default function LeonPixiExample() {
           container,
           ...leafContainers.current.slice(idx),
         ];
-        container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+        // FIXME : \n 처리
+        if (leon.data[idx] !== undefined)
+          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
         stage.addChild(container);
       });
       return container;
@@ -168,7 +172,13 @@ export default function LeonPixiExample() {
     (text: string, idx: number) => {
       dispatcher.send(({ leon }) => {
         // add text
+        console.log(
+          `leon.text.length: ${leon.text.length}, leon.data.length: ${leon.data.length}`,
+        );
         leon.text = leon.text.slice(0, idx) + text + leon.text.slice(idx);
+        console.log(
+          `leon.text.length: ${leon.text.length}, leon.data.length: ${leon.data.length}`,
+        );
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
@@ -179,8 +189,12 @@ export default function LeonPixiExample() {
         leon.updateDrawingPaths();
 
         // draw
-        drawTypo(leon.data[idx]);
-        drawLeaves(leon.data[idx], makeContainer(idx));
+        // FIXME : \n 처리
+        if (text === '\n') return;
+        const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
+        console.log(lineBreak);
+        drawTypo(leon.data[idx - lineBreak]);
+        drawLeaves(leon.data[idx - lineBreak], makeContainer(idx));
         updatePositions(leon);
       });
     },
@@ -208,7 +222,8 @@ export default function LeonPixiExample() {
 
         // delete text
         leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
-        removeContainers(idx, idx + n);
+        const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
+        removeContainers(idx - lineBreak, idx - lineBreak + n);
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
@@ -226,21 +241,36 @@ export default function LeonPixiExample() {
   );
 
   const onInputHandler = useCallback(
-    (e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.FormEvent<HTMLTextAreaElement>) => {
       const newText: string = e.currentTarget.value;
       const caretIdx = inputRef.current!.selectionStart!;
       const inputEvent = e.nativeEvent as InputEvent;
       const data = inputEvent.data;
       const inputType = inputEvent.inputType;
-      if (inputType === 'insertText' || inputType === 'insertCompositionText') {
-        // FIXME 줄바꿈 일단 막아놓음
-        const isValid = CHARSET.includes(data!) || ' '.includes(data!);
+
+      console.log(
+        '-------------------------------\nInput Event Info\n',
+        inputType,
+        data,
+        caretIdx,
+      );
+
+      if (
+        inputType === 'insertLineBreak' ||
+        (inputType === 'insertText' && data === null)
+      ) {
+        inserText('\n', caretIdx - 1);
+      } else if (
+        inputType === 'insertText' ||
+        inputType === 'insertCompositionText'
+      ) {
+        const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
         if (!isValid) {
           alert(`"${data}"는 허용되지 않는 문자입니다.`);
           inputRef.current!.value = inputRef.current!.value.replace(data!, '');
           return;
         }
-        inserText(data!, inputRef.current!.selectionStart! - 1);
+        inserText(data!, caretIdx - 1);
       } else if (
         inputType.startsWith('delete') &&
         e.currentTarget.value.length > 0
@@ -341,7 +371,7 @@ export default function LeonPixiExample() {
         dispatcher={dispatcher}
       />
       <div>
-        <input ref={inputRef} type="text" onInput={onInputHandler} />
+        <textarea ref={inputRef} onInput={onInputHandler} />
         <button onClick={() => redraw()}>다시 쓰기</button>
         <button onClick={() => moveLeft()}>{'<'}</button>
         <button onClick={() => moveRight()}>{'>'}</button>
