@@ -2,7 +2,7 @@ import gsap, { Power0, Power3 } from 'gsap';
 import { CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
@@ -19,9 +19,8 @@ const INITIAL_TEXT = 'Leon Pixi';
 const ornamentConfig = {
   period: 10,
   scale: [0.8, 0.2],
-  probability: [0.2, 0.2],
-  radius: 60,
-  additionalDelay: 1,
+  probability: [0.01, 0.001],
+  radius: 30,
 };
 
 function randomIdx(arr: unknown[]) {
@@ -42,6 +41,8 @@ export default function LeonPixiExample() {
   const leafSources = useRef<PIXI.SpriteSource[]>([]);
   const leafContainers = useRef<PIXI.Container[]>([]);
 
+  const ornamentSources = useRef<PIXI.SpriteSource[]>([]);
+
   const removeContainers = (
     start: number = 0,
     end: number = leafContainers.current.length,
@@ -52,8 +53,6 @@ export default function LeonPixiExample() {
       ...leafContainers.current.slice(end),
     ];
   };
-
-  const ornaments = useRef<PIXI.SpriteSource[]>([]);
 
   const updatePositions = (leon: LeonSans) => {
     leafContainers.current.forEach((container, idx) => {
@@ -114,34 +113,41 @@ export default function LeonPixiExample() {
           });
 
         // draw ornament
-        points
-          .filter(
-            (pos, i) =>
-              pos.type == 'a' ||
-              i % ornamentConfig.period === ornamentConfig.period - 1,
-          )
+        typo.drawingPaths
+          // .filter(
+          //   (pos, i) =>
+          //     pos.type == 'a' ||
+          //     i % ornamentConfig.period === ornamentConfig.period - 1,
+          // )
           .forEach((pos, i, every) => {
+            const index = Math.random() < 0.5 ? 0 : 1;
+            const scale = leon.scale * ornamentConfig.scale[index];
+            const radius = leon.scale * ornamentConfig.radius;
             const total = every.length;
-            ornaments.current.forEach((ornamentData, ornamentIndex) => {
-              if (Math.random() > ornamentConfig.probability[ornamentIndex])
-                return;
-              const scale = leon.scale * ornamentConfig.scale[ornamentIndex];
-              const radius = leon.scale * ornamentConfig.radius;
-              const ornament = PIXI.Sprite.from(ornamentData);
-              ornament.anchor.set(0.5);
-              ornament.x = pos.x - leon.rect.x + radius * (Math.random() - 0.5);
-              ornament.y = pos.y - leon.rect.y + radius * (Math.random() - 0.5);
-              ornament.scale.set(0);
-              container.addChild(ornament);
+            const source = ornamentSources.current[index];
+            const ornamentSprite = PIXI.Sprite.from(source);
+            ornamentSprite.anchor.set(0.5);
+            ornamentSprite.x =
+              pos.x - leon.rect.x + radius * (Math.random() - 0.5);
+            ornamentSprite.y =
+              pos.y - leon.rect.y + radius * (Math.random() - 0.5);
+            ornamentSprite.scale.set(0);
+            container.addChild(ornamentSprite);
 
-              gsap.to(ornament.scale, {
-                delay: (i / total) * 1 + 0.95 + ornamentConfig.additionalDelay,
+            gsap.fromTo(
+              ornamentSprite.scale,
+              {
+                x: 0,
+                y: 0,
+              },
+              {
                 x: scale,
                 y: scale,
                 ease: Power3.easeOut,
                 duration: 0.5,
-              });
-            });
+                delay: (i / total) * 1 + 0.95,
+              },
+            );
           });
       });
     },
@@ -371,8 +377,8 @@ export default function LeonPixiExample() {
         'ornaments/sample_2.svg',
       );
 
-      ornaments.current.push(sampleOrnament1);
-      ornaments.current.push(sampleOrnament2);
+      ornamentSources.current.push(sampleOrnament1);
+      ornamentSources.current.push(sampleOrnament2);
     })();
   }, []);
 
