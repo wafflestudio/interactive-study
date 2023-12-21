@@ -174,21 +174,23 @@ export class Model {
     // Start position of each word
     let currentX = 0;
     let currentY = 0;
+    const tmp = textGroup.map((line, i) => {
+      // total width and height of each line
+      let lineWidth = 0;
+      let lineHeight = 0;
+      // reset x position
+      currentX = 0;
 
-    const tmp = textGroup.map((word, i) => {
-      let wordWidth = 0; // total width
-      let wordHeight = 0; // total height
-
-      const arr = word.map((str, j) => {
+      const arr = line.map((str, j) => {
         const typo = getTypo(str);
         const scaledRect = getScaledRect(typo, scale);
-        wordWidth += scaledRect.w;
-        wordHeight = scaledRect.h;
-        if (j < word.length - 1) {
-          wordWidth += m_tracking;
+        lineWidth += scaledRect.w;
+        lineHeight = scaledRect.h;
+        if (j < line.length - 1) {
+          lineWidth += m_tracking;
         }
         if (i < textGroup.length - 1) {
-          wordHeight += m_leading;
+          lineHeight += m_leading;
         }
         scaledRect.x = currentX;
         scaledRect.y = currentY;
@@ -217,16 +219,16 @@ export class Model {
           relativeWavePaths: [],
           drawingPaths: [],
         };
-        currentX = wordWidth;
+        currentX = lineWidth;
         return res;
       });
 
-      currentY += wordHeight;
-      maxW = Math.max(maxW, wordWidth);
-      maxH += wordHeight;
+      currentY += lineHeight;
+      maxW = Math.max(maxW, lineWidth);
+      maxH += lineHeight;
 
       return {
-        tw: wordWidth,
+        tw: lineWidth,
         arr,
       };
     });
