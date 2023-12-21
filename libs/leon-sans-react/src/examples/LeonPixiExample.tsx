@@ -172,13 +172,7 @@ export default function LeonPixiExample() {
     (text: string, idx: number) => {
       dispatcher.send(({ leon }) => {
         // add text
-        console.log(
-          `leon.text.length: ${leon.text.length}, leon.data.length: ${leon.data.length}`,
-        );
         leon.text = leon.text.slice(0, idx) + text + leon.text.slice(idx);
-        console.log(
-          `leon.text.length: ${leon.text.length}, leon.data.length: ${leon.data.length}`,
-        );
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
@@ -192,7 +186,6 @@ export default function LeonPixiExample() {
         // FIXME : \n 처리
         if (text === '\n') return;
         const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
-        console.log(lineBreak);
         drawTypo(leon.data[idx - lineBreak]);
         drawLeaves(leon.data[idx - lineBreak], makeContainer(idx));
         updatePositions(leon);
@@ -248,50 +241,52 @@ export default function LeonPixiExample() {
       const data = inputEvent.data;
       const inputType = inputEvent.inputType;
 
-      console.log(
-        '-------------------------------\nInput Event Info\n',
-        inputType,
-        data,
-        caretIdx,
-      );
+      dispatcher.send(({ leon }) => {
+        if (
+          inputType === 'insertLineBreak' ||
+          (inputType === 'insertText' && data === null)
+        ) {
+          inserText('\n', caretIdx - 1);
+        } else if (
+          inputType === 'insertText' ||
+          inputType === 'insertCompositionText'
+        ) {
+          // 입력 가능한 문자인지 검사
+          const isValid = CHARSET.includes(data!) || ' '.includes(data!);
+          if (!isValid) {
+            alert(`"${data}"는 허용되지 않는 문자입니다.`);
+            inputRef.current!.value = inputRef.current!.value.replace(data!, '');
+            return;
+          }
 
-      if (
-        inputType === 'insertLineBreak' ||
-        (inputType === 'insertText' && data === null)
-      ) {
-        inserText('\n', caretIdx - 1);
-      } else if (
-        inputType === 'insertText' ||
-        inputType === 'insertCompositionText'
-      ) {
-        const isValid = CHARSET.includes(data!) || ' \\'.includes(data!);
-        if (!isValid) {
-          alert(`"${data}"는 허용되지 않는 문자입니다.`);
-          inputRef.current!.value = inputRef.current!.value.replace(data!, '');
-          return;
+          if (inputRef.current?.value.length !== leon.text.length + 1) {
+            replaceText(data!)
+          } else {
+            inserText(data!, caretIdx - 1);
+          }
+        } else if (
+          inputType.startsWith('delete') &&
+          e.currentTarget.value.length > 0
+        ) {
+          deleteText(caretIdx, e.currentTarget.value);
+        } else {
+          // 입력 가능한 문자만 포함되어 있는지 검사
+          const isValid = newText
+            .split('')
+            .every((c) => CHARSET.includes(c) || ' '.includes(c));
+          if (!isValid) {
+            alert(`"${newText}"에는 허용되지 않는 문자가 포함되어 있습니다.`);
+            inputRef.current!.value = inputRef.current!.value.replace(
+              newText,
+              '',
+            );
+            return;
+          }
+  
+          replaceText(newText);
         }
-        inserText(data!, caretIdx - 1);
-      } else if (
-        inputType.startsWith('delete') &&
-        e.currentTarget.value.length > 0
-      ) {
-        // delete text
-        deleteText(caretIdx, e.currentTarget.value);
-      } else {
-        // replace text
-        const isValid = newText
-          .split('')
-          .every((c) => CHARSET.includes(c) || ' \\'.includes(c));
-        if (!isValid) {
-          alert(`"${newText}"에는 허용되지 않는 문자가 포함되어 있습니다.`);
-          inputRef.current!.value = inputRef.current!.value.replace(
-            newText,
-            '',
-          );
-          return;
-        }
-        replaceText(newText);
-      }
+
+      })
     },
     [deleteText, inserText, replaceText],
   );
