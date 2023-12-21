@@ -19,8 +19,9 @@ const INITIAL_TEXT = 'Leon Pixi';
 const ornamentConfig = {
   period: 10,
   scale: [0.8, 0.2],
-  probability: [0.01, 0.001],
-  radius: 30,
+  probability: [0.2, 0.2],
+  radius: 60,
+  additionalDelay: 1,
 };
 
 function randomIdx(arr: unknown[]) {
@@ -120,24 +121,26 @@ export default function LeonPixiExample() {
               i % ornamentConfig.period === ornamentConfig.period - 1,
           )
           .forEach((pos, i, every) => {
-            const index = Math.random() < 0.5 ? 0 : 1;
-            const scale = leon.scale * ornamentConfig.scale[index];
-            const radius = leon.scale * ornamentConfig.radius;
             const total = every.length;
-            const o = ornaments.current[index];
-            const ornament = PIXI.Sprite.from(o);
-            ornament.anchor.set(0.5);
-            ornament.x = pos.x - leon.rect.x + radius * (Math.random() - 0.5);
-            ornament.y = pos.y - leon.rect.y + radius * (Math.random() - 0.5);
-            ornament.scale.set(0);
-            container.addChild(ornament);
+            ornaments.current.forEach((ornamentData, ornamentIndex) => {
+              if (Math.random() > ornamentConfig.probability[ornamentIndex])
+                return;
+              const scale = leon.scale * ornamentConfig.scale[ornamentIndex];
+              const radius = leon.scale * ornamentConfig.radius;
+              const ornament = PIXI.Sprite.from(ornamentData);
+              ornament.anchor.set(0.5);
+              ornament.x = pos.x - leon.rect.x + radius * (Math.random() - 0.5);
+              ornament.y = pos.y - leon.rect.y + radius * (Math.random() - 0.5);
+              ornament.scale.set(0);
+              container.addChild(ornament);
 
-            gsap.to(ornament.scale, {
-              delay: (i / total) * 1 + 0.95,
-              x: scale,
-              y: scale,
-              ease: Power3.easeOut,
-              duration: 0.5,
+              gsap.to(ornament.scale, {
+                delay: (i / total) * 1 + 0.95 + ornamentConfig.additionalDelay,
+                x: scale,
+                y: scale,
+                ease: Power3.easeOut,
+                duration: 0.5,
+              });
             });
           });
       });
