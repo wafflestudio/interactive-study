@@ -1,0 +1,38 @@
+<svg width="174" height="174" viewBox="0 0 174 174" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ball_1" filter="url(#filter0_d_340_425)">
+<circle id="Ellipse 14" cx="87.1905" cy="87.3655" r="62.5" fill="#D9D9D9"/>
+<ellipse id="Ellipse 15" cx="74.4959" cy="60.8679" rx="32.6412" ry="26.6725" transform="rotate(-19.4072 74.4959 60.8679)" fill="url(#paint0_radial_340_425)"/>
+<g id="Mask group">
+<mask id="mask0_340_425" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="24" y="24" width="126" height="126">
+<circle id="Ellipse 17" cx="87.1905" cy="87.3655" r="62.5" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_340_425)">
+<circle id="Ellipse 16" cx="79.8122" cy="65.2301" r="92.448" fill="url(#paint1_radial_340_425)"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_340_425" x="0.69043" y="0.865479" width="173" height="173" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="12"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_340_425"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_340_425" result="shape"/>
+</filter>
+<radialGradient id="paint0_radial_340_425" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(74.4959 60.8679) rotate(90) scale(26.6725 32.6412)">
+<stop stop-color="white"/>
+<stop offset="0.322917" stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_340_425" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(79.8122 65.2301) rotate(90) scale(92.448)">
+<stop offset="0.0885417" stop-color="#D9D9D9" stop-opacity="0"/>
+<stop offset="0.46875" stop-color="#F0F0E2"/>
+<stop offset="0.703125" stop-color="#FFFDD2"/>
+<stop offset="0.807292" stop-color="#ECEBCD" stop-opacity="0.8"/>
+<stop offset="1" stop-color="#5B5B5B" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

@@ -16,12 +16,24 @@ const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
 const INITIAL_TEXT = 'Leon Pixi';
 
-const ornamentConfig = {
-  period: 10,
-  scale: [0.8, 0.2],
-  probability: [0.01, 0.001],
-  radius: 30,
-};
+const ORNAMENT_SOURCE_NAMES = [
+  'ball_1.svg',
+  'ball_2.svg',
+  'candy.svg',
+  'fruit_1.svg',
+  'fruit_2.svg',
+  'pinecone_1.svg',
+  'pinecone_2.svg',
+  'poinsettia_1.svg',
+  'poinsettia_2.svg',
+  'ribbon.svg',
+  'star.svg',
+];
+const ORNAMENT_PROBABILITY = 0.15;
+const ORNAMENT_PROBABILITY_INCREASE = 0.24;
+const ORNAMENT_SCALE = 0.28;
+const ORNAMENT_STAR_SCALE = 0.5;
+const ORNAMENT_RADIUS = 50;
 
 function randomIdx(arr: unknown[]) {
   return Math.floor(Math.random() * arr.length);
@@ -113,25 +125,34 @@ export default function LeonPixiExample() {
           });
 
         // draw ornament
+        let probability = ORNAMENT_PROBABILITY;
         typo.drawingPaths
-          // .filter(
-          //   (pos, i) =>
-          //     pos.type == 'a' ||
-          //     i % ornamentConfig.period === ornamentConfig.period - 1,
-          // )
+          .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
           .forEach((pos, i, every) => {
-            const index = Math.random() < 0.5 ? 0 : 1;
-            const scale = leon.scale * ornamentConfig.scale[index];
-            const radius = leon.scale * ornamentConfig.radius;
+            if (Math.random() > probability && pos.type !== 'a') {
+              probability += ORNAMENT_PROBABILITY_INCREASE;
+              return;
+            }
+            probability = ORNAMENT_PROBABILITY;
+            const index =
+              pos.type === 'a'
+                ? ornamentSources.current.length - 1
+                : randomIdx(ornamentSources.current);
+            const scale =
+              pos.type === 'a'
+                ? leon.scale * ORNAMENT_STAR_SCALE
+                : leon.scale * ORNAMENT_SCALE;
+            const radius = pos.type === 'a' ? 0 : leon.scale * ORNAMENT_RADIUS;
             const total = every.length;
             const source = ornamentSources.current[index];
             const ornamentSprite = PIXI.Sprite.from(source);
             ornamentSprite.anchor.set(0.5);
             ornamentSprite.x =
-              pos.x - leon.rect.x + radius * (Math.random() - 0.5);
+              pos.x - typo.rect.x + radius * (Math.random() - 0.5);
             ornamentSprite.y =
-              pos.y - leon.rect.y + radius * (Math.random() - 0.5);
+              pos.y - typo.rect.y + radius * (Math.random() - 0.5);
             ornamentSprite.scale.set(0);
+            ornamentSprite.rotation = Math.random() * Math.PI * 2;
             container.addChild(ornamentSprite);
 
             gsap.fromTo(
@@ -366,19 +387,19 @@ export default function LeonPixiExample() {
           `leaves/leaf_${i}.svg`,
         );
         leafSources.current.push(leaf);
+        console.log(leafSources);
       }
-      redraw();
 
       // save ornament
-      const sampleOrnament1 = await PIXI.Assets.load<PIXI.SpriteSource>(
-        'ornaments/sample_1.svg',
-      );
-      const sampleOrnament2 = await PIXI.Assets.load<PIXI.SpriteSource>(
-        'ornaments/sample_2.svg',
-      );
+      for (let i = 0; i < ORNAMENT_SOURCE_NAMES.length; i++) {
+        const ornament = await PIXI.Assets.load<PIXI.SpriteSource>(
+          `ornaments/${ORNAMENT_SOURCE_NAMES[i]}`,
+        );
+        ornamentSources.current.push(ornament);
+        console.log(ornamentSources);
+      }
 
-      ornamentSources.current.push(sampleOrnament1);
-      ornamentSources.current.push(sampleOrnament2);
+      redraw();
     })();
   }, []);
 
