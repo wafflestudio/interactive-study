@@ -18,9 +18,9 @@ const URL_MSG =
   new URLSearchParams(window.location.search)
     .get('msg')
     ?.replace('\\n', '\n') ?? '';
-const URL_MSG_IS_VALID = URL_MSG && URL_MSG.split('').every(
-  (c) => CHARSET.includes(c) || ' \n'.includes(c),
-);
+const URL_MSG_IS_VALID =
+  URL_MSG &&
+  URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
 const INITIAL_TEXT = URL_MSG_IS_VALID ? URL_MSG : 'INTERACTIVE STUDY';
 
 const ORNAMENT_SOURCE_NAMES = [
@@ -392,6 +392,13 @@ export default function LeonPixiExample() {
     });
   }, [dispatcher]);
 
+  const shareUrl = useCallback(() => {
+    const url = window.location.origin + `/?msg=${inputRef.current!.value}`;
+    window.navigator.clipboard
+      .writeText(url.replace('\n', '\\n'))
+      .then(() => alert('URL이 복사되었습니다.'));
+  }, []);
+
   /**
    * 마운트 될 때 잎사귀 데이터를 미리 로드
    */
@@ -466,6 +473,7 @@ export default function LeonPixiExample() {
         <button onClick={() => redraw()}>다시 쓰기</button>
         <button onClick={() => moveLeft()}>{'<'}</button>
         <button onClick={() => moveRight()}>{'>'}</button>
+        <button onClick={() => shareUrl()}>공유</button>
       </div>
     </div>
   );
