@@ -14,7 +14,7 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const INITIAL_TEXT = 'Leon Pixi';
+const INITIAL_TEXT = new URLSearchParams(window.location.search).get('msg') || 'Merry Christmas!';
 
 const ORNAMENT_SOURCE_NAMES = [
   'ball_1.svg',
