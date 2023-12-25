@@ -14,10 +14,9 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const URL_MSG =
-atob(new URLSearchParams(window.location.search)
-    .get('msg') ?? '')
-    .replaceAll('\\n', '\n');
+const URL_MSG = atob(
+  new URLSearchParams(window.location.search).get('msg') ?? '',
+).replaceAll('\\n', '\n');
 const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
@@ -260,7 +259,6 @@ export default function LeonPixiExample() {
 
         // draw
         // FIXME : \n 처리
-
         if (text === '\n') {
           updatePositions(leon);
           return;
@@ -288,19 +286,16 @@ export default function LeonPixiExample() {
    * @param text 삭제 후 남은 텍스트
    */
   const deleteText = useCallback(
-    (idx: number, text: string) => {
+    (idx: number, deleted: number) => {
       dispatcher.send(({ leon }) => {
-        // calculate number of deleted characters
-        const n = leon.text.length - text.length;
-
         // delete text
         const preLineBreak = leon.text.slice(0, idx).split('\n').length - 1;
         const midLineBreak =
-          leon.text.slice(idx, idx + n).split('\n').length - 1;
-        leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
+          leon.text.slice(idx, idx + deleted).split('\n').length - 1;
+        leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + deleted);
         removeContainers(
           idx - preLineBreak,
-          idx - preLineBreak + n - midLineBreak,
+          idx - preLineBreak + deleted - midLineBreak,
         );
 
         // recalculate position of new text
@@ -325,6 +320,7 @@ export default function LeonPixiExample() {
       const inputEvent = e.nativeEvent as InputEvent;
       const data = inputEvent.data;
       const inputType = inputEvent.inputType;
+      console.log(newText, caretIdx, inputEvent, data, inputType);
 
       dispatcher.send(({ leon }) => {
         if (
@@ -347,16 +343,15 @@ export default function LeonPixiExample() {
             return;
           }
 
-          if (inputRef.current?.value.length !== leon.text.length + 1) {
-            replaceText(data!);
-          } else {
-            inserText(data!, caretIdx - 1);
-          }
-        } else if (
-          inputType.startsWith('delete') &&
-          e.currentTarget.value.length > 0
-        ) {
-          deleteText(caretIdx, e.currentTarget.value);
+          const start = caretIdx - 1;
+          const deleted = leon.text.length - newText.length + 1;
+
+          // remove containers if text is deleted
+          if (deleted > 0) deleteText(start, deleted);
+          
+          inserText(data!, start);
+        } else if (inputType.startsWith('delete') && newText.length > 0) {
+          deleteText(caretIdx, leon.text.length - newText.length);
         } else {
           // 입력 가능한 문자만 포함되어 있는지 검사
           const isValid = newText
@@ -393,7 +388,8 @@ export default function LeonPixiExample() {
   }, [dispatcher]);
 
   const shareUrl = useCallback(() => {
-    const url = window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
+    const url =
+      window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
     window.navigator.clipboard
       .writeText(url.replaceAll('\n', '\\n'))
       .then(() => alert('URL이 복사되었습니다.'));
