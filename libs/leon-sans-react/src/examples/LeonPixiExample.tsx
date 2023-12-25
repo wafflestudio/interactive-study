@@ -348,7 +348,7 @@ export default function LeonPixiExample() {
 
           // remove containers if text is deleted
           if (deleted > 0) deleteText(start, deleted);
-          
+
           inserText(data!, start);
         } else if (inputType.startsWith('delete') && newText.length > 0) {
           deleteText(caretIdx, leon.text.length - newText.length);
@@ -356,7 +356,7 @@ export default function LeonPixiExample() {
           // 입력 가능한 문자만 포함되어 있는지 검사
           const isValid = newText
             .split('')
-            .every((c) => CHARSET.includes(c) || ' '.includes(c));
+            .every((c) => CHARSET.includes(c) || ' \n'.includes(c));
           if (!isValid) {
             alert(`"${newText}"에는 허용되지 않는 문자가 포함되어 있습니다.`);
             inputRef.current!.value = inputRef.current!.value.replace(
@@ -370,7 +370,7 @@ export default function LeonPixiExample() {
         }
       });
     },
-    [deleteText, inserText, replaceText],
+    [deleteText, dispatcher, inserText, replaceText],
   );
 
   const moveLeft = useCallback(() => {
