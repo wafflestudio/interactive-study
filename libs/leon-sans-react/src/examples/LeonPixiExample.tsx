@@ -14,7 +14,14 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const INITIAL_TEXT = new URLSearchParams(window.location.search).get('msg') || 'Merry Christmas!';
+const URL_MSG =
+  new URLSearchParams(window.location.search)
+    .get('msg')
+    ?.replace('\\n', '\n') ?? '';
+const URL_MSG_IS_VALID = URL_MSG && URL_MSG.split('').every(
+  (c) => CHARSET.includes(c) || ' \n'.includes(c),
+);
+const INITIAL_TEXT = URL_MSG_IS_VALID ? URL_MSG : 'INTERACTIVE STUDY';
 
 const ORNAMENT_SOURCE_NAMES = [
   'ball_1.svg',
@@ -253,7 +260,7 @@ export default function LeonPixiExample() {
 
         // draw
         // FIXME : \n 처리
-        
+
         if (text === '\n') {
           updatePositions(leon);
           return;
@@ -288,9 +295,13 @@ export default function LeonPixiExample() {
 
         // delete text
         const preLineBreak = leon.text.slice(0, idx).split('\n').length - 1;
-        const midLineBreak = leon.text.slice(idx, idx + n).split('\n').length - 1;
+        const midLineBreak =
+          leon.text.slice(idx, idx + n).split('\n').length - 1;
         leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
-        removeContainers(idx - preLineBreak, idx - preLineBreak + n - midLineBreak);
+        removeContainers(
+          idx - preLineBreak,
+          idx - preLineBreak + n - midLineBreak,
+        );
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
