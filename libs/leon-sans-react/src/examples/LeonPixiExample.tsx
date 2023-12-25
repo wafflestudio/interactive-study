@@ -15,9 +15,9 @@ const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
 const URL_MSG =
-  new URLSearchParams(window.location.search)
-    .get('msg')
-    ?.replace('\\n', '\n') ?? '';
+atob(new URLSearchParams(window.location.search)
+    .get('msg') ?? '')
+    .replaceAll('\\n', '\n');
 const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
@@ -393,9 +393,9 @@ export default function LeonPixiExample() {
   }, [dispatcher]);
 
   const shareUrl = useCallback(() => {
-    const url = window.location.origin + `/?msg=${inputRef.current!.value}`;
+    const url = window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
     window.navigator.clipboard
-      .writeText(url.replace('\n', '\\n'))
+      .writeText(url.replaceAll('\n', '\\n'))
       .then(() => alert('URL이 복사되었습니다.'));
   }, []);
 
