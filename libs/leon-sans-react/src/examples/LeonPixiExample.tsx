@@ -77,7 +77,6 @@ export default function LeonPixiExample() {
 
   const makeContainer = useCallback(
     (idx: number = leafContainers.current.length) => {
-      console.log(idx);
       const container = new PIXI.Container();
       dispatcher.send(({ leon, stage }) => {
         leafContainers.current = [
@@ -288,9 +287,10 @@ export default function LeonPixiExample() {
         const n = leon.text.length - text.length;
 
         // delete text
+        const preLineBreak = leon.text.slice(0, idx).split('\n').length - 1;
+        const midLineBreak = leon.text.slice(idx, idx + n).split('\n').length - 1;
         leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + n);
-        const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
-        removeContainers(idx - lineBreak, idx - lineBreak + n);
+        removeContainers(idx - preLineBreak, idx - preLineBreak + n - midLineBreak);
 
         // recalculate position of new text
         const x = (canvasWidth - leon.rect.w) / 2;
