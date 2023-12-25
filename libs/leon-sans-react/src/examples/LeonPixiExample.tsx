@@ -67,15 +67,17 @@ export default function LeonPixiExample() {
   };
 
   const updatePositions = (leon: LeonSans) => {
+    let leonIdx = 0;
     leafContainers.current.forEach((container, idx) => {
       // FIXME : \n 처리
-      if (leon.data[idx] !== undefined)
-        container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
+      while (leon.data[leonIdx] === undefined) leonIdx++;
+      container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
     });
   };
 
   const makeContainer = useCallback(
     (idx: number = leafContainers.current.length) => {
+      console.log(idx);
       const container = new PIXI.Container();
       dispatcher.send(({ leon, stage }) => {
         leafContainers.current = [
@@ -252,10 +254,14 @@ export default function LeonPixiExample() {
 
         // draw
         // FIXME : \n 처리
-        if (text === '\n') return;
+        
+        if (text === '\n') {
+          updatePositions(leon);
+          return;
+        }
         const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
         drawTypo(leon.data[idx - lineBreak]);
-        drawLeaves(leon.data[idx - lineBreak], makeContainer(idx));
+        drawLeaves(leon.data[idx - lineBreak], makeContainer(idx - lineBreak));
         updatePositions(leon);
       });
     },
@@ -387,7 +393,6 @@ export default function LeonPixiExample() {
           `leaves/leaf_${i}.svg`,
         );
         leafSources.current.push(leaf);
-        console.log(leafSources);
       }
 
       // save ornament
@@ -396,7 +401,6 @@ export default function LeonPixiExample() {
           `ornaments/${ORNAMENT_SOURCE_NAMES[i]}`,
         );
         ornamentSources.current.push(ornament);
-        console.log(ornamentSources);
       }
 
       redraw();
