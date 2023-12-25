@@ -3,12 +3,12 @@ import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-import { PixiDataRefs } from '../types/DataRefs';
 import { PixiHandlers } from '../types/Handler';
+import WreathSans from '../domain/WreathSans';
 
 type LeonPixiProps = {
   // leon config
-  text: string;
+  initialText: string;
   color?: string;
   size?: number;
   weight?: number;
@@ -21,7 +21,7 @@ type LeonPixiProps = {
 } & PixiHandlers;
 
 export default function LeonPixi({
-  text,
+  initialText,
   color = '#000000',
   size = 60,
   weight = 400,
@@ -35,7 +35,7 @@ export default function LeonPixi({
    * Stored Refs
    */
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dataRefs = useRef<PixiDataRefs | null>(null);
+  const dataRefs = useRef<WreathSans | null>(null);
   const handlers = useRef<PixiHandlers>({});
 
   /**
@@ -75,7 +75,7 @@ export default function LeonPixi({
 
     // create leon
     const leon = new LeonSans({
-      text,
+      text: initialText,
       color: [color],
       size,
       weight,
@@ -102,14 +102,14 @@ export default function LeonPixi({
     stage.addChild(graphics);
 
     // save dataRefs
-    dataRefs.current = {
+    dataRefs.current = new WreathSans({
       canvas: canvasRef.current,
       leon,
       renderer,
       stage,
       graphics,
       pixelRatio,
-    };
+    });
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 
     // start animation
@@ -121,12 +121,11 @@ export default function LeonPixi({
    */
   useEffect(() => {
     if (!dataRefs.current) return;
-    dataRefs.current.leon.text = text;
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
     dataRefs.current.pixelRatio = pixelRatio;
-  }, [dataRefs, text, color, size, weight, pixelRatio]);
+  }, [dataRefs, color, size, weight, pixelRatio]);
 
   /**
    * update handler

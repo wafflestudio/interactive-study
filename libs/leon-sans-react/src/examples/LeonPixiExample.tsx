@@ -1,18 +1,8 @@
-import gsap, { Power0, Power3 } from 'gsap';
-import { CHARSET, ModelData } from 'leonsans';
-import LeonSans from 'leonsans/src/leonsans';
-import * as PIXI from 'pixi.js';
+import { CHARSET } from 'leonsans';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-
-const TYPO_EASING = Power0.easeNone;
-const TYPO_DRAWING_DURATION = 1;
-
-const LEAVES_EASING = Power3.easeOut;
-const LEAVES_DRAWING_SPEED = 1;
-const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
 const URL_MSG = atob(
   new URLSearchParams(window.location.search).get('msg') ?? '',
@@ -21,29 +11,6 @@ const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
 const INITIAL_TEXT = URL_MSG_IS_VALID ? URL_MSG : 'INTERACTIVE STUDY';
-
-const ORNAMENT_SOURCE_NAMES = [
-  'ball_1.svg',
-  'ball_2.svg',
-  'candy.svg',
-  'fruit_1.svg',
-  'fruit_2.svg',
-  'pinecone_1.svg',
-  'pinecone_2.svg',
-  'poinsettia_1.svg',
-  'poinsettia_2.svg',
-  'ribbon.svg',
-  'star.svg',
-];
-const ORNAMENT_PROBABILITY = 0.15;
-const ORNAMENT_PROBABILITY_INCREASE = 0.24;
-const ORNAMENT_SCALE = 0.28;
-const ORNAMENT_STAR_SCALE = 0.5;
-const ORNAMENT_RADIUS = 50;
-
-function randomIdx(arr: unknown[]) {
-  return Math.floor(Math.random() * arr.length);
-}
 
 export default function LeonPixiExample() {
   const [windowSize, setWindowSize] = useState<[number, number]>([
@@ -56,263 +23,6 @@ export default function LeonPixiExample() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatcher = usePixiDispatcher();
 
-  const leafSources = useRef<PIXI.SpriteSource[]>([]);
-  const leafContainers = useRef<PIXI.Container[]>([]);
-
-  const ornamentSources = useRef<PIXI.SpriteSource[]>([]);
-
-  const removeContainers = (
-    start: number = 0,
-    end: number = leafContainers.current.length,
-  ) => {
-    leafContainers.current.slice(start, end).forEach((c) => c.destroy());
-    leafContainers.current = [
-      ...leafContainers.current.slice(0, start),
-      ...leafContainers.current.slice(end),
-    ];
-  };
-
-  const updatePositions = (leon: LeonSans) => {
-    let leonIdx = 0;
-    leafContainers.current.forEach((container, idx) => {
-      // FIXME : \n 처리
-      while (leon.data[leonIdx] === undefined) leonIdx++;
-      container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-    });
-  };
-
-  const makeContainer = useCallback(
-    (idx: number = leafContainers.current.length) => {
-      const container = new PIXI.Container();
-      dispatcher.send(({ leon, stage }) => {
-        leafContainers.current = [
-          ...leafContainers.current.slice(0, idx),
-          container,
-          ...leafContainers.current.slice(idx),
-        ];
-        // FIXME : \n 처리
-        if (leon.data[idx] !== undefined)
-          container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-        stage.addChild(container);
-      });
-      return container;
-    },
-    [dispatcher],
-  );
-
-  const drawLeaves = useCallback(
-    (typo: ModelData, container: PIXI.Container) => {
-      dispatcher.send(({ leon }) => {
-        typo.drawingPaths
-          .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
-          .forEach((pos, i, every) => {
-            const total = every.length;
-            const source = leafSources.current[randomIdx(leafSources.current)];
-            const leafSprite = PIXI.Sprite.from(source);
-            leafSprite.anchor.set(0.5);
-            leafSprite.x = pos.x - typo.rect.x;
-            leafSprite.y = pos.y - typo.rect.y;
-            const scale = leon.scale * 0.3;
-            container.addChild(leafSprite);
-            gsap.fromTo(
-              leafSprite.scale,
-              {
-                x: 0,
-                y: 0,
-              },
-              {
-                x: scale,
-                y: scale,
-                ease: LEAVES_EASING,
-                duration: 0.5,
-                delay:
-                  (i / total) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
-              },
-            );
-          });
-
-        // draw ornament
-        let probability = ORNAMENT_PROBABILITY;
-        typo.drawingPaths
-          .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
-          .forEach((pos, i, every) => {
-            if (Math.random() > probability && pos.type !== 'a') {
-              probability += ORNAMENT_PROBABILITY_INCREASE;
-              return;
-            }
-            probability = ORNAMENT_PROBABILITY;
-            const index =
-              pos.type === 'a'
-                ? ornamentSources.current.length - 1
-                : randomIdx(ornamentSources.current);
-            const scale =
-              pos.type === 'a'
-                ? leon.scale * ORNAMENT_STAR_SCALE
-                : leon.scale * ORNAMENT_SCALE;
-            const radius = pos.type === 'a' ? 0 : leon.scale * ORNAMENT_RADIUS;
-            const total = every.length;
-            const source = ornamentSources.current[index];
-            const ornamentSprite = PIXI.Sprite.from(source);
-            ornamentSprite.anchor.set(0.5);
-            ornamentSprite.x =
-              pos.x - typo.rect.x + radius * (Math.random() - 0.5);
-            ornamentSprite.y =
-              pos.y - typo.rect.y + radius * (Math.random() - 0.5);
-            ornamentSprite.scale.set(0);
-            ornamentSprite.rotation = Math.random() * Math.PI * 2;
-            container.addChild(ornamentSprite);
-
-            gsap.fromTo(
-              ornamentSprite.scale,
-              {
-                x: 0,
-                y: 0,
-              },
-              {
-                x: scale,
-                y: scale,
-                ease: Power3.easeOut,
-                duration: 0.5,
-                delay: (i / total) * 1 + 0.95,
-              },
-            );
-          });
-      });
-    },
-    [dispatcher],
-  );
-
-  const drawTypo = useCallback((typo: ModelData) => {
-    if (!typo) return;
-    gsap.fromTo(
-      typo.drawing,
-      {
-        value: 0,
-      },
-      {
-        value: 1,
-        ease: TYPO_EASING,
-        duration: TYPO_DRAWING_DURATION,
-      },
-    );
-  }, []);
-
-  /**
-   * 글자 다시 쓰는 애니메이션
-   */
-  const redraw = useCallback(() => {
-    dispatcher.send(({ leon }) => {
-      leon.updateDrawingPaths();
-
-      for (let i = 0; i < leon.drawing.length; i++) {
-        gsap.killTweensOf(leon.drawing[i]);
-        drawTypo(leon.data[i]);
-      }
-
-      removeContainers();
-      leon.data.forEach((d) => drawLeaves(d, makeContainer()));
-    });
-  }, [dispatcher, drawTypo, drawLeaves, makeContainer]);
-
-  /**
-   * 글자를 교체하고 다시 그리기
-   *
-   * @param text 교체할 텍스트
-   */
-  const replaceText = useCallback(
-    (text: string) => {
-      dispatcher.send(({ leon }) => {
-        // set text
-        leon.text = text;
-
-        // recalculate position of new text
-        const x = (canvasWidth - leon.rect.w) / 2;
-        const y = (canvasHeight - leon.rect.h) / 2;
-        leon.position(x, y);
-      });
-
-      // redraw
-      redraw();
-    },
-    [dispatcher, canvasWidth, canvasHeight, redraw],
-  );
-
-  /**
-   * n번째 위치에 글자 추가하기
-   *
-   * @param text 추가할 글자
-   * @param idx 추가할 위치
-   */
-  const inserText = useCallback(
-    (text: string, idx: number) => {
-      dispatcher.send(({ leon }) => {
-        // add text
-        leon.text = leon.text.slice(0, idx) + text + leon.text.slice(idx);
-
-        // recalculate position of new text
-        const x = (canvasWidth - leon.rect.w) / 2;
-        const y = (canvasHeight - leon.rect.h) / 2;
-        leon.position(x, y);
-
-        // update paths
-        leon.updateDrawingPaths();
-
-        // draw
-        // FIXME : \n 처리
-        if (text === '\n') {
-          updatePositions(leon);
-          return;
-        }
-        const lineBreak = leon.text.slice(0, idx).split('\n').length - 1;
-        drawTypo(leon.data[idx - lineBreak]);
-        drawLeaves(leon.data[idx - lineBreak], makeContainer(idx - lineBreak));
-        updatePositions(leon);
-      });
-    },
-    [
-      canvasHeight,
-      canvasWidth,
-      dispatcher,
-      drawLeaves,
-      drawTypo,
-      makeContainer,
-    ],
-  );
-
-  /**
-   * n번째 위치의 글자 삭제하기
-   *
-   * @param idx 삭제할 위치
-   * @param text 삭제 후 남은 텍스트
-   */
-  const deleteText = useCallback(
-    (idx: number, deleted: number) => {
-      dispatcher.send(({ leon }) => {
-        // delete text
-        const preLineBreak = leon.text.slice(0, idx).split('\n').length - 1;
-        const midLineBreak =
-          leon.text.slice(idx, idx + deleted).split('\n').length - 1;
-        leon.text = leon.text.slice(0, idx) + leon.text.slice(idx + deleted);
-        removeContainers(
-          idx - preLineBreak,
-          idx - preLineBreak + deleted - midLineBreak,
-        );
-
-        // recalculate position of new text
-        const x = (canvasWidth - leon.rect.w) / 2;
-        const y = (canvasHeight - leon.rect.h) / 2;
-        leon.position(x, y);
-
-        // update paths
-        leon.updateDrawingPaths();
-
-        // draw
-        updatePositions(leon);
-      });
-    },
-    [canvasHeight, canvasWidth, dispatcher],
-  );
-
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
       const newText: string = e.currentTarget.value;
@@ -320,14 +30,13 @@ export default function LeonPixiExample() {
       const inputEvent = e.nativeEvent as InputEvent;
       const data = inputEvent.data;
       const inputType = inputEvent.inputType;
-      console.log(newText, caretIdx, inputEvent, data, inputType);
 
-      dispatcher.send(({ leon }) => {
+      dispatcher.send((wreath) => {
         if (
           inputType === 'insertLineBreak' ||
           (inputType === 'insertText' && data === null)
         ) {
-          inserText('\n', caretIdx - 1);
+          wreath.insertText('\n', caretIdx - 1);
         } else if (
           inputType === 'insertText' ||
           inputType === 'insertCompositionText'
@@ -344,14 +53,14 @@ export default function LeonPixiExample() {
           }
 
           const start = caretIdx - 1;
-          const deleted = leon.text.length - newText.length + 1;
+          const deleted = wreath.leon.text.length - newText.length + 1;
 
           // remove containers if text is deleted
-          if (deleted > 0) deleteText(start, deleted);
+          if (deleted > 0) wreath.deleteText(start, deleted);
 
-          inserText(data!, start);
+          wreath.insertText(data!, start);
         } else if (inputType.startsWith('delete') && newText.length > 0) {
-          deleteText(caretIdx, leon.text.length - newText.length);
+          wreath.deleteText(caretIdx, wreath.leon.text.length - newText.length);
         } else {
           // 입력 가능한 문자만 포함되어 있는지 검사
           const isValid = newText
@@ -366,24 +75,24 @@ export default function LeonPixiExample() {
             return;
           }
 
-          replaceText(newText);
+          wreath.replaceText(newText);
         }
       });
     },
-    [deleteText, dispatcher, inserText, replaceText],
+    [dispatcher],
   );
 
   const moveLeft = useCallback(() => {
-    dispatcher.send(({ leon }) => {
-      leon.position(leon.rect.x + 10, leon.rect.y);
-      updatePositions(leon);
+    dispatcher.send((wreath) => {
+      wreath.leon.position(wreath.leon.rect.x + 10, wreath.leon.rect.y);
+      wreath.updatePositions();
     });
   }, [dispatcher]);
 
   const moveRight = useCallback(() => {
-    dispatcher.send(({ leon }) => {
-      leon.position(leon.rect.x + 10, leon.rect.y);
-      updatePositions(leon);
+    dispatcher.send((wreath) => {
+      wreath.leon.position(wreath.leon.rect.x + 10, wreath.leon.rect.y);
+      wreath.updatePositions();
     });
   }, [dispatcher]);
 
@@ -394,43 +103,6 @@ export default function LeonPixiExample() {
       .writeText(url.replaceAll('\n', '\\n'))
       .then(() => alert('URL이 복사되었습니다.'));
   }, []);
-
-  /**
-   * 마운트 될 때 잎사귀 데이터를 미리 로드
-   */
-  useEffect(() => {
-    if (leafSources.current.length != 0) return;
-    // using IIFE to use async/await
-    (async () => {
-      for (let i = 1; i <= 20; i++) {
-        const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-          `leaves/leaf_${i}.svg`,
-        );
-        leafSources.current.push(leaf);
-      }
-
-      // save ornament
-      for (let i = 0; i < ORNAMENT_SOURCE_NAMES.length; i++) {
-        const ornament = await PIXI.Assets.load<PIXI.SpriteSource>(
-          `ornaments/${ORNAMENT_SOURCE_NAMES[i]}`,
-        );
-        ornamentSources.current.push(ornament);
-      }
-
-      redraw();
-    })();
-  }, []);
-
-  /**
-   * leonsans에 update 이벤트 핸들러 등록
-   */
-  // useEffect(() => {
-  //   dispatcher.send(({ leon }) => {
-  //     leafContainers.current.forEach((container, idx) => {
-  //       container.position.set(leon.data[idx].rect.x, leon.data[idx].rect.y);
-  //     });
-  //   });
-  // }, []);
 
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
@@ -457,7 +129,7 @@ export default function LeonPixiExample() {
   return (
     <div>
       <LeonPixi
-        text={INITIAL_TEXT}
+        initialText={INITIAL_TEXT}
         color={'#704234'}
         size={130}
         width={canvasWidth}
@@ -466,7 +138,7 @@ export default function LeonPixiExample() {
       />
       <div>
         <textarea ref={inputRef} onInput={onInputHandler} />
-        <button onClick={() => redraw()}>다시 쓰기</button>
+        <button onClick={() => dispatcher.send((wreath) => wreath.redraw())}>다시 쓰기</button>
         <button onClick={() => moveLeft()}>{'<'}</button>
         <button onClick={() => moveRight()}>{'>'}</button>
         <button onClick={() => shareUrl()}>공유</button>

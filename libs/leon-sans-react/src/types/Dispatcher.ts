@@ -1,6 +1,7 @@
-import { CanvasDataRefs, PixiDataRefs } from './DataRefs';
+import WreathSans from '../domain/WreathSans';
+import { CanvasDataRefs } from './DataRefs';
 
-type DataRefs = CanvasDataRefs | PixiDataRefs;
+type DataRefs = CanvasDataRefs | WreathSans;
 
 type Initiate<Refs extends DataRefs> = (refs: Refs) => void;
 
@@ -14,6 +15,6 @@ export type CanvasDispatcher = {
 };
 
 export type PixiDispatcher = {
-  initiate: Initiate<PixiDataRefs>;
-  send: Send<PixiDataRefs>;
+  initiate: Initiate<WreathSans>;
+  send: Send<WreathSans>;
 };
