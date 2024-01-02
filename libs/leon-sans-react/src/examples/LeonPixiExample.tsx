@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
+import styles from './LeonPixiExample.module.css';
 
 const URL_MSG = atob(
   new URLSearchParams(window.location.search).get('msg') ?? '',
@@ -36,7 +37,8 @@ export default function LeonPixiExample() {
           inputType === 'insertLineBreak' ||
           (inputType === 'insertText' && data === null)
         ) {
-          wreath.insertText('\n', caretIdx - 1);
+          const insertIdx = caretIdx - 1; // 입력된 문자의 인덱스
+          wreath.insertText('\n', insertIdx);
         } else if (
           inputType === 'insertText' ||
           inputType === 'insertCompositionText'
@@ -52,13 +54,13 @@ export default function LeonPixiExample() {
             return;
           }
 
-          const start = caretIdx - 1;
-          const deleted = wreath.leon.text.length - newText.length + 1;
+          const insertIdx = caretIdx - 1; // 입력된 문자의 인덱스
+          const deleted = wreath.leon.text.length - newText.length + 1; // 삭제된 글자 수
 
           // remove containers if text is deleted
-          if (deleted > 0) wreath.deleteText(start, deleted);
+          if (deleted > 0) wreath.deleteText(insertIdx, deleted);
 
-          wreath.insertText(data!, start);
+          wreath.insertText(data!, insertIdx);
         } else if (inputType.startsWith('delete') && newText.length > 0) {
           wreath.deleteText(caretIdx, wreath.leon.text.length - newText.length);
         } else {
@@ -84,7 +86,7 @@ export default function LeonPixiExample() {
 
   const moveLeft = useCallback(() => {
     dispatcher.send((wreath) => {
-      wreath.leon.position(wreath.leon.rect.x + 10, wreath.leon.rect.y);
+      wreath.leon.position(wreath.leon.rect.x - 10, wreath.leon.rect.y);
       wreath.updatePositions();
     });
   }, [dispatcher]);
@@ -136,12 +138,12 @@ export default function LeonPixiExample() {
         height={canvasHeight}
         dispatcher={dispatcher}
       />
-      <div>
-        <textarea ref={inputRef} onInput={onInputHandler} />
-        <button onClick={() => dispatcher.send((wreath) => wreath.redraw())}>다시 쓰기</button>
-        <button onClick={() => moveLeft()}>{'<'}</button>
-        <button onClick={() => moveRight()}>{'>'}</button>
-        <button onClick={() => shareUrl()}>공유</button>
+      <div className={styles.bottomMenuBar}>
+        <textarea className={styles.editor} ref={inputRef} onInput={onInputHandler} />
+        <button className={styles.button} onClick={() => dispatcher.send((wreath) => wreath.redraw())}>다시 쓰기</button>
+        <button className={styles.button} onClick={() => moveLeft()}>{'<'}</button>
+        <button className={styles.button} onClick={() => moveRight()}>{'>'}</button>
+        <button className={styles.button} onClick={() => shareUrl()}>공유</button>
       </div>
     </div>
   );
