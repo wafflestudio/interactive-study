@@ -70,7 +70,7 @@ export default class WreathSans {
   pixelRatio: number;
   leafSources: PIXI.SpriteSource[];
   ornamentSourceMap: Record<string, PIXI.SpriteSource>;
-  private _ornamentOrder: string[];
+  ornamentOrder: string[];
   containers: PIXI.Container[];
 
   constructor(props: WreathSansProps) {
@@ -83,22 +83,12 @@ export default class WreathSans {
     this.containers = [];
     this.leafSources = [];
     this.ornamentSourceMap = {};
-    this._ornamentOrder = ORNAMENT_ORDER;
+    this.ornamentOrder = ORNAMENT_ORDER;
 
     this.loadAssets().then(() => {
       this.redraw();
     });
   }
-
-  get ornamentOrder() {
-    return this._ornamentOrder;
-  }
-
-  set ornamentOrder(order: string[]) {
-    this._ornamentOrder = order;
-    this.redraw();
-  }
-
   insertText(text: string, idx: number) {
     // check text
     if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text)))
@@ -302,8 +292,8 @@ export default class WreathSans {
         }
         probability = ORNAMENT_PROBABILITY;
         const name =
-          this._ornamentOrder.length > 0
-            ? this._ornamentOrder[i % this._ornamentOrder.length]
+          this.ornamentOrder.length > 0
+            ? this.ornamentOrder[i % this.ornamentOrder.length]
             : Object.keys(this.ornamentSourceMap)[
                 randomIdx(ORNAMENT_SOURCE_NAMES)
               ];

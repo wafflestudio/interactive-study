@@ -12,14 +12,51 @@ const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
 const INITIAL_TEXT = URL_MSG_IS_VALID ? URL_MSG : 'INTERACTIVE STUDY';
+const ORNAMENT_NAMES = [
+  'ball_1',
+  'ball_2',
+  'candy',
+  'fruit_1',
+  'fruit_2',
+  'pinecone_1',
+  'pinecone_2',
+  'poinsettia_1',
+  'poinsettia_2',
+  'ribbon',
+  'star',
+];
+const INITIAL_ORNAMENT_ORDER = [
+  'pinecone_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'fruit_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'ball_1',
+  'pinecone_2',
+  'fruit_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'poinsettia_2',
+  'fruit_1',
+  'ball_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'fruit_2',
+];
 
 export default function LeonPixiExample() {
+  const [ornamentOrder, setOrnamentOrder] = useState<string[]>(
+    INITIAL_ORNAMENT_ORDER,
+  );
   const [windowSize, setWindowSize] = useState<[number, number]>([
     window.innerWidth,
-    window.innerHeight - 100,
+    window.innerHeight,
   ]);
   const canvasWidth = windowSize[0];
-  const canvasHeight = windowSize[1];
+  const canvasHeight = windowSize[1] - 200;
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dispatcher = usePixiDispatcher();
@@ -106,6 +143,28 @@ export default function LeonPixiExample() {
       .then(() => alert('URL이 복사되었습니다.'));
   }, []);
 
+  const addOrnament = useCallback((name: string) => {
+    setOrnamentOrder((prev) => {
+      const newOrder = [...prev, name];
+      dispatcher.send((wreath) => {
+        wreath.ornamentOrder = newOrder;
+        wreath.redraw();
+      });
+      return newOrder;
+    });
+  }, [dispatcher]);
+
+  const removeOrnament = useCallback((i: number) => {
+    setOrnamentOrder((prev) => {
+      const newOrder = [...prev.slice(0, i), ...prev.slice(i + 1)];
+      dispatcher.send((wreath) => {
+        wreath.ornamentOrder = newOrder;
+        wreath.redraw();
+      });
+      return newOrder;
+    });
+  }, [dispatcher]);
+
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
    */
@@ -119,7 +178,7 @@ export default function LeonPixiExample() {
    */
   useEffect(() => {
     function handleResize() {
-      setWindowSize([window.innerWidth, window.innerHeight - 100]);
+      setWindowSize([window.innerWidth, window.innerHeight]);
     }
 
     window.addEventListener('resize', handleResize);
@@ -139,11 +198,43 @@ export default function LeonPixiExample() {
         dispatcher={dispatcher}
       />
       <div className={styles.bottomMenuBar}>
-        <textarea className={styles.editor} ref={inputRef} onInput={onInputHandler} />
-        <button className={styles.button} onClick={() => dispatcher.send((wreath) => wreath.redraw())}>다시 쓰기</button>
-        <button className={styles.button} onClick={() => moveLeft()}>{'<'}</button>
-        <button className={styles.button} onClick={() => moveRight()}>{'>'}</button>
-        <button className={styles.button} onClick={() => shareUrl()}>공유</button>
+        <textarea
+          className={styles.editor}
+          ref={inputRef}
+          onInput={onInputHandler}
+        />
+        <button
+          className={styles.button}
+          onClick={() => dispatcher.send((wreath) => wreath.redraw())}
+        >
+          다시 쓰기
+        </button>
+        <button className={styles.button} onClick={() => moveLeft()}>
+          {'<'}
+        </button>
+        <button className={styles.button} onClick={() => moveRight()}>
+          {'>'}
+        </button>
+        <button className={styles.button} onClick={() => shareUrl()}>
+          공유
+        </button>
+      </div>
+      오나먼트 셀렉터
+      <div className={styles.ornamentSelector}>
+        {ORNAMENT_NAMES.map((name) => (
+          <div key={name} className={styles.ornament} onClick={() => addOrnament(name)}>
+            <img src={`/ornaments/${name}.svg`} alt={name} />
+            <span>{name}</span>
+          </div>
+        ))}
+      </div>
+      오나먼트 순서
+      <div className={styles.ornamentOrder}>
+        {ornamentOrder?.map((name, i) => (
+          <div key={i} className={styles.ornament} onClick={() => removeOrnament(i)}>
+            <img src={`/ornaments/${name}.svg`} alt={name} />
+          </div>
+        ))}
       </div>
     </div>
   );
