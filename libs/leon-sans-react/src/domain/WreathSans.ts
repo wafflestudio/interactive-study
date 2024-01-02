@@ -25,6 +25,27 @@ const ORNAMENT_SOURCE_NAMES = [
   'ribbon.svg',
   'star.svg',
 ];
+const ORNAMENT_ORDER = [
+  'pinecone_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'fruit_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'ball_1',
+  'pinecone_2',
+  'fruit_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'poinsettia_2',
+  'fruit_1',
+  'ball_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'fruit_2',
+];
 const ORNAMENT_PROBABILITY = 0.15;
 const ORNAMENT_PROBABILITY_INCREASE = 0.24;
 const ORNAMENT_SCALE = 0.28;
@@ -48,7 +69,8 @@ export default class WreathSans {
   leon: LeonSans;
   pixelRatio: number;
   leafSources: PIXI.SpriteSource[];
-  ornamentSources: PIXI.SpriteSource[];
+  ornamentSourceMap: Record<string, PIXI.SpriteSource>;
+  private _ornamentOrder: string[];
   containers: PIXI.Container[];
 
   constructor(props: WreathSansProps) {
@@ -60,16 +82,27 @@ export default class WreathSans {
     this.pixelRatio = props.pixelRatio;
     this.containers = [];
     this.leafSources = [];
-    this.ornamentSources = [];
+    this.ornamentSourceMap = {};
+    this._ornamentOrder = ORNAMENT_ORDER;
 
     this.loadAssets().then(() => {
       this.redraw();
     });
   }
 
+  get ornamentOrder() {
+    return this._ornamentOrder;
+  }
+
+  set ornamentOrder(order: string[]) {
+    this._ornamentOrder = order;
+    this.redraw();
+  }
+
   insertText(text: string, idx: number) {
     // check text
-    if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text))) return;
+    if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text)))
+      return;
 
     // add text
     this.leon.text =
@@ -135,7 +168,8 @@ export default class WreathSans {
    */
   replaceText(text: string) {
     // check text
-    if (!text.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c))) return;
+    if (!text.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c)))
+      return;
 
     // set text
     this.leon.text = text;
@@ -185,11 +219,11 @@ export default class WreathSans {
     }
 
     // save ornament
-    for (let i = 0; i < ORNAMENT_SOURCE_NAMES.length; i++) {
+    for (const name of ORNAMENT_SOURCE_NAMES) {
       const ornament = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `ornaments/${ORNAMENT_SOURCE_NAMES[i]}`,
+        `ornaments/${name}`,
       );
-      this.ornamentSources.push(ornament);
+      this.ornamentSourceMap[name.split('.')[0]] = ornament;
     }
   }
 
@@ -267,17 +301,21 @@ export default class WreathSans {
           return;
         }
         probability = ORNAMENT_PROBABILITY;
-        const index =
+        const name =
+          this._ornamentOrder.length > 0
+            ? this._ornamentOrder[i % this._ornamentOrder.length]
+            : Object.keys(this.ornamentSourceMap)[
+                randomIdx(ORNAMENT_SOURCE_NAMES)
+              ];
+        const source =
           pos.type === 'a'
-            ? this.ornamentSources.length - 1
-            : randomIdx(this.ornamentSources);
+            ? this.ornamentSourceMap['star']
+            : this.ornamentSourceMap[name];
         const scale =
           pos.type === 'a'
             ? this.leon.scale * ORNAMENT_STAR_SCALE
             : this.leon.scale * ORNAMENT_SCALE;
         const radius = pos.type === 'a' ? 0 : this.leon.scale * ORNAMENT_RADIUS;
-        const total = every.length;
-        const source = this.ornamentSources[index];
         const ornamentSprite = PIXI.Sprite.from(source);
         ornamentSprite.anchor.set(0.5);
         ornamentSprite.x = pos.x - typo.rect.x + radius * (Math.random() - 0.5);
@@ -297,7 +335,7 @@ export default class WreathSans {
             y: scale,
             ease: Power3.easeOut,
             duration: 0.5,
-            delay: (i / total) * 1 + 0.95,
+            delay: (i / every.length) * 1 + 0.95,
           },
         );
       });
