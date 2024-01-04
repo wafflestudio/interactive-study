@@ -106,18 +106,20 @@ export default class WreathSans {
     // update paths
     this.leon.updateDrawingPaths();
 
-    // draw
     // FIXME : \n 처리
     if (text === '\n') {
       this.updatePositions();
       return;
     }
+    /**
+     * idx 전까지 줄바꿈 개수 세기
+     * 왜냐하면 줄바꿈은 leon.text에는 포함되어 있지만 leon.data에는 포함되어 있지 않기 때문
+     */
     const lineBreak = this.leon.text.slice(0, idx).split('\n').length - 1;
+
+    // 새로 써진 글자만 다시 애니메이팅하기
     this.drawTypo(this.leon.data[idx - lineBreak]);
-    this.drawLeaves(
-      this.leon.data[idx - lineBreak],
-      this.makeContainer(idx - lineBreak),
-    );
+    this.drawLeaves(idx - lineBreak);
     this.updatePositions();
   }
 
@@ -182,7 +184,7 @@ export default class WreathSans {
     }
 
     this.removeContainers();
-    this.leon.data.forEach((d) => this.drawLeaves(d, this.makeContainer()));
+    this.leon.data.forEach(() => this.drawLeaves());
   }
 
   /**
@@ -217,7 +219,7 @@ export default class WreathSans {
     }
   }
 
-  private makeContainer(idx: number = this.containers.length) {
+  private makeContainer(idx: number) {
     const container = new PIXI.Container();
     this.containers = [
       ...this.containers.slice(0, idx),
@@ -253,7 +255,9 @@ export default class WreathSans {
     ];
   }
 
-  private drawLeaves(typo: ModelData, container: PIXI.Container) {
+  private drawLeaves(idx: number = this.containers.length) {
+    const typo = this.leon.data[idx];
+    const container = this.makeContainer(idx);
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
@@ -275,7 +279,8 @@ export default class WreathSans {
             y: scale,
             ease: LEAVES_EASING,
             duration: 0.5,
-            delay: (i / every.length) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
+            delay:
+              (i / every.length) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
           },
         );
       });

@@ -94,7 +94,7 @@ export default function LeonPixiExample() {
           const insertIdx = caretIdx - 1; // 입력된 문자의 인덱스
           const deleted = wreath.leon.text.length - newText.length + 1; // 삭제된 글자 수
 
-          // remove containers if text is deleted
+          // 삭제된 글자가 있을 경우
           if (deleted > 0) wreath.deleteText(insertIdx, deleted);
 
           wreath.insertText(data!, insertIdx);
