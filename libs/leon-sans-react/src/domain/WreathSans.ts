@@ -257,7 +257,6 @@ export default class WreathSans {
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
-        const total = every.length;
         const source = this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
         leafSprite.anchor.set(0.5);
@@ -276,13 +275,14 @@ export default class WreathSans {
             y: scale,
             ease: LEAVES_EASING,
             duration: 0.5,
-            delay: (i / total) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
+            delay: (i / every.length) * LEAVES_DRAWING_SPEED + LEAVES_DRAWING_DELAY,
           },
         );
       });
 
     // draw ornament
     let probability = ORNAMENT_PROBABILITY;
+    let ornamentIdx = 0;
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
@@ -290,10 +290,11 @@ export default class WreathSans {
           probability += ORNAMENT_PROBABILITY_INCREASE;
           return;
         }
+        ornamentIdx = (ornamentIdx + 1) % this.ornamentOrder.length;
         probability = ORNAMENT_PROBABILITY;
         const name =
           this.ornamentOrder.length > 0
-            ? this.ornamentOrder[i % this.ornamentOrder.length]
+            ? this.ornamentOrder[ornamentIdx]
             : Object.keys(this.ornamentSourceMap)[
                 randomIdx(ORNAMENT_SOURCE_NAMES)
               ];
