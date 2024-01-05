@@ -1,0 +1,7 @@
+.main {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url('/mosaic.png') repeat #463c29;
+  overflow: hidden;
+}
