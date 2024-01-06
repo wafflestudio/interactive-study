@@ -1,11 +1,13 @@
 [
     {
         "name": "ball_1",
-        "path": "ornaments/ball_1.svg"
+        "path": "ornaments/ball_1.svg",
+        "rotation": "none"
     },
     {
         "name": "ball_2",
-        "path": "ornaments/ball_2.svg"
+        "path": "ornaments/ball_2.svg",
+        "rotation": "none"
     },
     {
         "name": "candy",
@@ -38,7 +40,7 @@
     {
         "name": "ribbon",
         "path": "ornaments/ribbon.svg",
-        "rotation": "none"
+        "rotation": "pendulum"
     },
     {
         "name": "star",

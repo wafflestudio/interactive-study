@@ -3,7 +3,7 @@ import { CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
-import { randomIdx } from '../utils';
+import { degToRad, randomIdx } from '../utils';
 import Ornament, { OrnamentLoadProps } from './Ornament';
 import _ornament_data from './ornament_data.json';
 
@@ -299,24 +299,24 @@ export default class WreathSans {
         ornamentSprite.x = pos.x - typo.rect.x;
         ornamentSprite.y = pos.y - typo.rect.y;
         /**
-        * 별일 경우는 위 방향으로 살짝 올려야 균형이 맞음
-        * 그 외에는 랜덤하게 x, y 오프셋을 줘서 자연스럽게
-        */
+         * 별일 경우는 위 방향으로 살짝 올려야 균형이 맞음
+         * 그 외에는 랜덤하게 x, y 오프셋을 줘서 자연스럽게
+         */
         if (isStar) {
           ornamentSprite.y -= 7 * this.leon.scale;
         } else {
-        const radius = this.leon.scale * 50;
+          const radius = this.leon.scale * 50;
           ornamentSprite.x += radius * (Math.random() - 0.5);
           ornamentSprite.y += radius * (Math.random() - 0.5);
         }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
           typeof ornament.rotation === 'number'
-            ? ornament.rotation
+            ? (Math.random() - 0.5) * 2 * ornament.rotation
             : ornament.rotation === 'random'
               ? Math.random() * Math.PI * 2
               : ornament.rotation === 'pendulum'
-                ? Math.random() * 30
+                ? (Math.random() - 0.5) * 2 * degToRad(30)
                 : 0;
         container.addChild(ornamentSprite);
 
