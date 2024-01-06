@@ -4,6 +4,10 @@ import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
 import { randomIdx } from '../utils';
+import Ornament, { OrnamentLoadProps } from './Ornament';
+import _ornament_data from './ornament_data.json';
+
+const ornament_data = _ornament_data as OrnamentLoadProps[];
 
 const TYPO_EASING = Power0.easeNone;
 const TYPO_DRAWING_DURATION = 1;
@@ -12,19 +16,6 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const ORNAMENT_SOURCE_NAMES = [
-  'ball_1.svg',
-  'ball_2.svg',
-  'candy.svg',
-  'fruit_1.svg',
-  'fruit_2.svg',
-  'pinecone_1.svg',
-  'pinecone_2.svg',
-  'poinsettia_1.svg',
-  'poinsettia_2.svg',
-  'ribbon.svg',
-  'star.svg',
-];
 const ORNAMENT_ORDER = [
   'pinecone_2',
   'ball_2',
@@ -48,8 +39,6 @@ const ORNAMENT_ORDER = [
 ];
 const ORNAMENT_PROBABILITY = 0.15;
 const ORNAMENT_PROBABILITY_INCREASE = 0.24;
-const ORNAMENT_SCALE = 0.28;
-const ORNAMENT_STAR_SCALE = 0.5;
 const ORNAMENT_RADIUS = 50;
 
 type WreathSansProps = {
@@ -69,7 +58,7 @@ export default class WreathSans {
   leon: LeonSans;
   pixelRatio: number;
   leafSources: PIXI.SpriteSource[];
-  ornamentSourceMap: Record<string, PIXI.SpriteSource>;
+  ornamentMap: Record<string, Ornament>;
   ornamentOrder: string[];
   containers: PIXI.Container[];
 
@@ -82,7 +71,7 @@ export default class WreathSans {
     this.pixelRatio = props.pixelRatio;
     this.containers = [];
     this.leafSources = [];
-    this.ornamentSourceMap = {};
+    this.ornamentMap = {};
     this.ornamentOrder = ORNAMENT_ORDER;
 
     this.loadAssets().then(() => {
@@ -211,11 +200,9 @@ export default class WreathSans {
     }
 
     // save ornament
-    for (const name of ORNAMENT_SOURCE_NAMES) {
-      const ornament = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `ornaments/${name}`,
-      );
-      this.ornamentSourceMap[name.split('.')[0]] = ornament;
+    for (const ornamentProp of ornament_data) {
+      const ornament = await Ornament.load(ornamentProp);
+      this.ornamentMap[ornament.name] = ornament;
     }
   }
 
@@ -287,7 +274,7 @@ export default class WreathSans {
 
     // draw ornament
     let probability = ORNAMENT_PROBABILITY;
-    let ornamentIdx = 0;
+    let ornamentIdx = -1;
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
@@ -300,24 +287,26 @@ export default class WreathSans {
         const name =
           this.ornamentOrder.length > 0
             ? this.ornamentOrder[ornamentIdx]
-            : Object.keys(this.ornamentSourceMap)[
-                randomIdx(ORNAMENT_SOURCE_NAMES)
+            : Object.keys(this.ornamentMap)[
+                randomIdx(Object.keys(this.ornamentMap))
               ];
-        const source =
-          pos.type === 'a'
-            ? this.ornamentSourceMap['star']
-            : this.ornamentSourceMap[name];
-        const scale =
-          pos.type === 'a'
-            ? this.leon.scale * ORNAMENT_STAR_SCALE
-            : this.leon.scale * ORNAMENT_SCALE;
+        const ornament =
+          pos.type === 'a' ? this.ornamentMap['star'] : this.ornamentMap[name];
+        const scale = ornament.scale * this.leon.scale;
         const radius = pos.type === 'a' ? 0 : this.leon.scale * ORNAMENT_RADIUS;
-        const ornamentSprite = PIXI.Sprite.from(source);
+        const ornamentSprite = PIXI.Sprite.from(ornament.source);
         ornamentSprite.anchor.set(0.5);
         ornamentSprite.x = pos.x - typo.rect.x + radius * (Math.random() - 0.5);
         ornamentSprite.y = pos.y - typo.rect.y + radius * (Math.random() - 0.5);
         ornamentSprite.scale.set(0);
-        ornamentSprite.rotation = Math.random() * Math.PI * 2;
+        ornamentSprite.rotation =
+          typeof ornament.rotation === 'number'
+            ? ornament.rotation
+            : ornament.rotation === 'random'
+              ? Math.random() * Math.PI * 2
+              : ornament.rotation === 'pendulum'
+                ? Math.random() * 30
+                : 0;
         container.addChild(ornamentSprite);
 
         gsap.fromTo(
