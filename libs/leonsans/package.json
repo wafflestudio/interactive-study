@@ -1,0 +1,15 @@
+{
+    "name": "leonsans",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "pixi.js": "^7.3.2"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.10.0",
+        "@typescript-eslint/parser": "^6.10.0",
+        "eslint": "^8.53.0",
+        "typescript": "^5.2.2",
+        "vite": "^5.0.0"
+    }
+}
