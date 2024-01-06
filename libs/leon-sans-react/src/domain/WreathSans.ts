@@ -16,27 +16,6 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const ORNAMENT_ORDER = [
-  'pinecone_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'fruit_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'ball_1',
-  'pinecone_2',
-  'fruit_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'poinsettia_2',
-  'fruit_1',
-  'ball_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'fruit_2',
-];
 const ORNAMENT_PROBABILITY = 0.15;
 const ORNAMENT_PROBABILITY_INCREASE = 0.24;
 
@@ -47,6 +26,7 @@ type WreathSansProps = {
   graphics: PIXI.Graphics;
   leon: LeonSans;
   pixelRatio: number;
+  ornamentOrder?: string[];
 };
 
 export default class WreathSans {
@@ -71,7 +51,7 @@ export default class WreathSans {
     this.containers = [];
     this.leafSources = [];
     this.ornamentMap = {};
-    this.ornamentOrder = ORNAMENT_ORDER;
+    this.ornamentOrder = props.ornamentOrder ?? [];
 
     this.loadAssets().then(() => {
       this.redraw();

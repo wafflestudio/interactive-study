@@ -5,6 +5,7 @@ import LeonPixi from '../components/LeonPixi';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 import styles from './LeonPixiExample.module.css';
 
+const DEFAULT_MSG = 'INTERACTIVE STUDY';
 const URL_MSG = atob(
   new URLSearchParams(window.location.search).get('msg') ?? '',
 ).replaceAll('\\n', '\n');
@@ -13,7 +14,29 @@ const URL_MSG_IS_VALID =
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
 const INITIAL_TEXT = URL_MSG_IS_VALID
   ? URL_MSG
-  : localStorage.getItem('msg') ?? 'INTERACTIVE STUDY';
+  : localStorage.getItem('msg') ?? DEFAULT_MSG;
+
+const DEFAULT_ORNAMENT_ORDER = [
+  'pinecone_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'fruit_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'ball_1',
+  'pinecone_2',
+  'fruit_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'poinsettia_2',
+  'fruit_1',
+  'ball_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'fruit_2',
+];
 const ORNAMENT_NAMES = [
   'ball_1',
   'ball_2',
@@ -27,31 +50,19 @@ const ORNAMENT_NAMES = [
   'ribbon',
   'star',
 ];
-const INITIAL_ORNAMENT_ORDER = [
-  'pinecone_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'fruit_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'ball_1',
-  'pinecone_2',
-  'fruit_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'poinsettia_2',
-  'fruit_1',
-  'ball_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'fruit_2',
-];
+const URL_ORNAMENT_ORDER = new URLSearchParams(window.location.search)
+  .get('ornamentOrder')
+  ?.split(',');
+const URL_ORNAMENT_ORDER_IS_VALID =
+  URL_ORNAMENT_ORDER &&
+  URL_ORNAMENT_ORDER.every((name) => ORNAMENT_NAMES.includes(name));
+const INITIAL_ORNAMENT_ORDER = URL_ORNAMENT_ORDER_IS_VALID
+  ? URL_ORNAMENT_ORDER
+  : localStorage.getItem('ornamentOrder')?.split(',') ?? DEFAULT_ORNAMENT_ORDER;
 
 export default function LeonPixiExample() {
   const [ornamentOrder, setOrnamentOrder] = useState<string[]>(
-    localStorage.getItem('ornamentOrder')?.split(',') ?? INITIAL_ORNAMENT_ORDER,
+    INITIAL_ORNAMENT_ORDER,
   );
   const [windowSize, setWindowSize] = useState<[number, number]>([
     window.innerWidth,
@@ -138,12 +149,15 @@ export default function LeonPixiExample() {
   }, [dispatcher]);
 
   const shareUrl = useCallback(() => {
-    const url =
-      window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
+    let url = window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
+    if (
+      JSON.stringify(ornamentOrder) !== JSON.stringify(DEFAULT_ORNAMENT_ORDER)
+    )
+      url += `&ornamentOrder=${ornamentOrder.join(',')}`;
     window.navigator.clipboard
       .writeText(url.replaceAll('\n', '\\n'))
       .then(() => alert('URL이 복사되었습니다.'));
-  }, []);
+  }, [ornamentOrder]);
 
   const saveMsg = useCallback(() => {
     if (inputRef.current && inputRef.current.value.length > 0)
@@ -155,9 +169,13 @@ export default function LeonPixiExample() {
   }, [ornamentOrder]);
 
   const initialize = useCallback(() => {
-    if (confirm('메시지와 오나먼트 순서가 모두 초기화됩니다.\n정말 초기화하시겠습니까?')) {
+    if (
+      confirm(
+        '메시지와 오나먼트 순서가 모두 초기화됩니다.\n정말 초기화하시겠습니까?',
+      )
+    ) {
       localStorage.clear();
-      window.location.reload();
+      window.location.href = window.location.origin;
     }
   }, []);
 
@@ -169,6 +187,7 @@ export default function LeonPixiExample() {
           wreath.ornamentOrder = newOrder;
           wreath.redraw();
         });
+        setOrnamentOrder(newOrder);
         return newOrder;
       });
     },
@@ -183,6 +202,7 @@ export default function LeonPixiExample() {
           wreath.ornamentOrder = newOrder;
           wreath.redraw();
         });
+        setOrnamentOrder(newOrder);
         return newOrder;
       });
     },
@@ -215,6 +235,7 @@ export default function LeonPixiExample() {
     <div>
       <LeonPixi
         initialText={INITIAL_TEXT}
+        initialOrnamentOrder={INITIAL_ORNAMENT_ORDER}
         color={'#704234'}
         size={130}
         width={canvasWidth}

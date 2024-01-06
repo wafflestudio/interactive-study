@@ -9,6 +9,7 @@ import WreathSans from '../domain/WreathSans';
 type LeonPixiProps = {
   // leon config
   initialText: string;
+  initialOrnamentOrder?: string[];
   color?: string;
   size?: number;
   weight?: number;
@@ -22,6 +23,7 @@ type LeonPixiProps = {
 
 export default function LeonPixi({
   initialText,
+  initialOrnamentOrder,
   color = '#000000',
   size = 60,
   weight = 400,
@@ -109,6 +111,7 @@ export default function LeonPixi({
       stage,
       graphics,
       pixelRatio,
+      ornamentOrder: initialOrnamentOrder,
     });
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 
