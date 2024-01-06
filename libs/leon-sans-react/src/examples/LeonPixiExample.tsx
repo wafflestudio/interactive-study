@@ -11,7 +11,9 @@ const URL_MSG = atob(
 const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
-const INITIAL_TEXT = URL_MSG_IS_VALID ? URL_MSG : 'INTERACTIVE STUDY';
+const INITIAL_TEXT = URL_MSG_IS_VALID
+  ? URL_MSG
+  : localStorage.getItem('msg') ?? 'INTERACTIVE STUDY';
 const ORNAMENT_NAMES = [
   'ball_1',
   'ball_2',
@@ -143,27 +145,37 @@ export default function LeonPixiExample() {
       .then(() => alert('URL이 복사되었습니다.'));
   }, []);
 
-  const addOrnament = useCallback((name: string) => {
-    setOrnamentOrder((prev) => {
-      const newOrder = [...prev, name];
-      dispatcher.send((wreath) => {
-        wreath.ornamentOrder = newOrder;
-        wreath.redraw();
-      });
-      return newOrder;
-    });
-  }, [dispatcher]);
+  const saveMsg = useCallback(() => {
+    localStorage.setItem('msg', inputRef.current?.value ?? '');
+  }, []);
 
-  const removeOrnament = useCallback((i: number) => {
-    setOrnamentOrder((prev) => {
-      const newOrder = [...prev.slice(0, i), ...prev.slice(i + 1)];
-      dispatcher.send((wreath) => {
-        wreath.ornamentOrder = newOrder;
-        wreath.redraw();
+  const addOrnament = useCallback(
+    (name: string) => {
+      setOrnamentOrder((prev) => {
+        const newOrder = [...prev, name];
+        dispatcher.send((wreath) => {
+          wreath.ornamentOrder = newOrder;
+          wreath.redraw();
+        });
+        return newOrder;
       });
-      return newOrder;
-    });
-  }, [dispatcher]);
+    },
+    [dispatcher],
+  );
+
+  const removeOrnament = useCallback(
+    (i: number) => {
+      setOrnamentOrder((prev) => {
+        const newOrder = [...prev.slice(0, i), ...prev.slice(i + 1)];
+        dispatcher.send((wreath) => {
+          wreath.ornamentOrder = newOrder;
+          wreath.redraw();
+        });
+        return newOrder;
+      });
+    },
+    [dispatcher],
+  );
 
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
@@ -209,20 +221,27 @@ export default function LeonPixiExample() {
         >
           다시 쓰기
         </button>
-        <button className={styles.button} onClick={() => moveLeft()}>
+        <button className={styles.button} onClick={moveLeft}>
           {'<'}
         </button>
-        <button className={styles.button} onClick={() => moveRight()}>
+        <button className={styles.button} onClick={moveRight}>
           {'>'}
         </button>
-        <button className={styles.button} onClick={() => shareUrl()}>
+        <button className={styles.button} onClick={shareUrl}>
           공유
+        </button>
+        <button className={styles.button} onClick={saveMsg}>
+          저장
         </button>
       </div>
       오나먼트 셀렉터
       <div className={styles.ornamentSelector}>
         {ORNAMENT_NAMES.map((name) => (
-          <div key={name} className={styles.ornament} onClick={() => addOrnament(name)}>
+          <div
+            key={name}
+            className={styles.ornament}
+            onClick={() => addOrnament(name)}
+          >
             <img src={`/ornaments/${name}.svg`} alt={name} />
             <span>{name}</span>
           </div>
@@ -231,7 +250,11 @@ export default function LeonPixiExample() {
       오나먼트 순서
       <div className={styles.ornamentOrder}>
         {ornamentOrder?.map((name, i) => (
-          <div key={i} className={styles.ornament} onClick={() => removeOrnament(i)}>
+          <div
+            key={i}
+            className={styles.ornament}
+            onClick={() => removeOrnament(i)}
+          >
             <img src={`/ornaments/${name}.svg`} alt={name} />
           </div>
         ))}
