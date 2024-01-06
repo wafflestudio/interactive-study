@@ -39,7 +39,6 @@ const ORNAMENT_ORDER = [
 ];
 const ORNAMENT_PROBABILITY = 0.15;
 const ORNAMENT_PROBABILITY_INCREASE = 0.24;
-const ORNAMENT_RADIUS = 50;
 
 type WreathSansProps = {
   canvas: HTMLCanvasElement;
@@ -278,6 +277,7 @@ export default class WreathSans {
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
+        const isStar = pos.type === 'a';
         if (Math.random() > probability && pos.type !== 'a') {
           probability += ORNAMENT_PROBABILITY_INCREASE;
           return;
@@ -290,14 +290,25 @@ export default class WreathSans {
             : Object.keys(this.ornamentMap)[
                 randomIdx(Object.keys(this.ornamentMap))
               ];
-        const ornament =
-          pos.type === 'a' ? this.ornamentMap['star'] : this.ornamentMap[name];
+        const ornament = isStar
+          ? this.ornamentMap['star']
+          : this.ornamentMap[name];
         const scale = ornament.scale * this.leon.scale;
-        const radius = pos.type === 'a' ? 0 : this.leon.scale * ORNAMENT_RADIUS;
         const ornamentSprite = PIXI.Sprite.from(ornament.source);
         ornamentSprite.anchor.set(0.5);
-        ornamentSprite.x = pos.x - typo.rect.x + radius * (Math.random() - 0.5);
-        ornamentSprite.y = pos.y - typo.rect.y + radius * (Math.random() - 0.5);
+        ornamentSprite.x = pos.x - typo.rect.x;
+        ornamentSprite.y = pos.y - typo.rect.y;
+        /**
+        * 별일 경우는 위 방향으로 살짝 올려야 균형이 맞음
+        * 그 외에는 랜덤하게 x, y 오프셋을 줘서 자연스럽게
+        */
+        if (isStar) {
+          ornamentSprite.y -= 7 * this.leon.scale;
+        } else {
+        const radius = this.leon.scale * 50;
+          ornamentSprite.x += radius * (Math.random() - 0.5);
+          ornamentSprite.y += radius * (Math.random() - 0.5);
+        }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
           typeof ornament.rotation === 'number'
