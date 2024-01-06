@@ -10,6 +10,7 @@ import { Graphics } from 'pixi.js';
 import { MAX_FONT_WEIGHT, MIN_FONT_WEIGHT } from './core/constants.js';
 import { Dispatcher } from './core/dispatcher';
 import { Model } from './core/model';
+import { Align } from './core/types.js';
 import { shuffle } from './core/util';
 import { Color } from './draw/canvas/color.js';
 import { Colorful } from './draw/canvas/colorful.js';
@@ -20,7 +21,6 @@ import { Points } from './draw/canvas/points.js';
 import { Wave } from './draw/canvas/wave.js';
 import { PixiColor } from './draw/pixi/color.js';
 import { PixiLines } from './draw/pixi/lines.js';
-import { Align } from './core/types.js';
 
 type LeonSansProps = {
   text?: string;
@@ -513,7 +513,10 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @param {DOMHighResTimeStamp} t time stemp from requestAnimationFrame()
    */
-  wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp = Date.now()) {
+  private wave(
+    ctx: CanvasRenderingContext2D,
+    t: DOMHighResTimeStamp = Date.now(),
+  ) {
     ctx.lineWidth = this.lineWidth;
 
     if (!this.time_) this.time_ = t;
@@ -549,7 +552,11 @@ export default class LeonSans extends Dispatcher {
    * @param {number} w pattern width
    * @param {number} h pattern height
    */
-  pattern(ctx: CanvasRenderingContext2D, w: number = 40, h: number = 10) {
+  private pattern(
+    ctx: CanvasRenderingContext2D,
+    w: number = 40,
+    h: number = 10,
+  ) {
     const tw = w * this.model.scale;
     const th = h * this.model.scale;
 
@@ -565,7 +572,7 @@ export default class LeonSans extends Dispatcher {
    * Draw grid for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  grid(ctx: CanvasRenderingContext2D) {
+  private grid(ctx: CanvasRenderingContext2D) {
     this.updateGuide();
 
     const total = this.model.data.length;
@@ -580,7 +587,7 @@ export default class LeonSans extends Dispatcher {
    * Draw circles at each drawing point and lines for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  point(ctx: CanvasRenderingContext2D) {
+  private point(ctx: CanvasRenderingContext2D) {
     const total = this.model.data.length;
     let i, d;
     for (i = 0; i < total; i++) {
@@ -594,7 +601,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @private
    */
-  box(ctx: CanvasRenderingContext2D) {
+  private box(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.strokeStyle = '#0b90dc';

@@ -1,10 +1,10 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
-import { PixiDataRefs } from '../types/DataRefs';
 import { PixiDispatcher } from '../types/Dispatcher';
+import WreathSans from '../domain/WreathSans';
 
 export const usePixiDispatcher = (): PixiDispatcher => {
-  const dataRefs = useRef<PixiDataRefs | null>(null);
+  const dataRefs = useRef<WreathSans | null>(null);
 
   const initiate: PixiDispatcher['initiate'] = useCallback((refs) => {
     dataRefs.current = refs;
@@ -15,8 +15,12 @@ export const usePixiDispatcher = (): PixiDispatcher => {
     callback(dataRefs.current);
   }, []);
 
-  return {
-    initiate,
-    send,
-  };
+  const dispatcher = useMemo<PixiDispatcher>(() => {
+    return {
+      initiate,
+      send,
+    };
+  }, [initiate, send]);
+
+  return dispatcher;
 };

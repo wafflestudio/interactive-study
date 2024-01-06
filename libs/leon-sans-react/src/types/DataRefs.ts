@@ -15,5 +15,4 @@ export type PixiDataRefs = {
   graphics: PIXI.Graphics;
   leon: LeonSans;
   pixelRatio: number;
-  isDraw: boolean;
 };

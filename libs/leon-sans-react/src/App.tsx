@@ -1,10 +1,10 @@
-import LeonCanvasExample from './examples/LeonCanvasExample';
+// import LeonCanvasExample from './examples/LeonCanvasExample';
 import LeonPixiExample from './examples/LeonPixiExample';
 
 function App() {
   return (
     <main>
-      <LeonCanvasExample />
+      {/* <LeonCanvasExample /> */}
       <LeonPixiExample />
     </main>
   );

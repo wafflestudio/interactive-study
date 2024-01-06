@@ -3,16 +3,15 @@ import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
-import { PixiDataRefs } from '../types/DataRefs';
 import { PixiHandlers } from '../types/Handler';
+import WreathSans from '../domain/WreathSans';
 
 type LeonPixiProps = {
   // leon config
-  text: string;
+  initialText: string;
   color?: string;
   size?: number;
   weight?: number;
-  isDraw?: boolean;
   // canvas config
   width?: number;
   height?: number;
@@ -22,11 +21,10 @@ type LeonPixiProps = {
 } & PixiHandlers;
 
 export default function LeonPixi({
-  text,
+  initialText,
   color = '#000000',
   size = 60,
   weight = 400,
-  isDraw = true,
   width = 800,
   height = 600,
   pixelRatio = 2,
@@ -37,7 +35,7 @@ export default function LeonPixi({
    * Stored Refs
    */
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dataRefs = useRef<PixiDataRefs | null>(null);
+  const dataRefs = useRef<WreathSans | null>(null);
   const handlers = useRef<PixiHandlers>({});
 
   /**
@@ -51,27 +49,20 @@ export default function LeonPixi({
 
       // parse dataRefs
       if (!dataRefs.current) return;
-      const { graphics, renderer, stage, leon, isDraw } = dataRefs.current;
+      const { graphics, renderer, stage, leon } = dataRefs.current;
 
       // clear canvas
       graphics.clear();
-
-      // set position
-      const x = (width - leon.rect.w) / 2;
-      const y = (height - leon.rect.h) / 2;
-      leon.position(x, y);
 
       // resolve handlers
       if (handlers.current.onAnimate)
         handlers.current.onAnimate(dataRefs.current, currentFrame);
 
       // default draw function
-      if (isDraw) {
-        leon.drawPixi(graphics);
-        renderer.render(stage);
-      }
+      leon.drawPixi(graphics);
+      renderer.render(stage);
     },
-    [dataRefs, width, height],
+    [dataRefs],
   );
 
   /**
@@ -84,11 +75,16 @@ export default function LeonPixi({
 
     // create leon
     const leon = new LeonSans({
-      text,
+      text: initialText,
       color: [color],
       size,
       weight,
     });
+
+    // set position
+    const x = (width - leon.rect.w) / 2;
+    const y = (height - leon.rect.h) / 2;
+    leon.position(x, y);
 
     // create pixi
     const renderer = new PIXI.Renderer({
@@ -106,33 +102,30 @@ export default function LeonPixi({
     stage.addChild(graphics);
 
     // save dataRefs
-    dataRefs.current = {
+    dataRefs.current = new WreathSans({
       canvas: canvasRef.current,
       leon,
       renderer,
       stage,
       graphics,
-      isDraw,
       pixelRatio,
-    };
+    });
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 
     // start animation
     requestAnimationFrame(animate);
-  }, [canvasRef]);
+  }, [canvasRef]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    *  Update Leon
    */
   useEffect(() => {
     if (!dataRefs.current) return;
-    dataRefs.current.leon.text = text;
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-    dataRefs.current.isDraw = isDraw;
     dataRefs.current.pixelRatio = pixelRatio;
-  }, [dataRefs, text, color, size, weight, isDraw, pixelRatio]);
+  }, [dataRefs, color, size, weight, pixelRatio]);
 
   /**
    * update handler
