@@ -51,7 +51,7 @@ const INITIAL_ORNAMENT_ORDER = [
 
 export default function LeonPixiExample() {
   const [ornamentOrder, setOrnamentOrder] = useState<string[]>(
-    INITIAL_ORNAMENT_ORDER,
+    localStorage.getItem('ornamentOrder')?.split(',') ?? INITIAL_ORNAMENT_ORDER,
   );
   const [windowSize, setWindowSize] = useState<[number, number]>([
     window.innerWidth,
@@ -146,7 +146,19 @@ export default function LeonPixiExample() {
   }, []);
 
   const saveMsg = useCallback(() => {
-    localStorage.setItem('msg', inputRef.current?.value ?? '');
+    if (inputRef.current && inputRef.current.value.length > 0)
+      localStorage.setItem('msg', inputRef.current?.value ?? '');
+    else localStorage.removeItem('msg');
+    if (ornamentOrder.length > 0)
+      localStorage.setItem('ornamentOrder', ornamentOrder.join(',') ?? '');
+    else localStorage.removeItem('ornamentOrder');
+  }, [ornamentOrder]);
+
+  const initialize = useCallback(() => {
+    if (confirm('메시지와 오나먼트 순서가 모두 초기화됩니다.\n정말 초기화하시겠습니까?')) {
+      localStorage.clear();
+      window.location.reload();
+    }
   }, []);
 
   const addOrnament = useCallback(
@@ -232,6 +244,9 @@ export default function LeonPixiExample() {
         </button>
         <button className={styles.button} onClick={saveMsg}>
           저장
+        </button>
+        <button className={styles.button} onClick={initialize}>
+          초기화
         </button>
       </div>
       오나먼트 셀렉터
