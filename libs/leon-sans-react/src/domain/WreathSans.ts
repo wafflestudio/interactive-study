@@ -246,7 +246,7 @@ export default class WreathSans {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
     typo.drawingPaths
-      .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
+      .filter((_, i) => i % 11 > 6)
       .forEach((pos, i, every) => {
         const source = this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
