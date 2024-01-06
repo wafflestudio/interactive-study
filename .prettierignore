@@ -1,18 +1,11 @@
-# dist
-dist/**/*
-**/dist/**/*
-build/**/*
-**/build/**/*
+dist/
+build/
 
 # node_modules
-node_modules/**/*
-**/node_modules/**/*
+node_modules/
 
 # yarn
-.yarn/**/*
-**/.yarn/**/*
+.yarn/
 
 # git
-.git/**/*
-**/.git/**/*
-
+.git/
