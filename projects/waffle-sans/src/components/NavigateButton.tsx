@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import ArrowBackIcon from './ArrowBackIcon';
@@ -11,6 +12,7 @@ export enum Direction {
 interface Props {
   text: string;
   color?: string;
+  hoveredColor?: string;
   direction: Direction;
   handleClick: () => void;
 }
@@ -18,14 +20,25 @@ interface Props {
 export default function NavigateButton({
   text,
   color = '#93AFAE',
+  hoveredColor = '#2E3A2C',
   direction = Direction.BACK,
   handleClick,
 }: Props) {
+  const [mouseEnter, setMouseEnter] = useState(false);
+
   return (
-    <Container onClick={handleClick}>
-      {direction === Direction.BACK && <ArrowBackIcon color={color} />}
-      <Text color={color}>{text}</Text>
-      {direction === Direction.FORWARD && <ArrowForwardIcon color={color} />}
+    <Container
+      onClick={handleClick}
+      onMouseEnter={() => setMouseEnter(true)}
+      onMouseLeave={() => setMouseEnter(false)}
+    >
+      {direction === Direction.BACK && (
+        <ArrowBackIcon color={mouseEnter ? hoveredColor : color} />
+      )}
+      <Text color={mouseEnter ? hoveredColor : color}>{text}</Text>
+      {direction === Direction.FORWARD && (
+        <ArrowForwardIcon color={mouseEnter ? hoveredColor : color} />
+      )}
     </Container>
   );
 }
@@ -43,7 +56,7 @@ const Container = styled.button`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.06);
   }
 `;
 
