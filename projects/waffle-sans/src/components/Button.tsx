@@ -38,4 +38,9 @@ const Container = styled.button<{ color: string }>`
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.08);
+  }
 `;
