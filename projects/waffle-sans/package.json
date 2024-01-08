@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "gsap": "^3.12.4",
+    "leon-sans-react": "workspace:^",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.1",
+    "styled-components": "^6.1.6",
+    "styled-reset": "^4.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
