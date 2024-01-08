@@ -40,6 +40,8 @@ export default class WreathSans {
   ornamentMap: Record<string, Ornament>;
   ornamentOrder: string[];
   containers: PIXI.Container[];
+  loaded: boolean = false;
+  loadingPromise: Promise<void>;
 
   constructor(props: WreathSansProps) {
     this.canvas = props.canvas;
@@ -53,10 +55,12 @@ export default class WreathSans {
     this.ornamentMap = {};
     this.ornamentOrder = props.ornamentOrder ?? [];
 
-    this.loadAssets().then(() => {
+    this.loadingPromise = this.loadAssets().then(() => {
+      this.loaded = true;
       this.redraw();
     });
   }
+
   insertText(text: string, idx: number) {
     // check text
     if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text)))
