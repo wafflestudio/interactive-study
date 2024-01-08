@@ -30,12 +30,14 @@ export default function SansWriter() {
           text={'SHARE'}
           color={'#FFFFFF'}
           handleClick={() => {}}
+          hoveredColor="#E6F0F0"
           icon={<Icon src="/share.svg" alt="share" />}
         ></Button>
         <Button
           text={'WRITE'}
           color={'#D2E6E4'}
           handleClick={() => {}}
+          hoveredColor="#BFDBD9"
           icon={<Icon src="/write.svg" alt="write" />}
         ></Button>
       </ButtonContainer>
