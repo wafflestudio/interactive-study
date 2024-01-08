@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import Background from '../components/Background';
 import Footer from '../components/Footer';
+import NavigateButton, { Direction } from '../components/NavigateButton';
 import SansWriter from '../components/SansWriter';
 import LogoIcon from '/logo.svg';
 
@@ -16,6 +17,14 @@ export default function Sans() {
 
       <SansWriter />
 
+      <BackBtnContainer>
+        <NavigateButton
+          text={'BACK TO HOME'}
+          direction={Direction.BACK}
+          handleClick={() => {}}
+        />
+      </BackBtnContainer>
+
       <Footer />
     </Container>
   );
@@ -24,6 +33,7 @@ export default function Sans() {
 /* STYLES */
 const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   width: 100vw;
@@ -40,4 +50,12 @@ const Header = styled.div`
 const Logo = styled.img`
   width: 99px;
   height: 53px;
+`;
+
+const BackBtnContainer = styled.div`
+  position: absolute;
+  width: auto;
+  height: auto;
+  left: 100px;
+  bottom: 150px;
 `;
