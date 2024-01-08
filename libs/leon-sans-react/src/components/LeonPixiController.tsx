@@ -4,16 +4,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PixiDispatcher } from '../types/Dispatcher';
 import styles from './LeonPixiController.module.css';
 
+const URL_PARAMS = new URLSearchParams(window.location.search);
+
 const DEFAULT_MSG = 'INTERACTIVE STUDY';
-const URL_MSG = atob(
-  new URLSearchParams(window.location.search).get('msg') ?? '',
-).replaceAll('\\n', '\n');
+const URL_MSG = atob(URL_PARAMS.get('msg') ?? '').replaceAll('\\n', '\n');
 const URL_MSG_IS_VALID =
   URL_MSG &&
   URL_MSG.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c));
 const INITIAL_TEXT = URL_MSG_IS_VALID
   ? URL_MSG
   : localStorage.getItem('msg') ?? DEFAULT_MSG;
+
+const URL_ALIGN = URL_PARAMS.get('align');
+const INITIAL_ALIGN = (URL_ALIGN ?? 'left') as 'left' | 'center' | 'right';
 
 const DEFAULT_ORNAMENT_ORDER = [
   'pinecone_2',
@@ -49,9 +52,7 @@ const ORNAMENT_NAMES = [
   'ribbon',
   'star',
 ];
-const URL_ORNAMENT_ORDER = new URLSearchParams(window.location.search)
-  .get('ornamentOrder')
-  ?.split(',');
+const URL_ORNAMENT_ORDER = URL_PARAMS.get('ornamentOrder')?.split(',');
 const URL_ORNAMENT_ORDER_IS_VALID =
   URL_ORNAMENT_ORDER &&
   URL_ORNAMENT_ORDER.every((name) => ORNAMENT_NAMES.includes(name));
@@ -70,37 +71,8 @@ export default function LeonPixiController({
     INITIAL_ORNAMENT_ORDER,
   );
 
-  const addOrnament = useCallback(
-    (name: string) => {
-      setOrnamentOrder((prev) => {
-        const newOrder = [...prev, name];
-        dispatcher.send((wreath) => {
-          wreath.ornamentOrder = newOrder;
-          wreath.redraw();
-        });
-        setOrnamentOrder(newOrder);
-        return newOrder;
-      });
-    },
-    [dispatcher],
-  );
-
-  const removeOrnament = useCallback(
-    (i: number) => {
-      setOrnamentOrder((prev) => {
-        const newOrder = [...prev.slice(0, i), ...prev.slice(i + 1)];
-        dispatcher.send((wreath) => {
-          wreath.ornamentOrder = newOrder;
-          wreath.redraw();
-        });
-        setOrnamentOrder(newOrder);
-        return newOrder;
-      });
-    },
-    [dispatcher],
-  );
-
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const alignRef = useRef<HTMLSelectElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -163,13 +135,17 @@ export default function LeonPixiController({
   );
 
   const shareUrl = useCallback(() => {
-    let url = window.location.origin + `/?msg=${btoa(inputRef.current!.value)}`;
+    const params = new URLSearchParams();
+    params.set('msg', btoa(inputRef.current!.value));
+    params.set('align', alignRef.current!.value)
     if (
       JSON.stringify(ornamentOrder) !== JSON.stringify(DEFAULT_ORNAMENT_ORDER)
     )
-      url += `&ornamentOrder=${ornamentOrder.join(',')}`;
+      params.set('ornamentOrder', ornamentOrder.join(','));
+    const url = new URL(window.location.origin);
+    url.search = params.toString();
     window.navigator.clipboard
-      .writeText(url.replaceAll('\n', '\\n'))
+      .writeText(url.toString().replaceAll('\n', '\\n'))
       .then(() => alert('URL이 복사되었습니다.'));
   }, [ornamentOrder]);
 
@@ -202,13 +178,35 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  /**
-   * 마운트될 때 input에 INITIAL_TEXT 적용
-   */
-  useEffect(() => {
-    if (!inputRef.current) return;
-    inputRef.current.value = INITIAL_TEXT;
-  }, []);
+  const addOrnament = useCallback(
+    (name: string) => {
+      setOrnamentOrder((prev) => {
+        const newOrder = [...prev, name];
+        dispatcher.send((wreath) => {
+          wreath.ornamentOrder = newOrder;
+          wreath.redraw();
+        });
+        setOrnamentOrder(newOrder);
+        return newOrder;
+      });
+    },
+    [dispatcher],
+  );
+
+  const removeOrnament = useCallback(
+    (i: number) => {
+      setOrnamentOrder((prev) => {
+        const newOrder = [...prev.slice(0, i), ...prev.slice(i + 1)];
+        dispatcher.send((wreath) => {
+          wreath.ornamentOrder = newOrder;
+          wreath.redraw();
+        });
+        setOrnamentOrder(newOrder);
+        return newOrder;
+      });
+    },
+    [dispatcher],
+  );
 
   /**
    * 마운트될 때 INITIAL_ORNAMENT_ORDER, INITIAL_TEXT 적용
@@ -217,6 +215,7 @@ export default function LeonPixiController({
     dispatcher.send((wreath) => {
       wreath.ornamentOrder = INITIAL_ORNAMENT_ORDER;
       wreath.loadingPromise.then(() => {
+        wreath.align = INITIAL_ALIGN;
         wreath.replaceText(INITIAL_TEXT);
       });
     });
@@ -230,6 +229,7 @@ export default function LeonPixiController({
           className={styles.editor}
           ref={inputRef}
           onInput={onInputHandler}
+          defaultValue={INITIAL_TEXT}
         />
       </div>
       <div className={styles.configuration}>
@@ -253,7 +253,12 @@ export default function LeonPixiController({
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>정렬</span>
-        <select className={styles.alignSelector} onChange={setAlign}>
+        <select
+          className={styles.alignSelector}
+          ref={alignRef}
+          onChange={setAlign}
+          defaultValue={INITIAL_ALIGN}
+        >
           <option value="left">left</option>
           <option value="center">center</option>
           <option value="right">right</option>
