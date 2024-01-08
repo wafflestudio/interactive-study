@@ -1,5 +1,5 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { CHARSET, ModelData } from 'leonsans';
+import { Align, CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
@@ -59,6 +59,15 @@ export default class WreathSans {
       this.loaded = true;
       this.redraw();
     });
+  }
+
+  get align() {
+    return this.leon.align;
+  }
+
+  set align(align: Align) {
+    this.leon.align = align;
+    this.updatePositions();
   }
 
   insertText(text: string, idx: number) {

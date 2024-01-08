@@ -193,6 +193,15 @@ export default function LeonPixiController({
     }
   }, []);
 
+  const setAlign = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      dispatcher.send((wreath) => {
+        wreath.align = e.target.value as 'left' | 'center' | 'right';
+      });
+    },
+    [dispatcher],
+  );
+
   /**
    * 마운트될 때 input에 INITIAL_TEXT 적용
    */
@@ -216,7 +225,7 @@ export default function LeonPixiController({
   return (
     <div className={styles.container}>
       <div className={styles.configuration}>
-        <span className={styles.key}>텍스트 에디터</span>
+        <span className={styles.key}>에디터</span>
         <textarea
           className={styles.editor}
           ref={inputRef}
@@ -243,7 +252,15 @@ export default function LeonPixiController({
         </div>
       </div>
       <div className={styles.configuration}>
-        <div className={styles.key}>오나먼트 셀렉터</div>
+        <span className={styles.key}>정렬</span>
+        <select className={styles.alignSelector} onChange={setAlign}>
+          <option value="left">left</option>
+          <option value="center">center</option>
+          <option value="right">right</option>
+        </select>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 추가</span>
         <div className={styles.ornamentSelector}>
           {ORNAMENT_NAMES.map((name) => (
             <div
@@ -257,7 +274,7 @@ export default function LeonPixiController({
         </div>
       </div>
       <div className={styles.configuration}>
-        <div className={styles.key}>오나먼트 순서</div>
+        <span className={styles.key}>오나먼트 순서</span>
         <div className={styles.ornamentOrder}>
           {ornamentOrder?.map((name, i) => (
             <div
