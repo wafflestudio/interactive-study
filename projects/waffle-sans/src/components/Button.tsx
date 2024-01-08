@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface Props {
   text: string;
   color?: string;
+  hoveredColor?: string;
   icon?: React.ReactNode;
   handleClick: () => void;
 }
@@ -11,10 +12,11 @@ export default function Button({
   icon,
   text,
   color = '#FFFFFF',
+  hoveredColor = '#FFFFFF',
   handleClick,
 }: Props) {
   return (
-    <Container color={color} onClick={handleClick}>
+    <Container color={color} hoveredColor={hoveredColor} onClick={handleClick}>
       {icon}
       {text}
     </Container>
@@ -22,7 +24,7 @@ export default function Button({
 }
 
 /* STYLES */
-const Container = styled.button<{ color: string }>`
+const Container = styled.button<{ color: string; hoveredColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,9 +40,10 @@ const Container = styled.button<{ color: string }>`
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
-    transform: scale(1.08);
+    transform: scale(1.1);
+    background-color: ${({ hoveredColor }) => hoveredColor};
   }
 `;
