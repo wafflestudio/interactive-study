@@ -70,9 +70,12 @@ export default function LeonPixiController({
   const [ornamentOrder, setOrnamentOrder] = useState<string[]>(
     INITIAL_ORNAMENT_ORDER,
   );
+  const [, setUpdateId] = useState<number>(0);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const alignRef = useRef<HTMLSelectElement>(null);
+  const densityRef = useRef<HTMLInputElement>(null);
+  const amplitudeRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -137,7 +140,7 @@ export default function LeonPixiController({
   const shareUrl = useCallback(() => {
     const params = new URLSearchParams();
     params.set('msg', btoa(inputRef.current!.value));
-    params.set('align', alignRef.current!.value)
+    params.set('align', alignRef.current!.value);
     if (
       JSON.stringify(ornamentOrder) !== JSON.stringify(DEFAULT_ORNAMENT_ORDER)
     )
@@ -205,6 +208,26 @@ export default function LeonPixiController({
         return newOrder;
       });
     },
+    [dispatcher],
+  );
+
+  const changeOrnamentDensity = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.ornamentDensity = 10 - Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeOrnamentAmplitude = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.ornamentAmplitude = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
     [dispatcher],
   );
 
@@ -291,6 +314,38 @@ export default function LeonPixiController({
             </div>
           ))}
         </div>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 밀도</span>
+        <input
+          className={styles.ornamentDensity}
+          ref={densityRef}
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          onChange={changeOrnamentDensity}
+          defaultValue="5"
+        />
+        <label className={styles.ornamentDensityLabel}>
+          {densityRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 진폭</span>
+        <input
+          className={styles.ornamentAmplitude}
+          ref={amplitudeRef}
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          onChange={changeOrnamentAmplitude}
+          defaultValue="50"
+        />
+        <label className={styles.ornamentAmplitudeLabel}>
+          {amplitudeRef.current?.value}
+        </label>
       </div>
     </div>
   );

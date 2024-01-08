@@ -108,7 +108,6 @@ export default function LeonPixi({
       renderer,
       stage,
       graphics,
-      pixelRatio,
     });
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 

@@ -16,17 +16,15 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const ORNAMENT_PROBABILITY = 0.15;
-const ORNAMENT_PROBABILITY_INCREASE = 0.24;
-
 type WreathSansProps = {
   canvas: HTMLCanvasElement;
   renderer: PIXI.Renderer;
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  pixelRatio: number;
   ornamentOrder?: string[];
+  ornamentDensity?: number;
+  ornamentAmplitude?: number;
 };
 
 export default class WreathSans {
@@ -35,12 +33,14 @@ export default class WreathSans {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  pixelRatio: number;
+  ornamentOrder: string[];
+  ornamentDensity: number;
+  ornamentAmplitude: number;
+
   leafSources: PIXI.SpriteSource[];
   ornamentMap: Record<string, Ornament>;
-  ornamentOrder: string[];
   containers: PIXI.Container[];
-  loaded: boolean = false;
+  loaded: boolean;
   loadingPromise: Promise<void>;
 
   constructor(props: WreathSansProps) {
@@ -49,12 +49,14 @@ export default class WreathSans {
     this.stage = props.stage;
     this.graphics = props.graphics;
     this.leon = props.leon;
-    this.pixelRatio = props.pixelRatio;
+    this.ornamentOrder = props.ornamentOrder ?? [];
+    this.ornamentDensity = props.ornamentDensity ?? 5;
+    this.ornamentAmplitude = props.ornamentAmplitude ?? 30;
+
     this.containers = [];
     this.leafSources = [];
     this.ornamentMap = {};
-    this.ornamentOrder = props.ornamentOrder ?? [];
-
+    this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
       this.loaded = true;
       this.redraw();
@@ -265,18 +267,20 @@ export default class WreathSans {
       });
 
     // draw ornament
-    let probability = ORNAMENT_PROBABILITY;
+    let probability = 0;
     let ornamentIdx = -1;
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
         const isStar = pos.type === 'a';
-        if (Math.random() > probability && pos.type !== 'a') {
-          probability += ORNAMENT_PROBABILITY_INCREASE;
+
+        if (!isStar && this.ornamentDensity > probability) {
+          probability++;
           return;
         }
         ornamentIdx = (ornamentIdx + 1) % this.ornamentOrder.length;
-        probability = ORNAMENT_PROBABILITY;
+        probability = 0;
+
         const name =
           this.ornamentOrder.length > 0
             ? this.ornamentOrder[ornamentIdx]
@@ -291,16 +295,20 @@ export default class WreathSans {
         ornamentSprite.anchor.set(0.5);
         ornamentSprite.x = pos.x - typo.rect.x;
         ornamentSprite.y = pos.y - typo.rect.y;
+
         /**
          * 별일 경우는 위 방향으로 살짝 올려야 균형이 맞음
-         * 그 외에는 랜덤하게 x, y 오프셋을 줘서 자연스럽게
+         * 그 외에는 접선의 수직 방향으로 x, y 오프셋을 줘서 자연스럽게
          */
         if (isStar) {
           ornamentSprite.y -= 7 * this.leon.scale;
         } else {
-          const radius = this.leon.scale * 50;
-          ornamentSprite.x += radius * (Math.random() - 0.5);
-          ornamentSprite.y += radius * (Math.random() - 0.5);
+          const prev = every[i - 1];
+          const direction = Math.atan2(pos.y - prev.y, pos.x - prev.x);
+          const offset =
+            this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
+          ornamentSprite.x += offset * Math.sin(direction);
+          ornamentSprite.y += offset * Math.cos(direction);
         }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
