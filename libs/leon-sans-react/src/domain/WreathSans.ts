@@ -25,6 +25,7 @@ type WreathSansProps = {
   ornamentOrder?: string[];
   ornamentDensity?: number;
   ornamentAmplitude?: number;
+  darkMode?: boolean;
 };
 
 export default class WreathSans {
@@ -36,8 +37,10 @@ export default class WreathSans {
   ornamentOrder: string[];
   ornamentDensity: number;
   ornamentAmplitude: number;
+  darkMode: boolean;
 
   leafSources: PIXI.SpriteSource[];
+  darkLeafSources: PIXI.SpriteSource[];
   ornamentMap: Record<string, Ornament>;
   containers: PIXI.Container[];
   loaded: boolean;
@@ -52,9 +55,11 @@ export default class WreathSans {
     this.ornamentOrder = props.ornamentOrder ?? [];
     this.ornamentDensity = props.ornamentDensity ?? 5;
     this.ornamentAmplitude = props.ornamentAmplitude ?? 30;
+    this.darkMode = props.darkMode ?? false;
 
     this.containers = [];
     this.leafSources = [];
+    this.darkLeafSources = [];
     this.ornamentMap = {};
     this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
@@ -188,9 +193,16 @@ export default class WreathSans {
   private async loadAssets() {
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `leaves_dark/leaf_${i}.svg`,
+        `leaves/leaf_${i}.svg`,
       );
       this.leafSources.push(leaf);
+    }
+
+    for (let i = 1; i <= 20; i++) {
+      const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
+        `leaves_dark/leaf_${i}.svg`,
+      );
+      this.darkLeafSources.push(leaf);
     }
 
     // save ornament
@@ -242,7 +254,9 @@ export default class WreathSans {
     typo.drawingPaths
       .filter((_, i) => i % 11 > 6)
       .forEach((pos, i, every) => {
-        const source = this.leafSources[randomIdx(this.leafSources)];
+        const source = this.darkMode
+          ? this.darkLeafSources[randomIdx(this.darkLeafSources)]
+          : this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
         leafSprite.anchor.set(0.5);
         leafSprite.x = pos.x - typo.rect.x;

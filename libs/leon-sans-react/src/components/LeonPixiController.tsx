@@ -181,6 +181,16 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const toggleDarkMode = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatcher.send((wreath) => {
+        wreath.darkMode = e.target.checked;
+        wreath.redraw();
+      });
+    },
+    [dispatcher],
+  );
+
   const addOrnament = useCallback(
     (name: string) => {
       setOrnamentOrder((prev) => {
@@ -286,6 +296,14 @@ export default function LeonPixiController({
           <option value="center">center</option>
           <option value="right">right</option>
         </select>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>다크모드</span>
+        <input
+          className={styles.darkMode}
+          type="checkbox"
+          onChange={toggleDarkMode}
+        />
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>오나먼트 추가</span>
