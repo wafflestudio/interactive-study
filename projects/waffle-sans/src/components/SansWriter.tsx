@@ -1,10 +1,16 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { sansInputState } from '../store/sans';
 import Button from './Button';
+import SampleTypo from './SampleTypo';
+import Textarea from './Textarea';
 
 export default function SansWriter() {
-  const [value, setValue] = useState('');
+  const router = useNavigate();
+  const [value, setValue] = useRecoilState(sansInputState);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -16,30 +22,33 @@ export default function SansWriter() {
 
   return (
     <Container>
-      <TextareaContainer>
-        <Textarea
-          value={value}
-          onChange={handleChange}
-          placeholder="interactive study"
-        />
-        <TextCount>{`${value?.length}/50`}</TextCount>
-      </TextareaContainer>
+      <SansContainer>
+        <SampleTypo />
+      </SansContainer>
 
+      <Textarea
+        name="sans"
+        width="635px"
+        value={value}
+        threshold={50}
+        handleChange={handleChange}
+        placeholder="interactive study"
+      />
       <ButtonContainer>
         <Button
           text={'SHARE'}
           color={'#FFFFFF'}
-          handleClick={() => {}}
           hoveredColor="#E6F0F0"
+          handleClick={() => router('/post')}
           icon={<Icon src="/share.svg" alt="share" />}
-        ></Button>
+        />
         <Button
           text={'WRITE'}
           color={'#D2E6E4'}
-          handleClick={() => {}}
           hoveredColor="#BFDBD9"
+          handleClick={() => {}}
           icon={<Icon src="/write.svg" alt="write" />}
-        ></Button>
+        />
       </ButtonContainer>
     </Container>
   );
@@ -48,59 +57,21 @@ export default function SansWriter() {
 /* STYLES */
 const Container = styled.div`
   display: flex;
-  width: 651px;
+  width: 100%;
   gap: 16px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  position: absolute;
-  bottom: 124px;
-  padding: 8px;
+  margin-bottom: auto;
 `;
 
-const TextareaContainer = styled.div`
-  position: relative;
-  width: 635px;
-  height: 88px;
-`;
-
-const Textarea = styled.textarea`
-  resize: none;
-  width: 635px;
-  height: 88px;
-  padding: 5px 8px 20px 8px;
-  flex-direction: column;
-  border: none;
-  border-radius: 2px;
-  box-sizing: border-box;
-  background: #fff;
-  color: #2e3a2c;
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: normal;
-  outline: none;
-
-  &:placeholder {
-    color: #93afae;
-  }
-  &:focus {
-    outline: none;
-  }
-`;
-
-const TextCount = styled.div`
-  position: absolute;
-  right: 8px;
-  bottom: 5px;
-  color: #718f8d;
-  font-family: Inter;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  background: #fff;
-  border-radius: 6px;
+const SansContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 62vh;
+  max-height: calc(100vh - 320px);
 `;
 
 const ButtonContainer = styled.div`

@@ -15,12 +15,10 @@ export default function Footer() {
 /* STYLES */
 const Container = styled.div`
   display: flex;
-  position: fixed;
   align-items: center;
   justify-content: center;
-  left: 0;
-  bottom: 30px;
   width: 100%;
+  height: auto;
 `;
 
 const Text = styled.span`
