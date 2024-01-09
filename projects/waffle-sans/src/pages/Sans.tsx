@@ -1,16 +1,18 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Background from '../components/Background';
 import Footer from '../components/Footer';
 import NavigateButton, { Direction } from '../components/NavigateButton';
 import SansWriter from '../components/SansWriter';
-import LogoIcon from '/logo.svg';
+import LogoIcon from '/logo_black.svg';
 
 export default function Sans() {
+  const router = useNavigate();
+
   return (
     <Container>
       <Background />
-
       <Header>
         <Logo src={LogoIcon} alt="waffle sans" />
       </Header>
@@ -21,10 +23,9 @@ export default function Sans() {
         <NavigateButton
           text={'BACK TO HOME'}
           direction={Direction.BACK}
-          handleClick={() => {}}
+          handleClick={() => router('/')}
         />
       </BackBtnContainer>
-
       <Footer />
     </Container>
   );
@@ -38,6 +39,8 @@ const Container = styled.div`
   align-items: center;
   width: 100vw;
   height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 30px;
 `;
 
 const Header = styled.div`

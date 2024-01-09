@@ -43,7 +43,7 @@ const Container = styled.button<{ color: string; hoveredColor: string }>`
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.06);
     background-color: ${({ hoveredColor }) => hoveredColor};
   }
 `;
