@@ -188,7 +188,7 @@ export default class WreathSans {
   private async loadAssets() {
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `leaves/leaf_${i}.svg`,
+        `leaves_dark/leaf_${i}.svg`,
       );
       this.leafSources.push(leaf);
     }
