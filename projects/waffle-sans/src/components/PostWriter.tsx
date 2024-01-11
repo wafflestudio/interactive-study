@@ -22,15 +22,15 @@ export default function PostWriter() {
       switch (e.target.name) {
         case 'sender':
           if (e.target.value.length > THRESHOLD.SENDER) return;
-          setForm({ ...form, sender: e.target.value });
+          setForm((prev) => ({ ...prev, sender: e.target.value }));
           break;
         case 'receiver':
           if (e.target.value.length > THRESHOLD.RECEIVER) return;
-          setForm({ ...form, receiver: e.target.value });
+          setForm((prev) => ({ ...prev, receiver: e.target.value }));
           break;
         case 'content':
           if (e.target.value.length > THRESHOLD.CONTENT) return;
-          setForm({ ...form, content: e.target.value });
+          setForm((prev) => ({ ...prev, content: e.target.value }));
           break;
       }
     },
