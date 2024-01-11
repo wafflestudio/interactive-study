@@ -37,7 +37,7 @@ export default function PostPreview() {
         <SendDate>{today}</SendDate>
       </PostContainer>
 
-      <Footer />
+      <Footer fontSize={9} />
     </Container>
   );
 }
@@ -84,6 +84,8 @@ const SansContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex: 1;
+  width: 100%;
+  overflow: auto;
 `;
 
 const Logo = styled.img`

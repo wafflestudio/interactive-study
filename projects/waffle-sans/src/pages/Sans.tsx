@@ -13,20 +13,23 @@ export default function Sans() {
   return (
     <Container>
       <Background />
-      <Header>
-        <Logo src={LogoIcon} alt="waffle sans" />
-      </Header>
 
-      <SansWriter />
+      <Content>
+        <Header>
+          <Logo src={LogoIcon} alt="waffle sans" />
+        </Header>
 
-      <BackBtnContainer>
-        <NavigateButton
-          text={'BACK TO HOME'}
-          direction={Direction.BACK}
-          handleClick={() => router('/')}
-        />
-      </BackBtnContainer>
-      <Footer />
+        <SansWriter />
+
+        <BackBtnContainer>
+          <NavigateButton
+            text={'BACK TO HOME'}
+            direction={Direction.BACK}
+            handleClick={() => router('/')}
+          />
+        </BackBtnContainer>
+        <Footer />
+      </Content>
     </Container>
   );
 }
@@ -41,6 +44,27 @@ const Container = styled.div`
   height: 100vh;
   box-sizing: border-box;
   padding-bottom: 30px;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: auto;
+  animation: fadeIn 0.5s ease-in-out;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
 `;
 
 const Header = styled.div`

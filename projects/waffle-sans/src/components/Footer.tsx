@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-export default function Footer() {
+export default function Footer({ fontSize = 11 }: { fontSize?: number }) {
   return (
     <Container>
-      <Text>
+      <Text fontSize={fontSize}>
         {
           'interactive study from waffle studio made with Leon Sans\nⓒ2019.Jongmin Kim. all rights reserved.'
         }
@@ -21,12 +21,12 @@ const Container = styled.div`
   height: auto;
 `;
 
-const Text = styled.span`
+const Text = styled.span<{ fontSize: number }>`
   white-space: pre-wrap;
   color: #93afae;
   text-align: center;
   font-family: Inter, sans-serif;
-  font-size: 11px;
+  font-size: ${({ fontSize }) => fontSize}px;
   font-weight: 400;
   line-height: normal;
 `;
