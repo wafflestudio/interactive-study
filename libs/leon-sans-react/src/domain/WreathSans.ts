@@ -64,7 +64,6 @@ export default class WreathSans {
     this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
       this.loaded = true;
-      this.redraw();
     });
   }
 
@@ -261,8 +260,9 @@ export default class WreathSans {
         leafSprite.anchor.set(0.5);
         leafSprite.x = pos.x - typo.rect.x;
         leafSprite.y = pos.y - typo.rect.y;
-        const scale = this.leon.scale * 0.3;
         container.addChild(leafSprite);
+
+        const scale = this.leon.scale * 0.3;
         gsap.fromTo(
           leafSprite.scale,
           {
@@ -317,12 +317,29 @@ export default class WreathSans {
         if (isStar) {
           ornamentSprite.y -= 7 * this.leon.scale;
         } else {
-          const prev = every[i - 1];
-          const direction = Math.atan2(pos.y - prev.y, pos.x - prev.x);
-          const offset =
+          const prevPos = every[i - 1];
+          // 변위
+          const displacement = {
+            x: pos.x - prevPos.x,
+            y: pos.y - prevPos.y,
+          }
+          // 거리
+          const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
+          // 변위와 나란한 단위 벡터
+          const tangentialUnitVector = {
+            x: displacement.x / Math.sqrt(distance),
+            y: displacement.y / Math.sqrt(distance),
+          }
+          // 변위와 수직한 단위 벡터
+          const orthogonalUnitVector = {
+            x: -tangentialUnitVector.y,
+            y: tangentialUnitVector.x,
+          }
+          // 변위의 수직 방향으로 랜덤 오프셋
+          const ornamentOffset =
             this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
-          ornamentSprite.x += offset * Math.sin(direction);
-          ornamentSprite.y += offset * Math.cos(direction);
+          ornamentSprite.x += ornamentOffset * orthogonalUnitVector.x;
+          ornamentSprite.y += ornamentOffset * orthogonalUnitVector.y;
         }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
