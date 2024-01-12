@@ -17,9 +17,7 @@ export default function PostPreview() {
     <Container>
       <Sans>
         <Logo src="/logo_white.svg" alt="waffle sans" />
-        <SansContainer>
-          <SampleTypo imgSize={128} />
-        </SansContainer>
+        <SansContainer>{/* <SampleTypo /> */}</SansContainer>
       </Sans>
 
       <PostContainer>

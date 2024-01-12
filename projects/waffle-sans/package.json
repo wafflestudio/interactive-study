@@ -12,6 +12,8 @@
   "dependencies": {
     "gsap": "^3.12.4",
     "leon-sans-react": "workspace:^",
+    "leonsans": "workspace:^",
+    "pixi.js": "^7.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",

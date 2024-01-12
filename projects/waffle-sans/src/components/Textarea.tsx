@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 interface Props {
@@ -9,35 +10,46 @@ interface Props {
   height?: string;
   threshold?: number;
   placeholder?: string;
+  handleInput?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-export default function Textarea({
-  name,
-  value,
-  label,
-  handleChange,
-  threshold = 50,
-  width = '100%',
-  height = '88px',
-  color = '#f1f6f6',
-  placeholder = 'interactive study',
-}: Props) {
-  return (
-    <Container width={width} height={height}>
-      {!!label && <Label color={color}>{label}</Label>}
-      <Area
-        autoFocus
-        name={name}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-      />
+const Textarea = forwardRef<HTMLTextAreaElement, Props>(
+  (
+    {
+      name,
+      value,
+      label,
+      handleInput,
+      handleChange,
+      threshold = 50,
+      width = '100%',
+      height = '88px',
+      color = '#f1f6f6',
+      placeholder = 'interactive study',
+    },
+    ref,
+  ) => {
+    return (
+      <Container width={width} height={height}>
+        {!!label && <Label color={color}>{label}</Label>}
+        <Area
+          ref={ref}
+          autoFocus
+          name={name}
+          value={value}
+          onInput={handleInput}
+          onChange={handleChange}
+          placeholder={placeholder}
+        />
 
-      <TextCount>{`${value?.length}/${threshold}`}</TextCount>
-    </Container>
-  );
-}
+        <TextCount>{`${value?.length}/${threshold}`}</TextCount>
+      </Container>
+    );
+  },
+);
+
+export default Textarea;
 
 /* STYLES */
 const Container = styled.div<{ width: string; height: string }>`
