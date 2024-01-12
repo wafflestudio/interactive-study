@@ -60,6 +60,7 @@ export default function LeonPixi({
 
       // default draw function
       leon.drawPixi(graphics);
+      // 배경을 투명하게 설정하기
       renderer.render(stage);
     },
     [dataRefs],
