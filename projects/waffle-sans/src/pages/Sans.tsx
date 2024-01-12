@@ -15,6 +15,13 @@ export default function Sans() {
       <Background />
       {/* <Sun /> */}
 
+      <BackBtnContainer>
+        <NavigateButton
+          text={'BACK TO HOME'}
+          direction={Direction.BACK}
+          handleClick={() => router('/')}
+        />
+      </BackBtnContainer>
       <Content>
         <Header>
           <Logo src={LogoIcon} alt="waffle sans" />
@@ -22,13 +29,6 @@ export default function Sans() {
 
         <SansWriter />
 
-        <BackBtnContainer>
-          <NavigateButton
-            text={'BACK TO HOME'}
-            direction={Direction.BACK}
-            handleClick={() => router('/')}
-          />
-        </BackBtnContainer>
         <Footer />
       </Content>
     </Container>
