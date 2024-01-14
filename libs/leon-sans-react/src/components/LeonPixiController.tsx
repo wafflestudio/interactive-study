@@ -76,6 +76,7 @@ export default function LeonPixiController({
   const alignRef = useRef<HTMLSelectElement>(null);
   const densityRef = useRef<HTMLInputElement>(null);
   const amplitudeRef = useRef<HTMLInputElement>(null);
+  const leafGapRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -241,6 +242,16 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const changeLeafGap = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.leafGap = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
   /**
    * 마운트될 때 INITIAL_ORNAMENT_ORDER, INITIAL_TEXT 적용
    */
@@ -363,6 +374,22 @@ export default function LeonPixiController({
         />
         <label className={styles.ornamentAmplitudeLabel}>
           {amplitudeRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>잎사귀 간격</span>
+        <input
+          className={styles.leafDensity}
+          ref={leafGapRef}
+          type="range"
+          min="1"
+          max="20"
+          step="1"
+          onChange={changeLeafGap}
+          defaultValue="10"
+        />
+        <label className={styles.leafDensityLabel}>
+          {leafGapRef.current?.value}
         </label>
       </div>
     </div>

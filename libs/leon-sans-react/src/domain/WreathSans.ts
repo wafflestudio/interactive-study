@@ -22,6 +22,7 @@ type WreathSansProps = {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
+  leafGap?: number;
   ornamentOrder?: string[];
   ornamentDensity?: number;
   ornamentAmplitude?: number;
@@ -34,6 +35,7 @@ export default class WreathSans {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
+  leafGap: number;
   ornamentOrder: string[];
   ornamentDensity: number;
   ornamentAmplitude: number;
@@ -52,6 +54,7 @@ export default class WreathSans {
     this.stage = props.stage;
     this.graphics = props.graphics;
     this.leon = props.leon;
+    this.leafGap = props.leafGap ?? 10;
     this.ornamentOrder = props.ornamentOrder ?? [];
     this.ornamentDensity = props.ornamentDensity ?? 5;
     this.ornamentAmplitude = props.ornamentAmplitude ?? 30;
@@ -250,8 +253,10 @@ export default class WreathSans {
   private drawLeaves(idx: number = this.containers.length) {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
+    const startIdx = Math.floor(this.leafGap / 2);
     typo.drawingPaths
-      .filter((_, i) => i % 11 > 6)
+      .filter((pos) => pos.type !== 'a')
+      .filter((_, i) => i % this.leafGap === startIdx)
       .forEach((pos, i, every) => {
         const source = this.darkMode
           ? this.darkLeafSources[randomIdx(this.darkLeafSources)]
@@ -322,19 +327,19 @@ export default class WreathSans {
           const displacement = {
             x: pos.x - prevPos.x,
             y: pos.y - prevPos.y,
-          }
+          };
           // 거리
           const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
           // 변위와 나란한 단위 벡터
           const tangentialUnitVector = {
             x: displacement.x / Math.sqrt(distance),
             y: displacement.y / Math.sqrt(distance),
-          }
+          };
           // 변위와 수직한 단위 벡터
           const orthogonalUnitVector = {
             x: -tangentialUnitVector.y,
             y: tangentialUnitVector.x,
-          }
+          };
           // 변위의 수직 방향으로 랜덤 오프셋
           const ornamentOffset =
             this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
