@@ -4,10 +4,9 @@ import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
 import { degToRad, randomIdx } from '../utils';
-import Ornament, { OrnamentLoadProps } from './Ornament';
-import _ornament_data from './ornament_data.json';
-
-const ornament_data = _ornament_data as OrnamentLoadProps[];
+import LightRing from './LightRing';
+import Ornament from './Ornament';
+import { ORNAMENT_DATA } from './OrnamentData';
 
 const TYPO_EASING = Power0.easeNone;
 const TYPO_DRAWING_DURATION = 1;
@@ -22,10 +21,6 @@ type WreathSansProps = {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  leafGap?: number;
-  ornamentOrder?: string[];
-  ornamentDensity?: number;
-  ornamentAmplitude?: number;
   darkMode?: boolean;
 };
 
@@ -35,10 +30,11 @@ export default class WreathSans {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  leafGap: number;
-  ornamentOrder: string[];
-  ornamentDensity: number;
-  ornamentAmplitude: number;
+  leafGap: number = 10;
+  leafLightRingRatio: number = 3;
+  ornamentOrder: string[] = [];
+  ornamentDensity: number = 5;
+  ornamentAmplitude: number = 30;
   darkMode: boolean;
 
   leafSources: PIXI.SpriteSource[];
@@ -54,10 +50,6 @@ export default class WreathSans {
     this.stage = props.stage;
     this.graphics = props.graphics;
     this.leon = props.leon;
-    this.leafGap = props.leafGap ?? 10;
-    this.ornamentOrder = props.ornamentOrder ?? [];
-    this.ornamentDensity = props.ornamentDensity ?? 5;
-    this.ornamentAmplitude = props.ornamentAmplitude ?? 30;
     this.darkMode = props.darkMode ?? false;
 
     this.containers = [];
@@ -88,13 +80,8 @@ export default class WreathSans {
     this.leon.text =
       this.leon.text.slice(0, idx) + text + this.leon.text.slice(idx);
 
-    // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
-
     // update paths
-    this.leon.updateDrawingPaths();
+    this.updateLeonPosition();
 
     // FIXME : \n 처리
     if (text === '\n') {
@@ -132,12 +119,7 @@ export default class WreathSans {
     );
 
     // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
-
-    // update paths
-    this.leon.updateDrawingPaths();
+    this.updateLeonPosition();
 
     // draw
     this.updatePositions();
@@ -157,9 +139,7 @@ export default class WreathSans {
     this.leon.text = text;
 
     // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
+    this.updateLeonPosition();
 
     // redraw
     this.redraw();
@@ -192,6 +172,14 @@ export default class WreathSans {
     });
   }
 
+  updateLeonPosition() {
+    // recalculate position of new text
+    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
+    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
+    this.leon.position(x, y);
+    this.leon.updateDrawingPaths();
+  }
+
   private async loadAssets() {
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
@@ -208,9 +196,9 @@ export default class WreathSans {
     }
 
     // save ornament
-    for (const ornamentProp of ornament_data) {
+    for (const [name, ornamentProp] of Object.entries(ORNAMENT_DATA)) {
       const ornament = await Ornament.load(ornamentProp);
-      this.ornamentMap[ornament.name] = ornament;
+      this.ornamentMap[name] = ornament;
     }
   }
 
@@ -258,18 +246,44 @@ export default class WreathSans {
       .filter((pos) => pos.type !== 'a')
       .filter((_, i) => i % this.leafGap === startIdx)
       .forEach((pos, i, every) => {
+        const leafAndRingContainer = new PIXI.Container();
+
+        // make light ring
+        if (i % this.leafLightRingRatio === 1) {
+          const prevPos = every[i - 1];
+          const displacement = {
+            x: pos.x - prevPos.x,
+            y: pos.y - prevPos.y,
+          };
+
+          const lightRing = new LightRing();
+          lightRing.container.rotation = Math.atan2(
+            displacement.y,
+            displacement.x,
+          );
+
+          const lightRingRotationDelta = (Math.random() - 0.5) * degToRad(30);
+          lightRing.container.rotation += lightRingRotationDelta;
+
+          leafAndRingContainer.addChild(lightRing.container);
+        }
+
+        // make leaf
         const source = this.darkMode
           ? this.darkLeafSources[randomIdx(this.darkLeafSources)]
           : this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
         leafSprite.anchor.set(0.5);
-        leafSprite.x = pos.x - typo.rect.x;
-        leafSprite.y = pos.y - typo.rect.y;
-        container.addChild(leafSprite);
+
+        leafAndRingContainer.addChild(leafSprite);
+        container.addChild(leafAndRingContainer);
+
+        leafAndRingContainer.x = pos.x - typo.rect.x;
+        leafAndRingContainer.y = pos.y - typo.rect.y;
 
         const scale = this.leon.scale * 0.3;
         gsap.fromTo(
-          leafSprite.scale,
+          leafAndRingContainer.scale,
           {
             x: 0,
             y: 0,
