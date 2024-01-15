@@ -75,6 +75,7 @@ export default function LeonPixiController({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const alignRef = useRef<HTMLSelectElement>(null);
   const fontSizeRef = useRef<HTMLInputElement>(null);
+  const ornamentDisabledRef = useRef<HTMLInputElement>(null);
   const ornamentDensityRef = useRef<HTMLInputElement>(null);
   const ornamentAmplitudeRef = useRef<HTMLInputElement>(null);
   const ornamentSizeRef = useRef<HTMLInputElement>(null);
@@ -236,6 +237,15 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const setOrnamentDisabled = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.ornamentDisabled = e.target.checked;
+        wreath.redraw();
+      }),
+    [dispatcher],
+  );
+
   const changeOrnamentDensity = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
@@ -386,6 +396,15 @@ export default function LeonPixiController({
             </div>
           ))}
         </div>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 제거</span>
+        <input
+          className={styles.ornamentDisabled}
+          ref={ornamentDisabledRef}
+          type="checkbox"
+          onChange={setOrnamentDisabled}
+        />
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>오나먼트 밀도</span>

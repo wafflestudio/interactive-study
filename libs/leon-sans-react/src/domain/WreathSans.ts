@@ -32,6 +32,7 @@ export default class WreathSans {
   leon: LeonSans;
   leafGap: number = 10;
   leafLightRingRatio: number = 3;
+  ornamentDisabled: boolean = false;
   ornamentOrder: string[] = [];
   ornamentDensity: number = 5;
   ornamentAmplitude: number = 30;
@@ -306,6 +307,7 @@ export default class WreathSans {
       });
 
     // draw ornament
+    if (this.ornamentDisabled) return;
     let probability = 0;
     let ornamentIdx = -1;
     typo.drawingPaths
