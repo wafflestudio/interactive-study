@@ -231,7 +231,7 @@ export default class WreathSans {
     start: number = 0,
     end: number = this.containers.length,
   ) {
-    this.containers.slice(start, end).forEach((c) => c.destroy());
+    this.containers.slice(start, end).forEach((c) => c.destroy({children: true}));
     this.containers = [
       ...this.containers.slice(0, start),
       ...this.containers.slice(end),
@@ -257,6 +257,12 @@ export default class WreathSans {
           };
 
           const lightRing = new LightRing();
+          const randomOnOffLightRing = () => {
+            lightRing.turnOnOffRandomly();
+            if (lightRing.container.destroyed) return;
+            setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
+          }
+          randomOnOffLightRing();
           lightRing.container.rotation = Math.atan2(
             displacement.y,
             displacement.x,
