@@ -258,8 +258,8 @@ export default class WreathSans {
 
           const lightRing = new LightRing();
           const randomOnOffLightRing = () => {
-            lightRing.turnOnOffRandomly();
             if (lightRing.container.destroyed) return;
+            lightRing.turnOnOffRandomly();
             setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
           }
           randomOnOffLightRing();
