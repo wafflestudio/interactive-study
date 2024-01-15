@@ -74,8 +74,10 @@ export default function LeonPixiController({
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const alignRef = useRef<HTMLSelectElement>(null);
-  const densityRef = useRef<HTMLInputElement>(null);
-  const amplitudeRef = useRef<HTMLInputElement>(null);
+  const fontSizeRef = useRef<HTMLInputElement>(null);
+  const ornamentDensityRef = useRef<HTMLInputElement>(null);
+  const ornamentAmplitudeRef = useRef<HTMLInputElement>(null);
+  const ornamentSizeRef = useRef<HTMLInputElement>(null);
   const leafGapRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
@@ -182,6 +184,18 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const setFontSize = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatcher.send((wreath) => {
+        wreath.leon.size = Number(e.target.value);
+        wreath.updateLeonPosition();
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      });
+    },
+    [dispatcher],
+  );
+
   const toggleDarkMode = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
@@ -236,6 +250,19 @@ export default function LeonPixiController({
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
         wreath.ornamentAmplitude = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeOrnamentSize = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        for (const [name, ornament] of Object.entries(wreath.ornamentMap)) {
+          if (name === 'star') continue;
+          ornament.scale = Number(e.target.value) / 100;
+        }
         wreath.redraw();
         setUpdateId((prev) => prev + 1);
       }),
@@ -309,6 +336,22 @@ export default function LeonPixiController({
         </select>
       </div>
       <div className={styles.configuration}>
+        <span className={styles.key}>글자 크기</span>
+        <input
+          className={styles.fontSize}
+          ref={fontSizeRef}
+          type="range"
+          min="1"
+          max="1000"
+          step="1"
+          onChange={setFontSize}
+          defaultValue="130"
+        />
+        <label className={styles.fontSizeLabel}>
+          {fontSizeRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
         <span className={styles.key}>다크모드</span>
         <input
           className={styles.darkMode}
@@ -348,7 +391,7 @@ export default function LeonPixiController({
         <span className={styles.key}>오나먼트 밀도</span>
         <input
           className={styles.ornamentDensity}
-          ref={densityRef}
+          ref={ornamentDensityRef}
           type="range"
           min="0"
           max="10"
@@ -357,14 +400,14 @@ export default function LeonPixiController({
           defaultValue="5"
         />
         <label className={styles.ornamentDensityLabel}>
-          {densityRef.current?.value}
+          {ornamentDensityRef.current?.value}
         </label>
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>오나먼트 진폭</span>
         <input
           className={styles.ornamentAmplitude}
-          ref={amplitudeRef}
+          ref={ornamentAmplitudeRef}
           type="range"
           min="0"
           max="100"
@@ -373,7 +416,23 @@ export default function LeonPixiController({
           defaultValue="50"
         />
         <label className={styles.ornamentAmplitudeLabel}>
-          {amplitudeRef.current?.value}
+          {ornamentAmplitudeRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 크기</span>
+        <input
+          className={styles.ornamentSize}
+          ref={ornamentSizeRef}
+          type="range"
+          min="1"
+          max="100"
+          step="1"
+          onChange={changeOrnamentSize}
+          defaultValue="28"
+        />
+        <label className={styles.ornamentSizeLabel}>
+          {ornamentSizeRef.current?.value}
         </label>
       </div>
       <div className={styles.configuration}>
