@@ -24,7 +24,7 @@ type WreathSansProps = {
   darkMode?: boolean;
 };
 
-export default class WreathSans {
+export default class WreathSansController {
   canvas: HTMLCanvasElement;
   renderer: PIXI.Renderer;
   stage: PIXI.Container;

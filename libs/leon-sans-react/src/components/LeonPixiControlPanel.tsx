@@ -2,7 +2,7 @@ import { CHARSET } from 'leonsans';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { PixiDispatcher } from '../types/Dispatcher';
-import styles from './LeonPixiController.module.css';
+import styles from './LeonPixiControlPanel.module.css';
 
 const URL_PARAMS = new URLSearchParams(window.location.search);
 
