@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
-import LeonPixiController from '../components/LeonPixiController';
+import LeonPixiController from '../components/LeonPixiControlPanel';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 
 export default function LeonPixiExample() {

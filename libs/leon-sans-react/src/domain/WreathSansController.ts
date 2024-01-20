@@ -24,7 +24,7 @@ type WreathSansProps = {
   darkMode?: boolean;
 };
 
-export default class WreathSans {
+export default class WreathSansController {
   canvas: HTMLCanvasElement;
   renderer: PIXI.Renderer;
   stage: PIXI.Container;
@@ -46,7 +46,7 @@ export default class WreathSans {
   loadingPromise: Promise<void>;
 
   constructor(props: WreathSansProps) {
-    this.canvas = props.canvas;
+    this.canvas = props.renderer.view as HTMLCanvasElement;
     this.renderer = props.renderer;
     this.stage = props.stage;
     this.graphics = props.graphics;
@@ -156,6 +156,12 @@ export default class WreathSans {
 
     this.removeContainers();
     this.leon.data.forEach(() => this.drawLeaves());
+  }
+
+  resize(width: number, height: number) {
+    this.renderer.resize(width, height);
+    this.updateLeonPosition();
+    this.updatePositions();
   }
 
   /**
