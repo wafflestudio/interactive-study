@@ -46,7 +46,7 @@ export default class WreathSansController {
   loadingPromise: Promise<void>;
 
   constructor(props: WreathSansProps) {
-    this.canvas = props.canvas;
+    this.canvas = props.renderer.view as HTMLCanvasElement;
     this.renderer = props.renderer;
     this.stage = props.stage;
     this.graphics = props.graphics;

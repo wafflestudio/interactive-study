@@ -1,13 +1,12 @@
 import LeonSans, { CHARSET } from 'leonsans';
 import * as PIXI from 'pixi.js';
-import { MutableRefObject } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 
 import WreathSansController from '../domain/WreathSansController';
 
 type Props = {
   // leon config
   initialText: string;
-  inputRef: MutableRefObject<HTMLTextAreaElement | HTMLInputElement | null>;
   color?: string;
   size?: number;
   weight?: number;
@@ -15,24 +14,19 @@ type Props = {
   width?: number;
   height?: number;
   pixelRatio?: number;
+  background?: string;
 };
 
 export default function createWreathSans({
   initialText,
-  inputRef,
   color = '#000000',
   size = 60,
   weight = 400,
   width = 800,
   height = 600,
   pixelRatio = 2,
+  background = '#ffffff',
 }: Props) {
-  const canvasRef: MutableRefObject<HTMLCanvasElement | null> = {
-    current: null,
-  };
-  const canvasElement = <canvas ref={canvasRef} />;
-  const canvas = canvasRef.current!;
-
   // create leon
   const leon = new LeonSans({
     text: initialText,
@@ -54,26 +48,40 @@ export default function createWreathSans({
     antialias: true,
     autoDensity: true,
     powerPreference: 'high-performance',
-    view: canvas,
-    background: 0xffffff,
+    background,
   });
   const stage = new PIXI.Container();
   const graphics = new PIXI.Graphics();
   stage.addChild(graphics);
 
-  const wreath = new WreathSansController({
-    canvas: canvas,
+  const canvas = renderer.view as HTMLCanvasElement;
+
+  const wreathSansController = new WreathSansController({
+    canvas,
     leon,
     renderer,
     stage,
     graphics,
   });
 
+  function animate() {
+    // create loop
+    requestAnimationFrame(animate);
+
+    // clear canvas
+    graphics.clear();
+
+    // default draw function
+    leon.drawPixi(graphics);
+    renderer.render(stage);
+  }
+
   const onInputHandler = (
     e: React.FormEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
+    const inputElement = e.currentTarget;
     const newText: string = e.currentTarget.value;
-    const caretIdx = inputRef.current!.selectionStart!;
+    const caretIdx = inputElement.selectionStart!;
     const inputEvent = e.nativeEvent as InputEvent;
     const data = inputEvent.data;
     const inputType = inputEvent.inputType;
@@ -83,7 +91,7 @@ export default function createWreathSans({
       (inputType === 'insertText' && data === null)
     ) {
       const insertIdx = caretIdx - 1; // 입력된 문자의 인덱스
-      wreath.insertText('\n', insertIdx);
+      wreathSansController.insertText('\n', insertIdx);
     } else if (
       inputType === 'insertText' ||
       inputType === 'insertCompositionText'
@@ -92,19 +100,23 @@ export default function createWreathSans({
       const isValid = CHARSET.includes(data!) || ' '.includes(data!);
       if (!isValid) {
         alert(`"${data}"는 허용되지 않는 문자입니다.`);
-        inputRef.current!.value = inputRef.current!.value.replace(data!, '');
+        inputElement.value = inputElement.value.replace(data!, '');
         return;
       }
 
       const insertIdx = caretIdx - 1; // 입력된 문자의 인덱스
-      const deleted = wreath.leon.text.length - newText.length + 1; // 삭제된 글자 수
+      const deleted =
+        wreathSansController.leon.text.length - newText.length + 1; // 삭제된 글자 수
 
       // 삭제된 글자가 있을 경우
-      if (deleted > 0) wreath.deleteText(insertIdx, deleted);
+      if (deleted > 0) wreathSansController.deleteText(insertIdx, deleted);
 
-      wreath.insertText(data!, insertIdx);
+      wreathSansController.insertText(data!, insertIdx);
     } else if (inputType.startsWith('delete') && newText.length > 0) {
-      wreath.deleteText(caretIdx, wreath.leon.text.length - newText.length);
+      wreathSansController.deleteText(
+        caretIdx,
+        wreathSansController.leon.text.length - newText.length,
+      );
     } else {
       // 입력 가능한 문자만 포함되어 있는지 검사
       const isValid = newText
@@ -112,16 +124,17 @@ export default function createWreathSans({
         .every((c) => CHARSET.includes(c) || ' \n'.includes(c));
       if (!isValid) {
         alert(`"${newText}"에는 허용되지 않는 문자가 포함되어 있습니다.`);
-        inputRef.current!.value = inputRef.current!.value.replace(newText, '');
+        inputElement.value = inputElement.value.replace(newText, '');
         return;
       }
 
-      wreath.replaceText(newText);
+      wreathSansController.replaceText(newText);
     }
   };
 
-  function WreathSansCanvas() {
-    return canvasElement;
+  function WreathSansCanvas(props: ComponentPropsWithoutRef<'div'>) {
+    requestAnimationFrame(animate);
+    return <div {...props} ref={(inst) => inst?.appendChild(canvas)}></div>;
   }
 
   return {
