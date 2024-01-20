@@ -1,0 +1,101 @@
+.container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 500px;
+  height: auto;
+}
+
+.configuration {
+  background-color: rgba(0, 0, 0, 0.3);
+  margin: 1px;
+  padding: 2px 5px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.configuration > .key {
+  width: 100px;
+  border-radius: 10%;
+}
+
+.editor {
+  box-sizing: border-box;
+  width: 100%;
+  height: 50px;
+  resize: none;
+}
+
+.buttonSet {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.button {
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 0;
+  margin: 0;
+}
+
+.alignSelector {
+  font-size: 1rem;
+  margin: 5px;
+  padding: 2px;
+}
+
+.ornamentSelector {
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  padding: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  overflow-x: scroll;
+  gap: 2px;
+}
+
+.ornament {
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
+.ornament > img {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+}
+
+.ornament:hover {
+  transform: scale(1.2);
+}
+
+.ornamentOrder {
+  box-sizing: border-box;
+  padding: 5px;
+  flex: 1;
+
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  gap: 2px;
+}

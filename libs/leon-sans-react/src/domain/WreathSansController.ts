@@ -1,9 +1,12 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { CHARSET, ModelData } from 'leonsans';
+import { Align, CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
-import { randomIdx } from '../utils';
+import { degToRad, randomIdx } from '../utils';
+import LightRing from './LightRing';
+import Ornament from './Ornament';
+import { ORNAMENT_DATA } from './OrnamentData';
 
 const TYPO_EASING = Power0.easeNone;
 const TYPO_DRAWING_DURATION = 1;
@@ -12,83 +15,63 @@ const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
 
-const ORNAMENT_SOURCE_NAMES = [
-  'ball_1.svg',
-  'ball_2.svg',
-  'candy.svg',
-  'fruit_1.svg',
-  'fruit_2.svg',
-  'pinecone_1.svg',
-  'pinecone_2.svg',
-  'poinsettia_1.svg',
-  'poinsettia_2.svg',
-  'ribbon.svg',
-  'star.svg',
-];
-const ORNAMENT_ORDER = [
-  'pinecone_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'fruit_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'ball_1',
-  'pinecone_2',
-  'fruit_2',
-  'ball_2',
-  'ribbon',
-  'candy',
-  'poinsettia_2',
-  'fruit_1',
-  'ball_1',
-  'pinecone_1',
-  'poinsettia_1',
-  'fruit_2',
-];
-const ORNAMENT_PROBABILITY = 0.15;
-const ORNAMENT_PROBABILITY_INCREASE = 0.24;
-const ORNAMENT_SCALE = 0.28;
-const ORNAMENT_STAR_SCALE = 0.5;
-const ORNAMENT_RADIUS = 50;
-
 type WreathSansProps = {
   canvas: HTMLCanvasElement;
   renderer: PIXI.Renderer;
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  pixelRatio: number;
+  darkMode?: boolean;
 };
 
-export default class WreathSans {
+export default class WreathSansController {
   canvas: HTMLCanvasElement;
   renderer: PIXI.Renderer;
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
-  pixelRatio: number;
+  leafGap: number = 10;
+  leafLightRingRatio: number = 3;
+  ornamentDisabled: boolean = false;
+  ornamentOrder: string[] = [];
+  ornamentDensity: number = 5;
+  ornamentAmplitude: number = 30;
+  darkMode: boolean;
+
   leafSources: PIXI.SpriteSource[];
-  ornamentSourceMap: Record<string, PIXI.SpriteSource>;
-  ornamentOrder: string[];
+  darkLeafSources: PIXI.SpriteSource[];
+  ornamentMap: Record<string, Ornament>;
   containers: PIXI.Container[];
+  loaded: boolean;
+  loadingPromise: Promise<void>;
 
   constructor(props: WreathSansProps) {
-    this.canvas = props.canvas;
+    this.canvas = props.renderer.view as HTMLCanvasElement;
     this.renderer = props.renderer;
     this.stage = props.stage;
     this.graphics = props.graphics;
     this.leon = props.leon;
-    this.pixelRatio = props.pixelRatio;
+    this.darkMode = props.darkMode ?? false;
+
     this.containers = [];
     this.leafSources = [];
-    this.ornamentSourceMap = {};
-    this.ornamentOrder = ORNAMENT_ORDER;
-
-    this.loadAssets().then(() => {
-      this.redraw();
+    this.darkLeafSources = [];
+    this.ornamentMap = {};
+    this.loaded = false;
+    this.loadingPromise = this.loadAssets().then(() => {
+      this.loaded = true;
     });
   }
+
+  get align() {
+    return this.leon.align;
+  }
+
+  set align(align: Align) {
+    this.leon.align = align;
+    this.updatePositions();
+  }
+
   insertText(text: string, idx: number) {
     // check text
     if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text)))
@@ -98,13 +81,8 @@ export default class WreathSans {
     this.leon.text =
       this.leon.text.slice(0, idx) + text + this.leon.text.slice(idx);
 
-    // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
-
     // update paths
-    this.leon.updateDrawingPaths();
+    this.updateLeonPosition();
 
     // FIXME : \n 처리
     if (text === '\n') {
@@ -142,12 +120,7 @@ export default class WreathSans {
     );
 
     // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
-
-    // update paths
-    this.leon.updateDrawingPaths();
+    this.updateLeonPosition();
 
     // draw
     this.updatePositions();
@@ -167,9 +140,7 @@ export default class WreathSans {
     this.leon.text = text;
 
     // recalculate position of new text
-    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
-    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
-    this.leon.position(x, y);
+    this.updateLeonPosition();
 
     // redraw
     this.redraw();
@@ -187,6 +158,12 @@ export default class WreathSans {
     this.leon.data.forEach(() => this.drawLeaves());
   }
 
+  resize(width: number, height: number) {
+    this.renderer.resize(width, height);
+    this.updateLeonPosition();
+    this.updatePositions();
+  }
+
   /**
    * 글자들의 위치를 업데이트한다.
    */
@@ -202,6 +179,14 @@ export default class WreathSans {
     });
   }
 
+  updateLeonPosition() {
+    // recalculate position of new text
+    const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
+    const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
+    this.leon.position(x, y);
+    this.leon.updateDrawingPaths();
+  }
+
   private async loadAssets() {
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
@@ -210,12 +195,17 @@ export default class WreathSans {
       this.leafSources.push(leaf);
     }
 
-    // save ornament
-    for (const name of ORNAMENT_SOURCE_NAMES) {
-      const ornament = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `ornaments/${name}`,
+    for (let i = 1; i <= 20; i++) {
+      const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
+        `leaves_dark/leaf_${i}.svg`,
       );
-      this.ornamentSourceMap[name.split('.')[0]] = ornament;
+      this.darkLeafSources.push(leaf);
+    }
+
+    // save ornament
+    for (const [name, ornamentProp] of Object.entries(ORNAMENT_DATA)) {
+      const ornament = await Ornament.load(ornamentProp);
+      this.ornamentMap[name] = ornament;
     }
   }
 
@@ -248,7 +238,7 @@ export default class WreathSans {
     start: number = 0,
     end: number = this.containers.length,
   ) {
-    this.containers.slice(start, end).forEach((c) => c.destroy());
+    this.containers.slice(start, end).forEach((c) => c.destroy({children: true}));
     this.containers = [
       ...this.containers.slice(0, start),
       ...this.containers.slice(end),
@@ -258,18 +248,55 @@ export default class WreathSans {
   private drawLeaves(idx: number = this.containers.length) {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
+    const startIdx = Math.floor(this.leafGap / 2);
     typo.drawingPaths
-      .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
+      .filter((pos) => pos.type !== 'a')
+      .filter((_, i) => i % this.leafGap === startIdx)
       .forEach((pos, i, every) => {
-        const source = this.leafSources[randomIdx(this.leafSources)];
+        const leafAndRingContainer = new PIXI.Container();
+
+        // make light ring
+        if (i % this.leafLightRingRatio === 1) {
+          const prevPos = every[i - 1];
+          const displacement = {
+            x: pos.x - prevPos.x,
+            y: pos.y - prevPos.y,
+          };
+
+          const lightRing = new LightRing();
+          const randomOnOffLightRing = () => {
+            if (lightRing.container.destroyed) return;
+            lightRing.turnOnOffRandomly();
+            setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
+          }
+          randomOnOffLightRing();
+          lightRing.container.rotation = Math.atan2(
+            displacement.y,
+            displacement.x,
+          );
+
+          const lightRingRotationDelta = (Math.random() - 0.5) * degToRad(30);
+          lightRing.container.rotation += lightRingRotationDelta;
+
+          leafAndRingContainer.addChild(lightRing.container);
+        }
+
+        // make leaf
+        const source = this.darkMode
+          ? this.darkLeafSources[randomIdx(this.darkLeafSources)]
+          : this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
         leafSprite.anchor.set(0.5);
-        leafSprite.x = pos.x - typo.rect.x;
-        leafSprite.y = pos.y - typo.rect.y;
+
+        leafAndRingContainer.addChild(leafSprite);
+        container.addChild(leafAndRingContainer);
+
+        leafAndRingContainer.x = pos.x - typo.rect.x;
+        leafAndRingContainer.y = pos.y - typo.rect.y;
+
         const scale = this.leon.scale * 0.3;
-        container.addChild(leafSprite);
         gsap.fromTo(
-          leafSprite.scale,
+          leafAndRingContainer.scale,
           {
             x: 0,
             y: 0,
@@ -286,38 +313,76 @@ export default class WreathSans {
       });
 
     // draw ornament
-    let probability = ORNAMENT_PROBABILITY;
-    let ornamentIdx = 0;
+    if (this.ornamentDisabled) return;
+    let probability = 0;
+    let ornamentIdx = -1;
     typo.drawingPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
-        if (Math.random() > probability && pos.type !== 'a') {
-          probability += ORNAMENT_PROBABILITY_INCREASE;
+        const isStar = pos.type === 'a';
+
+        if (!isStar && this.ornamentDensity > probability) {
+          probability++;
           return;
         }
         ornamentIdx = (ornamentIdx + 1) % this.ornamentOrder.length;
-        probability = ORNAMENT_PROBABILITY;
+        probability = 0;
+
         const name =
           this.ornamentOrder.length > 0
             ? this.ornamentOrder[ornamentIdx]
-            : Object.keys(this.ornamentSourceMap)[
-                randomIdx(ORNAMENT_SOURCE_NAMES)
+            : Object.keys(this.ornamentMap)[
+                randomIdx(Object.keys(this.ornamentMap))
               ];
-        const source =
-          pos.type === 'a'
-            ? this.ornamentSourceMap['star']
-            : this.ornamentSourceMap[name];
-        const scale =
-          pos.type === 'a'
-            ? this.leon.scale * ORNAMENT_STAR_SCALE
-            : this.leon.scale * ORNAMENT_SCALE;
-        const radius = pos.type === 'a' ? 0 : this.leon.scale * ORNAMENT_RADIUS;
-        const ornamentSprite = PIXI.Sprite.from(source);
+        const ornament = isStar
+          ? this.ornamentMap['star']
+          : this.ornamentMap[name];
+        const scale = ornament.scale * this.leon.scale;
+        const ornamentSprite = PIXI.Sprite.from(ornament.source);
         ornamentSprite.anchor.set(0.5);
-        ornamentSprite.x = pos.x - typo.rect.x + radius * (Math.random() - 0.5);
-        ornamentSprite.y = pos.y - typo.rect.y + radius * (Math.random() - 0.5);
+        ornamentSprite.x = pos.x - typo.rect.x;
+        ornamentSprite.y = pos.y - typo.rect.y;
+
+        /**
+         * 별일 경우는 위 방향으로 살짝 올려야 균형이 맞음
+         * 그 외에는 접선의 수직 방향으로 x, y 오프셋을 줘서 자연스럽게
+         */
+        if (isStar) {
+          ornamentSprite.y -= 7 * this.leon.scale;
+        } else {
+          const prevPos = every[i - 1];
+          // 변위
+          const displacement = {
+            x: pos.x - prevPos.x,
+            y: pos.y - prevPos.y,
+          };
+          // 거리
+          const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
+          // 변위와 나란한 단위 벡터
+          const tangentialUnitVector = {
+            x: displacement.x / Math.sqrt(distance),
+            y: displacement.y / Math.sqrt(distance),
+          };
+          // 변위와 수직한 단위 벡터
+          const orthogonalUnitVector = {
+            x: -tangentialUnitVector.y,
+            y: tangentialUnitVector.x,
+          };
+          // 변위의 수직 방향으로 랜덤 오프셋
+          const ornamentOffset =
+            this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
+          ornamentSprite.x += ornamentOffset * orthogonalUnitVector.x;
+          ornamentSprite.y += ornamentOffset * orthogonalUnitVector.y;
+        }
         ornamentSprite.scale.set(0);
-        ornamentSprite.rotation = Math.random() * Math.PI * 2;
+        ornamentSprite.rotation =
+          typeof ornament.rotation === 'number'
+            ? (Math.random() - 0.5) * 2 * ornament.rotation
+            : ornament.rotation === 'random'
+              ? Math.random() * Math.PI * 2
+              : ornament.rotation === 'pendulum'
+                ? (Math.random() - 0.5) * 2 * degToRad(30)
+                : 0;
         container.addChild(ornamentSprite);
 
         gsap.fromTo(

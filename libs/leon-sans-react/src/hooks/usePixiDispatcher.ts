@@ -1,19 +1,22 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
+import WreathSansController from '../domain/WreathSansController';
 import { PixiDispatcher } from '../types/Dispatcher';
-import WreathSans from '../domain/WreathSans';
 
 export const usePixiDispatcher = (): PixiDispatcher => {
-  const dataRefs = useRef<WreathSans | null>(null);
+  const [wreath, setWreath] = useState<WreathSansController | null>(null);
 
   const initiate: PixiDispatcher['initiate'] = useCallback((refs) => {
-    dataRefs.current = refs;
+    setWreath(refs);
   }, []);
 
-  const send: PixiDispatcher['send'] = useCallback((callback) => {
-    if (!dataRefs.current) return;
-    callback(dataRefs.current);
-  }, []);
+  const send: PixiDispatcher['send'] = useCallback(
+    (callback) => {
+      if (!wreath) return;
+      callback(wreath);
+    },
+    [wreath],
+  );
 
   const dispatcher = useMemo<PixiDispatcher>(() => {
     return {

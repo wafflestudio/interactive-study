@@ -2,9 +2,9 @@ import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
+import WreathSansController from '../domain/WreathSansController';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 import { PixiHandlers } from '../types/Handler';
-import WreathSans from '../domain/WreathSans';
 
 type LeonPixiProps = {
   // leon config
@@ -35,7 +35,7 @@ export default function LeonPixi({
    * Stored Refs
    */
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dataRefs = useRef<WreathSans | null>(null);
+  const dataRefs = useRef<WreathSansController | null>(null);
   const handlers = useRef<PixiHandlers>({});
 
   /**
@@ -102,13 +102,12 @@ export default function LeonPixi({
     stage.addChild(graphics);
 
     // save dataRefs
-    dataRefs.current = new WreathSans({
+    dataRefs.current = new WreathSansController({
       canvas: canvasRef.current,
       leon,
       renderer,
       stage,
       graphics,
-      pixelRatio,
     });
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 

@@ -1,7 +1,7 @@
-import WreathSans from '../domain/WreathSans';
+import WreathSansController from '../domain/WreathSansController';
 import { CanvasDataRefs } from './DataRefs';
 
-type DataRefs = CanvasDataRefs | WreathSans;
+type DataRefs = CanvasDataRefs | WreathSansController;
 
 type Initiate<Refs extends DataRefs> = (refs: Refs) => void;
 
@@ -15,6 +15,6 @@ export type CanvasDispatcher = {
 };
 
 export type PixiDispatcher = {
-  initiate: Initiate<WreathSans>;
-  send: Send<WreathSans>;
+  initiate: Initiate<WreathSansController>;
+  send: Send<WreathSansController>;
 };
