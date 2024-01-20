@@ -158,6 +158,12 @@ export default class WreathSansController {
     this.leon.data.forEach(() => this.drawLeaves());
   }
 
+  resize(width: number, height: number) {
+    this.renderer.resize(width, height);
+    this.updateLeonPosition();
+    this.updatePositions();
+  }
+
   /**
    * 글자들의 위치를 업데이트한다.
    */

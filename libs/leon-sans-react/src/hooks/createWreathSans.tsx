@@ -132,6 +132,10 @@ export default function createWreathSans({
     }
   };
 
+  function resize(width: number, height: number) {
+    wreathSansController.resize(width, height);
+  }
+
   function WreathSansCanvas(props: ComponentPropsWithoutRef<'div'>) {
     requestAnimationFrame(animate);
     return <div {...props} ref={(inst) => inst?.appendChild(canvas)}></div>;
@@ -140,5 +144,6 @@ export default function createWreathSans({
   return {
     WreathSansCanvas,
     onInputHandler,
+    resize,
   };
 }
