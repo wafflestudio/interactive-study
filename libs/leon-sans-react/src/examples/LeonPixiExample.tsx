@@ -1,16 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import LeonPixi from '../components/LeonPixi';
 import LeonPixiController from '../components/LeonPixiControlPanel';
 import { usePixiDispatcher } from '../hooks/usePixiDispatcher';
 
 export default function LeonPixiExample() {
-  const [windowSize, setWindowSize] = useState<[number, number]>([
-    window.innerWidth,
-    window.innerHeight,
-  ]);
-  const canvasWidth = windowSize[0];
-  const canvasHeight = windowSize[1];
+  const canvasWidth = window.innerWidth;
+  const canvasHeight = window.innerHeight;
 
   const dispatcher = usePixiDispatcher();
 
@@ -19,7 +15,9 @@ export default function LeonPixiExample() {
    */
   useEffect(() => {
     function handleResize() {
-      setWindowSize([window.innerWidth, window.innerHeight]);
+      dispatcher.send((wreath) =>
+        wreath.resize(window.innerWidth, window.innerHeight),
+      );
     }
 
     window.addEventListener('resize', handleResize);

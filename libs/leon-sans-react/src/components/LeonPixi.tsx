@@ -101,7 +101,11 @@ export default function LeonPixi({
     const graphics = new PIXI.Graphics();
     stage.addChild(graphics);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     globalThis.__PIXI_STAGE__ = stage;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     globalThis.__PIXI_RENDERER__ = renderer;
 
     // save dataRefs
@@ -126,7 +130,6 @@ export default function LeonPixi({
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-    dataRefs.current.pixelRatio = pixelRatio;
   }, [dataRefs, color, size, weight, pixelRatio]);
 
   /**
