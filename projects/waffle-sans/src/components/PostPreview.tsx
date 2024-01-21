@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { postFormState } from '../store/post';
 import Footer from './Footer';
-import SampleTypo from './SampleTypo';
 
 export default function PostPreview() {
   const value = useRecoilValue(postFormState);

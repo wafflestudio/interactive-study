@@ -13,7 +13,6 @@ export default function Sans() {
   return (
     <Container>
       <Background />
-      {/* <Sun /> */}
 
       <BackBtnContainer>
         <NavigateButton
@@ -86,26 +85,4 @@ const BackBtnContainer = styled.div`
   height: auto;
   left: 100px;
   bottom: 150px;
-`;
-
-const Sun = styled.div`
-  width: 4vw;
-  aspect-ratio: 1;
-  background: #fcf4a3;
-  border-radius: 50%;
-  box-shadow:
-    0 0 30px 8px #ffcc00,
-    0 0 60px 50px #fcf4a3;
-  position: absolute;
-  top: 130px;
-  right: 200px;
-  opacity: 0.7;
-
-  @keyframes sunset {
-    to {
-      transform: translateY(100vh) scale(0.5);
-      opacity: 0;
-    }
-  }
-  animation: sunset 3s forwards;
 `;
