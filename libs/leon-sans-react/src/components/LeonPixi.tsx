@@ -101,6 +101,9 @@ export default function LeonPixi({
     const graphics = new PIXI.Graphics();
     stage.addChild(graphics);
 
+    globalThis.__PIXI_STAGE__ = stage;
+    globalThis.__PIXI_RENDERER__ = renderer;
+
     // save dataRefs
     dataRefs.current = new WreathSansController({
       canvas: canvasRef.current,

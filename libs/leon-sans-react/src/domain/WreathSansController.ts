@@ -238,7 +238,9 @@ export default class WreathSansController {
     start: number = 0,
     end: number = this.containers.length,
   ) {
-    this.containers.slice(start, end).forEach((c) => c.destroy({children: true}));
+    this.containers
+      .slice(start, end)
+      .forEach((c) => c.destroy({ children: true }));
     this.containers = [
       ...this.containers.slice(0, start),
       ...this.containers.slice(end),
@@ -249,6 +251,7 @@ export default class WreathSansController {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
     const startIdx = Math.floor(this.leafGap / 2);
+    
     typo.drawingPaths
       .filter((pos) => pos.type !== 'a')
       .filter((_, i) => i % this.leafGap === startIdx)
@@ -256,11 +259,16 @@ export default class WreathSansController {
         const leafAndRingContainer = new PIXI.Container();
 
         // make light ring
-        if (i % this.leafLightRingRatio === 1) {
+        if (i > 0 && i % this.leafLightRingRatio === 0) {
           const prevPos = every[i - 1];
           const displacement = {
             x: pos.x - prevPos.x,
             y: pos.y - prevPos.y,
+          };
+          const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
+          const unitDisplacement = {
+            x: displacement.x / distance,
+            y: displacement.y / distance,
           };
 
           const lightRing = new LightRing();
@@ -268,11 +276,15 @@ export default class WreathSansController {
             if (lightRing.container.destroyed) return;
             lightRing.turnOnOffRandomly();
             setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
-          }
+          };
           randomOnOffLightRing();
           lightRing.container.rotation = Math.atan2(
             displacement.y,
             displacement.x,
+          );
+          lightRing.container.position.set(
+            -unitDisplacement.x * 20,
+            -unitDisplacement.y * 20,
           );
 
           const lightRingRotationDelta = (Math.random() - 0.5) * degToRad(30);

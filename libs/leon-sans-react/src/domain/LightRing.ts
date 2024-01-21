@@ -1,11 +1,11 @@
 import * as PIXI from 'pixi.js';
 
 const BULB_POSITIONS = [
-  { x: -85, y: -110 },
-  { x: -87, y: -40 },
-  { x: -50, y: 30 },
-  { x: 5, y: 90 },
-  { x: 85, y: 110 },
+  { x: 37.27, y: 26.61 },
+  { x: -3.73, y: 133.29 },
+  { x: 35.24, y: 228.85 },
+  { x: 123.27, y: 281.13 },
+  { x: 235.27, y: 261.13 },
 ];
 
 export default class LightRing {
@@ -19,19 +19,22 @@ export default class LightRing {
     this.bulbOffTexture = PIXI.Texture.from('ornaments/bulb_off.svg');
     this.bulbs = [];
     this.container = new PIXI.Container();
+    this.container.width = 300;
+    this.container.height = 300;
+    this.container.pivot.set(150, 150);
 
     const bulbCableTexture = PIXI.Texture.from('ornaments/bulb_cable.svg');
     const bulbCable = new PIXI.Sprite(bulbCableTexture);
-    bulbCable.anchor.set(0.5);
-    bulbCable.name = 'bulb_cable';
+    // bulbCable.anchor.set(0.5, 0.5);
+    bulbCable.x = 6.21;
+    bulbCable.y = 6.21;
     this.container.addChild(bulbCable);
 
     for (let i = 0; i < 5; i++) {
       const bulb = new PIXI.Sprite(this.bulbOffTexture);
-      bulb.name = `bulb_${i}`;
-      bulb.anchor.set(0.5);
-      bulb.x = BULB_POSITIONS[i].x;
-      bulb.y = BULB_POSITIONS[i].y;
+      bulb.anchor.set(0.5, 0.5);
+      bulb.x = BULB_POSITIONS[i].x + 10;
+      bulb.y = BULB_POSITIONS[i].y + 10;
       this.bulbs.push(bulb);
       this.container.addChild(bulb);
     }
