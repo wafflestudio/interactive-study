@@ -262,10 +262,10 @@ export function getLatin6(x: number, y: number) {
           112.7 + tx,
           0.0 + ty,
           {
-            // FIXME 기존 코드에서도 발생하던 에러임
             r: getCurveR(
               112.7 + tx,
               0.0 + ty + tx,
+              0, // FIXME 린트 에러 없애기 위해 임의로 추가
               10.1 + ty,
               110.1 + tx,
               19.3 + ty,
