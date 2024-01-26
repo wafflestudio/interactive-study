@@ -34,7 +34,7 @@ export default class WreathSansController {
   leafLightRingRatio: number = 3;
   ornamentDisabled: boolean = false;
   ornamentOrder: string[] = [];
-  ornamentGap: number = 5;
+  ornamentGap: number = 10;
   ornamentAmplitude: number = 30;
   darkMode: boolean;
 
@@ -333,7 +333,7 @@ export default class WreathSansController {
     typo.patternPaths
       .map((pos, i) => [pos, i] as const)
       .filter(
-        ([pos, ], i) =>
+        ([pos], i) =>
           pos.type === 'a' || i % this.ornamentGap === ornamentStartIdx,
       )
       .forEach(([pos, originIdx], i, every) => {

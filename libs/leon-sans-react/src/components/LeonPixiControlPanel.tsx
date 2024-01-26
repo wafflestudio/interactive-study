@@ -76,12 +76,12 @@ export default function LeonPixiController({
   const alignRef = useRef<HTMLSelectElement>(null);
   const fontSizeRef = useRef<HTMLInputElement>(null);
   const ornamentDisabledRef = useRef<HTMLInputElement>(null);
-  const ornamentGapRef = useRef<HTMLInputElement>(null);
   const ornamentAmplitudeRef = useRef<HTMLInputElement>(null);
   const ornamentSizeRef = useRef<HTMLInputElement>(null);
+  const ornamentGapRef = useRef<HTMLInputElement>(null);
+  const leafLightRingRatioRef = useRef<HTMLInputElement>(null);
   const leafGapRef = useRef<HTMLInputElement>(null);
   const entireDensityRef = useRef<HTMLInputElement>(null);
-
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -248,16 +248,6 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const changeOrnamentGap = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      dispatcher.send((wreath) => {
-        wreath.ornamentGap = Number(e.target.value);
-        wreath.redraw();
-        setUpdateId((prev) => prev + 1);
-      }),
-    [dispatcher],
-  );
-
   const changeOrnamentAmplitude = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
@@ -275,6 +265,26 @@ export default function LeonPixiController({
           if (name === 'star') continue;
           ornament.scale = Number(e.target.value) / 100;
         }
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeOrnamentGap = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.ornamentGap = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeLeafLightRingRatio = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.leafLightRingRatio = Number(e.target.value);
         wreath.redraw();
         setUpdateId((prev) => prev + 1);
       }),
@@ -468,13 +478,29 @@ export default function LeonPixiController({
         </label>
       </div>
       <div className={styles.configuration}>
+        <span className={styles.key}>전구 당 잎사귀</span>
+        <input
+          className={styles.leafLightRingRatio}
+          ref={leafLightRingRatioRef}
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          onChange={changeLeafLightRingRatio}
+          defaultValue="3"
+        />
+        <label className={styles.leafLightRingRatioLabel}>
+          {leafLightRingRatioRef.current?.value ?? 5}
+        </label>
+      </div>
+      <div className={styles.configuration}>
         <span className={styles.key}>잎사귀 간격</span>
         <input
           className={styles.leafDensity}
           ref={leafGapRef}
           type="range"
           min="1"
-          max="20"
+          max="30"
           step="1"
           onChange={changeLeafGap}
           defaultValue="10"
