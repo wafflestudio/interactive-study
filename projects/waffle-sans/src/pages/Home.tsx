@@ -39,16 +39,6 @@ const Background = styled.div`
   height: 100%;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_home.png');
+  background-image: url('/background_outside.png');
   z-index: -1;
 `;
-
-/**
- * 남은 TODO
- * 1. [x] 자잘한 인터랙션 (화면전환, 버튼 클릭)
- * 2. [ ] 반응형
- * 3. [ ] 링크 공유 기능
- * 4. [ ] waffle sans 붙이기
- * 5. [ ] 다크모드 전환
- * 6. [ ] 홈화면
- */

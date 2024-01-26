@@ -73,7 +73,7 @@ const Sans = styled.div`
   box-sizing: border-box;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_day.png');
+  background-image: url('/background_outside.png');
 `;
 
 const SansContainer = styled.div`

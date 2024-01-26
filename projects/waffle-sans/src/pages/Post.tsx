@@ -58,7 +58,7 @@ const Dim = styled.div`
   z-index: -1;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_paper.png');
+  background-image: url('/background_outside.png');
 `;
 
 const ButtonContainer = styled.div`

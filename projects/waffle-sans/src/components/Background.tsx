@@ -26,7 +26,7 @@ const Image = styled.div`
   position: relative;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_day.png');
+  background-image: url('/background_outside.png');
 `;
 
 const FootPrint1 = styled.div`
