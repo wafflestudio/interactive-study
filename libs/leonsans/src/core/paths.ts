@@ -185,6 +185,7 @@ function getCubicBezierXYatT(curve: Curve, t: number) {
     x: x,
     y: y,
     rotation: rotation,
+    type: 'b',
   });
 }
 
