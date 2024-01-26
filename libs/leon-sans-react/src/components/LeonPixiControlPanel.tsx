@@ -73,6 +73,7 @@ export default function LeonPixiController({
   const [, setUpdateId] = useState<number>(0);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const backgroundColorRef = useRef<HTMLInputElement>(null);
   const alignRef = useRef<HTMLSelectElement>(null);
   const fontSizeRef = useRef<HTMLInputElement>(null);
   const ornamentDisabledRef = useRef<HTMLInputElement>(null);
@@ -177,6 +178,16 @@ export default function LeonPixiController({
       window.location.href = window.location.origin;
     }
   }, []);
+
+  const changeBackgroundColor = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatcher.send((wreath) => {
+        wreath.renderer.background.color = e.target.value;
+        wreath.redraw();
+      });
+    },
+    [dispatcher],
+  );
 
   const changeAlignType = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -354,6 +365,16 @@ export default function LeonPixiController({
             초기화
           </button>
         </div>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>배경색</span>
+        <input
+          className={styles.backgroundColor}
+          ref={backgroundColorRef}
+          type="color"
+          onChange={changeBackgroundColor}
+          defaultValue="#FFFFFF"
+        />
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>정렬</span>
