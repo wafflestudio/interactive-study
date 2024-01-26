@@ -76,10 +76,12 @@ export default function LeonPixiController({
   const alignRef = useRef<HTMLSelectElement>(null);
   const fontSizeRef = useRef<HTMLInputElement>(null);
   const ornamentDisabledRef = useRef<HTMLInputElement>(null);
-  const ornamentDensityRef = useRef<HTMLInputElement>(null);
+  const ornamentGapRef = useRef<HTMLInputElement>(null);
   const ornamentAmplitudeRef = useRef<HTMLInputElement>(null);
   const ornamentSizeRef = useRef<HTMLInputElement>(null);
   const leafGapRef = useRef<HTMLInputElement>(null);
+  const entireDensityRef = useRef<HTMLInputElement>(null);
+
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -176,7 +178,7 @@ export default function LeonPixiController({
     }
   }, []);
 
-  const setAlign = useCallback(
+  const changeAlignType = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       dispatcher.send((wreath) => {
         wreath.align = e.target.value as 'left' | 'center' | 'right';
@@ -185,7 +187,7 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const setFontSize = useCallback(
+  const changeFontSize = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
         wreath.leon.size = Number(e.target.value);
@@ -237,7 +239,7 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const setOrnamentDisabled = useCallback(
+  const toggleOrnamentDisabled = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
         wreath.ornamentDisabled = e.target.checked;
@@ -246,10 +248,10 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const changeOrnamentDensity = useCallback(
+  const changeOrnamentGap = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
-        wreath.ornamentDensity = 10 - Number(e.target.value);
+        wreath.ornamentGap = Number(e.target.value);
         wreath.redraw();
         setUpdateId((prev) => prev + 1);
       }),
@@ -289,6 +291,16 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const changeEntireDensity = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.leon.pathGap = 1 / Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
   /**
    * 마운트될 때 INITIAL_ORNAMENT_ORDER, INITIAL_TEXT 적용
    */
@@ -300,6 +312,7 @@ export default function LeonPixiController({
         wreath.replaceText(INITIAL_TEXT);
       });
     });
+    setUpdateId((prev) => prev + 1);
   }, [dispatcher]);
 
   return (
@@ -337,7 +350,7 @@ export default function LeonPixiController({
         <select
           className={styles.alignSelector}
           ref={alignRef}
-          onChange={setAlign}
+          onChange={changeAlignType}
           defaultValue={INITIAL_ALIGN}
         >
           <option value="left">left</option>
@@ -354,7 +367,7 @@ export default function LeonPixiController({
           min="1"
           max="1000"
           step="1"
-          onChange={setFontSize}
+          onChange={changeFontSize}
           defaultValue="130"
         />
         <label className={styles.fontSizeLabel}>
@@ -403,24 +416,8 @@ export default function LeonPixiController({
           className={styles.ornamentDisabled}
           ref={ornamentDisabledRef}
           type="checkbox"
-          onChange={setOrnamentDisabled}
+          onChange={toggleOrnamentDisabled}
         />
-      </div>
-      <div className={styles.configuration}>
-        <span className={styles.key}>오나먼트 밀도</span>
-        <input
-          className={styles.ornamentDensity}
-          ref={ornamentDensityRef}
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          onChange={changeOrnamentDensity}
-          defaultValue="5"
-        />
-        <label className={styles.ornamentDensityLabel}>
-          {ornamentDensityRef.current?.value}
-        </label>
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>오나먼트 진폭</span>
@@ -435,7 +432,7 @@ export default function LeonPixiController({
           defaultValue="50"
         />
         <label className={styles.ornamentAmplitudeLabel}>
-          {ornamentAmplitudeRef.current?.value}
+          {ornamentAmplitudeRef.current?.value ?? 50}
         </label>
       </div>
       <div className={styles.configuration}>
@@ -451,7 +448,23 @@ export default function LeonPixiController({
           defaultValue="28"
         />
         <label className={styles.ornamentSizeLabel}>
-          {ornamentSizeRef.current?.value}
+          {ornamentSizeRef.current?.value ?? 28}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 간격</span>
+        <input
+          className={styles.ornamentGap}
+          ref={ornamentGapRef}
+          type="range"
+          min="0"
+          max="30"
+          step="1"
+          onChange={changeOrnamentGap}
+          defaultValue="10"
+        />
+        <label className={styles.ornamentGapLabel}>
+          {ornamentGapRef.current?.value ?? 5}
         </label>
       </div>
       <div className={styles.configuration}>
@@ -467,7 +480,23 @@ export default function LeonPixiController({
           defaultValue="10"
         />
         <label className={styles.leafDensityLabel}>
-          {leafGapRef.current?.value}
+          {leafGapRef.current?.value ?? 10}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>최소 간격</span>
+        <input
+          className={styles.leafDensity}
+          ref={entireDensityRef}
+          type="range"
+          min="1"
+          max="100"
+          step="1"
+          onChange={changeEntireDensity}
+          defaultValue="20"
+        />
+        <label className={styles.leafDensityLabel}>
+          1 / {entireDensityRef.current?.value}
         </label>
       </div>
     </div>

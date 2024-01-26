@@ -34,7 +34,7 @@ export default class WreathSansController {
   leafLightRingRatio: number = 3;
   ornamentDisabled: boolean = false;
   ornamentOrder: string[] = [];
-  ornamentDensity: number = 5;
+  ornamentGap: number = 5;
   ornamentAmplitude: number = 30;
   darkMode: boolean;
 
@@ -251,7 +251,7 @@ export default class WreathSansController {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
     const startIdx = Math.floor(this.leafGap / 2);
-    
+
     typo.patternPaths
       .filter((pos) => pos.type !== 'a')
       .filter((_, i) => i % this.leafGap === startIdx)
@@ -326,19 +326,20 @@ export default class WreathSansController {
 
     // draw ornament
     if (this.ornamentDisabled) return;
-    let probability = 0;
+    // let probability = 0;
     let ornamentIdx = -1;
+    const ornamentStartIdx = Math.floor(this.ornamentGap / 2);
+
     typo.patternPaths
-      .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
-      .forEach((pos, i, every) => {
+      .map((pos, i) => [pos, i] as const)
+      .filter(
+        ([pos, ], i) =>
+          pos.type === 'a' || i % this.ornamentGap === ornamentStartIdx,
+      )
+      .forEach(([pos, originIdx], i, every) => {
         const isStar = pos.type === 'a';
 
-        if (!isStar && this.ornamentDensity > probability) {
-          probability++;
-          return;
-        }
         ornamentIdx = (ornamentIdx + 1) % this.ornamentOrder.length;
-        probability = 0;
 
         const name =
           this.ornamentOrder.length > 0
@@ -361,8 +362,8 @@ export default class WreathSansController {
          */
         if (isStar) {
           ornamentSprite.y -= 7 * this.leon.scale;
-        } else {
-          const prevPos = every[i - 1];
+        } else if (i !== 0) {
+          const prevPos = typo.patternPaths[originIdx - 1];
           // 변위
           const displacement = {
             x: pos.x - prevPos.x,
@@ -372,8 +373,8 @@ export default class WreathSansController {
           const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
           // 변위와 나란한 단위 벡터
           const tangentialUnitVector = {
-            x: displacement.x / Math.sqrt(distance),
-            y: displacement.y / Math.sqrt(distance),
+            x: displacement.x / distance,
+            y: displacement.y / distance,
           };
           // 변위와 수직한 단위 벡터
           const orthogonalUnitVector = {
