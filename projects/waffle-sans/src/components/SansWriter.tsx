@@ -76,7 +76,7 @@ const SansContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 62vh;
+  height: 65vh;
   max-height: calc(100vh - 320px);
   overflow: auto;
 `;

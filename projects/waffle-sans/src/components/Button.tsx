@@ -16,7 +16,11 @@ export default function Button({
   handleClick,
 }: Props) {
   return (
-    <Container color={color} hoveredColor={hoveredColor} onClick={handleClick}>
+    <Container
+      $color={color}
+      $hoveredColor={hoveredColor}
+      onClick={handleClick}
+    >
       {icon}
       {text}
     </Container>
@@ -24,7 +28,7 @@ export default function Button({
 }
 
 /* STYLES */
-const Container = styled.button<{ color: string; hoveredColor: string }>`
+const Container = styled.button<{ $color: string; $hoveredColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +38,7 @@ const Container = styled.button<{ color: string; hoveredColor: string }>`
   border: none;
   border-radius: 2px;
   color: #2e3a2c;
-  background-color: ${({ color }) => color};
+  background-color: ${({ $color }) => $color};
   font-family: Inter;
   font-size: 14px;
   font-weight: 400;
@@ -44,6 +48,6 @@ const Container = styled.button<{ color: string; hoveredColor: string }>`
 
   &:hover {
     transform: scale(1.06);
-    background-color: ${({ hoveredColor }) => hoveredColor};
+    background-color: ${({ $hoveredColor }) => $hoveredColor};
   }
 `;

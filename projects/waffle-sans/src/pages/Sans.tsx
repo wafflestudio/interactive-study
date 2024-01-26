@@ -2,34 +2,29 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Background from '../components/Background';
-import Footer from '../components/Footer';
+import Header from '../components/Header';
 import NavigateButton, { Direction } from '../components/NavigateButton';
 import SansWriter from '../components/SansWriter';
-import LogoIcon from '/logo_black.svg';
 
 export default function Sans() {
   const router = useNavigate();
 
   return (
     <Container>
-      <Background />
+      <Content>
+        <Header />
+        <SansWriter />
+      </Content>
 
+      <Background />
       <BackBtnContainer>
         <NavigateButton
+          isWideArea
           text={'BACK TO HOME'}
           direction={Direction.BACK}
           handleClick={() => router('/')}
         />
       </BackBtnContainer>
-      <Content>
-        <Header>
-          <Logo src={LogoIcon} alt="waffle sans" />
-        </Header>
-
-        <SansWriter />
-
-        <Footer />
-      </Content>
     </Container>
   );
 }
@@ -67,22 +62,10 @@ const Content = styled.div`
   }
 `;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 43px;
-`;
-
-const Logo = styled.img`
-  width: 99px;
-  height: 53px;
-`;
-
 const BackBtnContainer = styled.div`
   position: absolute;
   width: auto;
   height: auto;
-  left: 100px;
-  bottom: 150px;
+  left: 46px;
+  bottom: 78px;
 `;
