@@ -79,7 +79,7 @@ export default function LeonCanvas({
         handlers.current.onAnimate(dataRefs.current, currentTime);
 
       // default draw function
-      leon.draw(ctx, { t: currentTime });
+      leon.draw(ctx);
     },
     [dataRefs, width, height, handlers],
   );

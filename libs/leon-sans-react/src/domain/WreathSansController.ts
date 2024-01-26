@@ -252,7 +252,7 @@ export default class WreathSansController {
     const container = this.makeContainer(idx);
     const startIdx = Math.floor(this.leafGap / 2);
     
-    typo.drawingPaths
+    typo.patternPaths
       .filter((pos) => pos.type !== 'a')
       .filter((_, i) => i % this.leafGap === startIdx)
       .forEach((pos, i, every) => {
@@ -328,7 +328,7 @@ export default class WreathSansController {
     if (this.ornamentDisabled) return;
     let probability = 0;
     let ornamentIdx = -1;
-    typo.drawingPaths
+    typo.patternPaths
       .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
       .forEach((pos, i, every) => {
         const isStar = pos.type === 'a';

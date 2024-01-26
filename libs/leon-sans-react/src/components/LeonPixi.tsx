@@ -23,7 +23,7 @@ type LeonPixiProps = {
 export default function LeonPixi({
   initialText,
   color = '#000000',
-  size = 60,
+  size = 500,
   weight = 400,
   width = 800,
   height = 600,
@@ -79,6 +79,8 @@ export default function LeonPixi({
       color: [color],
       size,
       weight,
+      isPattern: true,
+      pathGap: 1/20,
     });
 
     // set position
