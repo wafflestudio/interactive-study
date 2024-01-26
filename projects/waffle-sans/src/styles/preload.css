@@ -1,6 +1,10 @@
 body {
   /* 필요한 이미지 소스들 다운 */
-  content: url('/background_day.png') url('/background_home.png')
-    url('/background_night.png') url('/background_paper.png')
-    url('/background_preview.png');
+  content: url('/background_inside_letter.png')
+    url('/background_inside_m_hor.png') url('/background_inside_m_ver.png')
+    url('/background_inside_t.png') url('/background_inside.png')
+    url('/background_outside_letter.png') url('/background_outside_m_hor.png')
+    url('/background_outside_m_ver.png') url('/background_outside_t.png')
+    url('/background_outside.png') url('/foot_pring_1.png')
+    url('/foot_pring_2.png');
 }
