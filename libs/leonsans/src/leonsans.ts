@@ -368,9 +368,8 @@ export default class LeonSans extends Dispatcher {
     if (this.isPattern_ || this.isWave_) {
       this.updatePatternPaths();
       this.updateWavePaths();
-    } else {
-      this.updateSignal();
     }
+    this.updateSignal();
   }
 
   updateGuide() {
@@ -475,28 +474,15 @@ export default class LeonSans extends Dispatcher {
   /**
    * Draw text in the Canvas element.
    * @param ctx
-   * @param t time stemp from requestAnimationFrame(). [Default: Date.now()]
-   * @param w width of the pattern. [Default: 40]
-   * @param h height of the pattern. [Default: 10]
    */
   draw(
-    ctx: CanvasRenderingContext2D,
-    { t, w, h }: { t?: DOMHighResTimeStamp; w?: number; h?: number } = {},
+    ctx: CanvasRenderingContext2D
   ) {
-    if (this.hasGrid_) this.grid(ctx);
-    if (this.hasPoint_) this.point(ctx);
-    if (this.hasBox_) this.box(ctx);
-    if (this.isWave_) {
-      this.wave(ctx, t);
-    } else if (this.isPattern_ && w && h) {
-      this.pattern(ctx, w, h);
-    } else {
-      ctx.lineWidth = this.lineWidth;
-      this.model.data.forEach((data, index) => {
-        Color(ctx, index, data, this.color_);
-        Lines(ctx, data);
-      });
-    }
+    ctx.lineWidth = this.lineWidth;
+    this.model.data.forEach((data, index) => {
+      Color(ctx, index, data, this.color_);
+      Lines(ctx, data);
+    });
   }
 
   /**
@@ -513,7 +499,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @param {DOMHighResTimeStamp} t time stemp from requestAnimationFrame()
    */
-  private wave(
+  wave(
     ctx: CanvasRenderingContext2D,
     t: DOMHighResTimeStamp = Date.now(),
   ) {
@@ -552,7 +538,7 @@ export default class LeonSans extends Dispatcher {
    * @param {number} w pattern width
    * @param {number} h pattern height
    */
-  private pattern(
+  pattern(
     ctx: CanvasRenderingContext2D,
     w: number = 40,
     h: number = 10,
@@ -572,7 +558,7 @@ export default class LeonSans extends Dispatcher {
    * Draw grid for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  private grid(ctx: CanvasRenderingContext2D) {
+  grid(ctx: CanvasRenderingContext2D) {
     this.updateGuide();
 
     const total = this.model.data.length;
@@ -587,7 +573,7 @@ export default class LeonSans extends Dispatcher {
    * Draw circles at each drawing point and lines for each type.
    * @param {CanvasRenderingContext2D} ctx
    */
-  private point(ctx: CanvasRenderingContext2D) {
+  point(ctx: CanvasRenderingContext2D) {
     const total = this.model.data.length;
     let i, d;
     for (i = 0; i < total; i++) {
@@ -601,7 +587,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @private
    */
-  private box(ctx: CanvasRenderingContext2D) {
+  box(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.strokeStyle = '#0b90dc';
