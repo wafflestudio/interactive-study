@@ -49,6 +49,7 @@ export default function createWreathSans({
     autoDensity: true,
     powerPreference: 'high-performance',
     background,
+    backgroundAlpha: background === 'transparent' ? 0 : 1,
   });
   const stage = new PIXI.Container();
   const graphics = new PIXI.Graphics();
@@ -141,9 +142,19 @@ export default function createWreathSans({
     return <div {...props} ref={(inst) => inst?.appendChild(canvas)}></div>;
   }
 
+  function redraw() {
+    wreathSansController.redraw();
+  }
+
+  function getText() {
+    return wreathSansController.leon.text;
+  }
+
   return {
     WreathSansCanvas,
     onInputHandler,
     resize,
+    redraw,
+    getText,
   };
 }
