@@ -1,6 +1,7 @@
+import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   color?: string;
   textColor?: string;
@@ -9,20 +10,23 @@ interface Props {
   handleClick: () => void;
 }
 
-export default function Button({
-  icon,
-  text,
-  color = '#FFFFFF',
-  textColor = '#2E3A2C',
-  hoveredColor = '#FFFFFF',
-  handleClick,
-}: Props) {
+export default function Button(props: Props) {
+  const {
+    icon,
+    text,
+    color = '#FFFFFF',
+    textColor = '#2E3A2C',
+    hoveredColor = '#FFFFFF',
+    handleClick,
+  } = props;
+
   return (
     <Container
       $color={color}
       $textColor={textColor}
       $hoveredColor={hoveredColor}
       onClick={handleClick}
+      {...props}
     >
       {icon}
       {text}

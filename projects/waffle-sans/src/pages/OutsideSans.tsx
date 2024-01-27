@@ -5,6 +5,7 @@ import Background from '../components/Background';
 import Header from '../components/Header';
 import NavigateButton, { Direction } from '../components/NavigateButton';
 import SansForm from '../components/SansForm';
+import { GRID } from '../constants/breakpoint';
 
 export default function OutsideSans() {
   const router = useNavigate();
@@ -66,6 +67,15 @@ const BackBtnContainer = styled.div`
   position: absolute;
   width: auto;
   height: auto;
-  left: 46px;
-  bottom: 78px;
+  left: 72px;
+  bottom: 110px;
+
+  @media ${GRID.TABLET} {
+    bottom: 0;
+    left: 0;
+  }
+  @media ${GRID.MOBILE} {
+    bottom: 190px;
+    left: 0;
+  }
 `;

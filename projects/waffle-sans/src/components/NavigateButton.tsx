@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { GRID } from '../constants/breakpoint';
 import ArrowBackIcon from '../icons/ArrowBackIcon';
 import ArrowForwardIcon from '../icons/ArrowForwardIcon';
 
@@ -57,11 +58,16 @@ const Container = styled.button<{ $isWideArea?: boolean }>`
   border: none;
   background: transparent;
   transition: all 0.2s ease-in-out;
-  width: ${({ $isWideArea }) => ($isWideArea ? '250px' : 'auto')};
-  height: ${({ $isWideArea }) => ($isWideArea ? '164px' : 'auto')};
+  width: ${({ $isWideArea }) => ($isWideArea ? '200px' : 'auto')};
+  height: ${({ $isWideArea }) => ($isWideArea ? '100px' : 'auto')};
 
   &:hover {
     transform: scale(1.06);
+  }
+
+  @media ${GRID.MOBILE} {
+    width: ${({ $isWideArea }) => ($isWideArea ? '200px' : 'auto')};
+    height: ${({ $isWideArea }) => ($isWideArea ? '50px' : 'auto')};
   }
 `;
 

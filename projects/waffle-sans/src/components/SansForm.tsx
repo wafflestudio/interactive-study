@@ -1,35 +1,49 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+// TODO: import from leon-sans-react
 import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
-import { sansInputState } from '../store/sans';
+import { GRID } from '../constants/breakpoint';
+import ShareIcon from '../icons/ShareIcon';
+import WriteIcon from '../icons/WriteIcon';
+import { Mode } from '../types/mode';
 import Button from './Button';
 import Textarea from './Textarea';
 
-export default function SansForm() {
-  const router = useNavigate();
-  const [value, setValue] = useRecoilState(sansInputState);
-  const { WreathSansCanvas, onInputHandler, resize } = createWreathSans({
-    initialText: '',
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+interface Props {
+  mode?: Mode;
+}
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (e.target.value.length > 50) return;
-      setValue(e.target.value);
-    },
-    [setValue],
-  );
+export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
+  const router = useNavigate();
+  const defaultValue = useMemo(() => 'interactive study', []);
+
+  const { WreathSansCanvas, onInputHandler, resize, redraw, getText } =
+    createWreathSans({
+      initialText: defaultValue,
+      width: window.innerWidth,
+      height: (window.innerHeight / 100) * 62,
+      size: 130,
+      color: '#704234',
+      background: 'transparent',
+    });
+
+  const handleShare = useCallback(() => {
+    if (!getText().trim()) {
+      alert('🎁 텍스트를 입력해주세요.');
+      return;
+    }
+
+    mode === Mode.OUTSIDE
+      ? router(`/o-post?msg=${getText()}`)
+      : router(`/i-post?msg=${getText()}`);
+  }, [getText, mode, router]);
 
   useEffect(() => {
     function handleResize() {
       resize(window.innerWidth, window.innerHeight);
     }
-
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -38,31 +52,43 @@ export default function SansForm() {
 
   return (
     <Container>
-      <SansContainer>{/* <WreathSansCanvas /> */}</SansContainer>
+      <SansContainer>
+        <WreathSansCanvas />
+      </SansContainer>
 
-      <Textarea
-        name="sans"
-        width="635px"
-        value={value}
-        threshold={50}
-        handleChange={handleChange}
-        placeholder="interactive study"
-        handleInput={onInputHandler}
-      />
+      <TextareaContainer>
+        <Textarea
+          autoFocus
+          name="sans"
+          width="100%"
+          threshold={50}
+          placeholder="interactive study"
+          onInput={onInputHandler}
+          defaultValue={defaultValue}
+        />
+      </TextareaContainer>
+
       <ButtonContainer>
         <Button
-          text={'SHARE'}
-          color={'#FFFFFF'}
-          hoveredColor="#E6F0F0"
-          handleClick={() => router(`/post?msg=${value}`)}
-          icon={<Icon src="/share.svg" alt="share" />}
+          text={'WRITE'}
+          color={mode === Mode.OUTSIDE ? '#D2E6E4' : '#E8C5A6'}
+          textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+          hoveredColor={mode === Mode.OUTSIDE ? '#BFDBD9' : '#D8BDA3'}
+          handleClick={redraw}
+          icon={
+            <WriteIcon color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'} />
+          }
         />
         <Button
-          text={'WRITE'}
-          color={'#D2E6E4'}
-          hoveredColor="#BFDBD9"
-          handleClick={() => {}}
-          icon={<Icon src="/write.svg" alt="write" />}
+          text={'SHARE'}
+          color={mode === Mode.OUTSIDE ? '#FFFFFF' : '#FFFFFF'}
+          textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+          hoveredColor={mode === Mode.OUTSIDE ? '#E6F0F0' : '#F4E4D4'}
+          disabled={!getText()?.trim()}
+          handleClick={handleShare}
+          icon={
+            <ShareIcon color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'} />
+          }
         />
       </ButtonContainer>
     </Container>
@@ -78,6 +104,7 @@ const Container = styled.div`
   justify-content: center;
   flex-direction: column;
   margin-bottom: auto;
+  box-sizing: border-box;
 `;
 
 const SansContainer = styled.div`
@@ -97,7 +124,13 @@ const ButtonContainer = styled.div`
   width: 100%;
 `;
 
-const Icon = styled.img`
-  width: 16px;
-  height: 16px;
+const TextareaContainer = styled.div`
+  width: 48vw;
+  height: auto;
+  box-sizing: border-box;
+
+  @media ${GRID.MOBILE} {
+    width: 100%;
+    padding: 0 36px;
+  }
 `;

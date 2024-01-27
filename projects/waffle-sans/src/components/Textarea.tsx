@@ -1,59 +1,58 @@
-import { forwardRef } from 'react';
+import { TextareaHTMLAttributes, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-interface Props {
-  name: string;
-  value: string;
+interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  value?: string;
   color?: string;
   label?: string;
   width?: string;
   height?: string;
   threshold?: number;
   placeholder?: string;
+  defaultValue?: string;
   thresholdColor?: string;
-  handleInput?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const Textarea = forwardRef<HTMLTextAreaElement, Props>(
-  (
-    {
-      name,
-      value,
-      label,
-      handleInput,
-      handleChange,
-      threshold = 50,
-      width = '100%',
-      height = '88px',
-      color = '#f1f6f6',
-      thresholdColor = '#718f8d',
-      placeholder = 'interactive study',
-    },
-    ref,
-  ) => {
-    return (
-      <Container $width={width} $height={height}>
-        {!!label && <Label $color={color}>{label}</Label>}
-        <Area
-          ref={ref}
-          autoFocus
-          name={name}
-          value={value}
-          onInput={handleInput}
-          onChange={handleChange}
-          placeholder={placeholder}
-        />
+export default function Textarea(props: Props) {
+  const {
+    value,
+    label,
+    onInput,
+    handleChange,
+    threshold = 50,
+    width = '100%',
+    height = '88px',
+    color = '#f1f6f6',
+    defaultValue = '',
+    thresholdColor = '#718f8d',
+    placeholder = 'interactive study',
+  } = props;
+  const [count, setCount] = useState<number>(0);
 
-        <TextCount
-          $color={thresholdColor}
-        >{`${value?.length}/${threshold}`}</TextCount>
-      </Container>
-    );
-  },
-);
+  useEffect(() => {
+    if (value) setCount(value?.length);
+    if (defaultValue) setCount(defaultValue?.length);
+  }, [defaultValue, value]);
 
-export default Textarea;
+  return (
+    <Container $width={width} $height={height}>
+      {!!label && <Label $color={color}>{label}</Label>}
+      <Area
+        value={value}
+        onInput={(e) => {
+          onInput && onInput(e);
+          setCount(e.currentTarget.value.length);
+        }}
+        onChange={handleChange}
+        placeholder={placeholder}
+        {...props}
+      />
+
+      <TextCount $color={thresholdColor}>{`${count}/${threshold}`}</TextCount>
+    </Container>
+  );
+}
 
 /* STYLES */
 const Container = styled.div<{ $width: string; $height: string }>`

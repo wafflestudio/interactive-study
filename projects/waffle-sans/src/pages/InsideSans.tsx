@@ -5,24 +5,28 @@ import Background from '../components/Background';
 import Header from '../components/Header';
 import NavigateButton, { Direction } from '../components/NavigateButton';
 import SansForm from '../components/SansForm';
+import { GRID } from '../constants/breakpoint';
 import { Mode } from '../types/mode';
 
-export default function InsideSans() {
+export default function OutsideSans() {
   const router = useNavigate();
+  // TODO: back button 위치 애매함
 
   return (
     <Container>
       <Content>
         <Header mode={'dark'} />
-        <SansForm />
+        <SansForm mode={Mode.INSIDE} />
       </Content>
 
       <Background mode={Mode.INSIDE} />
       <BackBtnContainer>
         <NavigateButton
           isWideArea
-          text={'BACK TO HOME'}
-          direction={Direction.BACK}
+          color={'#2B1C1A'}
+          hoveredColor={'#2B1C1A'}
+          text={'GO TO OUTSIDE'}
+          direction={Direction.FORWARD}
           handleClick={() => router('/')}
         />
       </BackBtnContainer>
@@ -67,6 +71,16 @@ const BackBtnContainer = styled.div`
   position: absolute;
   width: auto;
   height: auto;
-  left: 46px;
-  bottom: 78px;
+  top: 14%;
+  right: 5vw;
+  z-index: 3;
+
+  @media ${GRID.TABLET} {
+    top: 14%;
+    right: 5vw;
+  }
+  @media ${GRID.MOBILE} {
+    bottom: 190px;
+    left: 0;
+  }
 `;
