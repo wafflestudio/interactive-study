@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import LogoIcon from '../components/Logo';
 import { GRID } from '../constants/breakpoint';
+import LogoIcon from '../icons/LogoIcon';
 
 export default function Home() {
   const router = useNavigate();

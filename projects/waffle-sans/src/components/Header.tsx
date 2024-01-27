@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
-import LogoIcon from './Logo';
+import LogoIcon from '../icons/LogoIcon';
 
 enum Mode {
   LIGHT = 'light',
