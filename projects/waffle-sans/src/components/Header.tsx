@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
-import LogoIcon from '../icons/Logo';
 import { Mode } from '../types/mode';
+import LogoIcon from './Logo';
 
 interface Props {
   mode?: Mode;
