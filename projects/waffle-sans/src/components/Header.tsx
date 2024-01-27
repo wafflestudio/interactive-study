@@ -2,14 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
-import { Mode } from '../types/mode';
 import LogoIcon from './Logo';
 
-interface Props {
-  mode?: Mode;
+enum Mode {
+  LIGHT = 'light',
+  DARK = 'dark',
 }
 
-export default function Header({ mode = Mode.OUTSIDE }: Props) {
+interface Props {
+  mode?: 'light' | 'dark';
+}
+
+export default function Header({ mode = Mode.LIGHT }: Props) {
   const router = useNavigate();
 
   return (
@@ -18,7 +22,7 @@ export default function Header({ mode = Mode.OUTSIDE }: Props) {
         <LogoIcon
           width={'100%'}
           height={'100%'}
-          color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#ffffff'}
+          color={mode === Mode.LIGHT ? '#2E3A2C' : '#ffffff'}
         />
       </Logo>
 
@@ -71,10 +75,10 @@ const CopyWriter = styled.div`
   }
 `;
 
-const Text = styled.h6<{ $mode: Mode }>`
+const Text = styled.h6<{ $mode: 'light' | 'dark' }>`
   display: flex;
   align-items: center;
-  color: ${({ $mode }) => ($mode === Mode.OUTSIDE ? '#2E3A2C' : '#ffffff')};
+  color: ${({ $mode }) => ($mode === Mode.LIGHT ? '#2E3A2C' : '#ffffff')};
   font-family: Inter;
   font-size: 11px;
   font-style: normal;

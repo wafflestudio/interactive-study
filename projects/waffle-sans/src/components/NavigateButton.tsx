@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import ArrowBackIcon from './ArrowBackIcon';
-import ArrowForwardIcon from './ArrowForwardIcon';
+import ArrowBackIcon from '../icons/ArrowBackIcon';
+import ArrowForwardIcon from '../icons/ArrowForwardIcon';
 
 export enum Direction {
   BACK = 'back',
@@ -52,7 +52,7 @@ const Container = styled.button<{ $isWideArea?: boolean }>`
   justify-content: center;
   align-items: center;
   gap: 4px;
-  padding: 5px 8px;
+  padding: 5px 0;
   cursor: pointer;
   border: none;
   background: transparent;

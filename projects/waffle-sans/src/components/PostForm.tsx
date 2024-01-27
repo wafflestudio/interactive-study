@@ -2,18 +2,24 @@ import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import ShareIcon from '../icons/ShareIcon';
 import { postFormState } from '../store/post';
+import { Mode } from '../types/mode';
 import Button from './Button';
 import Input from './Input';
 import Textarea from './Textarea';
 
-export default function PostWriter() {
+interface Props {
+  mode?: Mode;
+}
+
+export default function PostForm({ mode = Mode.OUTSIDE }: Props) {
   const [form, setForm] = useRecoilState(postFormState);
   const THRESHOLD = useMemo(() => {
     return {
       SENDER: 20,
       RECEIVER: 20,
-      CONTENT: 1000,
+      CONTENT: 200,
     };
   }, []);
 
@@ -34,52 +40,58 @@ export default function PostWriter() {
           break;
       }
     },
-    [],
+    [THRESHOLD.CONTENT, THRESHOLD.RECEIVER, THRESHOLD.SENDER, setForm],
   );
 
   return (
     <Container>
       <Announce>
         {
-          '사랑하는 사람에게\n직접 만든 크리스마스 리스와 함께 편지를 보내보세요!'
+          '사랑하는 사람에게\n직접 만든 크리스마스 리스와 함께\n편지를 보내보세요!'
         }
       </Announce>
       <Input
         name="sender"
+        label={'보내는 사람'}
         value={form.sender}
         handleChange={handleChange}
+        placeholder="ex) 즐거운 와플이"
         threshold={THRESHOLD.SENDER}
         width={'100%'}
         height={'54px'}
-        label={'보내는 사람'}
-        placeholder="기철이"
+        thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}
       />
       <Input
         name="receiver"
+        label={'받는 사람'}
         value={form.receiver}
         handleChange={handleChange}
+        placeholder="ex) 행복한 와플이"
         threshold={THRESHOLD.RECEIVER}
         width={'100%'}
         height={'54px'}
-        label={'받는 사람'}
-        placeholder="귀여운 기영이"
+        thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}
       />
       <Textarea
         name="content"
+        label={'편지 내용'}
         value={form.content}
         handleChange={handleChange}
         threshold={THRESHOLD.CONTENT}
-        width={'100%'}
-        height={'375px'}
-        label={'편지 내용'}
         placeholder="새해복 많이 받아~!"
+        width={'100%'}
+        height={'226px'}
+        thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}
       />
       <Button
         text={'링크 공유하기'}
-        color={'#D2E6E4'}
         handleClick={() => {}}
-        hoveredColor="#BFDBD9"
-        icon={<Icon src="/share.svg" alt="share" />}
+        color={mode === Mode.OUTSIDE ? '#D2E6E4' : '#E8C5A6'}
+        textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+        hoveredColor={mode === Mode.OUTSIDE ? '#BFDBD9' : '#D8BDA3'}
+        icon={
+          <ShareIcon color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'} />
+        }
       />
     </Container>
   );
@@ -87,20 +99,15 @@ export default function PostWriter() {
 
 /* STYLES */
 const Container = styled.div`
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 30px;
   display: inline-flex;
-  width: 100%;
-  box-sizing: border-box;
-  height: 716px;
-  padding: 10px 0;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 30px;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
   flex-shrink: 0;
+  gap: 30px;
+  width: 100%;
+  height: auto;
 `;
 
 const Announce = styled.h2`
@@ -120,9 +127,4 @@ const Announce = styled.h2`
   @media (max-width: 840px) {
     word-break: keep-all;
   }
-`;
-
-const Icon = styled.img`
-  width: 16px;
-  height: 16px;
 `;

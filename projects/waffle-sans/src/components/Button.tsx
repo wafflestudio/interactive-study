@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface Props {
   text: string;
   color?: string;
+  textColor?: string;
   hoveredColor?: string;
   icon?: React.ReactNode;
   handleClick: () => void;
@@ -12,12 +13,14 @@ export default function Button({
   icon,
   text,
   color = '#FFFFFF',
+  textColor = '#2E3A2C',
   hoveredColor = '#FFFFFF',
   handleClick,
 }: Props) {
   return (
     <Container
       $color={color}
+      $textColor={textColor}
       $hoveredColor={hoveredColor}
       onClick={handleClick}
     >
@@ -28,7 +31,11 @@ export default function Button({
 }
 
 /* STYLES */
-const Container = styled.button<{ $color: string; $hoveredColor: string }>`
+const Container = styled.button<{
+  $color: string;
+  $textColor: string;
+  $hoveredColor: string;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,7 +44,7 @@ const Container = styled.button<{ $color: string; $hoveredColor: string }>`
   gap: 4px;
   border: none;
   border-radius: 2px;
-  color: #2e3a2c;
+  color: ${({ $textColor }) => $textColor};
   background-color: ${({ $color }) => $color};
   font-family: Inter;
   font-size: 14px;

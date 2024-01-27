@@ -1,15 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import Background from '../components/Background';
+import Header from '../components/Header';
 import NavigateButton, { Direction } from '../components/NavigateButton';
+import PostForm from '../components/PostForm';
 import PostPreview from '../components/PostPreview';
-import PostWriter from '../components/PostWriter';
+import { GRID } from '../constants/breakpoint';
+import { Mode } from '../types/mode';
 
-export default function Post() {
+export default function InsidePost() {
   const router = useNavigate();
 
   return (
     <Container>
+      <Header mode={'dark'} />
+      <Background mode={Mode.INSIDE} />
       <Dim />
 
       <Contents>
@@ -19,13 +25,17 @@ export default function Post() {
             color="#F1F6F6"
             hoveredColor="#F1F6F6"
             direction={Direction.BACK}
-            handleClick={() => router('/sans')}
+            handleClick={() => router(-1)}
           />
         </ButtonContainer>
 
         <Grid>
-          <PostPreview />
-          <PostWriter />
+          <PreviewContainer>
+            <PostPreview mode={Mode.INSIDE} />
+          </PreviewContainer>
+          <FormContainer>
+            <PostForm mode={Mode.INSIDE} />
+          </FormContainer>
         </Grid>
       </Contents>
     </Container>
@@ -37,15 +47,14 @@ const Container = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100vw;
   height: auto;
+  gap: 10vh;
   min-height: 100vh;
   box-sizing: border-box;
 
-  @media (max-width: 840px) {
-    padding: 30px 24px;
+  @media ${GRID.MOBILE} {
+    gap: 35px;
   }
 `;
 
@@ -56,9 +65,8 @@ const Dim = styled.div`
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-size: cover;
-  background-position: center;
-  background-image: url('/background_outside.png');
+  opacity: 0.5;
+  background: #000;
 `;
 
 const ButtonContainer = styled.div`
@@ -66,7 +74,7 @@ const ButtonContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 `;
 
 const Contents = styled.div`
@@ -74,6 +82,10 @@ const Contents = styled.div`
   flex-direction: column;
   width: auto;
   height: auto;
+  margin: 0 auto;
+  padding: 0 20px 60px 20px;
+  overflow: auto;
+  box-sizing: border-box;
   animation: fadeIn 0.5s ease-in-out;
 
   @keyframes fadeIn {
@@ -87,39 +99,36 @@ const Contents = styled.div`
     }
   }
 
-  @media (max-width: 1200px) {
-    max-width: 100vw;
-  }
-  @media (max-width: 1024px) {
-    max-width: 100vw;
-  }
-  @media (max-width: 840px) {
+  @media ${GRID.MOBILE} {
     width: 100%;
-    min-width: 240px;
-    max-width: 470px;
+    padding: 0 35px 60px 35px;
+  }
+`;
+
+const PreviewContainer = styled.div`
+  @media ${GRID.MOBILE} {
+    display: none;
+  }
+`;
+
+const FormContainer = styled.div`
+  width: 483px;
+  height: auto;
+
+  @media ${GRID.MOBILE} {
+    width: 100%;
   }
 `;
 
 const Grid = styled.div`
-  display: grid;
-  gap: 132px;
+  display: flex;
   width: 100%;
   height: auto;
   align-items: center;
-  grid-template-columns: 472px 532px;
+  justify-content: space-between;
+  gap: 8vw;
 
-  @media (max-width: 1200px) {
-    gap: 60px;
-    grid-template-columns: 420px 480px;
-  }
-  @media (max-width: 1024px) {
-    gap: 40px;
-    grid-template-columns: 360px 400px;
-  }
-  @media (max-width: 840px) {
-    display: flex;
-    flex-direction: column;
-    gap: 60px;
+  @media ${GRID.MOBILE} {
     width: 100%;
   }
 `;

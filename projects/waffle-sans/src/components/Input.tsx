@@ -9,6 +9,7 @@ interface Props {
   height?: string;
   threshold?: number;
   placeholder?: string;
+  thresholdColor?: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -21,11 +22,12 @@ export default function Input({
   width = '635px',
   height = '88px',
   color = '#f1f6f6',
+  thresholdColor = '#718f8d',
   placeholder = 'interactive study',
 }: Props) {
   return (
-    <Container width={width} height={height}>
-      {!!label && <Label color={color}>{label}</Label>}
+    <Container $width={width} $height={height}>
+      {!!label && <Label $color={color}>{label}</Label>}
       <Area
         name={name}
         value={value}
@@ -33,23 +35,25 @@ export default function Input({
         placeholder={placeholder}
       />
 
-      <TextCount>{`${value?.length}/${threshold}`}</TextCount>
+      <TextCount
+        $color={thresholdColor}
+      >{`${value?.length}/${threshold}`}</TextCount>
     </Container>
   );
 }
 
 /* STYLES */
-const Container = styled.div<{ width: string; height: string }>`
+const Container = styled.div<{ $width: string; $height: string }>`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: ${({ width }) => width};
-  height: ${({ height }) => height};
+  width: ${({ $width }) => $width};
+  height: ${({ $height }) => $height};
 `;
 
-const Label = styled.label<{ color: string }>`
-  color: ${({ color }) => color};
+const Label = styled.label<{ $color: string }>`
+  color: ${({ $color }) => $color};
   font-family: Inter;
   font-size: 16px;
   font-style: normal;
@@ -81,11 +85,11 @@ const Area = styled.input`
   }
 `;
 
-const TextCount = styled.div`
+const TextCount = styled.div<{ $color: string }>`
   position: absolute;
   right: 8px;
   bottom: 4px;
-  color: #718f8d;
+  color: ${({ $color }) => $color};
   font-family: Inter;
   font-size: 14px;
   font-style: normal;
