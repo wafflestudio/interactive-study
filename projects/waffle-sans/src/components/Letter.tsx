@@ -10,10 +10,10 @@ export default function Letter() {
     >
       <LetterBack $isOut={stage === 'out'} />
       <PaperWrapper $isOut={stage === 'out'}>
-        <Paper>가나다</Paper>
+        <Paper>편지입니다</Paper>
       </PaperWrapper>
+      <LetterFront src="letter_front.png" $isOut={stage === 'out'} />
       <LetterFrontWrapper $isOut={stage === 'out'}>
-        <LetterFront src="letter_front.png" />
         <LetterCover
           src="letter_cover.png"
           $isOpen={stage !== 'close'}
@@ -29,12 +29,10 @@ const Container = styled.div<{ $stage: 'close' | 'open' | 'out' }>`
   width: 100%;
   aspect-ratio: ${({ $stage }) => ($stage === 'out' ? 0.583 : 1.45)};
 
-  background-color: rgba(0, 0, 0, 0.5);
   transition: 1s ease;
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
 
   z-index: 1;
@@ -46,9 +44,8 @@ const LetterBack = styled.div<{ $isOut: boolean }>`
   width: 100%;
   aspect-ratio: 1.45;
   bottom: 0;
-  transition: 1s ease;
-  opacity: 1;
-  ${({ $isOut }) => ($isOut ? `opacity: 0;` : ``)}
+  transition: opacity 1s ease;
+  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
 `;
 
 const LetterFrontWrapper = styled.div<{ $isOut: boolean }>`
@@ -57,17 +54,20 @@ const LetterFrontWrapper = styled.div<{ $isOut: boolean }>`
   width: 100%;
   aspect-ratio: 1.45;
   bottom: 0;
-  transition: 1s ease;
+  transition: opacity 1s ease;
 
-  opacity: 1;
-  ${({ $isOut }) => ($isOut ? `opacity: 0;` : ``)}
+  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
+  z-index: ${({ $isOut }) => ($isOut ? 0 : 1)};
 `;
 
-const LetterFront = styled.img`
+const LetterFront = styled.img<{ $isOut: boolean }>`
   position: absolute;
   width: 104%;
   left: -2%;
   bottom: -2%;
+  transition: opacity 1s ease;
+  z-index: ${({ $isOut }) => ($isOut ? 100 : 0)};
+  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
 `;
 
 const LetterCover = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
@@ -77,10 +77,14 @@ const LetterCover = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
   top: 0%;
 
   transform-origin: center top;
-  transition: 1s ease;
-  ${({ $isOpen }) =>
-    $isOpen ? `transform: rotateX(180deg);` : `transform: rotateX(0deg);`}
-  ${({ $isOut }) => ($isOut ? `z-index:-1` : ``)}
+  transition: transform 1s ease;
+  ${({ $isOpen, $isOut }) =>
+    $isOpen
+      ? `transform: rotateX(180deg);`
+      : $isOut
+        ? `transform: rotateX(0deg);`
+        : `transform:  rotateX(0deg);`}
+  z-index: ${({ $isOut }) => ($isOut ? -1 : 1)};
 `;
 
 const PaperWrapper = styled.div<{ $isOut: boolean }>`
@@ -91,13 +95,17 @@ const PaperWrapper = styled.div<{ $isOut: boolean }>`
   height: 100%;
   overflow: hidden;
   aspect-ratio: ${({ $isOut }) => ($isOut ? 0.583 : 1.45)};
+  z-index: ${({ $isOut }) => ($isOut ? 1 : 0)};
 
   padding: 0 10px;
   box-sizing: border-box;
 `;
 
 const Paper = styled.div`
+  position: absolute;
   background-color: #f1f6f6;
+  top: 10px;
+  left: 0;
   width: 100%;
   aspect-ratio: 0.55;
 `;
