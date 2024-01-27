@@ -1,11 +1,22 @@
 import styled from 'styled-components';
 
-export default function Background() {
+import { GRID } from '../constants/breakpoint';
+import { Mode } from '../types/mode';
+
+interface Props {
+  mode?: Mode;
+}
+
+export default function Background({ mode = Mode.OUTSIDE }: Props) {
   return (
     <Container>
-      <Image />
-      <FootPrint1 />
-      <FootPrint2 />
+      <BackgroundImage $mode={mode} />
+      {mode === Mode.OUTSIDE && (
+        <>
+          <FootPrint1 />
+          <FootPrint2 />
+        </>
+      )}
     </Container>
   );
 }
@@ -20,13 +31,17 @@ const Container = styled.div`
   z-index: -1;
 `;
 
-const Image = styled.div`
+const BackgroundImage = styled.div<{ $mode: Mode }>`
   width: 100%;
   height: 100%;
   position: relative;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_outside.png');
+  background-image: url('/background_${({ $mode }) => $mode}.png');
+
+  @media ${GRID.MOBILE} {
+    background-image: url('/background_${({ $mode }) => $mode}_m_ver.png');
+  }
 `;
 
 const FootPrint1 = styled.div`
