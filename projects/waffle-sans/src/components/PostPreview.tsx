@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
@@ -11,28 +10,20 @@ interface Props {
 
 export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
   const value = useRecoilValue(postFormState);
-  const today = useMemo(() => {
-    const date = new Date();
-    return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}.`;
-  }, []);
 
   return (
     <Container $mode={mode}>
       <Sans></Sans>
 
       <PostContainer>
-        <Receiver>
-          {`TO. ${
-            value?.receiver ? value?.receiver : '받는 사람을 입력해주세요.'
-          }`}
-        </Receiver>
-        <Content>{value?.content}</Content>
-        <Sender>
-          {`FROM. ${
-            value?.sender ? value?.sender : '보내는 사람을 입력해주세요.'
-          }`}
-        </Sender>
-        <SendDate>{today}</SendDate>
+        <Content $color={mode === Mode.OUTSIDE ? '#315c57' : '#fff'}>
+          {value?.content}
+        </Content>
+        {!!value?.sender && (
+          <Sender $color={mode === Mode.OUTSIDE ? '#315c57' : '#fff'}>
+            {`From. ${value?.sender}`}
+          </Sender>
+        )}
       </PostContainer>
     </Container>
   );
@@ -46,6 +37,7 @@ const Container = styled.div<{ $mode: Mode }>`
   flex-shrink: 0;
   width: 330px;
   height: 600px;
+  padding: 24px 0;
   background: #f1f6f6;
   box-sizing: border-box;
   padding-bottom: 20px;
@@ -57,33 +49,28 @@ const Container = styled.div<{ $mode: Mode }>`
       : 'url(/background_inside_letter.png)'};
 `;
 
-const Sans = styled.div``;
+const Sans = styled.div`
+  width: 100%;
+  height: 234px;
+`;
 
 const PostContainer = styled.div`
   width: 100%;
   flex: 1;
-  padding: 14px 40px;
+  padding: 0 34px;
   box-sizing: border-box;
 `;
 
-const Receiver = styled.h5`
-  margin-bottom: 15px;
-  color: #2e3a2c;
+const Content = styled.p<{ $color: string }>`
+  height: 208px;
+  color: ${({ $color }) => $color};
   font-family: Inter;
-  font-size: 11px;
+  font-size: 16px;
+  font-style: normal;
   font-weight: 400;
-  line-height: normal;
-`;
-
-const Content = styled.p`
-  height: 220px;
-  color: #2e3a2c;
-  font-family: Inter;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: normal;
+  line-height: 24px;
   white-space: pre-line;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   overflow: auto;
 
   @media (max-width: 1200px) {
@@ -97,26 +84,11 @@ const Content = styled.p`
   }
 `;
 
-const Sender = styled.h5`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  color: #2e3a2c;
-  text-align: right;
+const Sender = styled.h5<{ $color: string }>`
+  color: ${({ $color }) => $color};
+  text-align: justify;
   font-family: Inter;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: normal;
-`;
-
-const SendDate = styled.span`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  color: #2e3a2c;
-  text-align: right;
-  font-family: Inter;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: normal;
+  line-height: 24px;
 `;
