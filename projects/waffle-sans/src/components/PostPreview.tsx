@@ -3,9 +3,13 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import { postFormState } from '../store/post';
-import Footer from './Footer';
+import { Mode } from '../types/mode';
 
-export default function PostPreview() {
+interface Props {
+  mode?: Mode;
+}
+
+export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
   const value = useRecoilValue(postFormState);
   const today = useMemo(() => {
     const date = new Date();
@@ -13,11 +17,8 @@ export default function PostPreview() {
   }, []);
 
   return (
-    <Container>
-      <Sans>
-        <Logo src="/logo_white.svg" alt="waffle sans" />
-        <SansContainer>{/* <SampleTypo /> */}</SansContainer>
-      </Sans>
+    <Container $mode={mode}>
+      <Sans></Sans>
 
       <PostContainer>
         <Receiver>
@@ -33,62 +34,30 @@ export default function PostPreview() {
         </Sender>
         <SendDate>{today}</SendDate>
       </PostContainer>
-
-      <Footer fontSize={9} />
     </Container>
   );
 }
 
 /* STYLES */
-const Container = styled.div`
+const Container = styled.div<{ $mode: Mode }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  height: 715px;
+  flex-shrink: 0;
+  width: 330px;
+  height: 600px;
   background: #f1f6f6;
   box-sizing: border-box;
   padding-bottom: 20px;
-  box-shadow: 0px 5.72px 5.72px 0px rgba(0, 0, 0, 0.25);
-
-  @media (max-width: 1200px) {
-    height: 660px;
-  }
-  @media (max-width: 1024px) {
-    height: 660px;
-  }
-  @media (max-width: 840px) {
-    height: 660px;
-  }
-`;
-
-const Sans = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 308px;
-  padding: 22px;
-  box-sizing: border-box;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_outside.png');
+  background-image: ${({ $mode }) =>
+    $mode === Mode.OUTSIDE
+      ? 'url(/background_outside_letter.png)'
+      : 'url(/background_inside_letter.png)'};
 `;
 
-const SansContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  width: 100%;
-  overflow: auto;
-`;
-
-const Logo = styled.img`
-  width: 54px;
-  height: auto;
-`;
+const Sans = styled.div``;
 
 const PostContainer = styled.div`
   width: 100%;

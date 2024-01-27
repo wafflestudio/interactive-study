@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import LogoIcon from '../icons/Logo';
+import LogoIcon from './Logo';
 
 export default function MobileFooter() {
   return (
