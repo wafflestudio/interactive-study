@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -11,12 +12,33 @@ import { Mode } from '../types/mode';
 
 export default function InsidePost() {
   const router = useNavigate();
+  const [mobilePreview, setMobilePreview] = useState(false);
+
+  const handlePreviewClick = useCallback(() => {
+    setMobilePreview(true);
+  }, []);
+
+  const handlePreviewClose = useCallback(() => {
+    setMobilePreview(false);
+  }, []);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobilePreview(false);
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   return (
     <Container>
       <Header mode={'dark'} />
       <Background mode={Mode.INSIDE} />
       <Dim />
+      <MobileContainer visible={mobilePreview} onClick={handlePreviewClose}>
+        <PostPreview mode={Mode.INSIDE} />
+      </MobileContainer>
 
       <Contents>
         <ButtonContainer>
@@ -34,7 +56,10 @@ export default function InsidePost() {
             <PostPreview mode={Mode.INSIDE} />
           </PreviewContainer>
           <FormContainer>
-            <PostForm mode={Mode.INSIDE} />
+            <PostForm
+              mode={Mode.INSIDE}
+              handlePreviewClick={handlePreviewClick}
+            />
           </FormContainer>
         </Grid>
       </Contents>
@@ -130,5 +155,26 @@ const Grid = styled.div`
 
   @media ${GRID.MOBILE} {
     width: 100%;
+  }
+`;
+
+const MobileContainer = styled.div<{ visible?: boolean }>`
+  display: none;
+
+  @media ${GRID.MOBILE} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease-in-out;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    opacity: ${({ visible }) => (visible ? 1 : 0)};
+    visible: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+    pointer-events: ${({ visible }) => (visible ? 'auto' : 'none')};
+    z-index: 100;
   }
 `;

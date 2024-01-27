@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { GRID } from '../constants/breakpoint';
 import ShareIcon from '../icons/ShareIcon';
 import { postFormState } from '../store/post';
 import { Mode } from '../types/mode';
@@ -11,9 +12,13 @@ import Textarea from './Textarea';
 
 interface Props {
   mode?: Mode;
+  handlePreviewClick: () => void;
 }
 
-export default function PostForm({ mode = Mode.OUTSIDE }: Props) {
+export default function PostForm({
+  mode = Mode.OUTSIDE,
+  handlePreviewClick,
+}: Props) {
   const [form, setForm] = useRecoilState(postFormState);
   const THRESHOLD = useMemo(() => {
     return {
@@ -83,16 +88,32 @@ export default function PostForm({ mode = Mode.OUTSIDE }: Props) {
         height={'226px'}
         thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}
       />
-      <Button
-        text={'링크 공유하기'}
-        handleClick={() => {}}
-        color={mode === Mode.OUTSIDE ? '#D2E6E4' : '#E8C5A6'}
-        textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
-        hoveredColor={mode === Mode.OUTSIDE ? '#BFDBD9' : '#D8BDA3'}
-        icon={
-          <ShareIcon color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'} />
-        }
-      />
+      <ButtonContainer>
+        <MobilePreview>
+          <Button
+            text={'미리보기'}
+            handleClick={handlePreviewClick}
+            color={mode === Mode.OUTSIDE ? '#FFFFFF' : '#FFFFFF'}
+            textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+            hoveredColor={mode === Mode.OUTSIDE ? '#E6F0F0' : '#F4E4D4'}
+            icon={
+              <ShareIcon
+                color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+              />
+            }
+          />
+        </MobilePreview>
+        <Button
+          text={'링크 공유하기'}
+          handleClick={() => {}}
+          color={mode === Mode.OUTSIDE ? '#D2E6E4' : '#E8C5A6'}
+          textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
+          hoveredColor={mode === Mode.OUTSIDE ? '#BFDBD9' : '#D8BDA3'}
+          icon={
+            <ShareIcon color={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'} />
+          }
+        />
+      </ButtonContainer>
     </Container>
   );
 }
@@ -118,13 +139,25 @@ const Announce = styled.h2`
   line-height: normal;
   text-align: center;
 
-  @media (max-width: 1200px) {
+  @media ${GRID.MOBILE} {
     white-space: pre-line;
   }
-  @media (max-width: 1024px) {
-    white-space: pre-line;
+`;
+
+const MobilePreview = styled.div`
+  display: none;
+  width: auto;
+  height: auto;
+
+  @media ${GRID.MOBILE} {
+    display: block;
   }
-  @media (max-width: 840px) {
-    word-break: keep-all;
-  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
 `;

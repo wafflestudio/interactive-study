@@ -57,6 +57,7 @@ const Logo = styled.button`
   height: 53px;
   border: none;
   background-color: transparent;
+  cursor: pointer;
 
   @media ${GRID.MOBILE} {
     width: 99px;
