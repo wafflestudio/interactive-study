@@ -36,13 +36,13 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
     }
 
     mode === Mode.OUTSIDE
-      ? router(`/o-post?msg=${getText()}`)
-      : router(`/i-post?msg=${getText()}`);
+      ? router(`/o-post?sans=${encodeURIComponent(getText())}`)
+      : router(`/i-post?sans=${encodeURIComponent(getText())}`);
   }, [getText, mode, router]);
 
   useEffect(() => {
     function handleResize() {
-      resize(window.innerWidth, window.innerHeight);
+      resize(window.innerWidth, (window.innerHeight / 100) * 62);
     }
     window.addEventListener('resize', handleResize);
     return () => {

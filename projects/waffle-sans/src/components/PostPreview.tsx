@@ -1,6 +1,9 @@
+import { useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
 import { postFormState } from '../store/post';
 import { Mode } from '../types/mode';
 
@@ -9,11 +12,40 @@ interface Props {
 }
 
 export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
   const value = useRecoilValue(postFormState);
+  const [searchParams] = useSearchParams();
+  const sans = searchParams.get('sans');
+
+  // TODO: offset 잡기 + remove canvas
+  const { WreathSansCanvas, resize, redraw } = createWreathSans({
+    initialText: sans ?? '',
+    width: ref?.current?.offsetWidth,
+    height: ref?.current?.offsetHeight,
+    size: 40,
+    color: '#704234',
+    background: 'transparent',
+  });
+  const Canvas = useMemo(() => WreathSansCanvas, [WreathSansCanvas]);
+
+  useEffect(() => {
+    function handleResize() {
+      if (ref?.current?.offsetWidth && ref?.current?.offsetHeight) {
+        resize(ref?.current?.offsetWidth, ref?.current?.offsetHeight);
+        redraw();
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [redraw, resize]);
 
   return (
     <Container $mode={mode}>
-      <Sans></Sans>
+      <Sans ref={ref}>
+        <Canvas />
+      </Sans>
 
       <PostContainer>
         <Content $color={mode === Mode.OUTSIDE ? '#315c57' : '#fff'}>

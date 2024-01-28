@@ -48,6 +48,15 @@ export default function PostForm({
     [THRESHOLD.CONTENT, THRESHOLD.RECEIVER, THRESHOLD.SENDER, setForm],
   );
 
+  const handleShare = useCallback(() => {
+    const url = new URL(window.location.origin);
+    const targerUrl = `${url}?sender=${form.sender}?receiver=${form.receiver}?content=${form.content}`;
+    const encodedUrl = encodeURIComponent(targerUrl);
+    window.navigator.clipboard
+      .writeText(encodedUrl.toString())
+      .then(() => alert('URL이 복사되었습니다.'));
+  }, [form.content, form.receiver, form.sender]);
+
   return (
     <Container>
       <Announce>
@@ -105,7 +114,7 @@ export default function PostForm({
         </MobilePreview>
         <Button
           text={'링크 공유하기'}
-          handleClick={() => {}}
+          handleClick={handleShare}
           color={mode === Mode.OUTSIDE ? '#D2E6E4' : '#E8C5A6'}
           textColor={mode === Mode.OUTSIDE ? '#2E3A2C' : '#624835'}
           hoveredColor={mode === Mode.OUTSIDE ? '#BFDBD9' : '#D8BDA3'}
