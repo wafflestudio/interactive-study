@@ -3,7 +3,7 @@ import { Align, CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
-import { degToRad, randomIdx } from '../utils';
+import { degToRad, random, randomIdx } from '../utils';
 import LightRing from './LightRing';
 import Ornament from './Ornament';
 import { ORNAMENT_DATA } from './OrnamentData';
@@ -22,6 +22,7 @@ type WreathSansProps = {
   graphics: PIXI.Graphics;
   leon: LeonSans;
   darkMode?: boolean;
+  snowMode?: boolean;
 };
 
 export default class WreathSansController {
@@ -37,11 +38,13 @@ export default class WreathSansController {
   ornamentGap: number = 10;
   ornamentAmplitude: number = 30;
   darkMode: boolean;
+  _snowMode: boolean;
 
   leafSources: PIXI.SpriteSource[];
   darkLeafSources: PIXI.SpriteSource[];
   ornamentMap: Record<string, Ornament>;
   containers: PIXI.Container[];
+  snowFlakes: PIXI.Sprite[];
   loaded: boolean;
   loadingPromise: Promise<void>;
 
@@ -52,14 +55,17 @@ export default class WreathSansController {
     this.graphics = props.graphics;
     this.leon = props.leon;
     this.darkMode = props.darkMode ?? false;
+    this._snowMode = props.snowMode ?? false;
 
     this.containers = [];
+    this.snowFlakes = [];
     this.leafSources = [];
     this.darkLeafSources = [];
     this.ornamentMap = {};
     this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
       this.loaded = true;
+      if (this._snowMode) this.turnOnSnowEffect();
     });
   }
 
@@ -70,6 +76,17 @@ export default class WreathSansController {
   set align(align: Align) {
     this.leon.align = align;
     this.updatePositions();
+  }
+
+  get snowMode() {
+    return this._snowMode;
+  }
+
+  set snowMode(snowMode: boolean) {
+    if (this._snowMode === snowMode) return;
+    this._snowMode = snowMode;
+    if (this._snowMode) this.turnOnSnowEffect();
+    else this.turnOffSnowEffect();
   }
 
   insertText(text: string, idx: number) {
@@ -275,7 +292,7 @@ export default class WreathSansController {
           const randomOnOffLightRing = () => {
             if (lightRing.container.destroyed) return;
             lightRing.turnOnOffRandomly();
-            setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
+            setTimeout(randomOnOffLightRing, random(1000, 2000));
           };
           randomOnOffLightRing();
           lightRing.container.rotation = Math.atan2(
@@ -287,7 +304,7 @@ export default class WreathSansController {
             -unitDisplacement.y * 20,
           );
 
-          const lightRingRotationDelta = (Math.random() - 0.5) * degToRad(30);
+          const lightRingRotationDelta = random(-0.5, 0.5) * degToRad(30);
           lightRing.container.rotation += lightRingRotationDelta;
 
           leafAndRingContainer.addChild(lightRing.container);
@@ -383,18 +400,18 @@ export default class WreathSansController {
           };
           // 변위의 수직 방향으로 랜덤 오프셋
           const ornamentOffset =
-            this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
+            this.leon.scale * this.ornamentAmplitude * random(-1, 1);
           ornamentSprite.x += ornamentOffset * orthogonalUnitVector.x;
           ornamentSprite.y += ornamentOffset * orthogonalUnitVector.y;
         }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
           typeof ornament.rotation === 'number'
-            ? (Math.random() - 0.5) * 2 * ornament.rotation
+            ? random(-1, 1) * ornament.rotation
             : ornament.rotation === 'random'
               ? Math.random() * Math.PI * 2
               : ornament.rotation === 'pendulum'
-                ? (Math.random() - 0.5) * 2 * degToRad(30)
+                ? random(-1, 1) * degToRad(30)
                 : 0;
         container.addChild(ornamentSprite);
 
@@ -428,5 +445,55 @@ export default class WreathSansController {
         duration: TYPO_DRAWING_DURATION,
       },
     );
+  }
+
+  private turnOnSnowEffect() {
+    if (this.snowFlakes.length > 0) return;
+    for (let i = 0; i < 1024; i++) {
+      const x = Math.random() * this.canvas.clientWidth;
+      const offsetX = random(-1, 1) * this.canvas.clientWidth;
+      const opacity = Math.random();
+      const duration = random(5, 10);
+      const radius = random(0.5, 4.2);
+
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
+      gradient.addColorStop(0, "rgba(255, 255, 255," + opacity + ")");  // white
+      gradient.addColorStop(.8, "rgba(210, 236, 242," + opacity + ")");  // bluish
+      gradient.addColorStop(1, "rgba(237, 247, 249," + opacity + ")");   // lighter bluish
+
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.closePath();
+
+      const snowFlake = PIXI.Sprite.from(canvas);
+      snowFlake.anchor.set(0.5);
+      this.stage.addChild(snowFlake);
+      this.snowFlakes.push(snowFlake);
+
+      gsap.fromTo(
+        snowFlake.position,
+        {
+          x: x,
+          y: 0,
+        },
+        {
+          x: x + offsetX / duration,
+          y: this.canvas.clientHeight,
+          ease: Power0.easeNone,
+          duration: duration,
+          delay: Math.random() * duration,
+          repeat: -1,
+        },
+      );
+    }
+  }
+
+  private turnOffSnowEffect() {
+    this.snowFlakes.forEach((snowFlake) => snowFlake.destroy({ children: true }));
+    this.snowFlakes = [];
   }
 }

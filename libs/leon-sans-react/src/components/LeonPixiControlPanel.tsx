@@ -83,6 +83,7 @@ export default function LeonPixiController({
   const leafLightRingRatioRef = useRef<HTMLInputElement>(null);
   const leafGapRef = useRef<HTMLInputElement>(null);
   const entireDensityRef = useRef<HTMLInputElement>(null);
+  const snowModeOnOffRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -183,7 +184,6 @@ export default function LeonPixiController({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
         wreath.renderer.background.color = e.target.value;
-        wreath.redraw();
       });
     },
     [dispatcher],
@@ -318,6 +318,14 @@ export default function LeonPixiController({
         wreath.leon.pathGap = 1 / Number(e.target.value);
         wreath.redraw();
         setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const toggleSnowModeOnOff = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.snowMode = e.target.checked;
       }),
     [dispatcher],
   );
@@ -545,6 +553,15 @@ export default function LeonPixiController({
         <label className={styles.leafDensityLabel}>
           1 / {entireDensityRef.current?.value}
         </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 모드</span>
+        <input
+          className={styles.snowModeOnOff}
+          ref={snowModeOnOffRef}
+          type="checkbox"
+          onChange={toggleSnowModeOnOff}
+        />
       </div>
     </div>
   );
