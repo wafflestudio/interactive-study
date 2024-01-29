@@ -39,6 +39,8 @@ export default class WreathSansController {
   ornamentAmplitude: number = 30;
   darkMode: boolean;
   _snowMode: boolean;
+  _snowFlakeCount: number = 256;
+  _snowFlakeSizeBound: [number, number] = [0.5, 4.2];
 
   leafSources: PIXI.SpriteSource[];
   darkLeafSources: PIXI.SpriteSource[];
@@ -87,6 +89,39 @@ export default class WreathSansController {
     this._snowMode = snowMode;
     if (this._snowMode) this.turnOnSnowEffect();
     else this.turnOffSnowEffect();
+  }
+
+  get snowFlakeCount() {
+    return this._snowFlakeCount;
+  }
+
+  set snowFlakeCount(count: number) {
+    if (this._snowMode) {
+      if (this._snowFlakeCount < count) {
+        for (let i = 0; i < count - this._snowFlakeCount; i++) {
+          this.snowFlakes.push(this.makeSnowFlake());
+        }
+      } else {
+        this.snowFlakes
+          .slice(count)
+          .forEach((snowFlake) => snowFlake.destroy({ children: true }));
+        this.snowFlakes = this.snowFlakes.slice(0, count);
+      }
+    }
+    this._snowFlakeCount = count;
+  }
+
+  get snowFlakeSizeBound() {
+    return this._snowFlakeSizeBound;
+  }
+
+  set snowFlakeSizeBound(bound: [number, number]) {
+    if (bound[0] > bound[1]) throw new Error('Invalid bound');
+    this._snowFlakeSizeBound = bound;
+    if (this._snowMode) {
+      this.turnOffSnowEffect();
+      this.turnOnSnowEffect();
+    }
   }
 
   insertText(text: string, idx: number) {
@@ -449,51 +484,60 @@ export default class WreathSansController {
 
   private turnOnSnowEffect() {
     if (this.snowFlakes.length > 0) return;
-    for (let i = 0; i < 1024; i++) {
-      const x = Math.random() * this.canvas.clientWidth;
-      const offsetX = random(-1, 1) * this.canvas.clientWidth;
-      const opacity = Math.random();
-      const duration = random(5, 10);
-      const radius = random(0.5, 4.2);
-
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
-      gradient.addColorStop(0, "rgba(255, 255, 255," + opacity + ")");  // white
-      gradient.addColorStop(.8, "rgba(210, 236, 242," + opacity + ")");  // bluish
-      gradient.addColorStop(1, "rgba(237, 247, 249," + opacity + ")");   // lighter bluish
-
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.closePath();
-
-      const snowFlake = PIXI.Sprite.from(canvas);
-      snowFlake.anchor.set(0.5);
-      this.stage.addChild(snowFlake);
-      this.snowFlakes.push(snowFlake);
-
-      gsap.fromTo(
-        snowFlake.position,
-        {
-          x: x,
-          y: 0,
-        },
-        {
-          x: x + offsetX / duration,
-          y: this.canvas.clientHeight,
-          ease: Power0.easeNone,
-          duration: duration,
-          delay: Math.random() * duration,
-          repeat: -1,
-        },
-      );
+    for (let i = 0; i < this._snowFlakeCount; i++) {
+      this.snowFlakes.push(this.makeSnowFlake());
     }
   }
 
   private turnOffSnowEffect() {
-    this.snowFlakes.forEach((snowFlake) => snowFlake.destroy({ children: true }));
+    this.snowFlakes.forEach((snowFlake) =>
+      snowFlake.destroy({ children: true }),
+    );
     this.snowFlakes = [];
+  }
+
+  private makeSnowFlake() {
+    const x = Math.random() * this.canvas.clientWidth;
+    const offsetX = random(-1, 1) * this.canvas.clientWidth;
+    const opacity = Math.random();
+    const duration = random(5, 10);
+    const radius = random(...this._snowFlakeSizeBound);
+    const diameter = radius * 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = diameter;
+    canvas.height = diameter;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const gradient = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+    gradient.addColorStop(0, 'rgba(255, 255, 255,' + opacity + ')'); // white
+    gradient.addColorStop(0.8, 'rgba(210, 236, 242,' + opacity + ')'); // bluish
+    gradient.addColorStop(1, 'rgba(237, 247, 249,' + opacity + ')'); // lighter bluish
+
+    ctx.beginPath();
+    ctx.arc(radius, radius, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.closePath();
+
+    const snowFlake = PIXI.Sprite.from(canvas);
+    this.stage.addChild(snowFlake);
+
+    gsap.fromTo(
+      snowFlake.position,
+      {
+        x: x,
+        y: -diameter,
+      },
+      {
+        x: x + offsetX / duration,
+        y: this.canvas.clientHeight,
+        ease: Power0.easeNone,
+        duration: duration,
+        delay: Math.random() * duration,
+        repeat: -1,
+      },
+    );
+    
+    return snowFlake;
   }
 }

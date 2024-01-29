@@ -84,6 +84,9 @@ export default function LeonPixiController({
   const leafGapRef = useRef<HTMLInputElement>(null);
   const entireDensityRef = useRef<HTMLInputElement>(null);
   const snowModeOnOffRef = useRef<HTMLInputElement>(null);
+  const snowFlakeCountRef = useRef<HTMLInputElement>(null);
+  const snowFlakeSizeLowerBoundRef = useRef<HTMLInputElement>(null);
+  const snowFlakeSizeUpperBoundRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -330,6 +333,45 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const changeSnowFlakeCount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.snowFlakeCount = Number(e.target.value);
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeSnowFlakeSizeLowerBound = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        const value = Number(e.target.value);
+        if (value > wreath.snowFlakeSizeBound[1]) {
+          wreath.snowFlakeSizeBound = [value, value + 0.1];
+          snowFlakeSizeUpperBoundRef.current!.value = value + 0.1 + "";
+        } else {
+          wreath.snowFlakeSizeBound = [value, wreath.snowFlakeSizeBound[1]];
+        }
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeSnowFlakeSizeUpperBound = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        const value = Number(e.target.value);
+        if (value < wreath.snowFlakeSizeBound[0]) {
+          wreath.snowFlakeSizeBound = [value - 0.1, value];
+          snowFlakeSizeLowerBoundRef.current!.value = value - 0.1 + "";
+        } else {
+          wreath.snowFlakeSizeBound = [wreath.snowFlakeSizeBound[0], value];
+        }
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
   /**
    * 마운트될 때 INITIAL_ORNAMENT_ORDER, INITIAL_TEXT 적용
    */
@@ -562,6 +604,51 @@ export default function LeonPixiController({
           type="checkbox"
           onChange={toggleSnowModeOnOff}
         />
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 개수</span>
+        <input
+          className={styles.snowFlakeCount}
+          ref={snowFlakeCountRef}
+          type="range"
+          min="1"
+          max="1024"
+          step="1"
+          onChange={changeSnowFlakeCount}
+          defaultValue="256"
+        />
+        <label className={styles.snowFlakeCountLabel}>
+          {snowFlakeCountRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 크기</span>
+        <input
+          className={styles.snowFlakeSizeLowerBound}
+          ref={snowFlakeSizeLowerBoundRef}
+          type="range"
+          min="0.1"
+          max="9.9"
+          step="0.1"
+          onChange={changeSnowFlakeSizeLowerBound}
+          defaultValue="0.5"
+        />
+        <label className={styles.snowFlakeSizeLowerBoundLabel}>
+          {snowFlakeSizeLowerBoundRef.current?.value}
+        </label>
+        <input
+          className={styles.snowFlakeSizeUpperBound}
+          ref={snowFlakeSizeUpperBoundRef}
+          type="range"
+          min="0.2"
+          max="10"
+          step="0.1"
+          onChange={changeSnowFlakeSizeUpperBound}
+          defaultValue="4.2"
+        />
+        <label className={styles.snowFlakeSizeUpperBoundLabel}>
+          {snowFlakeSizeUpperBoundRef.current?.value}
+        </label>
       </div>
     </div>
   );
