@@ -33,6 +33,8 @@ export default function createWreathSans({
     color: [color],
     size,
     weight,
+    isPattern: true,
+    pathGap: 1/20,
   });
 
   // set position

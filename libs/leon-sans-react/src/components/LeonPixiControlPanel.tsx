@@ -73,13 +73,20 @@ export default function LeonPixiController({
   const [, setUpdateId] = useState<number>(0);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const backgroundColorRef = useRef<HTMLInputElement>(null);
   const alignRef = useRef<HTMLSelectElement>(null);
   const fontSizeRef = useRef<HTMLInputElement>(null);
   const ornamentDisabledRef = useRef<HTMLInputElement>(null);
-  const ornamentDensityRef = useRef<HTMLInputElement>(null);
   const ornamentAmplitudeRef = useRef<HTMLInputElement>(null);
   const ornamentSizeRef = useRef<HTMLInputElement>(null);
+  const ornamentGapRef = useRef<HTMLInputElement>(null);
+  const leafLightRingRatioRef = useRef<HTMLInputElement>(null);
   const leafGapRef = useRef<HTMLInputElement>(null);
+  const entireDensityRef = useRef<HTMLInputElement>(null);
+  const snowModeOnOffRef = useRef<HTMLInputElement>(null);
+  const snowFlakeCountRef = useRef<HTMLInputElement>(null);
+  const snowFlakeSizeLowerBoundRef = useRef<HTMLInputElement>(null);
+  const snowFlakeSizeUpperBoundRef = useRef<HTMLInputElement>(null);
 
   const onInputHandler = useCallback(
     (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -176,7 +183,16 @@ export default function LeonPixiController({
     }
   }, []);
 
-  const setAlign = useCallback(
+  const changeBackgroundColor = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatcher.send((wreath) => {
+        wreath.renderer.background.color = e.target.value;
+      });
+    },
+    [dispatcher],
+  );
+
+  const changeAlignType = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       dispatcher.send((wreath) => {
         wreath.align = e.target.value as 'left' | 'center' | 'right';
@@ -185,7 +201,7 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const setFontSize = useCallback(
+  const changeFontSize = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
         wreath.leon.size = Number(e.target.value);
@@ -237,21 +253,11 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
-  const setOrnamentDisabled = useCallback(
+  const toggleOrnamentDisabled = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
         wreath.ornamentDisabled = e.target.checked;
         wreath.redraw();
-      }),
-    [dispatcher],
-  );
-
-  const changeOrnamentDensity = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      dispatcher.send((wreath) => {
-        wreath.ornamentDensity = 10 - Number(e.target.value);
-        wreath.redraw();
-        setUpdateId((prev) => prev + 1);
       }),
     [dispatcher],
   );
@@ -279,11 +285,88 @@ export default function LeonPixiController({
     [dispatcher],
   );
 
+  const changeOrnamentGap = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.ornamentGap = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeLeafLightRingRatio = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.leafLightRingRatio = Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
   const changeLeafGap = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       dispatcher.send((wreath) => {
         wreath.leafGap = Number(e.target.value);
         wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeEntireDensity = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.leon.pathGap = 1 / Number(e.target.value);
+        wreath.redraw();
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const toggleSnowModeOnOff = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.snowMode = e.target.checked;
+      }),
+    [dispatcher],
+  );
+
+  const changeSnowFlakeCount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        wreath.snowFlakeCount = Number(e.target.value);
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeSnowFlakeSizeLowerBound = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        const value = Number(e.target.value);
+        if (value > wreath.snowFlakeSizeBound[1]) {
+          wreath.snowFlakeSizeBound = [value, value + 0.1];
+          snowFlakeSizeUpperBoundRef.current!.value = value + 0.1 + "";
+        } else {
+          wreath.snowFlakeSizeBound = [value, wreath.snowFlakeSizeBound[1]];
+        }
+        setUpdateId((prev) => prev + 1);
+      }),
+    [dispatcher],
+  );
+
+  const changeSnowFlakeSizeUpperBound = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatcher.send((wreath) => {
+        const value = Number(e.target.value);
+        if (value < wreath.snowFlakeSizeBound[0]) {
+          wreath.snowFlakeSizeBound = [value - 0.1, value];
+          snowFlakeSizeLowerBoundRef.current!.value = value - 0.1 + "";
+        } else {
+          wreath.snowFlakeSizeBound = [wreath.snowFlakeSizeBound[0], value];
+        }
         setUpdateId((prev) => prev + 1);
       }),
     [dispatcher],
@@ -300,6 +383,7 @@ export default function LeonPixiController({
         wreath.replaceText(INITIAL_TEXT);
       });
     });
+    setUpdateId((prev) => prev + 1);
   }, [dispatcher]);
 
   return (
@@ -333,11 +417,21 @@ export default function LeonPixiController({
         </div>
       </div>
       <div className={styles.configuration}>
+        <span className={styles.key}>배경색</span>
+        <input
+          className={styles.backgroundColor}
+          ref={backgroundColorRef}
+          type="color"
+          onChange={changeBackgroundColor}
+          defaultValue="#FFFFFF"
+        />
+      </div>
+      <div className={styles.configuration}>
         <span className={styles.key}>정렬</span>
         <select
           className={styles.alignSelector}
           ref={alignRef}
-          onChange={setAlign}
+          onChange={changeAlignType}
           defaultValue={INITIAL_ALIGN}
         >
           <option value="left">left</option>
@@ -354,7 +448,7 @@ export default function LeonPixiController({
           min="1"
           max="1000"
           step="1"
-          onChange={setFontSize}
+          onChange={changeFontSize}
           defaultValue="130"
         />
         <label className={styles.fontSizeLabel}>
@@ -403,24 +497,8 @@ export default function LeonPixiController({
           className={styles.ornamentDisabled}
           ref={ornamentDisabledRef}
           type="checkbox"
-          onChange={setOrnamentDisabled}
+          onChange={toggleOrnamentDisabled}
         />
-      </div>
-      <div className={styles.configuration}>
-        <span className={styles.key}>오나먼트 밀도</span>
-        <input
-          className={styles.ornamentDensity}
-          ref={ornamentDensityRef}
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          onChange={changeOrnamentDensity}
-          defaultValue="5"
-        />
-        <label className={styles.ornamentDensityLabel}>
-          {ornamentDensityRef.current?.value}
-        </label>
       </div>
       <div className={styles.configuration}>
         <span className={styles.key}>오나먼트 진폭</span>
@@ -435,7 +513,7 @@ export default function LeonPixiController({
           defaultValue="50"
         />
         <label className={styles.ornamentAmplitudeLabel}>
-          {ornamentAmplitudeRef.current?.value}
+          {ornamentAmplitudeRef.current?.value ?? 50}
         </label>
       </div>
       <div className={styles.configuration}>
@@ -451,7 +529,39 @@ export default function LeonPixiController({
           defaultValue="28"
         />
         <label className={styles.ornamentSizeLabel}>
-          {ornamentSizeRef.current?.value}
+          {ornamentSizeRef.current?.value ?? 28}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>오나먼트 간격</span>
+        <input
+          className={styles.ornamentGap}
+          ref={ornamentGapRef}
+          type="range"
+          min="0"
+          max="30"
+          step="1"
+          onChange={changeOrnamentGap}
+          defaultValue="10"
+        />
+        <label className={styles.ornamentGapLabel}>
+          {ornamentGapRef.current?.value ?? 5}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>전구 당 잎사귀</span>
+        <input
+          className={styles.leafLightRingRatio}
+          ref={leafLightRingRatioRef}
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          onChange={changeLeafLightRingRatio}
+          defaultValue="3"
+        />
+        <label className={styles.leafLightRingRatioLabel}>
+          {leafLightRingRatioRef.current?.value ?? 5}
         </label>
       </div>
       <div className={styles.configuration}>
@@ -461,13 +571,83 @@ export default function LeonPixiController({
           ref={leafGapRef}
           type="range"
           min="1"
-          max="20"
+          max="30"
           step="1"
           onChange={changeLeafGap}
           defaultValue="10"
         />
         <label className={styles.leafDensityLabel}>
-          {leafGapRef.current?.value}
+          {leafGapRef.current?.value ?? 10}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>최소 간격</span>
+        <input
+          className={styles.leafDensity}
+          ref={entireDensityRef}
+          type="range"
+          min="1"
+          max="100"
+          step="1"
+          onChange={changeEntireDensity}
+          defaultValue="20"
+        />
+        <label className={styles.leafDensityLabel}>
+          1 / {entireDensityRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 모드</span>
+        <input
+          className={styles.snowModeOnOff}
+          ref={snowModeOnOffRef}
+          type="checkbox"
+          onChange={toggleSnowModeOnOff}
+        />
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 개수</span>
+        <input
+          className={styles.snowFlakeCount}
+          ref={snowFlakeCountRef}
+          type="range"
+          min="1"
+          max="1024"
+          step="1"
+          onChange={changeSnowFlakeCount}
+          defaultValue="256"
+        />
+        <label className={styles.snowFlakeCountLabel}>
+          {snowFlakeCountRef.current?.value}
+        </label>
+      </div>
+      <div className={styles.configuration}>
+        <span className={styles.key}>눈 크기</span>
+        <input
+          className={styles.snowFlakeSizeLowerBound}
+          ref={snowFlakeSizeLowerBoundRef}
+          type="range"
+          min="0.1"
+          max="9.9"
+          step="0.1"
+          onChange={changeSnowFlakeSizeLowerBound}
+          defaultValue="0.5"
+        />
+        <label className={styles.snowFlakeSizeLowerBoundLabel}>
+          {snowFlakeSizeLowerBoundRef.current?.value}
+        </label>
+        <input
+          className={styles.snowFlakeSizeUpperBound}
+          ref={snowFlakeSizeUpperBoundRef}
+          type="range"
+          min="0.2"
+          max="10"
+          step="0.1"
+          onChange={changeSnowFlakeSizeUpperBound}
+          defaultValue="4.2"
+        />
+        <label className={styles.snowFlakeSizeUpperBoundLabel}>
+          {snowFlakeSizeUpperBoundRef.current?.value}
         </label>
       </div>
     </div>

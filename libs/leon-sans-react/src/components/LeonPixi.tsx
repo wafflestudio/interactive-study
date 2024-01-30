@@ -23,7 +23,7 @@ type LeonPixiProps = {
 export default function LeonPixi({
   initialText,
   color = '#000000',
-  size = 60,
+  size = 500,
   weight = 400,
   width = 800,
   height = 600,
@@ -79,6 +79,8 @@ export default function LeonPixi({
       color: [color],
       size,
       weight,
+      isPattern: true,
+      pathGap: 1/20,
     });
 
     // set position
@@ -100,6 +102,13 @@ export default function LeonPixi({
     const stage = new PIXI.Container();
     const graphics = new PIXI.Graphics();
     stage.addChild(graphics);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    globalThis.__PIXI_STAGE__ = stage;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    globalThis.__PIXI_RENDERER__ = renderer;
 
     // save dataRefs
     dataRefs.current = new WreathSansController({
@@ -123,7 +132,6 @@ export default function LeonPixi({
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-    dataRefs.current.pixelRatio = pixelRatio;
   }, [dataRefs, color, size, weight, pixelRatio]);
 
   /**

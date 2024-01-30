@@ -60,7 +60,7 @@ export function getPaths(
  */
 function getDotPos(lines: LineData[], pathGap: number, scale: number): Point[] {
   const arr: Point[] = [];
-  const pgap = pathGap > -1 ? getCurrent(pathGap, 1, 0, 80, 10) * scale : 1;
+  const pgap = pathGap > 0 ? getCurrent(pathGap, 1, 0, 80, 0) * scale : 1;
   let isFirst = true;
 
   lines.reduce<Point | null>((prevPoint, line) => {
@@ -185,6 +185,7 @@ function getCubicBezierXYatT(curve: Curve, t: number) {
     x: x,
     y: y,
     rotation: rotation,
+    type: 'b',
   });
 }
 

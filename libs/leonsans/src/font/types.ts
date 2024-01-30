@@ -1,4 +1,4 @@
-import { Point } from '../core/point'
+import { Point } from '../core/point';
 import { char } from '../core/types';
 import { Vector } from '../core/vector';
 import { BEZIER_COMMAND, PATH_COMMANDS } from './constants';
@@ -9,6 +9,7 @@ export type PathRatio = {
   x: number;
   y: number;
   r: number; // rotation : if the rotation is ROTATE_NONE, it will hide in the 'pattern' and 'paths'
+  p: 1 | 0; // XXX 뭔지 모르겠음
   h: 1 | 0; // 1 is hide the point in the pattern paths
   f: 1 | 0; // 1 is fixed position for wave paths
   c: 1 | 0; // 1 is close path for PIXI bug - graphics.closePath()

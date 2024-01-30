@@ -4,6 +4,7 @@ import { getTextGroup } from './group';
 import { getGrid, getGuide } from './guide';
 import { getLengths } from './length';
 import { getPaths } from './paths';
+import { Point } from './point';
 import {
   Align,
   AlignGapX,
@@ -32,6 +33,7 @@ export class Model {
   lineWidth_: number;
   drawing_: Drawing[];
   data_: ModelData[];
+  paths_: Point[];
   rect_: Rect;
   align_: Align;
   scale_: number;
@@ -41,6 +43,7 @@ export class Model {
     this.lineWidth_ = 1;
     this.drawing_ = [];
     this.data_ = [];
+    this.paths_ = [];
     this.rect_ = {
       x: 0,
       y: 0,
@@ -264,9 +267,11 @@ export class Model {
   }
 
   updatePathsForRect() {
+    this.paths_ = [];
     this.data_.forEach((d) => {
       d.wavePaths = addRectToPaths(d.relativeWavePaths, d);
       d.patternPaths = addRectToPaths(d.relativePatternPaths, d);
+      this.paths_.concat(d.patternPaths);
     });
   }
 

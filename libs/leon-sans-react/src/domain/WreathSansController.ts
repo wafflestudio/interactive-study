@@ -3,7 +3,7 @@ import { Align, CHARSET, ModelData } from 'leonsans';
 import LeonSans from 'leonsans/src/leonsans';
 import * as PIXI from 'pixi.js';
 
-import { degToRad, randomIdx } from '../utils';
+import { degToRad, random, randomIdx } from '../utils';
 import LightRing from './LightRing';
 import Ornament from './Ornament';
 import { ORNAMENT_DATA } from './OrnamentData';
@@ -22,6 +22,7 @@ type WreathSansProps = {
   graphics: PIXI.Graphics;
   leon: LeonSans;
   darkMode?: boolean;
+  snowMode?: boolean;
 };
 
 export default class WreathSansController {
@@ -34,14 +35,18 @@ export default class WreathSansController {
   leafLightRingRatio: number = 3;
   ornamentDisabled: boolean = false;
   ornamentOrder: string[] = [];
-  ornamentDensity: number = 5;
+  ornamentGap: number = 10;
   ornamentAmplitude: number = 30;
   darkMode: boolean;
+  _snowMode: boolean;
+  _snowFlakeCount: number = 256;
+  _snowFlakeSizeBound: [number, number] = [0.5, 4.2];
 
   leafSources: PIXI.SpriteSource[];
   darkLeafSources: PIXI.SpriteSource[];
   ornamentMap: Record<string, Ornament>;
   containers: PIXI.Container[];
+  snowFlakes: PIXI.Sprite[];
   loaded: boolean;
   loadingPromise: Promise<void>;
 
@@ -52,14 +57,17 @@ export default class WreathSansController {
     this.graphics = props.graphics;
     this.leon = props.leon;
     this.darkMode = props.darkMode ?? false;
+    this._snowMode = props.snowMode ?? false;
 
     this.containers = [];
+    this.snowFlakes = [];
     this.leafSources = [];
     this.darkLeafSources = [];
     this.ornamentMap = {};
     this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
       this.loaded = true;
+      if (this._snowMode) this.turnOnSnowEffect();
     });
   }
 
@@ -70,6 +78,50 @@ export default class WreathSansController {
   set align(align: Align) {
     this.leon.align = align;
     this.updatePositions();
+  }
+
+  get snowMode() {
+    return this._snowMode;
+  }
+
+  set snowMode(snowMode: boolean) {
+    if (this._snowMode === snowMode) return;
+    this._snowMode = snowMode;
+    if (this._snowMode) this.turnOnSnowEffect();
+    else this.turnOffSnowEffect();
+  }
+
+  get snowFlakeCount() {
+    return this._snowFlakeCount;
+  }
+
+  set snowFlakeCount(count: number) {
+    if (this._snowMode) {
+      if (this._snowFlakeCount < count) {
+        for (let i = 0; i < count - this._snowFlakeCount; i++) {
+          this.snowFlakes.push(this.makeSnowFlake());
+        }
+      } else {
+        this.snowFlakes
+          .slice(count)
+          .forEach((snowFlake) => snowFlake.destroy({ children: true }));
+        this.snowFlakes = this.snowFlakes.slice(0, count);
+      }
+    }
+    this._snowFlakeCount = count;
+  }
+
+  get snowFlakeSizeBound() {
+    return this._snowFlakeSizeBound;
+  }
+
+  set snowFlakeSizeBound(bound: [number, number]) {
+    if (bound[0] > bound[1]) throw new Error('Invalid bound');
+    this._snowFlakeSizeBound = bound;
+    if (this._snowMode) {
+      this.turnOffSnowEffect();
+      this.turnOnSnowEffect();
+    }
   }
 
   insertText(text: string, idx: number) {
@@ -238,7 +290,9 @@ export default class WreathSansController {
     start: number = 0,
     end: number = this.containers.length,
   ) {
-    this.containers.slice(start, end).forEach((c) => c.destroy({children: true}));
+    this.containers
+      .slice(start, end)
+      .forEach((c) => c.destroy({ children: true }));
     this.containers = [
       ...this.containers.slice(0, start),
       ...this.containers.slice(end),
@@ -249,33 +303,43 @@ export default class WreathSansController {
     const typo = this.leon.data[idx];
     const container = this.makeContainer(idx);
     const startIdx = Math.floor(this.leafGap / 2);
-    typo.drawingPaths
+
+    typo.patternPaths
       .filter((pos) => pos.type !== 'a')
       .filter((_, i) => i % this.leafGap === startIdx)
       .forEach((pos, i, every) => {
         const leafAndRingContainer = new PIXI.Container();
 
         // make light ring
-        if (i % this.leafLightRingRatio === 1) {
+        if (i > 0 && i % this.leafLightRingRatio === 0) {
           const prevPos = every[i - 1];
           const displacement = {
             x: pos.x - prevPos.x,
             y: pos.y - prevPos.y,
+          };
+          const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
+          const unitDisplacement = {
+            x: displacement.x / distance,
+            y: displacement.y / distance,
           };
 
           const lightRing = new LightRing();
           const randomOnOffLightRing = () => {
             if (lightRing.container.destroyed) return;
             lightRing.turnOnOffRandomly();
-            setTimeout(randomOnOffLightRing, Math.random() * 1000 + 1000);
-          }
+            setTimeout(randomOnOffLightRing, random(1000, 2000));
+          };
           randomOnOffLightRing();
           lightRing.container.rotation = Math.atan2(
             displacement.y,
             displacement.x,
           );
+          lightRing.container.position.set(
+            -unitDisplacement.x * 20,
+            -unitDisplacement.y * 20,
+          );
 
-          const lightRingRotationDelta = (Math.random() - 0.5) * degToRad(30);
+          const lightRingRotationDelta = random(-0.5, 0.5) * degToRad(30);
           lightRing.container.rotation += lightRingRotationDelta;
 
           leafAndRingContainer.addChild(lightRing.container);
@@ -314,19 +378,20 @@ export default class WreathSansController {
 
     // draw ornament
     if (this.ornamentDisabled) return;
-    let probability = 0;
+    // let probability = 0;
     let ornamentIdx = -1;
-    typo.drawingPaths
-      .filter((pos, i) => pos.type == 'a' || i % 11 > 6)
-      .forEach((pos, i, every) => {
+    const ornamentStartIdx = Math.floor(this.ornamentGap / 2);
+
+    typo.patternPaths
+      .map((pos, i) => [pos, i] as const)
+      .filter(
+        ([pos], i) =>
+          pos.type === 'a' || i % this.ornamentGap === ornamentStartIdx,
+      )
+      .forEach(([pos, originIdx], i, every) => {
         const isStar = pos.type === 'a';
 
-        if (!isStar && this.ornamentDensity > probability) {
-          probability++;
-          return;
-        }
         ornamentIdx = (ornamentIdx + 1) % this.ornamentOrder.length;
-        probability = 0;
 
         const name =
           this.ornamentOrder.length > 0
@@ -349,8 +414,8 @@ export default class WreathSansController {
          */
         if (isStar) {
           ornamentSprite.y -= 7 * this.leon.scale;
-        } else {
-          const prevPos = every[i - 1];
+        } else if (i !== 0) {
+          const prevPos = typo.patternPaths[originIdx - 1];
           // 변위
           const displacement = {
             x: pos.x - prevPos.x,
@@ -360,8 +425,8 @@ export default class WreathSansController {
           const distance = Math.sqrt(displacement.x ** 2 + displacement.y ** 2);
           // 변위와 나란한 단위 벡터
           const tangentialUnitVector = {
-            x: displacement.x / Math.sqrt(distance),
-            y: displacement.y / Math.sqrt(distance),
+            x: displacement.x / distance,
+            y: displacement.y / distance,
           };
           // 변위와 수직한 단위 벡터
           const orthogonalUnitVector = {
@@ -370,18 +435,18 @@ export default class WreathSansController {
           };
           // 변위의 수직 방향으로 랜덤 오프셋
           const ornamentOffset =
-            this.leon.scale * this.ornamentAmplitude * (Math.random() - 0.5);
+            this.leon.scale * this.ornamentAmplitude * random(-1, 1);
           ornamentSprite.x += ornamentOffset * orthogonalUnitVector.x;
           ornamentSprite.y += ornamentOffset * orthogonalUnitVector.y;
         }
         ornamentSprite.scale.set(0);
         ornamentSprite.rotation =
           typeof ornament.rotation === 'number'
-            ? (Math.random() - 0.5) * 2 * ornament.rotation
+            ? random(-1, 1) * ornament.rotation
             : ornament.rotation === 'random'
               ? Math.random() * Math.PI * 2
               : ornament.rotation === 'pendulum'
-                ? (Math.random() - 0.5) * 2 * degToRad(30)
+                ? random(-1, 1) * degToRad(30)
                 : 0;
         container.addChild(ornamentSprite);
 
@@ -415,5 +480,64 @@ export default class WreathSansController {
         duration: TYPO_DRAWING_DURATION,
       },
     );
+  }
+
+  private turnOnSnowEffect() {
+    if (this.snowFlakes.length > 0) return;
+    for (let i = 0; i < this._snowFlakeCount; i++) {
+      this.snowFlakes.push(this.makeSnowFlake());
+    }
+  }
+
+  private turnOffSnowEffect() {
+    this.snowFlakes.forEach((snowFlake) =>
+      snowFlake.destroy({ children: true }),
+    );
+    this.snowFlakes = [];
+  }
+
+  private makeSnowFlake() {
+    const x = Math.random() * this.canvas.clientWidth;
+    const offsetX = random(-1, 1) * this.canvas.clientWidth;
+    const opacity = Math.random();
+    const duration = random(5, 10);
+    const radius = random(...this._snowFlakeSizeBound);
+    const diameter = radius * 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = diameter;
+    canvas.height = diameter;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const gradient = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+    gradient.addColorStop(0, 'rgba(255, 255, 255,' + opacity + ')'); // white
+    gradient.addColorStop(0.8, 'rgba(210, 236, 242,' + opacity + ')'); // bluish
+    gradient.addColorStop(1, 'rgba(237, 247, 249,' + opacity + ')'); // lighter bluish
+
+    ctx.beginPath();
+    ctx.arc(radius, radius, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.closePath();
+
+    const snowFlake = PIXI.Sprite.from(canvas);
+    this.stage.addChild(snowFlake);
+
+    gsap.fromTo(
+      snowFlake.position,
+      {
+        x: x,
+        y: -diameter,
+      },
+      {
+        x: x + offsetX / duration,
+        y: this.canvas.clientHeight,
+        ease: Power0.easeNone,
+        duration: duration,
+        delay: Math.random() * duration,
+        repeat: -1,
+      },
+    );
+    
+    return snowFlake;
   }
 }
