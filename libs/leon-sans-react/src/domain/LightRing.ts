@@ -10,6 +10,7 @@ const BULB_POSITIONS = [
 
 export default class LightRing {
   size: number = 300;
+  radius: number = this.size / 2;
   bulbOnTexture: PIXI.Texture;
   bulbOffTexture: PIXI.Texture;
   bulbs: PIXI.Sprite[];
@@ -22,13 +23,14 @@ export default class LightRing {
     this.container = new PIXI.Container();
     this.container.width = this.size;
     this.container.height = this.size;
-    this.container.pivot.set(150, 150);
+    this.container.pivot.set(this.radius, 150);
+    this.container.scale.set(0.94);
 
     const bulbCableTexture = PIXI.Texture.from('ornaments/bulb_cable.svg');
     const bulbCable = new PIXI.Sprite(bulbCableTexture);
     bulbCable.anchor.set(0.5, 0.5);
-    bulbCable.x = this.size / 2;
-    bulbCable.y = this.size / 2;
+    bulbCable.x = this.radius;
+    bulbCable.y = this.radius;
     this.container.addChild(bulbCable);
 
     for (let i = 0; i < 5; i++) {
