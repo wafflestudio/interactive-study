@@ -2,10 +2,10 @@ import * as PIXI from 'pixi.js';
 
 const BULB_POSITIONS = [
   { x: 55.12, y: 34.76 },
-  { x: 10.49, y: 130.01 },
-  { x: 50.49, y: 222.76 },
-  { x: 140, y: 263 },
-  { x: 234, y: 243 },
+  { x: 13, y: 130 },
+  { x: 51, y: 221 },
+  { x: 140, y: 265 },
+  { x: 232, y: 238 },
 ];
 
 export default class LightRing {
