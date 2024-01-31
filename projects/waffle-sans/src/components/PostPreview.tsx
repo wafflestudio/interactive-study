@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
+import useWreathSans from '../hooks/useWreathSans';
 import { postFormState } from '../store/post';
 import { Mode } from '../types/mode';
 import { decoder } from '../utils/crypto';
@@ -12,41 +12,15 @@ interface Props {
 }
 
 export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
   const value = useRecoilValue(postFormState);
-  const sans = useMemo(
-    () => decoder(new URL(window.location.href), 'sans'),
-    [],
-  );
-
-  // TODO: offset 잡기 + remove canvas
-  const { WreathSansCanvas, resize, redraw } = createWreathSans({
-    initialText: sans ?? '',
-    width: ref?.current?.offsetWidth,
-    height: ref?.current?.offsetHeight,
-    size: 40,
-    color: '#704234',
-    background: 'transparent',
-  });
-  const Canvas = useMemo(() => WreathSansCanvas, [WreathSansCanvas]);
-
-  useEffect(() => {
-    function handleResize() {
-      if (ref?.current?.offsetWidth && ref?.current?.offsetHeight) {
-        resize(ref?.current?.offsetWidth, ref?.current?.offsetHeight);
-        redraw();
-      }
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [redraw, resize]);
+  const url = useMemo(() => new URL(window.location.href), []);
+  const sans = useMemo(() => decoder(url, 'sans'), [url]);
+  const { ref, WreathSansCanvas } = useWreathSans({ initialText: sans });
 
   return (
     <Container $mode={mode}>
       <Sans ref={ref}>
-        <Canvas />
+        <WreathSansCanvas />
       </Sans>
 
       <PostContainer>
