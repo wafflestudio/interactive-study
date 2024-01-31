@@ -5,6 +5,7 @@ type ColorSource = PIXI.ColorSource;
 
 export function PixiColor(
   no: number,
+  // @ts-ignore
   data: ModelData,
   colorSet: (ColorSource | ColorSource[])[],
 ): ColorSource {
