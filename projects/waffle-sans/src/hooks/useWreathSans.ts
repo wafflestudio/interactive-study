@@ -12,26 +12,26 @@ export default function useWreathSans({ initialText }: Params) {
   const { WreathSansCanvas, resize, redraw } = useMemo(() => {
     return createWreathSans({
       initialText: initialText,
-      width: ref?.current?.offsetWidth,
-      height: ref?.current?.offsetHeight,
+      width: ref?.current?.offsetWidth ?? 330,
+      height: ref?.current?.offsetHeight ?? 234,
       size: 40,
       color: '#704234',
       background: 'transparent',
     });
-  }, [initialText]);
+  }, [initialText, ref?.current?.offsetWidth, ref?.current?.offsetHeight]);
 
   useEffect(() => {
-    function handleResize() {
+    const handleResize = () => {
       if (ref.current?.offsetWidth && ref.current?.offsetHeight) {
         resize(ref.current.offsetWidth, ref.current.offsetHeight);
         redraw();
       }
-    }
+    };
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [redraw, resize]);
+  }, [redraw, resize, ref]);
 
   return { WreathSansCanvas, ref, resize, redraw };
 }
