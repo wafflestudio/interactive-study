@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+import ReceivedContent from './ReceivedContent';
+
 const stages = [`shake`, `close`, `open`, `out`] as const;
 
 export default function Letter() {
@@ -16,7 +18,10 @@ export default function Letter() {
     <Container onClick={onClickLetter} $stage={stage}>
       <LetterBack $isOut={stage === 'out'} />
       <PaperWrapper $isOut={stage === 'out'}>
-        <Paper>편지입니다</Paper>
+        <ReceivedContent
+          sansContent="interactive study"
+          from="Interactive Study"
+        />
       </PaperWrapper>
       <LetterFront src="letter_front.png" $isOut={stage === 'out'} />
       <LetterCoverWrapper $isOut={stage === 'out'}>
@@ -123,15 +128,6 @@ const PaperWrapper = styled.div<{ $isOut: boolean }>`
 
   padding: 0 10px;
   box-sizing: border-box;
-`;
-
-const Paper = styled.div`
-  position: absolute;
-  background-color: #f1f6f6;
-  top: 10px;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 0.55;
 `;
 
 const shake = keyframes`
