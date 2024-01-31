@@ -27,7 +27,7 @@ const Container = styled.div`
   z-index: -1;
   background-size: cover;
   background-position: left;
-  background-image: url('/background_outside.png');
+  background-image: url('${import.meta.env.BASE_URL}/background_outside.png');
 
   display: flex;
   justify-content: center;

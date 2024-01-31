@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  basePath: '',
 };
 
 if (process.env.NODE_ENV === 'production') {

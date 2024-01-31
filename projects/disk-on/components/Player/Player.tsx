@@ -1,3 +1,4 @@
+import { basePath } from '@/next.config';
 import classNames from 'classnames/bind';
 import { MouseEventHandler, useEffect, useMemo, useRef } from 'react';
 
@@ -42,12 +43,12 @@ export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
       <div className={cx('images')}>
         <img
           className={cx('button')}
-          src="Player_button.png"
+          src={`${basePath}/Player_button.png`}
           onClick={(e) => {
             onEmit(e);
           }}
         />
-        <img className={cx('base')} src="/Player_base.png" />
+        <img className={cx('base')} src={`${basePath}/Player_base.png`} />
       </div>
       {/* {src && (
         <iframe
@@ -58,7 +59,9 @@ export default function Player({ isPlaying, src, onEmit }: PlayerProps) {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         />
       )} */}
-      {isPlaying && <audio ref={diskSoundRef} src="musics/disk.mp3" />}
+      {isPlaying && (
+        <audio ref={diskSoundRef} src={`${basePath}/musics/disk.mp3`} />
+      )}
       {isPlaying && src && <audio ref={musicRef} src={src} />}
     </div>
   );
