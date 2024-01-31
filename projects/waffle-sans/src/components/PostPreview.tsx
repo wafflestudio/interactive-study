@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
 import { postFormState } from '../store/post';
 import { Mode } from '../types/mode';
+import { decoder } from '../utils/crypto';
 
 interface Props {
   mode?: Mode;
@@ -14,8 +14,10 @@ interface Props {
 export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const value = useRecoilValue(postFormState);
-  const [searchParams] = useSearchParams();
-  const sans = searchParams.get('sans');
+  const sans = useMemo(
+    () => decoder(new URL(window.location.href), 'sans'),
+    [],
+  );
 
   // TODO: offset 잡기 + remove canvas
   const { WreathSansCanvas, resize, redraw } = createWreathSans({

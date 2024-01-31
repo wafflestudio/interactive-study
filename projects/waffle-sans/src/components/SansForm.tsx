@@ -8,6 +8,7 @@ import { GRID } from '../constants/breakpoint';
 import ShareIcon from '../icons/ShareIcon';
 import WriteIcon from '../icons/WriteIcon';
 import { Mode } from '../types/mode';
+import { encoder } from '../utils/crypto';
 import Button from './Button';
 import Textarea from './Textarea';
 
@@ -34,10 +35,10 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
       alert('🎁 텍스트를 입력해주세요.');
       return;
     }
-
+    const text = encoder(getText());
     mode === Mode.OUTSIDE
-      ? router(`/o-post?sans=${encodeURIComponent(getText())}`)
-      : router(`/i-post?sans=${encodeURIComponent(getText())}`);
+      ? router(`/o-post?sans=${text}`)
+      : router(`/i-post?sans=${text}`);
   }, [getText, mode, router]);
 
   useEffect(() => {
