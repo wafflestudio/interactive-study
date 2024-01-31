@@ -1,30 +1,37 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useCallback, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
+
+const stages = [`shake`, `close`, `open`, `out`] as const;
 
 export default function Letter() {
-  const [stage, setStage] = useState<'close' | 'open' | 'out'>('close');
+  const [stage, setStage] = useState<(typeof stages)[number]>('shake');
+
+  const onClickLetter = useCallback(() => {
+    const currentStageIndex = stages.findIndex((s) => s === stage);
+    if (currentStageIndex === stages.length - 1) return;
+    setStage(stages[currentStageIndex + 1]);
+  }, [stage]);
+
   return (
-    <Container
-      onClick={() => (stage === 'close' ? setStage('open') : setStage('out'))}
-      $stage={stage}
-    >
+    <Container onClick={onClickLetter} $stage={stage}>
       <LetterBack $isOut={stage === 'out'} />
       <PaperWrapper $isOut={stage === 'out'}>
         <Paper>편지입니다</Paper>
       </PaperWrapper>
       <LetterFront src="letter_front.png" $isOut={stage === 'out'} />
-      <LetterFrontWrapper $isOut={stage === 'out'}>
+      <LetterCoverWrapper $isOut={stage === 'out'}>
         <LetterCover
           src="letter_cover.png"
-          $isOpen={stage !== 'close'}
+          $isOpen={stage === 'open' || stage === 'out'}
           $isOut={stage === 'out'}
         />
-      </LetterFrontWrapper>
+        <Ribbon $isGone={stage !== 'shake'} src="ribbon.png" />
+      </LetterCoverWrapper>
     </Container>
   );
 }
 
-const Container = styled.div<{ $stage: 'close' | 'open' | 'out' }>`
+const Container = styled.div<{ $stage: 'shake' | 'close' | 'open' | 'out' }>`
   position: relative;
   width: 100%;
   aspect-ratio: ${({ $stage }) => ($stage === 'out' ? 0.583 : 1.45)};
@@ -36,6 +43,11 @@ const Container = styled.div<{ $stage: 'close' | 'open' | 'out' }>`
   align-items: center;
 
   z-index: 1;
+  ${({ $stage }) =>
+    $stage === 'shake' &&
+    css`
+      animation: ${shake} 0.2s infinite alternate linear;
+    `}
 `;
 
 const LetterBack = styled.div<{ $isOut: boolean }>`
@@ -48,13 +60,16 @@ const LetterBack = styled.div<{ $isOut: boolean }>`
   opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
 `;
 
-const LetterFrontWrapper = styled.div<{ $isOut: boolean }>`
+const LetterCoverWrapper = styled.div<{ $isOut: boolean }>`
   position: absolute;
 
   width: 100%;
   aspect-ratio: 1.45;
   bottom: 0;
   transition: opacity 1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
   z-index: ${({ $isOut }) => ($isOut ? 0 : 1)};
@@ -87,6 +102,15 @@ const LetterCover = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
   z-index: ${({ $isOut }) => ($isOut ? -1 : 1)};
 `;
 
+const Ribbon = styled.img<{ $isGone: boolean }>`
+  position: relative;
+  width: 55%;
+  opacity: ${({ $isGone }) => ($isGone ? 0 : 1)};
+  transform: translateY(24%);
+  transition: 1s ease;
+  z-index: 1;
+`;
+
 const PaperWrapper = styled.div<{ $isOut: boolean }>`
   position: absolute;
   top: 0;
@@ -108,4 +132,13 @@ const Paper = styled.div`
   left: 0;
   width: 100%;
   aspect-ratio: 0.55;
+`;
+
+const shake = keyframes`
+  from {
+    transform: rotate(-2deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
 `;
