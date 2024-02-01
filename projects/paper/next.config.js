@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  basePath: '',
 };
 
 if (process.env.NODE_ENV === 'production') {
   nextConfig.basePath = '/projects/paper';
+  nextConfig.output = 'export';
   nextConfig.images = {
     unoptimized: true,
   };
