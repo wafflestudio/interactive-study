@@ -101,18 +101,13 @@ export default class WreathSansController {
     this.leon = new LeonSans({
       text: initialText,
       color: [leonOptions?.color ?? '#704234'],
-      size: leonOptions?.size ?? 130,
+      size: 0,
       weight: leonOptions?.weight ?? 400,
       isPattern: true,
       pathGap: leonOptions?.pathGap ?? 1 / 20,
     });
 
     this.leon.update();
-    this.leon.data.forEach((typo) => {
-      typo.drawing = {
-        value: 0,
-      };
-    });
 
     this._initialScale = this.leon.scale;
     if (dynamicSize) {
@@ -154,6 +149,9 @@ export default class WreathSansController {
     this.loaded = false;
     this.loadingPromise = this.loadAssets().then(() => {
       this.loaded = true;
+      if (this._dynamicSize) this.dynamicResize();
+      else this.leon.size = leonOptions?.size ?? 130;
+      this.redraw();
       if (this._snowMode) this.turnOnSnowEffect();
     });
   }
@@ -273,12 +271,11 @@ export default class WreathSansController {
     );
 
     // recalculate position of new text
-    this.updateLeonPosition();
+    if (this._dynamicSize) this.dynamicResize();
+    else this.updateLeonPosition();
 
     // draw
     this.updatePositions();
-
-    if (this._dynamicSize) this.dynamicResize();
   }
 
   /**
@@ -295,7 +292,8 @@ export default class WreathSansController {
     this.leon.text = text;
 
     // recalculate position of new text
-    this.updateLeonPosition();
+    if (this._dynamicSize) this.dynamicResize();
+    else this.updateLeonPosition();
 
     // redraw
     this.redraw();
@@ -330,10 +328,10 @@ export default class WreathSansController {
    * leonsans의 위치를 업데이트하려면 {@link updateLeonPosition()}을 사용한다.
    */
   updatePositions() {
-    let leonIdx = 0;
+    // let leonIdx = 0;
     this.containers.forEach((container, idx) => {
       // FIXME : \n 처리
-      while (this.leon.data[leonIdx] === undefined) leonIdx++;
+      // while (this.leon.data[leonIdx] === undefined) leonIdx++;
       container.position.set(
         this.leon.data[idx].rect.x,
         this.leon.data[idx].rect.y,
