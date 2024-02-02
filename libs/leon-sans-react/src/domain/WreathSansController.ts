@@ -353,6 +353,7 @@ export default class WreathSansController {
   }
 
   private dynamicResize() {
+    if (this.leon.rect.w === 0) return;
     const newSize = this.size * (this.canvas.clientWidth / this.leon.rect.w);
     if (newSize >= this._minSize) this.size = newSize;
   }
