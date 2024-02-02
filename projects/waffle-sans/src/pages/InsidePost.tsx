@@ -35,6 +35,7 @@ export default function InsidePost() {
     <Container>
       <Header mode={'dark'} />
       <Background mode={Mode.INSIDE} />
+
       <Dim />
       <MobileContainer visible={mobilePreview} onClick={handlePreviewClose}>
         <PostPreview mode={Mode.INSIDE} />

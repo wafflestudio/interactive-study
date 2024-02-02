@@ -13,7 +13,8 @@ export enum Direction {
 interface Props {
   text: string;
   color?: string;
-  isWideArea?: boolean;
+  width?: string;
+  height?: string;
   hoveredColor?: string;
   direction: Direction;
   handleClick: () => void;
@@ -21,8 +22,9 @@ interface Props {
 
 export default function NavigateButton({
   text,
-  color = '#93AFAE',
-  isWideArea = false,
+  width,
+  height,
+  color = '#676f6f',
   hoveredColor = '#2E3A2C',
   direction = Direction.BACK,
   handleClick,
@@ -32,7 +34,8 @@ export default function NavigateButton({
   return (
     <Container
       onClick={handleClick}
-      $isWideArea={isWideArea}
+      $width={width}
+      $height={height}
       onMouseEnter={() => setMouseEnter(true)}
       onMouseLeave={() => setMouseEnter(false)}
     >
@@ -48,7 +51,7 @@ export default function NavigateButton({
 }
 
 /* STYLES */
-const Container = styled.button<{ $isWideArea?: boolean }>`
+const Container = styled.button<{ $width?: string; $height?: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,16 +61,16 @@ const Container = styled.button<{ $isWideArea?: boolean }>`
   border: none;
   background: transparent;
   transition: all 0.2s ease-in-out;
-  width: ${({ $isWideArea }) => ($isWideArea ? '200px' : 'auto')};
-  height: ${({ $isWideArea }) => ($isWideArea ? '100px' : 'auto')};
+  width: ${({ $width }) => (!$width ? '200px' : $width)};
+  height: ${({ $height }) => (!$height ? '100px' : $height)};
 
   &:hover {
     transform: scale(1.06);
   }
 
   @media ${GRID.MOBILE} {
-    width: ${({ $isWideArea }) => ($isWideArea ? '200px' : 'auto')};
-    height: ${({ $isWideArea }) => ($isWideArea ? '50px' : 'auto')};
+    width: ${({ $width }) => (!$width ? '200px' : $width)};
+    height: ${({ $height }) => (!$height ? '50px' : $height)};
   }
 `;
 

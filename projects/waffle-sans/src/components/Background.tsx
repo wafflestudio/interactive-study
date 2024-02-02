@@ -30,18 +30,23 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   z-index: -2;
+  pointer-events: none;
 `;
 
 const BackgroundImage = styled.div<{ $mode: Mode }>`
   width: 100%;
   height: 100%;
   position: relative;
+  pointer-events: none;
   background-size: cover;
   background-position: center;
-  background-image: url('${import.meta.env.BASE_URL}background_${({ $mode }) => $mode}.png');
+  background-image: url('${import.meta.env.BASE_URL}background_${({ $mode }) =>
+    $mode}.png');
 
   @media ${GRID.MOBILE} {
-    background-image: url('${import.meta.env.BASE_URL}background_${({ $mode }) => $mode}_m_ver.png');
+    background-image: url('${import.meta.env.BASE_URL}background_${({
+      $mode,
+    }) => $mode}_m_ver.png');
   }
 `;
 

@@ -116,6 +116,7 @@ const SansContainer = styled.div`
   height: 65vh;
   max-height: calc(100vh - 320px);
   overflow: auto;
+  pointer-events: none;
 `;
 
 const ButtonContainer = styled.div`
