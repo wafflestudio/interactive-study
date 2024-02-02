@@ -4128,7 +4128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leon-sans-react@workspace:^, leon-sans-react@workspace:libs/leon-sans-react":
+"leon-sans-react@npm:1.0.0, leon-sans-react@workspace:libs/leon-sans-react":
   version: 0.0.0-use.local
   resolution: "leon-sans-react@workspace:libs/leon-sans-react"
   dependencies:
@@ -4150,7 +4150,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"leonsans@npm:1.0.0, leonsans@workspace:^, leonsans@workspace:libs/leonsans":
+"leonsans@npm:1.0.0, leonsans@workspace:libs/leonsans":
   version: 0.0.0-use.local
   resolution: "leonsans@workspace:libs/leonsans"
   dependencies:
@@ -5866,8 +5866,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-react-refresh: "npm:^0.4.4"
     gsap: "npm:^3.12.4"
-    leon-sans-react: "workspace:^"
-    leonsans: "workspace:^"
+    leon-sans-react: "npm:1.0.0"
     pixi.js: "npm:^7.3.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"

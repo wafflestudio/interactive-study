@@ -1,6 +1,6 @@
 import gsap, { Power0, Power3 } from 'gsap';
 import { Align, CHARSET, ModelData } from 'leonsans';
-import LeonSans from 'leonsans/src/leonsans';
+import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
 
 import { degToRad, random, randomIdx } from '../utils';
@@ -14,6 +14,28 @@ const TYPO_DRAWING_DURATION = 1;
 const LEAVES_EASING = Power3.easeOut;
 const LEAVES_DRAWING_SPEED = 1;
 const LEAVES_DRAWING_DELAY = TYPO_DRAWING_DURATION - 0.05;
+
+const DEFAULT_ORNAMENT_ORDER = [
+  'pinecone_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'fruit_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'ball_1',
+  'pinecone_2',
+  'fruit_2',
+  'ball_2',
+  'ribbon',
+  'candy',
+  'poinsettia_2',
+  'fruit_1',
+  'ball_1',
+  'pinecone_1',
+  'poinsettia_1',
+  'fruit_2',
+];
 
 type WreathSansProps = {
   canvas: HTMLCanvasElement;
@@ -34,7 +56,7 @@ export default class WreathSansController {
   leafGap: number = 10;
   leafLightRingRatio: number = 3;
   ornamentDisabled: boolean = false;
-  ornamentOrder: string[] = [];
+  ornamentOrder: string[] = DEFAULT_ORNAMENT_ORDER;
   ornamentGap: number = 10;
   ornamentAmplitude: number = 30;
   darkMode: boolean;
@@ -240,16 +262,17 @@ export default class WreathSansController {
   }
 
   private async loadAssets() {
+    if (this.loaded) return;
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `${import.meta.env.BASE_URL}leaves/leaf_${i}.svg`,
+        new URL(`../assets/leaves/leaf_${i}.svg`, import.meta.url).href,
       );
       this.leafSources.push(leaf);
     }
 
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `${import.meta.env.BASE_URL}leaves_dark/leaf_${i}.svg`,
+        new URL(`../assets/leaves_dark/leaf_${i}.svg`, import.meta.url).href,
       );
       this.darkLeafSources.push(leaf);
     }
