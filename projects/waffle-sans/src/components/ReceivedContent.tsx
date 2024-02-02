@@ -1,37 +1,35 @@
 import styled from 'styled-components';
 
 import useWreathSans from '../hooks/useWreathSans';
-import { LetterFooter } from './MobileFooter';
 
-type Props = {
-  sansContent: string;
-  from: string;
+type ReceivedContentProps = {
+  sender: string;
+  content: string;
+  sans: string;
+  mode: string;
 };
 
-export default function ReceivedContent({ sansContent, from }: Props) {
-  const { ref, WreathSansCanvas } = useWreathSans({ initialText: sansContent });
+export default function ReceivedContent({
+  sender,
+  content,
+  sans,
+  mode,
+}: ReceivedContentProps) {
+  const { ref, WreathSansCanvas } = useWreathSans({ initialText: sans });
 
   return (
-    <Container>
+    <Container $isOutside={mode === 'o'}>
       <SansWrapper ref={ref}>
         <WreathSansCanvas />
       </SansWrapper>
-      <MainText>
-        메리 크리스마스 <br />
-        즐거운 성탄절 보내세요 하하. 메리 크리스마스 즐거운 성탄절 보내세요
-        하하. <br />
-        메리 크리스마스 즐거운 성탄절 보내세요 하하. 메리 크리스마스 즐거운
-        성탄절 보내세요 하하. <br />
-        메리 크리스마스 즐거운 성탄절 보내세요 하하. <br />
-        메리 크리스마스 즐거운 성탄절 보내세요 하하.
-      </MainText>
-      <From>From. {from}</From>
-      <LetterFooter />
+      <MainText $isOutside={mode === 'o'}>{content}</MainText>
+      <From $isOutside={mode === 'o'}>From. {sender}</From>
+      {/* <LetterFooter /> */}
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $isOutside: boolean }>`
   position: relative;
   top: 10px;
   width: 100%;
@@ -44,7 +42,10 @@ const Container = styled.div`
   align-items: center;
   gap: 3%;
 
-  background-image: url('/background_outside_m_ver.png');
+  background-image: url(${({ $isOutside }) =>
+    $isOutside
+      ? '/background_outside_letter.png'
+      : `/background_inside_letter.png`});
   background-size: cover;
   background-position: bottom center;
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);
@@ -55,8 +56,8 @@ const SansWrapper = styled.div`
   height: 30%;
 `;
 
-const MainText = styled.div`
-  color: #315c57;
+const MainText = styled.div<{ $isOutside: boolean }>`
+  color: ${({ $isOutside }) => ($isOutside ? `#315c57` : `#FEDCB4`)};
 
   width: 100%;
   height: 30%;
@@ -71,8 +72,8 @@ const MainText = styled.div`
   line-height: 24px; /* 150% */
 `;
 
-const From = styled.div`
-  color: #315c57;
+const From = styled.div<{ $isOutside: boolean }>`
+  color: ${({ $isOutside }) => ($isOutside ? `#315c57` : `#FEDCB4`)};
 
   width: 100%;
 

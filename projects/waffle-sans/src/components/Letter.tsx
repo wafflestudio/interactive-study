@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import ReceivedContent from './ReceivedContent';
@@ -7,8 +7,19 @@ const stages = [`shake`, `close`, `open`, `out`] as const;
 
 const isTextured = true;
 
-export default function Letter() {
+type LetterProps = {
+  sender: string;
+  content: string;
+  sans: string;
+  mode: string;
+};
+
+export default function Letter({ sender, content, sans, mode }: LetterProps) {
   const [stage, setStage] = useState<(typeof stages)[number]>('shake');
+  const parsedMode = useMemo(
+    () => (mode === 'o' ? 'outside' : 'inside'),
+    [mode],
+  );
 
   const onClickLetter = useCallback(() => {
     const currentStageIndex = stages.findIndex((s) => s === stage);
@@ -18,39 +29,54 @@ export default function Letter() {
 
   return (
     <>
-      <BackgroundHider $isOut={stage === 'out'} />
+      <BackgroundHider
+        $isOutside={parsedMode === 'outside'}
+        $isOut={stage === 'out'}
+      />
       <Container onClick={onClickLetter} $stage={stage}>
-        <LetterBack $isOut={stage === 'out'} />
+        <LetterBack
+          $isOutside={parsedMode === 'outside'}
+          $isOut={stage === 'out'}
+        />
         <PaperWrapper $isOut={stage === 'out'}>
           <ReceivedContent
-            sansContent="interactive study"
-            from="Interactive Study"
+            sans={sans}
+            sender={sender}
+            content={content}
+            mode={mode}
           />
         </PaperWrapper>
         <LetterFront
-          src={`letter_front_main_blue${isTextured ? '_textured' : ''}.png`}
+          src={`letter_front_main_${parsedMode}${
+            isTextured ? '_textured' : ''
+          }.png`}
           $isOut={stage === 'out'}
         />
         <LetterFront
-          src={`letter_front_bottom_blue${isTextured ? '_textured' : ''}.png`}
+          src={`letter_front_bottom_${parsedMode}${
+            isTextured ? '_textured' : ''
+          }.png`}
           $isOut={stage === 'out'}
         />
         <LetterCoverWrapper $isOpen={stage === 'open'} $isOut={stage === 'out'}>
           <LetterCoverInside
-            src={`letter_cover_inside_blue${isTextured ? '_textured' : ''}.png`}
+            src={`letter_cover_inner_${parsedMode}${
+              isTextured ? '_textured' : ''
+            }.png`}
             $isOut={stage === 'out'}
           />
           <LetterCoverOutside
-            src={`letter_cover_outside_blue${
+            src={`letter_cover_outer_${parsedMode}${
               isTextured ? '_textured' : ''
             }.png`}
             $isOut={stage === 'out'}
           />
         </LetterCoverWrapper>
         <Ribbon
+          $isOutside={parsedMode === 'outside'}
           $isGone={stage !== 'shake'}
           $isOpen={stage === 'open' || stage === 'out'}
-          src="letter_ribbon.png"
+          src={`sealing_${parsedMode}.png`}
         />
       </Container>
     </>
@@ -81,21 +107,21 @@ const Container = styled.div<{ $stage: 'shake' | 'close' | 'open' | 'out' }>`
   `}
 `;
 
-const BackgroundHider = styled.div<{ $isOut: boolean }>`
+const BackgroundHider = styled.div<{ $isOut: boolean; $isOutside: boolean }>`
   position: fixed;
   width: 100vw;
   height: 100vh;
   top: 0;
   left: 0;
-  background-color: #475e65;
+  background-color: ${({ $isOutside }) => ($isOutside ? `#475e65` : '#251509')};
   transition: opacity 1s ease;
   opacity: ${({ $isOut }) => ($isOut ? 1 : 0)};
   z-index: 1;
 `;
 
-const LetterBack = styled.div<{ $isOut: boolean }>`
+const LetterBack = styled.div<{ $isOut: boolean; $isOutside: boolean }>`
   position: absolute;
-  background-color: #97baba;
+  background-color: ${({ $isOutside }) => ($isOutside ? '#97baba' : '#8D674D')};
   width: 100%;
   aspect-ratio: 1.45;
   bottom: 0;
@@ -163,11 +189,14 @@ const LetterCoverOutside = styled.img<{ $isOut: boolean }>`
   filter: drop-shadow(0px 6px 6px rgba(0, 0, 0, 0.1));
 `;
 
-const Ribbon = styled.img<{ $isGone: boolean; $isOpen: boolean }>`
+const Ribbon = styled.img<{
+  $isOutside: boolean;
+  $isGone: boolean;
+  $isOpen: boolean;
+}>`
   position: relative;
-  width: 55%;
   opacity: ${({ $isGone }) => ($isGone ? 0 : 1)};
-  transform: translateY(24%);
+  transform: translateY(${({ $isOutside }) => ($isOutside ? 24 : 120)}%);
   transition: 1s ease;
   z-index: 1;
   ${({ $isOpen }) => $isOpen && `display: none;`}
