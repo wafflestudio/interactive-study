@@ -6,7 +6,7 @@ interface Props {
 export const TextureProvider = ({ children }: Props) => {
   return (
     <Container>
-      <Blend src={'/texture_default.png'} />
+      <Blend src={'/texture_default.jpg'} />
       {children}
     </Container>
   );
