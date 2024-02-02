@@ -31,6 +31,7 @@ export default function ReceivedContent({ sansContent, from }: Props) {
 
 const Container = styled.div`
   position: relative;
+  top: 10px;
   width: 100%;
   aspect-ratio: 0.55;
   box-sizing: border-box;

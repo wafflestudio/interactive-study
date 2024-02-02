@@ -19,12 +19,9 @@ export default function Receive() {
 }
 
 const Container = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+
   background-size: cover;
   background-position: left;
   background-image: url('${import.meta.env.BASE_URL}background_outside.png');
@@ -54,6 +51,7 @@ const Main = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 `;
 
 const ToWhom = styled.div`
