@@ -27,19 +27,19 @@ function eachPoint_(
     if (mp.type == 'b') {
       ctx.fillStyle = '#ff2a00';
       ctx.beginPath();
-      ctx.arc(cp.x3 + (cp.x3 - cp.x2), cp.y3 + (cp.y3 - cp.y2), 1.5, 0, PI2);
+      ctx.arc(cp.x3! + (cp.x3! - cp.x2!), cp.y3! + (cp.y3! - cp.y2!), 1.5, 0, PI2);
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(cp.x2, cp.y2, 1.5, 0, PI2);
+      ctx.arc(cp.x2!, cp.y2!, 1.5, 0, PI2);
       ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(cp.x2, cp.y2);
-      ctx.lineTo(cp.x3, cp.y3);
-      ctx.lineTo(cp.x3 + (cp.x3 - cp.x2), cp.y3 + (cp.y3 - cp.y2));
+      ctx.moveTo(cp.x2!, cp.y2!);
+      ctx.lineTo(cp.x3!, cp.y3!);
+      ctx.lineTo(cp.x3! + (cp.x3! - cp.x2!), cp.y3! + (cp.y3! - cp.y2!));
       ctx.stroke();
       ctx.beginPath();
       ctx.fillStyle = '#ffffff';
-      ctx.arc(cp.x3, cp.y3, 2.5, 0, PI2);
+      ctx.arc(cp.x3!, cp.y3!, 2.5, 0, PI2);
       ctx.fill();
       ctx.stroke();
     } else {

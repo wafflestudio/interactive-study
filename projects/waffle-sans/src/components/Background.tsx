@@ -37,10 +37,10 @@ const BackgroundImage = styled.div<{ $mode: Mode }>`
   position: relative;
   background-size: cover;
   background-position: center;
-  background-image: url('/background_${({ $mode }) => $mode}.png');
+  background-image: url('${import.meta.env.BASE_URL}background_${({ $mode }) => $mode}.png');
 
   @media ${GRID.MOBILE} {
-    background-image: url('/background_${({ $mode }) => $mode}_m_ver.png');
+    background-image: url('${import.meta.env.BASE_URL}background_${({ $mode }) => $mode}_m_ver.png');
   }
 `;
 
@@ -52,7 +52,7 @@ const FootPrint1 = styled.div`
   left: 106px;
   background-size: cover;
   background-position: center;
-  background-image: url('/foot_print_1.png');
+  background-image: url('${import.meta.env.BASE_URL}foot_print_1.png');
 `;
 
 const FootPrint2 = styled.div`
@@ -63,5 +63,5 @@ const FootPrint2 = styled.div`
   left: 10px;
   background-size: cover;
   background-position: center;
-  background-image: url('/foot_print_2.png');
+  background-image: url('${import.meta.env.BASE_URL}foot_print_2.png');
 `;

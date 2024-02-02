@@ -9,7 +9,7 @@ import Receive from '../pages/Receive';
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/i-sans" element={<InsideSans />} />

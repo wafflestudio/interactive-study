@@ -1,9 +1,9 @@
+// TODO: import from leon-sans-react
+import createWreathSans from 'leon-sans-react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-// TODO: import from leon-sans-react
-import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
 import { GRID } from '../constants/breakpoint';
 import ShareIcon from '../icons/ShareIcon';
 import WriteIcon from '../icons/WriteIcon';

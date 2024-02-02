@@ -36,6 +36,7 @@ export function getGuide(d: Typo, scale: number): GuidePosition[] {
  * @returns {Object} the guide pos array
  * @description get a guide pos
  */
+// @ts-ignore
 export function getGrid(d: Typo, scale: number): number[] {
   const grid = [],
     gvy = [98, 340, 815];
