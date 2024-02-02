@@ -84,7 +84,7 @@ const BackgroundHider = styled.div<{ $isOut: boolean }>`
   top: 0;
   left: 0;
   background-color: #475e65;
-  transition: 1s ease;
+  transition: opacity 1s ease;
   opacity: ${({ $isOut }) => ($isOut ? 1 : 0)};
   z-index: 1;
 `;
