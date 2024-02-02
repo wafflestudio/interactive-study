@@ -1,19 +1,21 @@
 import styled from 'styled-components';
 
-export default function Texture() {
+interface Props {
+  children: React.ReactNode;
+}
+export const TextureProvider = ({ children }: Props) => {
   return (
     <Container>
       <Blend src={'/texture_default.png'} />
+      {children}
     </Container>
   );
-}
+};
 
 const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
   position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 `;
 
 const Blend = styled.img`

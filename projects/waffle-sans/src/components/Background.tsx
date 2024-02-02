@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
 import { Mode } from '../types/mode';
-import Texture from './Texture';
 
 interface Props {
   mode?: Mode;
@@ -12,7 +11,6 @@ export default function Background({ mode = Mode.OUTSIDE }: Props) {
   return (
     <Container>
       <BackgroundImage $mode={mode}>
-        <Texture />
         {mode === Mode.OUTSIDE && (
           <>
             <FootPrint1 />
