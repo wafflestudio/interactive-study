@@ -1,15 +1,22 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import Letter from '../components/Letter';
 import MobileFooter from '../components/MobileFooter';
+import { decodeParams } from '../utils/crypto';
 
 export default function Receive() {
+  const { sender, content, receiver, sans, mode } = useMemo(
+    () => decodeParams(new URL(window.location.href)),
+    [],
+  );
+
   return (
-    <Container>
+    <Container $isOutside={mode === 'o'}>
       <Dim />
       <Main>
-        <ToWhom>채원님에게 편지가 왔어요!</ToWhom>
-        <Letter />
+        <ToWhom>{receiver}님에게 편지가 왔어요!</ToWhom>
+        <Letter sender={sender} content={content} sans={sans} mode={mode} />
         <FooterWrapper>
           <MobileFooter />
         </FooterWrapper>
@@ -18,13 +25,16 @@ export default function Receive() {
   );
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $isOutside: boolean }>`
   width: 100%;
   height: 100%;
 
   background-size: cover;
-  background-position: left;
-  background-image: url('/background_outside.png');
+  background-position: top;
+  background-image: url(${({ $isOutside }) =>
+    $isOutside
+      ? '/background_outside_m_ver.png'
+      : '/background_inside_m_ver.png'});
 
   display: flex;
   justify-content: center;
