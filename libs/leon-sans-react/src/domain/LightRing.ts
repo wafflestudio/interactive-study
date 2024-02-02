@@ -17,8 +17,8 @@ export default class LightRing {
   container: PIXI.Container;
 
   constructor() {
-    this.bulbOnTexture = PIXI.Texture.from('ornaments/bulb_on.svg');
-    this.bulbOffTexture = PIXI.Texture.from('ornaments/bulb_off.svg');
+    this.bulbOnTexture = PIXI.Texture.from(`${import.meta.env.BASE_URL}ornaments/bulb_on.svg`);
+    this.bulbOffTexture = PIXI.Texture.from(`${import.meta.env.BASE_URL}ornaments/bulb_off.svg`);
     this.bulbs = [];
     this.container = new PIXI.Container();
     this.container.width = this.size;
@@ -26,7 +26,7 @@ export default class LightRing {
     this.container.pivot.set(this.radius, 150);
     this.container.scale.set(0.94);
 
-    const bulbCableTexture = PIXI.Texture.from('ornaments/bulb_cable.svg');
+    const bulbCableTexture = PIXI.Texture.from(`${import.meta.env.BASE_URL}ornaments/bulb_cable.svg`);
     const bulbCable = new PIXI.Sprite(bulbCableTexture);
     bulbCable.anchor.set(0.5, 0.5);
     bulbCable.x = this.radius;

@@ -242,14 +242,14 @@ export default class WreathSansController {
   private async loadAssets() {
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `leaves/leaf_${i}.svg`,
+        `${import.meta.env.BASE_URL}leaves/leaf_${i}.svg`,
       );
       this.leafSources.push(leaf);
     }
 
     for (let i = 1; i <= 20; i++) {
       const leaf = await PIXI.Assets.load<PIXI.SpriteSource>(
-        `leaves_dark/leaf_${i}.svg`,
+        `${import.meta.env.BASE_URL}leaves_dark/leaf_${i}.svg`,
       );
       this.darkLeafSources.push(leaf);
     }

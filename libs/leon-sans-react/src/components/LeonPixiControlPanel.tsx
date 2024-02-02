@@ -472,7 +472,7 @@ export default function LeonPixiController({
               className={styles.ornament}
               onClick={() => addOrnament(name)}
             >
-              <img src={`/ornaments/${name}.svg`} alt={name} />
+              <img src={`${import.meta.env.BASE_URL}ornaments/${name}.svg`} alt={name} />
             </div>
           ))}
         </div>
@@ -486,7 +486,7 @@ export default function LeonPixiController({
               className={styles.ornament}
               onClick={() => removeOrnament(i)}
             >
-              <img src={`/ornaments/${name}.svg`} alt={name} />
+              <img src={`${import.meta.env.BASE_URL}ornaments/${name}.svg`} alt={name} />
             </div>
           ))}
         </div>
