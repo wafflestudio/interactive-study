@@ -29,10 +29,15 @@ export default function OutsideSans() {
       >
         <Window>
           <CanvasContainer>
-            <SnowFlakes />
+            <Snow>
+              <SnowFlakes />
+            </Snow>
           </CanvasContainer>
         </Window>
         <Window>
+          <Snow>
+            <SnowFlakes />
+          </Snow>
           <BackBtnContainer>
             <NavigateButton
               color={'#2B1C1A'}
@@ -138,6 +143,16 @@ const Window = styled.div`
   aspect-ratio: 235 / 255;
   background: #bfcde3;
   border: 0.6vw solid #292222;
+`;
+
+const Snow = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  top: 0;
+  left: 0;
 `;
 
 const CanvasContainer = styled.div`
