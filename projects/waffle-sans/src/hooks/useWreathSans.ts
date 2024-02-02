@@ -3,22 +3,35 @@ import { useEffect, useMemo, useRef } from 'react';
 import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
 
 interface Params {
+  fontSize?: number;
+  fontColor?: string;
   initialText: string;
 }
 
-export default function useWreathSans({ initialText }: Params) {
+export default function useWreathSans({
+  fontSize,
+  fontColor,
+  initialText,
+}: Params) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { WreathSansCanvas, resize, redraw } = useMemo(() => {
-    return createWreathSans({
-      initialText: initialText,
-      width: ref?.current?.offsetWidth ?? 330,
-      height: ref?.current?.offsetHeight ?? 234,
-      size: 40,
-      color: '#704234',
-      background: 'transparent',
-    });
-  }, [initialText, ref?.current?.offsetWidth, ref?.current?.offsetHeight]);
+  const { WreathSansCanvas, resize, redraw, getText, onInputHandler } =
+    useMemo(() => {
+      return createWreathSans({
+        initialText: initialText,
+        width: ref?.current?.offsetWidth ?? 330,
+        height: ref?.current?.offsetHeight ?? 234,
+        size: fontSize ?? 40,
+        color: fontColor ?? '#704234',
+        background: 'transparent',
+      });
+    }, [
+      fontSize,
+      fontColor,
+      initialText,
+      ref?.current?.offsetWidth,
+      ref?.current?.offsetHeight,
+    ]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,5 +46,5 @@ export default function useWreathSans({ initialText }: Params) {
     };
   }, [redraw, resize, ref]);
 
-  return { WreathSansCanvas, ref, resize, redraw };
+  return { WreathSansCanvas, ref, resize, redraw, getText, onInputHandler };
 }

@@ -22,11 +22,7 @@ export default function OutsideSans() {
         <SansForm mode={Mode.INSIDE} />
       </Content>
 
-      <WindowContainer
-        onMouseEnter={() => {
-          console.log('hovered');
-        }}
-      >
+      <WindowContainer>
         <Window>
           <CanvasContainer>
             <Snow>

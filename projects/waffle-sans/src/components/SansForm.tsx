@@ -1,10 +1,10 @@
 // TODO: import from leon-sans-react
-import createWreathSans from 'leon-sans-react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
+import useWreathSans from '../hooks/useWreathSans';
 import ShareIcon from '../icons/ShareIcon';
 import WriteIcon from '../icons/WriteIcon';
 import { Mode } from '../types/mode';
@@ -19,15 +19,9 @@ interface Props {
 export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
   const router = useNavigate();
   const defaultValue = useMemo(() => 'interactive study', []);
-
-  const { WreathSansCanvas, onInputHandler, resize, redraw, getText } =
-    createWreathSans({
+  const { ref, WreathSansCanvas, redraw, resize, getText, onInputHandler } =
+    useWreathSans({
       initialText: defaultValue,
-      width: window.innerWidth,
-      height: (window.innerHeight / 100) * 62,
-      size: 130,
-      color: '#704234',
-      background: 'transparent',
     });
 
   const handleShare = useCallback(() => {
@@ -53,7 +47,7 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
 
   return (
     <Container>
-      <SansContainer>
+      <SansContainer ref={ref}>
         <WreathSansCanvas />
       </SansContainer>
 
