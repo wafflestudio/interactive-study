@@ -44,6 +44,8 @@ export default function OutsidePost() {
         <ButtonContainer>
           <NavigateButton
             text={'돌아가기'}
+            width="auto"
+            height="auto"
             color="#F1F6F6"
             hoveredColor="#F1F6F6"
             direction={Direction.BACK}
