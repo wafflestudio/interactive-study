@@ -7,7 +7,11 @@
  **/
 import { Graphics } from 'pixi.js';
 
-import { MAX_FONT_WEIGHT, MIN_FONT_WEIGHT } from './core/constants.js';
+import {
+  DEFAULT_FONT_SIZE,
+  MAX_FONT_WEIGHT,
+  MIN_FONT_WEIGHT,
+} from './core/constants.js';
 import { Dispatcher } from './core/dispatcher';
 import { Model } from './core/model';
 import { Align } from './core/types.js';
@@ -74,7 +78,7 @@ export default class LeonSans extends Dispatcher {
 
   constructor({
     text = '',
-    size = 500,
+    size = DEFAULT_FONT_SIZE,
     weight = MIN_FONT_WEIGHT,
     color = ['#000000'],
     colorful = [
@@ -475,9 +479,7 @@ export default class LeonSans extends Dispatcher {
    * Draw text in the Canvas element.
    * @param ctx
    */
-  draw(
-    ctx: CanvasRenderingContext2D
-  ) {
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.lineWidth = this.lineWidth;
     this.model.data.forEach((data, index) => {
       Color(ctx, index, data, this.color_);
@@ -499,10 +501,7 @@ export default class LeonSans extends Dispatcher {
    * @param {CanvasRenderingContext2D} ctx
    * @param {DOMHighResTimeStamp} t time stemp from requestAnimationFrame()
    */
-  wave(
-    ctx: CanvasRenderingContext2D,
-    t: DOMHighResTimeStamp = Date.now(),
-  ) {
+  wave(ctx: CanvasRenderingContext2D, t: DOMHighResTimeStamp = Date.now()) {
     ctx.lineWidth = this.lineWidth;
 
     if (!this.time_) this.time_ = t;
@@ -538,11 +537,7 @@ export default class LeonSans extends Dispatcher {
    * @param {number} w pattern width
    * @param {number} h pattern height
    */
-  pattern(
-    ctx: CanvasRenderingContext2D,
-    w: number = 40,
-    h: number = 10,
-  ) {
+  pattern(ctx: CanvasRenderingContext2D, w: number = 40, h: number = 10) {
     const tw = w * this.model.scale;
     const th = h * this.model.scale;
 

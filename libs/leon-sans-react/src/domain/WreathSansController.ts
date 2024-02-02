@@ -37,12 +37,18 @@ const DEFAULT_ORNAMENT_ORDER = [
   'fruit_2',
 ];
 
+type LeonOptions = {
+  color?: string;
+  size?: number;
+  weight?: number;
+  pathGap?: number;
+};
+
 type WreathSansProps = {
-  canvas: HTMLCanvasElement;
-  renderer: PIXI.Renderer;
-  stage: PIXI.Container;
-  graphics: PIXI.Graphics;
-  leon: LeonSans;
+  canvas?: HTMLCanvasElement;
+  initialText?: string;
+  background?: PIXI.ColorSource;
+  leonOptions?: LeonOptions;
   darkMode?: boolean;
   snowMode?: boolean;
 };
@@ -53,13 +59,16 @@ export default class WreathSansController {
   stage: PIXI.Container;
   graphics: PIXI.Graphics;
   leon: LeonSans;
+
+  initialText: string = '';
   leafGap: number = 10;
   leafLightRingRatio: number = 3;
   ornamentDisabled: boolean = false;
   ornamentOrder: string[] = DEFAULT_ORNAMENT_ORDER;
   ornamentGap: number = 10;
   ornamentAmplitude: number = 30;
-  darkMode: boolean;
+  _initialScale: number;
+  _darkMode: boolean;
   _snowMode: boolean;
   _snowFlakeCount: number = 256;
   _snowFlakeSizeBound: [number, number] = [0.5, 4.2];
@@ -72,14 +81,61 @@ export default class WreathSansController {
   loaded: boolean;
   loadingPromise: Promise<void>;
 
-  constructor(props: WreathSansProps) {
-    this.canvas = props.renderer.view as HTMLCanvasElement;
-    this.renderer = props.renderer;
-    this.stage = props.stage;
-    this.graphics = props.graphics;
-    this.leon = props.leon;
-    this.darkMode = props.darkMode ?? false;
-    this._snowMode = props.snowMode ?? false;
+  constructor({
+    canvas,
+    initialText,
+    background,
+    leonOptions,
+    darkMode,
+    snowMode,
+  }: WreathSansProps) {
+    this.leon = new LeonSans({
+      text: initialText,
+      color: [leonOptions?.color ?? '#704234'],
+      size: leonOptions?.size ?? 130,
+      weight: leonOptions?.weight ?? 400,
+      isPattern: true,
+      pathGap: leonOptions?.pathGap ?? 1 / 20,
+    });
+
+    this.leon.update();
+    this._initialScale = this.leon.scale;
+
+    if (canvas) {
+      this.canvas = canvas;
+      this.renderer = new PIXI.Renderer({
+        width: this.canvas.width,
+        height: this.canvas.height,
+        resolution: window.devicePixelRatio,
+        antialias: true,
+        autoDensity: true,
+        powerPreference: 'high-performance',
+        view: canvas,
+        background: background ?? 0xffffff,
+      });
+    } else {
+      this.renderer = new PIXI.Renderer({
+        width: 300,
+        height: 300,
+        resolution: window.devicePixelRatio,
+        antialias: true,
+        autoDensity: true,
+        powerPreference: 'high-performance',
+        background: 0xffffff,
+      });
+      this.canvas = this.renderer.view as HTMLCanvasElement;
+    }
+
+    const x = (this.canvas.width - this.leon.rect.w) / 2;
+    const y = (this.canvas.height - this.leon.rect.h) / 2;
+    this.leon.position(x, y);
+
+    this.stage = new PIXI.Container();
+    this.graphics = new PIXI.Graphics();
+    this.stage.addChild(this.graphics);
+
+    this._darkMode = darkMode ?? false;
+    this._snowMode = snowMode ?? false;
 
     this.containers = [];
     this.snowFlakes = [];
@@ -91,6 +147,19 @@ export default class WreathSansController {
       this.loaded = true;
       if (this._snowMode) this.turnOnSnowEffect();
     });
+  }
+
+  get size() {
+    return this.leon.size;
+  }
+
+  set size(value: number) {
+    this.leon.size = value;
+    this.containers.forEach((container) =>
+      container.scale.set(this.leon.scale / this._initialScale),
+    );
+    this.updateLeonPosition();
+    this.updatePositions();
   }
 
   get align() {
@@ -239,7 +308,9 @@ export default class WreathSansController {
   }
 
   /**
-   * 글자들의 위치를 업데이트한다.
+   * leonsans의 데이터를 사용하여 글자들의 위치를 업데이트한다.
+   * 그러나 leonsans에는 영향을 주지 않는다.
+   * leonsans의 위치를 업데이트하려면 {@link updateLeonPosition()}을 사용한다.
    */
   updatePositions() {
     let leonIdx = 0;
@@ -253,6 +324,11 @@ export default class WreathSansController {
     });
   }
 
+  /**
+   * leonsans의 위치 및 경로 데이터를 업데이트한다.
+   * 글자 컨테이너들의 위치에는 영향을 주지 않는다.
+   * 글자 컨테이너들의 위치를 업데이트하려면 {@link updatePositions()}을 사용한다.
+   */
   updateLeonPosition() {
     // recalculate position of new text
     const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
@@ -369,7 +445,7 @@ export default class WreathSansController {
         }
 
         // make leaf
-        const source = this.darkMode
+        const source = this._darkMode
           ? this.darkLeafSources[randomIdx(this.darkLeafSources)]
           : this.leafSources[randomIdx(this.leafSources)];
         const leafSprite = PIXI.Sprite.from(source);
@@ -531,7 +607,14 @@ export default class WreathSansController {
     canvas.width = diameter;
     canvas.height = diameter;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    const gradient = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+    const gradient = ctx.createRadialGradient(
+      radius,
+      radius,
+      0,
+      radius,
+      radius,
+      radius,
+    );
     gradient.addColorStop(0, 'rgba(255, 255, 255,' + opacity + ')'); // white
     gradient.addColorStop(0.8, 'rgba(210, 236, 242,' + opacity + ')'); // bluish
     gradient.addColorStop(1, 'rgba(237, 247, 249,' + opacity + ')'); // lighter bluish
@@ -560,7 +643,7 @@ export default class WreathSansController {
         repeat: -1,
       },
     );
-    
+
     return snowFlake;
   }
 }

@@ -1,5 +1,4 @@
-import LeonSans, { CHARSET } from 'leonsans';
-import * as PIXI from 'pixi.js';
+import { CHARSET } from 'leonsans';
 import { ComponentPropsWithoutRef } from 'react';
 
 import WreathSansController from '../domain/WreathSansController';
@@ -24,48 +23,26 @@ export default function createWreathSans({
   weight = 400,
   width = 800,
   height = 600,
-  pixelRatio = 2,
   background = '#ffffff',
 }: Props) {
-  // create leon
-  const leon = new LeonSans({
-    text: initialText,
-    color: [color],
-    size,
-    weight,
-    isPattern: true,
-    pathGap: 1/20,
-  });
-
-  // set position
-  const x = (width - leon.rect.w) / 2;
-  const y = (height - leon.rect.h) / 2;
-  leon.position(x, y);
-
-  // create pixi
-  const renderer = new PIXI.Renderer({
-    width,
-    height,
-    resolution: pixelRatio,
-    antialias: true,
-    autoDensity: true,
-    powerPreference: 'high-performance',
-    background,
-    backgroundAlpha: background === 'transparent' ? 0 : 1,
-  });
-  const stage = new PIXI.Container();
-  const graphics = new PIXI.Graphics();
-  stage.addChild(graphics);
-
-  const canvas = renderer.view as HTMLCanvasElement;
-
   const wreathSansController = new WreathSansController({
-    canvas,
-    leon,
-    renderer,
-    stage,
-    graphics,
+    initialText,
+    background,
+    leonOptions: {
+      color,
+      size,
+      weight,
+    },
   });
+
+  const canvas = wreathSansController.canvas;
+  canvas.width = width;
+  canvas.height = height;
+
+  const graphics = wreathSansController.graphics;
+  const leon = wreathSansController.leon;
+  const renderer = wreathSansController.renderer;
+  const stage = wreathSansController.stage;
 
   function animate() {
     // create loop
