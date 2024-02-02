@@ -48,6 +48,7 @@ type WreathSansProps = {
   canvas?: HTMLCanvasElement;
   initialText?: string;
   background?: PIXI.ColorSource;
+  backgroundAlpha?: number;
   leonOptions?: LeonOptions;
   darkMode?: boolean;
   snowMode?: boolean;
@@ -89,6 +90,7 @@ export default class WreathSansController {
     canvas,
     initialText,
     background,
+    backgroundAlpha,
     leonOptions,
     darkMode,
     snowMode,
@@ -123,6 +125,7 @@ export default class WreathSansController {
       powerPreference: 'high-performance',
       view: canvas,
       background: background ?? 0xffffff,
+      backgroundAlpha,
     });
 
     this.canvas = this.renderer.view as HTMLCanvasElement;
