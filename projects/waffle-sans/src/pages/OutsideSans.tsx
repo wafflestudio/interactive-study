@@ -23,7 +23,7 @@ export default function OutsideSans() {
           isWideArea
           text={'BACK TO HOME'}
           direction={Direction.BACK}
-          handleClick={() => router('/')}
+          handleClick={() => router('/i-sans')}
         />
       </BackBtnContainer>
     </Container>

@@ -27,7 +27,7 @@ export default function OutsideSans() {
           hoveredColor={'#2B1C1A'}
           text={'GO TO OUTSIDE'}
           direction={Direction.FORWARD}
-          handleClick={() => router('/')}
+          handleClick={() => router('/o-sans')}
         />
       </BackBtnContainer>
     </Container>
