@@ -23,14 +23,23 @@ export default function Letter() {
           from="Interactive Study"
         />
       </PaperWrapper>
-      <LetterFront src="letter_front.png" $isOut={stage === 'out'} />
-      <LetterCoverWrapper $isOut={stage === 'out'}>
-        <LetterCover
-          src="letter_cover.png"
+      <LetterFront src="letter_front_main_blue.png" $isOut={stage === 'out'} />
+      <LetterFront
+        src="letter_front_bottom_blue.png"
+        $isOut={stage === 'out'}
+      />
+      <LetterCoverWrapper $isOpen={stage === 'open'} $isOut={stage === 'out'}>
+        <LetterCoverInside
+          src="letter_cover_inside_blue.png"
           $isOpen={stage === 'open' || stage === 'out'}
           $isOut={stage === 'out'}
         />
-        <Ribbon $isGone={stage !== 'shake'} src="ribbon.png" />
+        <LetterCoverOutside
+          src="letter_cover_outside_blue.png"
+          $isOpen={stage === 'open' || stage === 'out'}
+          $isOut={stage === 'out'}
+        />
+        <Ribbon $isGone={stage !== 'shake'} src="letter_ribbon.png" />
       </LetterCoverWrapper>
     </Container>
   );
@@ -65,7 +74,20 @@ const LetterBack = styled.div<{ $isOut: boolean }>`
   opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
 `;
 
-const LetterCoverWrapper = styled.div<{ $isOut: boolean }>`
+const LetterFront = styled.img<{ $isOut: boolean }>`
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+
+  transition: opacity 1s ease;
+
+  z-index: ${({ $isOut }) => ($isOut ? 100 : 0)};
+  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
+
+  filter: drop-shadow(0px -6px 6px rgba(0, 0, 0, 0.05));
+`;
+
+const LetterCoverWrapper = styled.div<{ $isOpen: boolean; $isOut: boolean }>`
   position: absolute;
 
   width: 100%;
@@ -76,35 +98,31 @@ const LetterCoverWrapper = styled.div<{ $isOut: boolean }>`
   align-items: center;
   justify-content: center;
 
-  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
-  z-index: ${({ $isOut }) => ($isOut ? 0 : 1)};
-`;
-
-const LetterFront = styled.img<{ $isOut: boolean }>`
-  position: absolute;
-  width: 104%;
-  left: -2%;
-  bottom: -2%;
-  transition: opacity 1s ease;
-  z-index: ${({ $isOut }) => ($isOut ? 100 : 0)};
-  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
-`;
-
-const LetterCover = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
-  position: absolute;
-  width: 104%;
-  left: -2%;
-  top: 0%;
+  transition: 1s ease;
+  transition-property: transform, opacity;
 
   transform-origin: center top;
-  transition: transform 1s ease;
   ${({ $isOpen, $isOut }) =>
-    $isOpen
-      ? `transform: rotateX(180deg);`
-      : $isOut
-        ? `transform: rotateX(0deg);`
-        : `transform:  rotateX(0deg);`}
+    ($isOpen || $isOut) && `transform: rotateX(180deg);`}
+
+  opacity: ${({ $isOut }) => ($isOut ? 0 : 1)};
   z-index: ${({ $isOut }) => ($isOut ? -1 : 1)};
+`;
+
+const LetterCoverInside = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
+  position: absolute;
+  width: 100%;
+  top: 0;
+
+  filter: drop-shadow(0px 6px 6px rgba(0, 0, 0, 0.1));
+`;
+
+const LetterCoverOutside = styled.img<{ $isOpen: boolean; $isOut: boolean }>`
+  position: absolute;
+  width: 100%;
+  top: 0;
+
+  filter: drop-shadow(0px 6px 6px rgba(0, 0, 0, 0.1));
 `;
 
 const Ribbon = styled.img<{ $isGone: boolean }>`

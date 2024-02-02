@@ -59,6 +59,7 @@ const Container = styled.div`
   background-size: 300%;
   background-position: right;
   background-image: url('/background_outside.png');
+  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);
 `;
 
 const MainText = styled.div`
