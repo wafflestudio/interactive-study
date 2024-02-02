@@ -116,9 +116,9 @@ const SideButton = styled.button`
 `;
 
 const Outside = styled(SideButton)`
-  background-image: url('${import.meta.env.BASE_URL}/background_outside_home.png');
+  background-image: url('${import.meta.env.BASE_URL}background_outside_home.png');
 `;
 
 const Inside = styled(SideButton)`
-  background-image: url('${import.meta.env.BASE_URL}/background_inside_home.png');
+  background-image: url('${import.meta.env.BASE_URL}background_inside_home.png');
 `;
