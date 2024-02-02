@@ -45,7 +45,9 @@ export default function LeonPixi({
 
       // parse dataRefs
       if (!dataRefs.current) return;
-      const { graphics, renderer, stage, leon } = dataRefs.current;
+      const wreath = dataRefs.current;
+
+      const { graphics, renderer, stage, leon } = wreath;
 
       // clear canvas
       graphics.clear();
@@ -80,6 +82,7 @@ export default function LeonPixi({
         size,
         weight,
       },
+      dynamicSize: true,
     });
 
     // create pixi

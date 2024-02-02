@@ -51,6 +51,8 @@ type WreathSansProps = {
   leonOptions?: LeonOptions;
   darkMode?: boolean;
   snowMode?: boolean;
+  dynamicSize?: boolean;
+  minSize?: number;
 };
 
 export default class WreathSansController {
@@ -72,6 +74,8 @@ export default class WreathSansController {
   _snowMode: boolean;
   _snowFlakeCount: number = 256;
   _snowFlakeSizeBound: [number, number] = [0.5, 4.2];
+  _dynamicSize: boolean;
+  _minSize: number;
 
   leafSources: PIXI.SpriteSource[];
   darkLeafSources: PIXI.SpriteSource[];
@@ -88,7 +92,12 @@ export default class WreathSansController {
     leonOptions,
     darkMode,
     snowMode,
+    dynamicSize,
+    minSize,
   }: WreathSansProps) {
+    const canvasWidth = canvas?.clientWidth ?? 300;
+    const canvasHeight = canvas?.clientHeight ?? 300;
+
     this.leon = new LeonSans({
       text: initialText,
       color: [leonOptions?.color ?? '#704234'],
@@ -99,32 +108,29 @@ export default class WreathSansController {
     });
 
     this.leon.update();
-    this._initialScale = this.leon.scale;
+    this.leon.data.forEach((typo) => {
+      typo.drawing = {
+        value: 0,
+      };
+    });
 
-    if (canvas) {
-      this.canvas = canvas;
-      this.renderer = new PIXI.Renderer({
-        width: this.canvas.width,
-        height: this.canvas.height,
-        resolution: window.devicePixelRatio,
-        antialias: true,
-        autoDensity: true,
-        powerPreference: 'high-performance',
-        view: canvas,
-        background: background ?? 0xffffff,
-      });
-    } else {
-      this.renderer = new PIXI.Renderer({
-        width: 300,
-        height: 300,
-        resolution: window.devicePixelRatio,
-        antialias: true,
-        autoDensity: true,
-        powerPreference: 'high-performance',
-        background: 0xffffff,
-      });
-      this.canvas = this.renderer.view as HTMLCanvasElement;
+    this._initialScale = this.leon.scale;
+    if (dynamicSize) {
+      this.leon.size *= canvasWidth / this.leon.rect.w;
     }
+
+    this.renderer = new PIXI.Renderer({
+      width: canvasWidth,
+      height: canvasHeight,
+      resolution: window.devicePixelRatio,
+      antialias: true,
+      autoDensity: true,
+      powerPreference: 'high-performance',
+      view: canvas,
+      background: background ?? 0xffffff,
+    });
+
+    this.canvas = this.renderer.view as HTMLCanvasElement;
 
     const x = (this.canvas.width - this.leon.rect.w) / 2;
     const y = (this.canvas.height - this.leon.rect.h) / 2;
@@ -136,6 +142,9 @@ export default class WreathSansController {
 
     this._darkMode = darkMode ?? false;
     this._snowMode = snowMode ?? false;
+
+    this._dynamicSize = dynamicSize ?? false;
+    this._minSize = minSize ?? 50;
 
     this.containers = [];
     this.snowFlakes = [];
@@ -154,10 +163,10 @@ export default class WreathSansController {
   }
 
   set size(value: number) {
-    this.leon.size = value;
     this.containers.forEach((container) =>
-      container.scale.set(this.leon.scale / this._initialScale),
+      container.scale.set(container.scale.x * (value / this.leon.size)),
     );
+    this.leon.size = value;
     this.updateLeonPosition();
     this.updatePositions();
   }
@@ -242,6 +251,7 @@ export default class WreathSansController {
     this.drawTypo(this.leon.data[idx - lineBreak]);
     this.drawLeaves(idx - lineBreak);
     this.updatePositions();
+    if (this._dynamicSize) this.dynamicResize();
   }
 
   /**
@@ -267,6 +277,8 @@ export default class WreathSansController {
 
     // draw
     this.updatePositions();
+
+    if (this._dynamicSize) this.dynamicResize();
   }
 
   /**
@@ -287,6 +299,8 @@ export default class WreathSansController {
 
     // redraw
     this.redraw();
+
+    if (this._dynamicSize) this.dynamicResize();
   }
 
   redraw() {
@@ -303,8 +317,11 @@ export default class WreathSansController {
 
   resize(width: number, height: number) {
     this.renderer.resize(width, height);
-    this.updateLeonPosition();
-    this.updatePositions();
+    if (this._dynamicSize) this.dynamicResize();
+    else {
+      this.updateLeonPosition();
+      this.updatePositions();
+    }
   }
 
   /**
@@ -335,6 +352,11 @@ export default class WreathSansController {
     const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
     this.leon.position(x, y);
     this.leon.updateDrawingPaths();
+  }
+
+  private dynamicResize() {
+    const newSize = this.size * (this.canvas.clientWidth / this.leon.rect.w);
+    if (newSize >= this._minSize) this.size = newSize;
   }
 
   private async loadAssets() {
