@@ -44,9 +44,9 @@ const Container = styled.div`
   align-items: center;
   gap: 3%;
 
-  background-size: 300%;
-  background-position: right;
-  background-image: url('/background_outside.png');
+  background-image: url('/background_outside_m_ver.png');
+  background-size: cover;
+  background-position: bottom center;
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);
 `;
 

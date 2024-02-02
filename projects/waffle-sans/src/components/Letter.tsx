@@ -5,6 +5,8 @@ import ReceivedContent from './ReceivedContent';
 
 const stages = [`shake`, `close`, `open`, `out`] as const;
 
+const isTextured = true;
+
 export default function Letter() {
   const [stage, setStage] = useState<(typeof stages)[number]>('shake');
 
@@ -26,20 +28,22 @@ export default function Letter() {
           />
         </PaperWrapper>
         <LetterFront
-          src="letter_front_main_blue.png"
+          src={`letter_front_main_blue${isTextured ? '_textured' : ''}.png`}
           $isOut={stage === 'out'}
         />
         <LetterFront
-          src="letter_front_bottom_blue.png"
+          src={`letter_front_bottom_blue${isTextured ? '_textured' : ''}.png`}
           $isOut={stage === 'out'}
         />
         <LetterCoverWrapper $isOpen={stage === 'open'} $isOut={stage === 'out'}>
           <LetterCoverInside
-            src="letter_cover_inside_blue.png"
+            src={`letter_cover_inside_blue${isTextured ? '_textured' : ''}.png`}
             $isOut={stage === 'out'}
           />
           <LetterCoverOutside
-            src="letter_cover_outside_blue.png"
+            src={`letter_cover_outside_blue${
+              isTextured ? '_textured' : ''
+            }.png`}
             $isOut={stage === 'out'}
           />
         </LetterCoverWrapper>
