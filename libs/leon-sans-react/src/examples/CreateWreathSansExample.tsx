@@ -8,7 +8,7 @@ const { WreathSansCanvas, onInputHandler, resize } = createWreathSans({
   height: window.innerHeight,
 });
 
-export default function LeonPixiExample() {
+export default function CreateWreathSansExample() {
   /**
    * window resize
    */

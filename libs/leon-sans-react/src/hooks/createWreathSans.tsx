@@ -35,10 +35,9 @@ export default function createWreathSans({
     },
   });
 
+  wreathSansController.resize(width, height);
+  
   const canvas = wreathSansController.canvas;
-  canvas.width = width;
-  canvas.height = height;
-
   const graphics = wreathSansController.graphics;
   const leon = wreathSansController.leon;
   const renderer = wreathSansController.renderer;
