@@ -15,7 +15,6 @@ export const TextureProvider = ({ children }: Props) => {
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  position: relative;
 `;
 
 const Blend = styled.img`
