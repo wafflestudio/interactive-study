@@ -29,7 +29,7 @@ export default function LeonPixiExample() {
   return (
     <div>
       <LeonPixi
-        initialText={''}
+        initialText={'INTERACTIVE'}
         color={'#704234'}
         size={130}
         width={canvasWidth}

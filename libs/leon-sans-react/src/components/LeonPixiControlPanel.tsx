@@ -204,9 +204,7 @@ export default function LeonPixiController({
   const changeFontSize = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
-        wreath.leon.size = Number(e.target.value);
-        wreath.updateLeonPosition();
-        wreath.redraw();
+        wreath.size = Number(e.target.value);
         setUpdateId((prev) => prev + 1);
       });
     },
@@ -216,7 +214,7 @@ export default function LeonPixiController({
   const toggleDarkMode = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatcher.send((wreath) => {
-        wreath.darkMode = e.target.checked;
+        wreath._darkMode = e.target.checked;
         wreath.redraw();
       });
     },

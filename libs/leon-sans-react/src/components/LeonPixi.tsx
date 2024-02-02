@@ -1,5 +1,3 @@
-import LeonSans from 'leonsans';
-import * as PIXI from 'pixi.js';
 import { useCallback, useEffect, useRef } from 'react';
 
 import WreathSansController from '../domain/WreathSansController';
@@ -15,7 +13,6 @@ type LeonPixiProps = {
   // canvas config
   width?: number;
   height?: number;
-  pixelRatio?: number;
   // animation
   dispatcher?: ReturnType<typeof usePixiDispatcher>;
 } & PixiHandlers;
@@ -27,7 +24,6 @@ export default function LeonPixi({
   weight = 400,
   width = 800,
   height = 600,
-  pixelRatio = 2,
   dispatcher,
   onAnimate,
 }: LeonPixiProps) {
@@ -49,7 +45,9 @@ export default function LeonPixi({
 
       // parse dataRefs
       if (!dataRefs.current) return;
-      const { graphics, renderer, stage, leon } = dataRefs.current;
+      const wreath = dataRefs.current;
+
+      const { graphics, renderer, stage, leon } = wreath;
 
       // clear canvas
       graphics.clear();
@@ -73,36 +71,23 @@ export default function LeonPixi({
   useEffect(() => {
     if (!canvasRef.current || dataRefs.current) return;
     const canvas = canvasRef.current;
-
-    // create leon
-    const leon = new LeonSans({
-      text: initialText,
-      color: [color],
-      size,
-      weight,
-      isPattern: true,
-      pathGap: 1/20,
+    canvas.width = width;
+    canvas.height = height;
+    
+    const wreathsans = new WreathSansController({
+      canvas,
+      initialText,
+      leonOptions: {
+        color,
+        size,
+        weight,
+      },
+      dynamicSize: true,
     });
-
-    // set position
-    const x = (width - leon.rect.w) / 2;
-    const y = (height - leon.rect.h) / 2;
-    leon.position(x, y);
 
     // create pixi
-    const renderer = new PIXI.Renderer({
-      width,
-      height,
-      resolution: pixelRatio,
-      antialias: true,
-      autoDensity: true,
-      powerPreference: 'high-performance',
-      view: canvas,
-      background: 0xffffff,
-    });
-    const stage = new PIXI.Container();
-    const graphics = new PIXI.Graphics();
-    stage.addChild(graphics);
+    const renderer = wreathsans.renderer;
+    const stage = wreathsans.stage;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -112,13 +97,7 @@ export default function LeonPixi({
     globalThis.__PIXI_RENDERER__ = renderer;
 
     // save dataRefs
-    dataRefs.current = new WreathSansController({
-      canvas: canvasRef.current,
-      leon,
-      renderer,
-      stage,
-      graphics,
-    });
+    dataRefs.current = wreathsans;
     if (dispatcher) dispatcher.initiate(dataRefs.current); // dispatcher에 dataRefs 전달
 
     // start animation
@@ -133,7 +112,7 @@ export default function LeonPixi({
     dataRefs.current.leon.color = [color];
     dataRefs.current.leon.size = size;
     dataRefs.current.leon.weight = weight;
-  }, [dataRefs, color, size, weight, pixelRatio]);
+  }, [dataRefs, color, size, weight]);
 
   /**
    * update handler
