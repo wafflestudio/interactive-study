@@ -28,6 +28,7 @@ const Container = styled.div`
 
   display: flex;
   justify-content: center;
+  overflow: hidden;
 `;
 
 const Dim = styled.div`
@@ -41,9 +42,8 @@ const Dim = styled.div`
 
 const Main = styled.div`
   position: relative;
-  width: 100%;
-  max-width: 500px;
-  min-width: 380px;
+  width: 380px;
+  min-width: 320px;
   height: 100%;
 
   padding: 0 20px;

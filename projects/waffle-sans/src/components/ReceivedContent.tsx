@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import useWreathSans from '../hooks/useWreathSans';
+import { LetterFooter } from './MobileFooter';
 
 type Props = {
   sansContent: string;
@@ -25,6 +26,7 @@ export default function ReceivedContent({ sansContent, from }: Props) {
         메리 크리스마스 즐거운 성탄절 보내세요 하하.
       </MainText>
       <From>From. {from}</From>
+      <LetterFooter />
     </Container>
   );
 }
@@ -40,6 +42,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 3%;
 
   background-size: 300%;
   background-position: right;
@@ -49,17 +52,16 @@ const Container = styled.div`
 
 const SansWrapper = styled.div`
   width: 100%;
+  height: 30%;
 `;
 
 const MainText = styled.div`
   color: #315c57;
 
   width: 100%;
-  height: 208px;
+  height: 30%;
   flex-shrink: 0;
   overflow-y: auto;
-
-  margin-top: 60px;
 
   text-align: justify;
   font-family: Inter;
@@ -72,7 +74,7 @@ const MainText = styled.div`
 const From = styled.div`
   color: #315c57;
 
-  width: 60%;
+  width: 100%;
 
   text-align: justify;
   font-family: Inter;
