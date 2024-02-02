@@ -7,9 +7,7 @@ export function LetterFooter() {
     <LetterContainer>
       <LogoIcon width={44} height={24} color="#aec7c5" />
       <LetterText>
-        {
-          'interactive study from waffle studio\nmade with Leon Sans\nⓒ2019.Jongmin Kim.all righ- ts reserved.'
-        }
+        {`interactive study from waffle studio-made with Leon Sans\n(ⓒ2019.Jongmin Kim.all righ- ts reserved.)`}
       </LetterText>
     </LetterContainer>
   );
