@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -27,6 +27,14 @@ export default function PostForm({
       RECEIVER: 20,
       CONTENT: 200,
     };
+  }, []);
+
+  useEffect(() => {
+    setForm({
+      sender: '',
+      receiver: '',
+      content: '',
+    });
   }, []);
 
   const handleChange = useCallback(
