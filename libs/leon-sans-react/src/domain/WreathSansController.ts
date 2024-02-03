@@ -226,33 +226,38 @@ export default class WreathSansController {
   }
 
   insertText(text: string, idx: number) {
-    // check text
-    if (text.length !== 1 || !(CHARSET.includes(text) || ' \n'.includes(text)))
-      return;
+    this.loadingPromise.then(() => {
+      // check text
+      if (
+        text.length !== 1 ||
+        !(CHARSET.includes(text) || ' \n'.includes(text))
+      )
+        return;
 
-    // add text
-    this.leon.text =
-      this.leon.text.slice(0, idx) + text + this.leon.text.slice(idx);
+      // add text
+      this.leon.text =
+        this.leon.text.slice(0, idx) + text + this.leon.text.slice(idx);
 
-    // update paths
-    this.updateLeonPosition();
+      // update paths
+      this.updateLeonPosition();
 
-    // FIXME : \n 처리
-    if (text === '\n') {
+      // FIXME : \n 처리
+      if (text === '\n') {
+        this.updatePositions();
+        return;
+      }
+      /**
+       * idx 전까지 줄바꿈 개수 세기
+       * 왜냐하면 줄바꿈은 leon.text에는 포함되어 있지만 leon.data에는 포함되어 있지 않기 때문
+       */
+      const lineBreak = this.leon.text.slice(0, idx).split('\n').length - 1;
+
+      // 새로 써진 글자만 다시 애니메이팅하기
+      this.drawTypo(this.leon.data[idx - lineBreak]);
+      this.drawLeaves(idx - lineBreak);
       this.updatePositions();
-      return;
-    }
-    /**
-     * idx 전까지 줄바꿈 개수 세기
-     * 왜냐하면 줄바꿈은 leon.text에는 포함되어 있지만 leon.data에는 포함되어 있지 않기 때문
-     */
-    const lineBreak = this.leon.text.slice(0, idx).split('\n').length - 1;
-
-    // 새로 써진 글자만 다시 애니메이팅하기
-    this.drawTypo(this.leon.data[idx - lineBreak]);
-    this.drawLeaves(idx - lineBreak);
-    this.updatePositions();
-    if (this._dynamicSize) this.dynamicResize();
+      if (this._dynamicSize) this.dynamicResize();
+    });
   }
 
   /**
@@ -262,23 +267,25 @@ export default class WreathSansController {
    * @param text 삭제 후 남은 텍스트
    */
   deleteText(idx: number, deleted: number) {
-    // delete text
-    const preLineBreak = this.leon.text.slice(0, idx).split('\n').length - 1;
-    const midLineBreak =
-      this.leon.text.slice(idx, idx + deleted).split('\n').length - 1;
-    this.leon.text =
-      this.leon.text.slice(0, idx) + this.leon.text.slice(idx + deleted);
-    this.removeContainers(
-      idx - preLineBreak,
-      idx - preLineBreak + deleted - midLineBreak,
-    );
+    this.loadingPromise.then(() => {
+      // delete text
+      const preLineBreak = this.leon.text.slice(0, idx).split('\n').length - 1;
+      const midLineBreak =
+        this.leon.text.slice(idx, idx + deleted).split('\n').length - 1;
+      this.leon.text =
+        this.leon.text.slice(0, idx) + this.leon.text.slice(idx + deleted);
+      this.removeContainers(
+        idx - preLineBreak,
+        idx - preLineBreak + deleted - midLineBreak,
+      );
 
-    // recalculate position of new text
-    if (this._dynamicSize) this.dynamicResize();
-    else this.updateLeonPosition();
+      // recalculate position of new text
+      if (this._dynamicSize) this.dynamicResize();
+      else this.updateLeonPosition();
 
-    // draw
-    this.updatePositions();
+      // draw
+      this.updatePositions();
+    });
   }
 
   /**
@@ -287,42 +294,50 @@ export default class WreathSansController {
    * @param text 교체할 텍스트
    */
   replaceText(text: string) {
-    // check text
-    if (!text.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c)))
-      return;
+    this.loadingPromise.then(() => {
+      // check text
+      if (
+        !text.split('').every((c) => CHARSET.includes(c) || ' \n'.includes(c))
+      )
+        return;
 
-    // set text
-    this.leon.text = text;
+      // set text
+      this.leon.text = text;
 
-    // recalculate position of new text
-    if (this._dynamicSize) this.dynamicResize();
-    else this.updateLeonPosition();
+      // recalculate position of new text
+      if (this._dynamicSize) this.dynamicResize();
+      else this.updateLeonPosition();
 
-    // redraw
-    this.redraw();
+      // redraw
+      this.redraw();
 
-    if (this._dynamicSize) this.dynamicResize();
+      if (this._dynamicSize) this.dynamicResize();
+    });
   }
 
   redraw() {
-    this.leon.updateDrawingPaths();
+    this.loadingPromise.then(() => {
+      this.leon.updateDrawingPaths();
 
-    for (let i = 0; i < this.leon.drawing.length; i++) {
-      gsap.killTweensOf(this.leon.drawing[i]);
-      this.drawTypo(this.leon.data[i]);
-    }
+      for (let i = 0; i < this.leon.drawing.length; i++) {
+        gsap.killTweensOf(this.leon.drawing[i]);
+        this.drawTypo(this.leon.data[i]);
+      }
 
-    this.removeContainers();
-    this.leon.data.forEach(() => this.drawLeaves());
+      this.removeContainers();
+      this.leon.data.forEach(() => this.drawLeaves());
+    });
   }
 
   resize(width: number, height: number) {
-    this.renderer.resize(width, height);
-    if (this._dynamicSize) this.dynamicResize();
-    else {
-      this.updateLeonPosition();
-      this.updatePositions();
-    }
+    this.loadingPromise.then(() => {
+      this.renderer.resize(width, height);
+      if (this._dynamicSize) this.dynamicResize();
+      else {
+        this.updateLeonPosition();
+        this.updatePositions();
+      }
+    });
   }
 
   /**
@@ -330,7 +345,7 @@ export default class WreathSansController {
    * 그러나 leonsans에는 영향을 주지 않는다.
    * leonsans의 위치를 업데이트하려면 {@link updateLeonPosition()}을 사용한다.
    */
-  updatePositions() {
+  private updatePositions() {
     // let leonIdx = 0;
     this.containers.forEach((container, idx) => {
       // FIXME : \n 처리
@@ -347,7 +362,7 @@ export default class WreathSansController {
    * 글자 컨테이너들의 위치에는 영향을 주지 않는다.
    * 글자 컨테이너들의 위치를 업데이트하려면 {@link updatePositions()}을 사용한다.
    */
-  updateLeonPosition() {
+  private updateLeonPosition() {
     // recalculate position of new text
     const x = (this.canvas.clientWidth - this.leon.rect.w) / 2;
     const y = (this.canvas.clientHeight - this.leon.rect.h) / 2;
