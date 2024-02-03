@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { LATIN } from '../../../../../libs/leonsans/src/font/latin';
 import Member from '../../components/Member';
 import memberData from '../../data/members';
 

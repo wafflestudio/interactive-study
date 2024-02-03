@@ -89,6 +89,7 @@ const Thumbnail = styled.img<{ $isSelected: boolean }>`
   background-color: black;
   object-fit: cover;
   opacity: ${({ $isSelected }) => ($isSelected ? 0 : 1)};
+  transition: opacity 0.5s;
   cursor: pointer;
 `;
 
