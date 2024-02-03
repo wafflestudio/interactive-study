@@ -29,7 +29,7 @@ const projectData: ProjectData[] = [
   {
     id: 2,
     title: 'WAFFLE SANS',
-    description: '와플 산스 설명 설명',
+    description: '와플 산스로\n당신만의 크리스마스 편지를 보내보세요!',
     thumbnailSrc: `${import.meta.env.BASE_URL}waffle-sans_thumbnail.png`,
     videoSrc: `${import.meta.env.BASE_URL}waffle-sans_video.mp4`,
     url: 'https://interactive-study.wafflestudio.com/projects/waffle-sans/',
