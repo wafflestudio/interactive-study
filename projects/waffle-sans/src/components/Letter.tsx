@@ -210,7 +210,7 @@ const PaperWrapper = styled.div<{ $isOut: boolean }>`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  aspect-ratio: ${({ $isOut }) => ($isOut ? 0.583 : 1.45)};
+  // aspect-ratio: ${({ $isOut }) => ($isOut ? 0.583 : 1.45)};  // TODO: 의도
   z-index: ${({ $isOut }) => ($isOut ? 1 : 0)};
 
   padding: 0 10px;

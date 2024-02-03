@@ -53,7 +53,7 @@ const Dim = styled.div`
 const Main = styled.div`
   position: relative;
   width: 380px;
-  min-width: 320px;
+  min-width: 250px;
   height: 100%;
 
   padding: 0 20px;
