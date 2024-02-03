@@ -21,8 +21,8 @@ export default function About() {
           웹을 개발하는 프로젝트를 진행합니다.
         </Description>
         <Organizations>
-          <img src="/SNU.png" />
-          <img src="/WAFFLE.png" />
+          <img src={`${import.meta.env.BASE_URL}SNU.png`} />
+          <img src={`${import.meta.env.BASE_URL}WAFFLE.png`} />
         </Organizations>
       </Introduction>
       <Members>

@@ -11,7 +11,7 @@ export type MemberData = {
 const developerData: MemberData[] = [
   {
     id: 0,
-    thumbnailSrc: '/minkyu.png',
+    thumbnailSrc: `${import.meta.env.BASE_URL}minkyu.png`,
     name: '이민규',
     email: 'whizkyu@snu.ac.kr',
     github: 'minkyu97',
@@ -19,7 +19,7 @@ const developerData: MemberData[] = [
   },
   {
     id: 1,
-    thumbnailSrc: '/yeji.jpeg',
+    thumbnailSrc: `${import.meta.env.BASE_URL}yeji.jpeg`,
     name: '김예지',
     email: 'kyewl97@snu.ac.kr',
     github: 'lerrybe',
@@ -27,7 +27,7 @@ const developerData: MemberData[] = [
   },
   {
     id: 2,
-    thumbnailSrc: '/junyoung.png',
+    thumbnailSrc: `${import.meta.env.BASE_URL}junyoung.png`,
     name: '박준영',
     email: 'kidbean02@snu.ac.kr',
     github: 'designDefined',
@@ -46,7 +46,7 @@ const designerData: MemberData[] = [
   },
   {
     id: 4,
-    thumbnailSrc: '/seoi.png',
+    thumbnailSrc: `${import.meta.env.BASE_URL}seoi.png`,
     name: '최서이',
     email: 'ssechho@snu.ac.kr',
     github: 'ssechho',
@@ -55,7 +55,7 @@ const designerData: MemberData[] = [
   },
   {
     id: 5,
-    thumbnailSrc: '/pia.jpeg',
+    thumbnailSrc: `${import.meta.env.BASE_URL}pia.jpeg`,
     name: '전비아',
     email: 'piachun@snu.ac.kr',
     github: 'piachun',
