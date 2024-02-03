@@ -15,7 +15,11 @@ export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
   const value = useRecoilValue(postFormState);
   const url = useMemo(() => new URL(window.location.href), []);
   const sans = useMemo(() => decoder(url, 'sans'), [url]);
-  const { ref, WreathSansCanvas } = useWreathSans({ initialText: sans });
+  const { ref, WreathSansCanvas } = useWreathSans({
+    initialText: sans,
+    darkMode: mode === Mode.OUTSIDE,
+    fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
+  });
 
   return (
     <Container $mode={mode}>
@@ -60,6 +64,7 @@ const Container = styled.div<{ $mode: Mode }>`
 const Sans = styled.div`
   width: 100%;
   height: 234px;
+  overflow: auto;
 `;
 
 const PostContainer = styled.div`

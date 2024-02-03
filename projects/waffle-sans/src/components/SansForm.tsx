@@ -21,7 +21,11 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
   const defaultValue = useMemo(() => 'interactive study', []);
   const { ref, WreathSansCanvas, redraw, resize, getText, onInputHandler } =
     useWreathSans({
+      width: window.innerWidth,
+      height: (window.innerHeight / 100) * 62,
       initialText: defaultValue,
+      darkMode: mode === Mode.OUTSIDE,
+      fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
     });
 
   const handleShare = useCallback(() => {

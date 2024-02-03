@@ -3,13 +3,17 @@ import { useEffect, useMemo, useRef } from 'react';
 import createWreathSans from '../../../../libs/leon-sans-react/src/hooks/createWreathSans';
 
 interface Params {
-  fontSize?: number;
+  width?: number;
+  height?: number;
   fontColor?: string;
+  darkMode?: boolean;
   initialText: string;
 }
 
 export default function useWreathSans({
-  fontSize,
+  width,
+  height,
+  darkMode,
   fontColor,
   initialText,
 }: Params) {
@@ -19,18 +23,22 @@ export default function useWreathSans({
     useMemo(() => {
       return createWreathSans({
         initialText: initialText,
-        width: ref?.current?.offsetWidth ?? 330,
-        height: ref?.current?.offsetHeight ?? 234,
-        size: fontSize ?? 40,
+        width: width ? width : ref.current?.offsetWidth ?? 330,
+        height: height ? height : ref.current?.offsetHeight ?? 234,
+        size: width ? width / 8 : 40,
         color: fontColor ?? '#704234',
         background: 'transparent',
+        backgroundAlpha: 0,
+        darkMode: darkMode ?? false,
       });
     }, [
-      fontSize,
-      fontColor,
       initialText,
-      ref?.current?.offsetWidth,
-      ref?.current?.offsetHeight,
+      width,
+      height,
+      fontColor,
+      darkMode,
+      ref.current?.offsetWidth,
+      ref.current?.offsetHeight,
     ]);
 
   useEffect(() => {
