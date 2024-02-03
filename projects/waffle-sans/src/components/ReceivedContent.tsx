@@ -1,13 +1,14 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import useWreathSans from '../hooks/useWreathSans';
-import { Mode } from '../types/mode';
 
 type ReceivedContentProps = {
   sender: string;
   content: string;
   sans: string;
   mode: string;
+  stage?: string;
 };
 
 export default function ReceivedContent({
@@ -15,12 +16,30 @@ export default function ReceivedContent({
   content,
   sans,
   mode,
+  stage,
 }: ReceivedContentProps) {
-  const { ref, WreathSansCanvas } = useWreathSans({
+  const [width, setWidth] = useState(280);
+  const [height, setHeight] = useState(196);
+
+  const { ref, WreathSansCanvas, redraw } = useWreathSans({
+    width,
+    height,
     initialText: sans,
-    darkMode: mode === Mode.OUTSIDE,
-    fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
+    darkMode: mode === 'o',
+    fontColor: mode === 'o' ? '#704234' : '#B27E41',
   });
+
+  useEffect(() => {
+    if (ref?.current) {
+      setWidth(ref?.current?.offsetWidth);
+      setHeight(ref.current.offsetHeight);
+      redraw();
+    }
+  }, [redraw, ref]);
+
+  useEffect(() => {
+    redraw();
+  }, [redraw, stage]);
 
   return (
     <Container $isOutside={mode === 'o'}>

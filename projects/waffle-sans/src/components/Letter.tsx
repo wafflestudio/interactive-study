@@ -44,6 +44,7 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
             sender={sender}
             content={content}
             mode={mode}
+            stage={stage}
           />
         </PaperWrapper>
         <LetterFront
