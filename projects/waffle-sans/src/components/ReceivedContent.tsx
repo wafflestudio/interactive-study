@@ -49,8 +49,8 @@ const Container = styled.div<{ $isOutside: boolean }>`
 
   background-image: url(${({ $isOutside }) =>
     $isOutside
-      ? '/background_outside_letter.png'
-      : `/background_inside_letter.png`});
+      ? `${import.meta.env.BASE_URL}background_outside_letter.png`
+      : `${import.meta.env.BASE_URL}background_inside_letter.png`});
   background-size: cover;
   background-position: bottom center;
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);

@@ -47,26 +47,26 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
           />
         </PaperWrapper>
         <LetterFront
-          src={`letter_front_main_${parsedMode}${
+          src={`${import.meta.env.BASE_URL}letter_front_main_${parsedMode}${
             isTextured ? '_textured' : ''
           }.png`}
           $isOut={stage === 'out'}
         />
         <LetterFront
-          src={`letter_front_bottom_${parsedMode}${
+          src={`${import.meta.env.BASE_URL}letter_front_bottom_${parsedMode}${
             isTextured ? '_textured' : ''
           }.png`}
           $isOut={stage === 'out'}
         />
         <LetterCoverWrapper $isOpen={stage === 'open'} $isOut={stage === 'out'}>
           <LetterCoverInside
-            src={`letter_cover_inner_${parsedMode}${
+            src={`${import.meta.env.BASE_URL}letter_cover_inner_${parsedMode}${
               isTextured ? '_textured' : ''
             }.png`}
             $isOut={stage === 'out'}
           />
           <LetterCoverOutside
-            src={`letter_cover_outer_${parsedMode}${
+            src={`${import.meta.env.BASE_URL}letter_cover_outer_${parsedMode}${
               isTextured ? '_textured' : ''
             }.png`}
             $isOut={stage === 'out'}
@@ -76,7 +76,7 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
           $isOutside={parsedMode === 'outside'}
           $isGone={stage !== 'shake'}
           $isOpen={stage === 'open' || stage === 'out'}
-          src={`sealing_${parsedMode}.png`}
+          src={`${import.meta.env.BASE_URL}sealing_${parsedMode}.png`}
         />
       </Container>
     </>

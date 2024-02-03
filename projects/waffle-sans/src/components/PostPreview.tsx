@@ -57,8 +57,8 @@ const Container = styled.div<{ $mode: Mode }>`
   background-position: center;
   background-image: ${({ $mode }) =>
     $mode === Mode.OUTSIDE
-      ? 'url(/background_outside_letter.png)'
-      : 'url(/background_inside_letter.png)'};
+      ? `url(${import.meta.env.BASE_URL}background_outside_letter.png)`
+      : `url(${import.meta.env.BASE_URL}background_inside_letter.png)`};
 `;
 
 const Sans = styled.div`

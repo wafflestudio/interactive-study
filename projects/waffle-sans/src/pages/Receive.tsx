@@ -33,8 +33,8 @@ const Container = styled.div<{ $isOutside: boolean }>`
   background-position: top;
   background-image: url(${({ $isOutside }) =>
     $isOutside
-      ? '/background_outside_m_ver.png'
-      : '/background_inside_m_ver.png'});
+      ? `${import.meta.env.BASE_URL}background_outside_m_ver.png`
+      : `${import.meta.env.BASE_URL}background_inside_m_ver.png`});
 
   display: flex;
   justify-content: center;
