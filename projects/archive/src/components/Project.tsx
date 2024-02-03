@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ProjectData } from '../data/projects';
@@ -15,7 +15,6 @@ export default function Project({
   setSelectedId,
 }: ProjectProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
@@ -39,17 +38,15 @@ export default function Project({
         onMouseLeave={() => setIsHovered(false)}
       >
         <Video ref={videoRef} src={videoSrc} muted />
-        <Thumbnail
-          $isSelected={isActive}
-          src={thumbnailSrc}
-          onClick={() => navigate(url)}
-        />
+        <Link to={url}>
+          <Thumbnail $isSelected={isActive} src={thumbnailSrc} />
+        </Link>
         <Dim $isDimmed={!isActive} />
       </VideoWrapper>
       {isActive && (
         <Information>
           <Description>{description}</Description>
-          <Title onClick={() => navigate(url)}>
+          <Title to={url}>
             {title} <Dot />
           </Title>
         </Information>
@@ -101,7 +98,9 @@ const Information = styled.div`
   padding-right: 16px;
 `;
 
-const Title = styled.h1`
+const Title = styled(Link)`
+  color: #000;
+  text-decoration: none;
   font-size: 30px;
   font-weight: 400;
   display: flex;
@@ -125,6 +124,7 @@ const Description = styled.div`
   align-self: flex-end;
   font-size: 12px;
   line-height: 18px;
+  font-family: 'Pretendard Variable', serif;
   white-space: pre-wrap;
 `;
 
