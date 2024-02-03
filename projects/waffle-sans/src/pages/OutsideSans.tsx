@@ -20,7 +20,6 @@ export default function OutsideSans() {
       <Background />
       <BackBtnContainer>
         <NavigateButton
-          isWideArea
           text={'BACK TO HOME'}
           direction={Direction.BACK}
           handleClick={() => router('/i-sans')}
@@ -75,7 +74,7 @@ const BackBtnContainer = styled.div`
     left: 0;
   }
   @media ${GRID.MOBILE} {
-    bottom: 190px;
-    left: 0;
+    bottom: 200px;
+    left: 36px;
   }
 `;

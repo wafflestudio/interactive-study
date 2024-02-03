@@ -69,8 +69,8 @@ const Container = styled.button<{ $width?: string; $height?: string }>`
   }
 
   @media ${GRID.MOBILE} {
-    width: ${({ $width }) => (!$width ? '200px' : $width)};
-    height: ${({ $height }) => (!$height ? '50px' : $height)};
+    width: ${({ $width }) => (!$width ? 'auto' : $width)};
+    height: ${({ $height }) => (!$height ? 'auto' : $height)};
   }
 `;
 
@@ -80,4 +80,8 @@ const Text = styled.span<{ $color: string }>`
   font-weight: 400;
   line-height: normal;
   color: ${({ $color }) => $color};
+
+  @media ${GRID.MOBILE} {
+    font-size: 12px;
+  }
 `;

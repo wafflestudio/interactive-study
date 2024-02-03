@@ -50,6 +50,10 @@ export default function PostForm({
   );
 
   const handleShare = useCallback(() => {
+    if (!form.sender || !form.receiver || !form.content) {
+      alert('편지를 완성해주세요.');
+      return;
+    }
     const currentURL = new URL(window.location.href);
     const encodedSender = encoder(form.sender);
     const encodedContent = encoder(form.content);
@@ -96,7 +100,7 @@ export default function PostForm({
         value={form.content}
         handleChange={handleChange}
         threshold={THRESHOLD.CONTENT}
-        placeholder="새해복 많이 받아~!"
+        placeholder="와플아 새해복 많이 받아야한다~!"
         width={'100%'}
         height={'226px'}
         thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}
