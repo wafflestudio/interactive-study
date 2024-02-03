@@ -34,19 +34,19 @@ export default function OutsideSans() {
           <Snow>
             <SnowFlakes />
           </Snow>
-          <BackBtnContainer>
-            <NavigateButton
-              color={'#2B1C1A'}
-              hoveredColor={'#2B1C1A'}
-              width="100%"
-              height="100%"
-              text={'GO TO OUTSIDE'}
-              direction={Direction.FORWARD}
-              handleClick={() => router('/o-sans')}
-            />
-          </BackBtnContainer>
         </Window>
       </WindowContainer>
+      <BackBtnContainer>
+        <NavigateButton
+          width="auto"
+          height="auto"
+          color={'#fff'}
+          hoveredColor={'#fff'}
+          text={'GO TO OUTSIDE'}
+          direction={Direction.FORWARD}
+          handleClick={() => router('/o-sans')}
+        />
+      </BackBtnContainer>
     </Container>
   );
 }
@@ -96,18 +96,18 @@ const Content = styled.div`
 `;
 
 const BackBtnContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   z-index: 3;
-  padding-left: 20%;
-  pointer-events: auto;
+  position: absolute;
+  top: 20px;
+  right: 16vw;
 
   @media ${GRID.TABLET} {
+    right: 2vw;
   }
   @media ${GRID.MOBILE} {
-    display: none;
+    left: 20px;
   }
 `;
 
@@ -116,17 +116,18 @@ const WindowContainer = styled.div`
   height: auto;
   display: flex;
   position: absolute;
-  top: 0;
-  right: 14vw;
+  top: 60px;
+  right: 16vw;
   border: 0.6vw solid #292222;
   border-radius: 10px;
   z-index: -4;
   pointer-events: none;
 
   @media ${GRID.TABLET} {
-    right: 1vw;
+    right: 2vw;
   }
   @media ${GRID.MOBILE} {
+    display: none;
   }
 `;
 
@@ -135,10 +136,10 @@ const Window = styled.div`
   position: relative;
   justify-content: flex-end;
   align-items: center;
-  width: 13vw;
+  height: 20vh;
   aspect-ratio: 235 / 255;
   background: #bfcde3;
-  border: 0.6vw solid #292222;
+  border: 0.8vh solid #292222;
 `;
 
 const Snow = styled.div`

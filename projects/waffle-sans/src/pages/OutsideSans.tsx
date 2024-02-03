@@ -74,7 +74,7 @@ const BackBtnContainer = styled.div`
     left: 0;
   }
   @media ${GRID.MOBILE} {
-    top: 14px;
-    left: 14px;
+    top: 20px;
+    left: 20px;
   }
 `;
