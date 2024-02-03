@@ -38,7 +38,7 @@ const developerData: MemberData[] = [
 const designerData: MemberData[] = [
   {
     id: 3,
-    thumbnailSrc: '/chaewon.jpeg',
+    thumbnailSrc: `${import.meta.env.BASE_URL}chaewon.jpeg`,
     name: '유채원',
     email: 'kidbean02@snu.ac.kr',
     github: 'coco-ball',
