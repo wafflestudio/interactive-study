@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import useWreathSans from '../hooks/useWreathSans';
+import { Mode } from '../types/mode';
 
 type ReceivedContentProps = {
   sender: string;
@@ -15,7 +16,11 @@ export default function ReceivedContent({
   sans,
   mode,
 }: ReceivedContentProps) {
-  const { ref, WreathSansCanvas } = useWreathSans({ initialText: sans });
+  const { ref, WreathSansCanvas } = useWreathSans({
+    initialText: sans,
+    darkMode: mode === Mode.OUTSIDE,
+    fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
+  });
 
   return (
     <Container $isOutside={mode === 'o'}>

@@ -58,7 +58,8 @@ export default function PostForm({
     const encodedSender = encoder(form.sender);
     const encodedContent = encoder(form.content);
     const encodedReceiver = encoder(form.receiver);
-    const targetUrl = `${currentURL}&sender=${encodedSender}&receiver=${encodedReceiver}&content=${encodedContent}`;
+    const url = currentURL.toString().replace(/(o-post|i-post)/, 'receive');
+    const targetUrl = `${url}&sender=${encodedSender}&receiver=${encodedReceiver}&content=${encodedContent}`;
 
     window.navigator.clipboard
       .writeText(targetUrl)

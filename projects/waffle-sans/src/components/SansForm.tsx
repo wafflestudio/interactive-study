@@ -35,8 +35,8 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
     }
     const text = encoder(getText());
     mode === Mode.OUTSIDE
-      ? router(`/o-post?sans=${text}&mode=o`)
-      : router(`/i-post?sans=${text}&mode=i`);
+      ? router(`/o-post?sans=${text}&mode=${encoder('o')}`)
+      : router(`/i-post?sans=${text}&mode=${encoder('i')}`);
   }, [getText, mode, router]);
 
   useEffect(() => {
