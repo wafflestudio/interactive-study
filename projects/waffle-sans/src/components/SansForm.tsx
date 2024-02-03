@@ -1,13 +1,14 @@
 // TODO: import from leon-sans-react
-import createWreathSans from 'leon-sans-react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { GRID } from '../constants/breakpoint';
+import useWreathSans from '../hooks/useWreathSans';
 import ShareIcon from '../icons/ShareIcon';
 import WriteIcon from '../icons/WriteIcon';
 import { Mode } from '../types/mode';
+import { encoder } from '../utils/crypto';
 import Button from './Button';
 import Textarea from './Textarea';
 
@@ -18,15 +19,13 @@ interface Props {
 export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
   const router = useNavigate();
   const defaultValue = useMemo(() => 'interactive study', []);
-
-  const { WreathSansCanvas, onInputHandler, resize, redraw, getText } =
-    createWreathSans({
-      initialText: defaultValue,
+  const { ref, WreathSansCanvas, redraw, resize, getText, onInputHandler } =
+    useWreathSans({
       width: window.innerWidth,
       height: (window.innerHeight / 100) * 62,
-      size: 130,
-      color: '#704234',
-      background: 'transparent',
+      initialText: defaultValue,
+      darkMode: mode === Mode.OUTSIDE,
+      fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
     });
 
   const handleShare = useCallback(() => {
@@ -34,10 +33,10 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
       alert('🎁 텍스트를 입력해주세요.');
       return;
     }
-
+    const text = encoder(getText());
     mode === Mode.OUTSIDE
-      ? router(`/o-post?sans=${encodeURIComponent(getText())}`)
-      : router(`/i-post?sans=${encodeURIComponent(getText())}`);
+      ? router(`/o-post?sans=${text}&mode=${encoder('o')}`)
+      : router(`/i-post?sans=${text}&mode=${encoder('i')}`);
   }, [getText, mode, router]);
 
   useEffect(() => {
@@ -52,7 +51,7 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
 
   return (
     <Container>
-      <SansContainer>
+      <SansContainer ref={ref}>
         <WreathSansCanvas />
       </SansContainer>
 
@@ -115,6 +114,7 @@ const SansContainer = styled.div`
   height: 65vh;
   max-height: calc(100vh - 320px);
   overflow: auto;
+  pointer-events: none;
 `;
 
 const ButtonContainer = styled.div`

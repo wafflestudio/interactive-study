@@ -6,6 +6,7 @@ import { GRID } from '../constants/breakpoint';
 import ShareIcon from '../icons/ShareIcon';
 import { postFormState } from '../store/post';
 import { Mode } from '../types/mode';
+import { encoder } from '../utils/crypto';
 import Button from './Button';
 import Input from './Input';
 import Textarea from './Textarea';
@@ -49,11 +50,19 @@ export default function PostForm({
   );
 
   const handleShare = useCallback(() => {
-    const url = new URL(window.location.origin);
-    const targerUrl = `${url}?sender=${form.sender}?receiver=${form.receiver}?content=${form.content}`;
-    const encodedUrl = encodeURIComponent(targerUrl);
+    if (!form.sender || !form.receiver || !form.content) {
+      alert('편지를 완성해주세요.');
+      return;
+    }
+    const currentURL = new URL(window.location.href);
+    const encodedSender = encoder(form.sender);
+    const encodedContent = encoder(form.content);
+    const encodedReceiver = encoder(form.receiver);
+    const url = currentURL.toString().replace(/(o-post|i-post)/, 'receive');
+    const targetUrl = `${url}&sender=${encodedSender}&receiver=${encodedReceiver}&content=${encodedContent}`;
+
     window.navigator.clipboard
-      .writeText(encodedUrl.toString())
+      .writeText(targetUrl)
       .then(() => alert('URL이 복사되었습니다.'));
   }, [form.content, form.receiver, form.sender]);
 
@@ -92,7 +101,7 @@ export default function PostForm({
         value={form.content}
         handleChange={handleChange}
         threshold={THRESHOLD.CONTENT}
-        placeholder="새해복 많이 받아~!"
+        placeholder="와플아 새해복 많이 받아야한다~!"
         width={'100%'}
         height={'226px'}
         thresholdColor={mode === Mode.OUTSIDE ? '#718F8D' : '#8D674D'}

@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import NavigateButton, { Direction } from '../components/NavigateButton';
 import PostForm from '../components/PostForm';
 import PostPreview from '../components/PostPreview';
+import SnowFlakes from '../components/SnowFlakes';
 import { GRID } from '../constants/breakpoint';
 import { Mode } from '../types/mode';
 
@@ -34,7 +35,24 @@ export default function InsidePost() {
   return (
     <Container>
       <Header mode={'dark'} />
+
+      <BgColor />
       <Background mode={Mode.INSIDE} />
+      <WindowContainer>
+        <Window>
+          <CanvasContainer>
+            <Snow>
+              <SnowFlakes />
+            </Snow>
+          </CanvasContainer>
+        </Window>
+        <Window>
+          <Snow>
+            <SnowFlakes />
+          </Snow>
+        </Window>
+      </WindowContainer>
+
       <Dim />
       <MobileContainer visible={mobilePreview} onClick={handlePreviewClose}>
         <PostPreview mode={Mode.INSIDE} />
@@ -44,6 +62,8 @@ export default function InsidePost() {
         <ButtonContainer>
           <NavigateButton
             text={'돌아가기'}
+            width="auto"
+            height="auto"
             color="#F1F6F6"
             hoveredColor="#F1F6F6"
             direction={Direction.BACK}
@@ -177,4 +197,63 @@ const MobileContainer = styled.div<{ visible?: boolean }>`
     pointer-events: ${({ visible }) => (visible ? 'auto' : 'none')};
     z-index: 100;
   }
+`;
+
+const WindowContainer = styled.div`
+  width: auto;
+  height: auto;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 14vw;
+  border: 0.6vw solid #292222;
+  border-radius: 10px;
+  z-index: -4;
+  pointer-events: none;
+
+  @media ${GRID.TABLET} {
+    right: 1vw;
+  }
+  @media ${GRID.MOBILE} {
+  }
+`;
+
+const Window = styled.div`
+  display: flex;
+  position: relative;
+  justify-content: flex-end;
+  align-items: center;
+  width: 13vw;
+  aspect-ratio: 235 / 255;
+  background: #bfcde3;
+  border: 0.6vw solid #292222;
+`;
+
+const Snow = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+`;
+
+const CanvasContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+const BgColor = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -5;
+  background: #5e3517;
+  pointer-events: none;
 `;
