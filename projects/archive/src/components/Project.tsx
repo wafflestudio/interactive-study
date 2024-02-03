@@ -10,7 +10,7 @@ type ProjectProps = {
   setSelectedId: (id: number) => void;
 };
 export default function Project({
-  project: { id, title, description, thumbnailSrc, videoSrc },
+  project: { id, title, description, thumbnailSrc, videoSrc, url },
   isActive,
   setSelectedId,
 }: ProjectProps) {
@@ -31,14 +31,25 @@ export default function Project({
 
   return (
     <Container>
-      <VideoWrapper onMouseEnter={() => setSelectedId(id)}>
+      <VideoWrapper
+        onMouseEnter={() => {
+          setSelectedId(id);
+          setIsHovered(true);
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <Video ref={videoRef} src={videoSrc} muted />
-        <Thumbnail $isSelected={isActive} src={thumbnailSrc} />
+        <Thumbnail
+          $isSelected={isActive}
+          src={thumbnailSrc}
+          onClick={() => navigate(url)}
+        />
+        <Dim $isDimmed={!isActive} />
       </VideoWrapper>
       {isActive && (
         <Information>
           <Description>{description}</Description>
-          <Title>
+          <Title onClick={() => navigate(url)}>
             {title} <Dot />
           </Title>
         </Information>
@@ -77,8 +88,8 @@ const Thumbnail = styled.img<{ $isSelected: boolean }>`
   right: 0;
   background-color: black;
   object-fit: cover;
-  transition: opacity 0.5s;
   opacity: ${({ $isSelected }) => ($isSelected ? 0 : 1)};
+  cursor: pointer;
 `;
 
 const Information = styled.div`
@@ -94,6 +105,12 @@ const Title = styled.h1`
   font-weight: 400;
   display: flex;
   gap: 12.5px;
+
+  cursor: pointer;
+  transition: 0.1s;
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
 const Dot = styled.div`
@@ -108,4 +125,16 @@ const Description = styled.div`
   font-size: 12px;
   line-height: 18px;
   white-space: pre-wrap;
+`;
+
+const Dim = styled.div<{ $isDimmed: boolean }>`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: ${({ $isDimmed }) => ($isDimmed ? 1 : 0)};
+  transition: opacity 0.5s;
+  pointer-events: none;
 `;

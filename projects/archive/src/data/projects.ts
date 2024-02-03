@@ -14,7 +14,7 @@ const projectData: ProjectData[] = [
     description: '디스크온 설명 설명\n디스크온 설명 설명',
     thumbnailSrc: '/disk-on_thumbnail.png',
     videoSrc: '/disk-on_video.mov',
-    url: '',
+    url: '/',
   },
   {
     id: 1,
@@ -23,7 +23,7 @@ const projectData: ProjectData[] = [
       'SPOT FAKE는 지폐의 틀린 그림을 찾는 게임입니다. 세가지 조명모드를 활용하여 ',
     thumbnailSrc: '/spot-fake_thumbnail.png',
     videoSrc: '/spot-fake_video.mp4',
-    url: '',
+    url: '/',
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ const projectData: ProjectData[] = [
     description: '와플 산스 설명 설명',
     thumbnailSrc: '/waffle-sans_thumbnail.png',
     videoSrc: '/waffle-sans_video.mp4',
-    url: '',
+    url: '/',
   },
 ];
 
