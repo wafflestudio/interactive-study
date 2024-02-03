@@ -87,7 +87,7 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
 const Container = styled.div<{ $stage: 'shake' | 'close' | 'open' | 'out' }>`
   position: relative;
   width: 100%;
-  aspect-ratio: ${({ $stage }) => ($stage === 'out' ? 0.583 : 1.45)};
+  height: ${({ $stage }) => ($stage === 'out' ? '652px' : '252px')};
 
   transition: 1s ease;
 
