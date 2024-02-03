@@ -17,7 +17,7 @@ const Main = styled.main`
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  font-family: Helvetica, sans-serif;
+  font-family: Helvetica, 'Noto Sans KR', sans-serif;
   display: flex;
   flex-direction: column;
 `;
