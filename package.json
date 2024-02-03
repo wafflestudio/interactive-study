@@ -5,6 +5,7 @@
     "paper": "yarn workspace paper",
     "disk-on": "yarn workspace disk-on",
     "waffle-sans": "yarn workspace waffle-sans",
+    "archive": "yarn workspace archive",
     "lib:leon-sans-react": "yarn workspace leon-sans-react",
     "prettier:all": "yarn prettier . --write"
   },
