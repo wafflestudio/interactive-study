@@ -9,8 +9,11 @@
   --register-img-opacity: 50%;
   --color-holo-mask: url('../../public/images/masks/center_holo_mask.svg');
 
-  width: 513px;
-  height: 243px;
+  width: 40vw;
+  max-width: 513px;
+  height: calc(40vw * 243 / 513);
+  max-height: 243px;
+
   position: relative;
   transition: 1s ease;
 }

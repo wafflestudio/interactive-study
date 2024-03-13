@@ -233,8 +233,8 @@ export default function Bill({
                   fakeType === Fake.TYPE_4
                     ? fake4blueLightedHoloImage
                     : fakeType === Fake.TYPE_5
-                      ? fake5blueLightedHoloImage
-                      : blueLightedHoloImage
+                    ? fake5blueLightedHoloImage
+                    : blueLightedHoloImage
                 }
                 className={S.front_blue_lighted_holo}
                 alt={'holo image of bill'}
@@ -244,13 +244,6 @@ export default function Bill({
 
           {/* [COND (LIGHTED)] LAYER 10 */}
           {mode === Mode.LIGHTED && <div className={S.glare}></div>}
-
-          {/* [COMMON] LAYER 11 */}
-          {/*<Image*/}
-          {/*  src={tiltedBackImage}*/}
-          {/*  className={S.back_img_tilted}*/}
-          {/*  alt={'tilted main back image of bill'}*/}
-          {/*/>*/}
         </div>
       </div>
     </animated.div>

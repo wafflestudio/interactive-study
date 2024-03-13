@@ -5,7 +5,7 @@
 
 .modal {
   position: absolute;
-  top: 70px;
+  top: 54px;
   left: 0;
   width: 360px;
   height: auto;
@@ -25,16 +25,16 @@
 
 @keyframes up_down {
   0% {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
   25% {
-    transform: translateY(10px);
+    transform: translateY(5px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
   75% {
-    transform: translateY(10px);
+    transform: translateY(5px);
   }
   100% {
     transform: translateY(0px);

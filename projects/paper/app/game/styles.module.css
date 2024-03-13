@@ -1,36 +1,35 @@
 .bg_container {
-  width: 100vw;
-  min-width: 1440px;
   height: 100vh;
   position: relative;
   animation: 1.5s fade_in ease-in-out forwards;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .container {
-  width: 1440px;
-  height: 906px;
+  width: 100vw;
+  min-width: 420px;
+  aspect-ratio: 1920 / 1080;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 20px 30px;
+  box-sizing: border-box;
   overflow: hidden;
+}
+
+.inner_container {
+  width: 100%;
+  height: fit-content;
+  display: flex;
 }
 
 .bg_container_lighted {
   background: #f0f0f0;
 }
 
-.bg_container_white_lighted {
-  background: #505050;
-}
-
-.bg_container_blue_lighted {
-  background: #5050ff;
+.bg_container_darked {
+  background: #000000;
 }
 
 .bg_container_back_lighted {
@@ -45,8 +44,9 @@
   display: flex;
   justify-content: space-between;
   position: absolute;
-  top: 44px;
   width: calc(100% - 80px);
+  top: 20px;
+  left: 20px;
   z-index: 11;
   color: #fff;
 }
@@ -55,19 +55,20 @@
   display: flex;
   justify-content: center;
   position: absolute;
-  top: calc(100% + 90px);
-  width: 100%;
-  height: 160px;
+  bottom: calc(80vw * 160 / 1440 * -1);
+  width: 100vw;
+  height: fit-content;
   z-index: 11;
   color: #fff;
 }
 
 .bills {
-  width: 1440px;
+  width: 100vw;
+  min-width: 420px;
+  height: calc(100vw * 260 / 1440);
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  height: 260px;
   position: relative;
   z-index: 11;
 }
