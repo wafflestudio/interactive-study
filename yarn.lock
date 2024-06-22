@@ -1865,6 +1865,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tweenjs/tween.js@npm:~23.1.1":
+  version: 23.1.2
+  resolution: "@tweenjs/tween.js@npm:23.1.2"
+  checksum: ca7f62b1059917ebddf1e7e9d7361b87e945bfc21b3c840dd34b1ebfe7d90d87d0dd10ebfa88e2233fe4887cf260b9e1a45134573b599c905af45853b39ae0b8
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.20.4, @types/babel__core@npm:^7.20.5":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -2018,10 +2025,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/stats.js@npm:*":
+  version: 0.17.3
+  resolution: "@types/stats.js@npm:0.17.3"
+  checksum: 4f84a012f630532877f62959b6335d3fa081ccaac15ce3f1f916741db265bda22b9c927d7efc9cc3389ffd60919a370673cb0b4e7221d580c571031e94b689fd
+  languageName: node
+  linkType: hard
+
 "@types/stylis@npm:4.2.0":
   version: 4.2.0
   resolution: "@types/stylis@npm:4.2.0"
   checksum: 02a47584acd2fcb664f7d8270a69686c83752bdfb855f804015d33116a2b09c0b2ac535213a4a7b6d3a78b2915b22b4024cce067ae979beee0e4f8f5fdbc26a9
+  languageName: node
+  linkType: hard
+
+"@types/three@npm:^0.165.0":
+  version: 0.165.0
+  resolution: "@types/three@npm:0.165.0"
+  dependencies:
+    "@tweenjs/tween.js": "npm:~23.1.1"
+    "@types/stats.js": "npm:*"
+    "@types/webxr": "npm:*"
+    fflate: "npm:~0.8.2"
+    meshoptimizer: "npm:~0.18.1"
+  checksum: c9374ceed25ba6b26953ba935a937fa57f5de564c6afc61d528760246c0aeed939a74b8b973670d3e879f8df2936ff02fa6b81f412d22edfa1ba1085b8b3d2d8
+  languageName: node
+  linkType: hard
+
+"@types/webxr@npm:*":
+  version: 0.5.17
+  resolution: "@types/webxr@npm:0.5.17"
+  checksum: 96536c7907401ce277c230dce313928b86f82d4372b1012051b3578d034cbca9ad23cbefbf30a1799c7cd942b1746fb1da6bc47e6a21557651904583c8db7bf1
   languageName: node
   linkType: hard
 
@@ -3649,6 +3683,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fflate@npm:~0.8.2":
+  version: 0.8.2
+  resolution: "fflate@npm:0.8.2"
+  checksum: 2bd26ba6d235d428de793c6a0cd1aaa96a06269ebd4e21b46c8fd1bd136abc631acf27e188d47c3936db090bf3e1ede11d15ce9eae9bffdc4bfe1b9dc66ca9cb
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -3676,6 +3717,21 @@ __metadata:
   checksum: 07955e357348f34660bde7920783204ff5a26ac2cafcaa28bace494027158a97b9f56faaf2d89a6106211a8174db650dd9f503f9c0d526b1202d5554a00b9095
   languageName: node
   linkType: hard
+
+"find-waffle@workspace:projects/find-waffle":
+  version: 0.0.0-use.local
+  resolution: "find-waffle@workspace:projects/find-waffle"
+  dependencies:
+    "@types/three": "npm:^0.165.0"
+    "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
+    "@typescript-eslint/parser": "npm:^6.10.0"
+    eslint: "npm:^8.53.0"
+    lil-gui: "npm:^0.19.2"
+    three: "npm:^0.165.0"
+    typescript: "npm:^5.2.2"
+    vite: "npm:^5.0.0"
+  languageName: unknown
+  linkType: soft
 
 "flat-cache@npm:^3.0.4":
   version: 3.2.0
@@ -4601,6 +4657,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lil-gui@npm:^0.19.2":
+  version: 0.19.2
+  resolution: "lil-gui@npm:0.19.2"
+  checksum: da3ef1f8b6688f55078aa1d55d953c4a24e44ff05f90ff760cff1b5673a4a758954e3c08d64882f9d1a831731de477906fdfc00f1c8e46e429a6cb3c1f44df1f
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^6.0.0":
   version: 6.0.0
   resolution: "locate-path@npm:6.0.0"
@@ -4683,6 +4746,13 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
+  languageName: node
+  linkType: hard
+
+"meshoptimizer@npm:~0.18.1":
+  version: 0.18.1
+  resolution: "meshoptimizer@npm:0.18.1"
+  checksum: 5cfef6918562b8363a51e92b6eafe81a684fe7b9e31de1c19a6e2068ca8edab745b3e8ef2f0190ecbcc2065134b5dc1de97e4514eb2157914762356c07f93b9f
   languageName: node
   linkType: hard
 
@@ -6087,6 +6157,13 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: 4383b5baaeffa9bb4cda2ac33a4aa2e6d1f8aaf811848bf73513a9b88fd76372dc461f6fd6d2e9cb5100f48b473be32c6f95bd983509b7d92bb4d92c10747452
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.165.0":
+  version: 0.165.0
+  resolution: "three@npm:0.165.0"
+  checksum: 43e39b55fdacdf64f68cf305ca199dc94b2d00c301e0acefe611ead35ba85521f05725a7a71cf790d2dd39816f59cfeb0b00245c62037bc7cb5c383dba280364
   languageName: node
   linkType: hard
 
