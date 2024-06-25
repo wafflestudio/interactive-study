@@ -10,16 +10,19 @@ type Table = Map<number, Map<string, () => void>>;
 
 export class KeyMap {
   private static _currentProfile?: KeyMap;
+  private static readonly _pressedKeys: Set<string> = new Set();
 
   private readonly _keyDownTable: Table;
   private readonly _keyUpTable: Table;
 
   static {
     window.addEventListener('keydown', (event) => {
+      KeyMap._pressedKeys.add(event.code);
       KeyMap._currentProfile?.handleKeyDown(event);
     });
 
     window.addEventListener('keyup', (event) => {
+      KeyMap._pressedKeys.delete(event.code);
       KeyMap._currentProfile?.handleKeyUp(event);
     });
   }
@@ -27,6 +30,10 @@ export class KeyMap {
   constructor() {
     this._keyDownTable = new Map();
     this._keyUpTable = new Map();
+  }
+
+  get pressedKeys() {
+    return new Set(KeyMap._pressedKeys);
   }
 
   bind(
@@ -49,7 +56,11 @@ export class KeyMap {
     // 일반키
     let code: string | undefined;
 
-    // 수식키와 일반키가 같은 경우
+    /**
+     * Case 1) 수식키 자체에 기능 할당
+     * e.g. Shift 만 눌렀을 때 점프한다.
+     * keyMap.bind('ShiftLeft', () => { console.log('Jump!') });
+     */
     if (keys.length === 1) {
       const key = keys[0];
       switch (key.toLowerCase()) {
@@ -96,7 +107,11 @@ export class KeyMap {
       }
     }
 
-    // 그 외 모든 경우
+    /**
+     * Case 2) 수식키가 일반키를 보조하는 경우
+     * e.g. Shift를 누른 채로 A 키를 누르면 캐릭터가 점프한다.
+     * keyMap.bind('Shift+A', () => { console.log('Jump!') });
+     */
     if (code === undefined) {
       for (const key of keys) {
         switch (key.toLowerCase()) {
