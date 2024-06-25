@@ -36,6 +36,10 @@ export class KeyMap {
     return new Set(KeyMap._pressedKeys);
   }
 
+  get isActivated() {
+    return KeyMap._currentProfile === this;
+  }
+
   bind(
     keyBinding: string | string[],
     keyDownCallback?: () => void,
@@ -86,7 +90,7 @@ export class KeyMap {
       }
       this._keyUpTable.get(modifiers)!.set(code, keyUpCallback);
     }
-
+    
     return this;
   }
 
