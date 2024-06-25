@@ -1,12 +1,12 @@
-const NONE = 0b0000;
-const SHIFT = 0b0001;
-const CTRL = 0b0010;
-const ALT = 0b0100;
-const META = 0b1000;
+import { findCallbackThenExecute, findCode, findModifier } from './KeyMapUtils';
 
-export const Modifiers = { NONE, SHIFT, CTRL, ALT, META } as const;
+export const NONE = 0b0000;
+export const SHIFT = 0b0001;
+export const CTRL = 0b0010;
+export const ALT = 0b0100;
+export const META = 0b1000;
 
-type Table = Map<number, Map<string, () => void>>;
+export type Table = Map<number, Map<string, () => void>>;
 
 export class KeyMap {
   private static _currentProfile?: KeyMap;
@@ -105,149 +105,10 @@ export class KeyMap {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
-    const modifier =
-      (event.shiftKey ? SHIFT : NONE) |
-      (event.ctrlKey ? CTRL : NONE) |
-      (event.altKey ? ALT : NONE) |
-      (event.metaKey ? META : NONE);
-    const callback = this._keyDownTable.get(modifier)?.get(event.code);
-    if (callback) {
-      event.preventDefault();
-      callback();
-    }
+    findCallbackThenExecute(event, this._keyDownTable);
   }
 
   private handleKeyUp(event: KeyboardEvent) {
-    const modifier =
-      (event.shiftKey ? SHIFT : NONE) |
-      (event.ctrlKey ? CTRL : NONE) |
-      (event.altKey ? ALT : NONE) |
-      (event.metaKey ? META : NONE);
-    const callback = this._keyUpTable.get(modifier)?.get(event.code);
-    if (callback) {
-      event.preventDefault();
-      callback();
-    }
-  }
-}
-
-function findModifier(key: string) {
-  switch (key.toLowerCase()) {
-    case 'shift':
-    case 'leftshift':
-    case 'shiftleft':
-      return SHIFT;
-    case 'ctrl':
-    case 'leftctrl':
-    case 'ctrlleft':
-      return CTRL;
-    case 'alt':
-    case 'leftalt':
-    case 'altleft':
-      return ALT;
-    case 'meta':
-    case 'leftmeta':
-    case 'metaleft':
-      return META;
-    default:
-      return NONE;
-  }
-}
-
-function findCode(key: string) {
-  // Special keys
-  switch (key.toLowerCase()) {
-    case 'leftshift':
-    case 'shiftleft':
-      return 'ShiftLeft';
-    case 'rightshift':
-    case 'shiftright':
-      return 'ShiftRight';
-    case 'leftctrl':
-    case 'ctrlleft':
-      return 'ControlLeft';
-    case 'rightctrl':
-    case 'ctrlright':
-      return 'ControlRight';
-    case 'leftalt':
-    case 'altleft':
-      return 'AltLeft';
-    case 'rightalt':
-    case 'altright':
-      return 'AltRight';
-    case 'leftmeta':
-    case 'metaleft':
-      return 'MetaLeft';
-    case 'rightmeta':
-    case 'metaright':
-      return 'MetaRight';
-    case 'space':
-      return 'Space';
-    case 'enter':
-      return 'Enter';
-    case 'tab':
-      return 'Tab';
-    case 'backspace':
-      return 'Backspace';
-    case 'delete':
-      return 'Delete';
-    case 'esc':
-    case 'escape':
-      return 'Escape';
-    case '<-':
-    case '←':
-    case 'arrowleft':
-    case 'leftarrow':
-      return 'ArrowLeft';
-    case '->':
-    case '→':
-    case 'arrowright':
-    case 'rightarrow':
-      return 'ArrowRight';
-    case '↑':
-    case 'arrowup':
-    case 'uparrow':
-      return 'ArrowUp';
-    case '↓':
-    case 'arrowdown':
-    case 'downarrow':
-      return 'ArrowDown';
-    case '`':
-      return 'Backquote';
-    case '-':
-      return 'Minus';
-    case '=':
-      return 'Equal';
-    case '[':
-      return 'BracketLeft';
-    case ']':
-      return 'BracketRight';
-    case '\\':
-      return 'Backslash';
-    case ';':
-      return 'Semicolon';
-    case "'":
-      return 'Quote';
-    case ',':
-      return 'Comma';
-    case '.':
-      return 'Period';
-    case '/':
-      return 'Slash';
-  }
-
-  // F1 ~ F12
-  if (key.match(/^F\d{1,2}$/i)) {
-    return key.toUpperCase();
-  }
-
-  // Alphabets
-  if (key.match(/^[a-z]$/i)) {
-    return `Key${key.toUpperCase()}`;
-  }
-
-  // Digits
-  if (key.match(/^\d$/)) {
-    return `Digit${key}`;
+    findCallbackThenExecute(event, this._keyUpTable);
   }
 }
