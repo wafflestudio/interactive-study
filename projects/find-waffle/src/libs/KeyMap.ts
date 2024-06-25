@@ -56,85 +56,14 @@ export class KeyMap {
     // 일반키
     let code: string | undefined;
 
-    /**
-     * Case 1) 수식키 자체에 기능 할당
-     * e.g. Shift 만 눌렀을 때 점프한다.
-     * keyMap.bind('ShiftLeft', () => { console.log('Jump!') });
-     */
-    if (keys.length === 1) {
-      const key = keys[0];
-      switch (key.toLowerCase()) {
-        case 'leftshift':
-        case 'shiftleft':
-          modifiers = SHIFT;
-          code = 'ShiftLeft';
-          break;
-        case 'rightshift':
-        case 'shiftright':
-          modifiers = SHIFT;
-          code = 'ShiftRight';
-          break;
-        case 'leftctrl':
-        case 'ctrlleft':
-          modifiers = CTRL;
-          code = 'ControlLeft';
-          break;
-        case 'rightctrl':
-        case 'ctrlright':
-          modifiers = CTRL;
-          code = 'ControlRight';
-          break;
-        case 'leftalt':
-        case 'altleft':
-          modifiers = ALT;
-          code = 'AltLeft';
-          break;
-        case 'rightalt':
-        case 'altright':
-          modifiers = ALT;
-          code = 'AltRight';
-          break;
-        case 'leftmeta':
-        case 'metaleft':
-          modifiers = META;
-          code = 'MetaLeft';
-          break;
-        case 'rightmeta':
-        case 'metaright':
-          modifiers = META;
-          code = 'MetaRight';
-          break;
-      }
+    for (const key of keys) {
+      modifiers |= findModifier(key);
+      code = findCode(key);
     }
 
-    /**
-     * Case 2) 수식키가 일반키를 보조하는 경우
-     * e.g. Shift를 누른 채로 A 키를 누르면 캐릭터가 점프한다.
-     * keyMap.bind('Shift+A', () => { console.log('Jump!') });
-     */
+    // 정상적인 바인딩인데 아래 워닝이 발생하는 경우, findCode 함수에 해당 키를 대응하는 코드를 추가해야 함
     if (code === undefined) {
-      for (const key of keys) {
-        switch (key.toLowerCase()) {
-          case 'shift':
-            modifiers |= SHIFT;
-            break;
-          case 'ctrl':
-            modifiers |= CTRL;
-            break;
-          case 'alt':
-            modifiers |= ALT;
-            break;
-          case 'meta':
-            modifiers |= META;
-            break;
-          default:
-            code = findCode(key);
-        }
-      }
-    }
-
-    if (code === undefined) {
-      console.warn('Invalid key binding', keyBinding);
+      console.warn('Unsupported key binding', keyBinding);
       return this;
     }
 
@@ -202,9 +131,56 @@ export class KeyMap {
   }
 }
 
+function findModifier(key: string) {
+  switch (key.toLowerCase()) {
+    case 'shift':
+    case 'leftshift':
+    case 'shiftleft':
+      return SHIFT;
+    case 'ctrl':
+    case 'leftctrl':
+    case 'ctrlleft':
+      return CTRL;
+    case 'alt':
+    case 'leftalt':
+    case 'altleft':
+      return ALT;
+    case 'meta':
+    case 'leftmeta':
+    case 'metaleft':
+      return META;
+    default:
+      return NONE;
+  }
+}
+
 function findCode(key: string) {
   // Special keys
   switch (key.toLowerCase()) {
+    case 'leftshift':
+    case 'shiftleft':
+      return 'ShiftLeft';
+    case 'rightshift':
+    case 'shiftright':
+      return 'ShiftRight';
+    case 'leftctrl':
+    case 'ctrlleft':
+      return 'ControlLeft';
+    case 'rightctrl':
+    case 'ctrlright':
+      return 'ControlRight';
+    case 'leftalt':
+    case 'altleft':
+      return 'AltLeft';
+    case 'rightalt':
+    case 'altright':
+      return 'AltRight';
+    case 'leftmeta':
+    case 'metaleft':
+      return 'MetaLeft';
+    case 'rightmeta':
+    case 'metaright':
+      return 'MetaRight';
     case 'space':
       return 'Space';
     case 'enter':
@@ -274,6 +250,4 @@ function findCode(key: string) {
   if (key.match(/^\d$/)) {
     return `Digit${key}`;
   }
-
-  return key;
 }
