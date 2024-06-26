@@ -1,4 +1,9 @@
-import { findCallbackThenExecute, findCode, findModifier } from './KeyMapUtils';
+import { KeyBindingValidationError } from './errors';
+import {
+  findCallbackThenExecute,
+  findModifier,
+  parseKeyBinding,
+} from './utils';
 
 export const NONE = 0b0000;
 export const SHIFT = 0b0001;
@@ -53,45 +58,20 @@ export class KeyMap {
       return this;
     }
 
-    // key binding 을 분해
-    const keys = keyBinding.split('+').map((key) => key.trim());
-    // 수식키
-    let modifiers: number = NONE;
-    // 일반키
-    let code: string | undefined;
+    try {
+      const { modifiers, code } = parseKeyBinding(keyBinding);
 
-    for (const key of keys) {
-      modifiers |= findModifier(key);
-      code = findCode(key);
-    }
+      this.addKeyBinding(this._keyDownTable, modifiers, code, keyDownCallback);
+      this.addKeyBinding(this._keyUpTable, modifiers, code, keyUpCallback);
 
-    // 정상적인 바인딩인데 아래 워닝이 발생하는 경우, findCode 함수에 해당 키를 대응하는 코드를 추가해야 함
-    if (code === undefined) {
-      console.warn('Unsupported key binding', keyBinding);
       return this;
+    } catch (error) {
+      if (error instanceof KeyBindingValidationError) {
+        console.error(error);
+        return this;
+      }
+      throw error;
     }
-
-    if (keyDownCallback) {
-      if (!this._keyDownTable.has(modifiers)) {
-        this._keyDownTable.set(modifiers, new Map());
-      }
-      if (this._keyDownTable.get(modifiers)!.has(code)) {
-        console.warn('Overwriting existing binding');
-      }
-      this._keyDownTable.get(modifiers)!.set(code, keyDownCallback);
-    }
-
-    if (keyUpCallback) {
-      if (!this._keyUpTable.has(modifiers)) {
-        this._keyUpTable.set(modifiers, new Map());
-      }
-      if (this._keyUpTable.get(modifiers)!.has(code)) {
-        console.warn('Overwriting existing binding');
-      }
-      this._keyUpTable.get(modifiers)!.set(code, keyUpCallback);
-    }
-    
-    return this;
   }
 
   unbind(modifier: number, code: string) {
@@ -106,6 +86,27 @@ export class KeyMap {
     if (KeyMap._currentProfile === this) {
       KeyMap._currentProfile = undefined;
     }
+  }
+
+  private addKeyBinding(
+    table: Table,
+    modifier: number,
+    code: string,
+    callback?: () => void,
+  ) {
+    if (!callback) {
+      return;
+    }
+
+    if (!table.has(modifier)) {
+      table.set(modifier, new Map());
+    }
+
+    if (table.get(modifier)!.has(code)) {
+      console.warn('Overwriting existing binding');
+    }
+
+    table.get(modifier)!.set(code, callback);
   }
 
   private handleKeyDown(event: KeyboardEvent) {

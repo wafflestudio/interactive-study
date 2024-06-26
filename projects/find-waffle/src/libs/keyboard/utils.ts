@@ -1,25 +1,16 @@
 import { ALT, CTRL, META, NONE, SHIFT, Table } from './KeyMap';
+import { EmptyKeyBindingError, InvalidKeyCodeError, InvalidModifierError } from './errors';
 
 export function findModifier(key: string) {
   switch (key.toLowerCase()) {
     case 'shift':
-    case 'leftshift':
-    case 'shiftleft':
       return SHIFT;
     case 'ctrl':
-    case 'leftctrl':
-    case 'ctrlleft':
       return CTRL;
     case 'alt':
-    case 'leftalt':
-    case 'altleft':
       return ALT;
     case 'meta':
-    case 'leftmeta':
-    case 'metaleft':
       return META;
-    default:
-      return NONE;
   }
 }
 
@@ -137,4 +128,27 @@ export function findCallbackThenExecute(event: KeyboardEvent, table: Table) {
     event.preventDefault();
     callback();
   }
+}
+
+export function parseKeyBinding(keyBinding: string) {
+  const keys = keyBinding.split('+').map((key) => key.trim());
+
+  if (keys.length === 0) {
+    throw new EmptyKeyBindingError(keyBinding);
+  }
+
+  const modifiers = keys.slice(0, -1).reduce((acc, key) => {
+    const modifier = findModifier(key);
+    if (modifier === undefined) {
+      throw new InvalidModifierError(keyBinding, key);
+    }
+    return acc | modifier;
+  }, NONE)
+
+  const code = findCode(keys[keys.length - 1]);
+  if (code === undefined) {
+    throw new InvalidKeyCodeError(keyBinding, keyBinding);
+  }
+
+  return { modifiers, code };
 }
