@@ -1,4 +1,4 @@
-import { ALT, CTRL, META, NONE, SHIFT, Table } from './KeyMap';
+import { ALT, CTRL, META, NONE, SHIFT } from './KeyMap';
 import { EmptyKeyBindingError, InvalidKeyCodeError, InvalidModifierError } from './errors';
 
 export function findModifier(key: string) {
@@ -112,22 +112,13 @@ export function findCode(key: string) {
   }
 }
 
-function extractModifiersFromEvent(event: KeyboardEvent) {
+export function extractModifiersFromEvent(event: KeyboardEvent) {
   return (
     (event.shiftKey ? SHIFT : NONE) |
     (event.ctrlKey ? CTRL : NONE) |
     (event.altKey ? ALT : NONE) |
     (event.metaKey ? META : NONE)
   );
-}
-
-export function findCallbackThenExecute(event: KeyboardEvent, table: Table) {
-  const modifier = extractModifiersFromEvent(event);
-  const callback = table.get(modifier)?.get(event.code);
-  if (callback) {
-    event.preventDefault();
-    callback();
-  }
 }
 
 export function parseKeyBinding(keyBinding: string) {
