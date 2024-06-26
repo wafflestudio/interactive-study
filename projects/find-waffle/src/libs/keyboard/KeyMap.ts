@@ -65,7 +65,16 @@ export class KeyMap {
     try {
       const { modifiers, code } = parseKeyBinding(keyBinding);
 
-      this.addKeyBinding(modifiers, code, pressCallback, releaseCallback);
+      const codeModifier = findModifier(
+        code.match(/^(Shift|Control|Alt|Meta)/)?.[1] ?? '',
+      );
+
+      this.addKeyBinding(
+        (codeModifier ?? modifiers) | modifiers, // == modifiers 또는 (codeModifier | modifiers)
+        code,
+        pressCallback,
+        releaseCallback,
+      );
 
       return this;
     } catch (error) {
