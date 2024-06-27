@@ -109,18 +109,15 @@ export class KeyMap {
     if (!pressCallback && !releaseCallback) {
       return;
     }
-
-    if (!this.bindingTable.has(modifier)) {
-      this.bindingTable.set(modifier, new Map());
-    }
-
-    if (this.bindingTable.get(modifier)!.has(code)) {
+    
+    const modifierMap = this.bindingTable.get(modifier) ?? new Map();
+    
+    if (modifierMap.has(code)) {
       console.warn('Overwriting existing binding');
     }
 
-    this.bindingTable
-      .get(modifier)!
-      .set(code, [pressCallback, releaseCallback]);
+    modifierMap.set(code, [pressCallback, releaseCallback]);
+    this.bindingTable.set(modifier, modifierMap);
   }
 
   private handleKeyDown(event: KeyboardEvent) {
