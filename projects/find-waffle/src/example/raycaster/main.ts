@@ -59,41 +59,49 @@ animate();
 /* Raycaster Settings */
 const raycaster = new Raycaster(camera, scene);
 
-const mouseMoveCallback: EventCallback = (
-  event: MouseEvent,
-  intersects: THREE.Intersection[],
-) => {
-  if (raycaster.dragging && raycaster.selectedObject) {
-    if (intersects.length > 0) {
-      const intersect = intersects[0];
-      raycaster.selectedObject.position
-        .copy(intersect.point)
-        .add(raycaster.offset);
+// 마우스가 오브젝트 위에 있을 때 색상 변경 예제
+const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
+  if (intersects.length > 0) {
+    const intersectedObject = intersects[0].object;
+
+    if (raycaster.selectedObject !== intersectedObject) {
+      if (raycaster.selectedObject) {
+        raycaster.selectedObject.material.color.set('#00ff00');
+      }
+      raycaster.selectedObject = intersectedObject;
+      raycaster.selectedObject.material.color.set('#ff0000');
     }
   } else {
-    if (intersects.length > 0) {
-      intersects[0].object.material.color.set('#ff0000');
-    } else {
-      cube1.material.color.set(0x00ff00);
-      cube2.material.color.set(0x00ff00);
-      cube3.material.color.set(0x00ff00);
+    if (raycaster.selectedObject) {
+      raycaster.selectedObject.material.color.set('#00ff00');
+      raycaster.selectedObject = null;
     }
   }
 };
 
-const clickCallback: EventCallback = (
-  event: MouseEvent,
-  intersects: THREE.Intersection[],
-) => {
+const clickCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   if (intersects.length > 0) {
     console.log('Clicked', intersects[0].object);
   }
 };
 
-const mouseDownCallback: EventCallback = (
-  event: MouseEvent,
+// 드래그를 위한 mousemove 이벤트 콜백
+const mouseMoveCallbackForDrag: EventCallback = (
   intersects: THREE.Intersection[],
 ) => {
+  if (raycaster.dragging && raycaster.selectedObject) {
+    if (intersects.length > 0) {
+      const intersect = intersects[0];
+      const newPosition = new THREE.Vector3()
+        .copy(intersect.point)
+        .add(raycaster.offset);
+      newPosition.z = raycaster.selectedObject.position.z; // z좌표 고정하고 x, y축으로만 drag -> customizing이 필요할 것
+      raycaster.selectedObject.position.copy(newPosition);
+    }
+  }
+};
+
+const mouseDownCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   if (intersects.length > 0) {
     raycaster.dragging = true;
     raycaster.selectedObject = intersects[0].object;
@@ -108,12 +116,8 @@ const mouseUpCallback: EventCallback = () => {
   raycaster.selectedObject = null;
 };
 
-raycaster.setMouseMoveHandler(mouseMoveCallback);
-raycaster.setClickHandler(clickCallback);
-raycaster.setMouseDownHandler(mouseDownCallback);
-raycaster.setMouseUpHandler(mouseUpCallback);
-
-window.addEventListener('mousemove', (event) => raycaster.onMouseMove(event));
-window.addEventListener('click', (event) => raycaster.onClick(event));
-window.addEventListener('mousedown', (event) => raycaster.onMouseDown(event));
-window.addEventListener('mouseup', (event) => raycaster.onMouseUp(event));
+raycaster.registerCallback('mousemove', mouseMoveCallback);
+raycaster.registerCallback('mousemove', mouseMoveCallbackForDrag);
+raycaster.registerCallback('click', clickCallback);
+raycaster.registerCallback('mousedown', mouseDownCallback);
+raycaster.registerCallback('mouseup', mouseUpCallback);
