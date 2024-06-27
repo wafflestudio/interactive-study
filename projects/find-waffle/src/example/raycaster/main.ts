@@ -63,12 +63,21 @@ const mouseMoveCallback: EventCallback = (
   event: MouseEvent,
   intersects: THREE.Intersection[],
 ) => {
-  if (intersects.length > 0) {
-    intersects[0].object.material.color.set('#ff0000');
+  if (raycaster.dragging && raycaster.selectedObject) {
+    if (intersects.length > 0) {
+      const intersect = intersects[0];
+      raycaster.selectedObject.position
+        .copy(intersect.point)
+        .add(raycaster.offset);
+    }
   } else {
-    cube1.material.color.set(0x00ff00);
-    cube2.material.color.set(0x00ff00);
-    cube3.material.color.set(0x00ff00);
+    if (intersects.length > 0) {
+      intersects[0].object.material.color.set('#ff0000');
+    } else {
+      cube1.material.color.set(0x00ff00);
+      cube2.material.color.set(0x00ff00);
+      cube3.material.color.set(0x00ff00);
+    }
   }
 };
 
@@ -81,8 +90,30 @@ const clickCallback: EventCallback = (
   }
 };
 
+const mouseDownCallback: EventCallback = (
+  event: MouseEvent,
+  intersects: THREE.Intersection[],
+) => {
+  if (intersects.length > 0) {
+    raycaster.dragging = true;
+    raycaster.selectedObject = intersects[0].object;
+    raycaster.offset
+      .copy(raycaster.selectedObject.position)
+      .sub(intersects[0].point);
+  }
+};
+
+const mouseUpCallback: EventCallback = () => {
+  raycaster.dragging = false;
+  raycaster.selectedObject = null;
+};
+
 raycaster.setMouseMoveHandler(mouseMoveCallback);
 raycaster.setClickHandler(clickCallback);
+raycaster.setMouseDownHandler(mouseDownCallback);
+raycaster.setMouseUpHandler(mouseUpCallback);
 
 window.addEventListener('mousemove', (event) => raycaster.onMouseMove(event));
 window.addEventListener('click', (event) => raycaster.onClick(event));
+window.addEventListener('mousedown', (event) => raycaster.onMouseDown(event));
+window.addEventListener('mouseup', (event) => raycaster.onMouseUp(event));

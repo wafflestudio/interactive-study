@@ -10,13 +10,14 @@ export class Raycaster extends THREE.Raycaster {
   camera: THREE.Camera;
   scene: THREE.Scene;
   mouseCoords: MouseCoords = new THREE.Vector2();
+  dragging: boolean = false;
   selectedObject: THREE.Object3D | null = null;
   offset: THREE.Vector3 = new THREE.Vector3();
   onMouseMoveCallback?: EventCallback;
   onClickCallback?: EventCallback;
-  //   onDblClickCallback?: EventCallback;
-  //   onMouseLeaveCallback?: EventCallback;
-  //   onDragCallback?: EventCallback;
+  onMouseDownCallback?: EventCallback;
+  onMouseUpCallback?: EventCallback;
+  onDblClickCallback?: EventCallback;
 
   constructor(camera: THREE.Camera, scene: THREE.Scene) {
     super();
@@ -45,6 +46,18 @@ export class Raycaster extends THREE.Raycaster {
     this.onClickCallback = clickCallback;
   }
 
+  setMouseDownHandler(mouseDownCallback: EventCallback) {
+    this.onMouseDownCallback = mouseDownCallback;
+  }
+
+  setMouseUpHandler(mouseUpCallback: EventCallback) {
+    this.onMouseUpCallback = mouseUpCallback;
+  }
+
+  setDblClickHandler(dblClickCallback: EventCallback) {
+    this.onDblClickCallback = dblClickCallback;
+  }
+
   // 이벤트 핸들러 설정
   handleEvent(event: MouseEvent, callback?: EventCallback) {
     if (callback) {
@@ -59,5 +72,17 @@ export class Raycaster extends THREE.Raycaster {
 
   onClick(event: MouseEvent) {
     this.handleEvent(event, this.onClickCallback);
+  }
+
+  onMouseDown(event: MouseEvent) {
+    this.handleEvent(event, this.onMouseDownCallback);
+  }
+
+  onMouseUp(event: MouseEvent) {
+    this.handleEvent(event, this.onMouseUpCallback);
+  }
+
+  onDblClick(event: MouseEvent) {
+    this.handleEvent(event, this.onDblClickCallback);
   }
 }
