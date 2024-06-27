@@ -11,6 +11,8 @@ export function findModifier(key: string) {
       return ALT;
     case 'meta':
       return META;
+    default:
+      return NONE;
   }
 }
 

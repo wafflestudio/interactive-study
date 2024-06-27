@@ -70,7 +70,7 @@ export class KeyMap {
       );
 
       this.addKeyBinding(
-        (codeModifier ?? modifiers) | modifiers, // == modifiers 또는 (codeModifier | modifiers)
+        codeModifier | modifiers,
         code,
         pressCallback,
         releaseCallback,
