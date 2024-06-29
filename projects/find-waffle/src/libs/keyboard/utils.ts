@@ -1,5 +1,9 @@
 import { ALT, CTRL, META, NONE, SHIFT } from './KeyMap';
-import { EmptyKeyBindingError, InvalidKeyCodeError, InvalidModifierError } from './errors';
+import {
+  EmptyKeyBindingError,
+  InvalidKeyCodeError,
+  InvalidModifierError,
+} from './errors';
 
 export function findModifier(key: string) {
   switch (key.toLowerCase()) {
@@ -136,7 +140,7 @@ export function parseKeyBinding(keyBinding: string) {
       throw new InvalidModifierError(keyBinding, key);
     }
     return acc | modifier;
-  }, NONE)
+  }, NONE);
 
   const code = findCode(keys[keys.length - 1]);
   if (code === undefined) {
