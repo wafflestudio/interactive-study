@@ -91,8 +91,25 @@ export class KeyMap {
     }
   }
 
-  unbind(modifier: number, code: string) {
-    this.bindingTable.get(modifier)?.delete(code);
+  unbind(keyBinding: string | string[]): ThisType<KeyMap> {
+    if (Array.isArray(keyBinding)) {
+      for (const binding of keyBinding) {
+        this.unbind(binding);
+      }
+      return this;
+    }
+
+    try {
+      const { modifiers, code } = parseKeyBinding(keyBinding);
+      this.removeKeyBinding(modifiers, code);
+    } catch (error) {
+      if (error instanceof KeyBindingValidationError) {
+        console.error(error);
+      }
+      throw error;
+    } finally {
+      return this;
+    }
   }
 
   activate() {
@@ -128,6 +145,13 @@ export class KeyMap {
       new KeyAction(pressCallback, releaseCallback, options),
     );
     this.bindingTable.set(modifier, modifierMap);
+  }
+
+  private removeKeyBinding(modifier: number, code: string) {
+    const modifierMap = this.bindingTable.get(modifier);
+    if (!modifierMap) return;
+
+    modifierMap.delete(code);
   }
 
   private handleKeyDown(event: KeyboardEvent) {
