@@ -47,6 +47,8 @@ export function findCode(key: string) {
     case 'rightmeta':
     case 'metaright':
       return 'MetaRight';
+    case 'capslock':
+      return 'CapsLock';
     case 'space':
       return 'Space';
     case 'enter':
@@ -79,26 +81,39 @@ export function findCode(key: string) {
     case 'downarrow':
       return 'ArrowDown';
     case '`':
+    case 'backquote':
       return 'Backquote';
     case '-':
+    case 'minus':
       return 'Minus';
     case '=':
+    case 'equal':
       return 'Equal';
     case '[':
+    case 'bracketleft':
+    case 'leftbracket':
       return 'BracketLeft';
     case ']':
+    case 'bracketright':
+    case 'rightbracket':
       return 'BracketRight';
     case '\\':
+    case 'backslash':
       return 'Backslash';
     case ';':
+    case 'semicolon':
       return 'Semicolon';
     case "'":
+    case 'quote':
       return 'Quote';
     case ',':
+    case 'comma':
       return 'Comma';
     case '.':
+    case 'period':
       return 'Period';
     case '/':
+    case 'slash':
       return 'Slash';
   }
 
