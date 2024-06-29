@@ -1,3 +1,4 @@
+import { KeyAction } from './KeyAction';
 import { KeyBindingValidationError } from './errors';
 import {
   extractModifiersFromEvent,
@@ -14,15 +15,18 @@ export const META = 0b1000;
 type Callback = () => void;
 type Modifier = number;
 type Code = string;
-type BindingTable = Map<Modifier, Map<Code, [Callback?, Callback?]>>;
-type ReleaseCallbackTable = Map<Code, Callback>;
+type ActionTable = Map<Code, KeyAction>;
+type BindingOptions = {
+  preventDefault?: boolean;
+  allowRepeated?: boolean;
+};
 
 export class KeyMap {
   private static _currentProfile?: KeyMap;
   private static readonly _pressedKeys: Set<string> = new Set();
 
-  private readonly bindingTable: BindingTable;
-  private readonly releaseCallbackTable: ReleaseCallbackTable;
+  private readonly bindingTable: Map<Modifier, ActionTable>;
+  private readonly releaseActionTable: ActionTable;
 
   static {
     window.addEventListener('keydown', (event) => {
@@ -38,7 +42,7 @@ export class KeyMap {
 
   constructor() {
     this.bindingTable = new Map();
-    this.releaseCallbackTable = new Map();
+    this.releaseActionTable = new Map();
   }
 
   get pressedKeys() {
@@ -51,8 +55,9 @@ export class KeyMap {
 
   bind(
     keyBinding: string | string[],
-    pressCallback?: () => void,
-    releaseCallback?: () => void,
+    pressCallback?: Callback,
+    releaseCallback?: Callback,
+    options: BindingOptions = {},
   ): ThisType<KeyMap> {
     // key binding 이 여러개 일 경우
     if (Array.isArray(keyBinding)) {
@@ -74,15 +79,15 @@ export class KeyMap {
         code,
         pressCallback,
         releaseCallback,
+        options,
       );
-
-      return this;
     } catch (error) {
       if (error instanceof KeyBindingValidationError) {
         console.error(error);
-        return this;
       }
       throw error;
+    } finally {
+      return this;
     }
   }
 
@@ -103,42 +108,40 @@ export class KeyMap {
   private addKeyBinding(
     modifier: number,
     code: string,
-    pressCallback?: () => void,
-    releaseCallback?: () => void,
+    pressCallback?: Callback,
+    releaseCallback?: Callback,
+    options: BindingOptions = {},
   ) {
     if (!pressCallback && !releaseCallback) {
       return;
     }
-    
-    const modifierMap = this.bindingTable.get(modifier) ?? new Map();
-    
+
+    const modifierMap: ActionTable =
+      this.bindingTable.get(modifier) ?? new Map();
+
     if (modifierMap.has(code)) {
       console.warn('Overwriting existing binding');
     }
 
-    modifierMap.set(code, [pressCallback, releaseCallback]);
+    modifierMap.set(
+      code,
+      new KeyAction(pressCallback, releaseCallback, options),
+    );
     this.bindingTable.set(modifier, modifierMap);
   }
 
   private handleKeyDown(event: KeyboardEvent) {
     const modifier = extractModifiersFromEvent(event);
-    const [pressCallback, releaseCallback] =
-      this.bindingTable.get(modifier)?.get(event.code) ?? [];
-    if (pressCallback) {
-      event.preventDefault();
-      pressCallback();
-    }
-    if (releaseCallback) {
-      this.releaseCallbackTable.set(event.code, releaseCallback);
-    }
+    const action = this.bindingTable.get(modifier)?.get(event.code);
+
+    if (!action) return;
+
+    action.press(event);
+    this.releaseActionTable.set(event.code, action);
   }
 
   private handleKeyUp(event: KeyboardEvent) {
-    const releaseCallback = this.releaseCallbackTable.get(event.code);
-    if (releaseCallback) {
-      event.preventDefault();
-      releaseCallback();
-      this.releaseCallbackTable.delete(event.code);
-    }
+    const action = this.releaseActionTable.get(event.code);
+    action?.release(event);
   }
 }
