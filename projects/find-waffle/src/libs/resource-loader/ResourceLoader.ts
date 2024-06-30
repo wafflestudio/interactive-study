@@ -64,6 +64,7 @@ export class ResourceLoader {
     sounds: new Map<ResourceKey, Sound>(),
   };
   public onProgressUpdate: (progress: number) => void = () => {}; // 0 ~ 1
+  public onLoadComplete: () => void = () => {};
 
   constructor() {}
 
@@ -78,6 +79,10 @@ export class ResourceLoader {
       this.loadedResources.sounds.size;
     const progress = loadedResourcesCount / this.totalResources;
     this.onProgressUpdate(progress);
+
+    if (loadedResourcesCount === this.totalResources) {
+      this.onLoadComplete();
+    }
   }
 
   private loadModel(resource: ModelLoadableResource) {
