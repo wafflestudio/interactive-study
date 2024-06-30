@@ -4,13 +4,18 @@ const progressElement = document.querySelector('#progress') as HTMLElement;
 const progressBarFillElement = document.querySelector(
   '#progress-bar-fill',
 ) as HTMLElement;
+const loadButtonElement = document.querySelector('#load') as HTMLElement;
 const onProgressUpdate = (progress: number) => {
   progressElement.textContent = `${Math.floor(progress * 100)}%`;
   progressBarFillElement.style.width = `${progress * 100}%`;
 };
+const onLoadComplete = () => {
+  loadButtonElement.style.display = 'none';
+};
 
 const resourceLoader = new ResourceLoader();
 resourceLoader.onProgressUpdate = onProgressUpdate;
+resourceLoader.onLoadComplete = onLoadComplete;
 
 resourceLoader.registerModel('model1', '/models/Duck/glTF-Binary/Duck.glb');
 resourceLoader.registerModel('model2', '/models/Duck/glTF-Binary/Duck.glb', {

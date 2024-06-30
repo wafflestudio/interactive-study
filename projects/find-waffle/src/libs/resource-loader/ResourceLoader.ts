@@ -68,19 +68,23 @@ export class ResourceLoader {
 
   constructor() {}
 
-  private get totalResources() {
+  private get totalResourcesCount() {
     return this.resourcesToLoad.length;
   }
 
-  private handleProgressUpdate() {
-    const loadedResourcesCount =
+  private get loadedResourcesCount() {
+    return (
       this.loadedResources.models.size +
       this.loadedResources.textures.size +
-      this.loadedResources.sounds.size;
-    const progress = loadedResourcesCount / this.totalResources;
+      this.loadedResources.sounds.size
+    );
+  }
+
+  private handleProgressUpdate() {
+    const progress = this.loadedResourcesCount / this.totalResourcesCount;
     this.onProgressUpdate(progress);
 
-    if (loadedResourcesCount === this.totalResources) {
+    if (this.loadedResourcesCount === this.totalResourcesCount) {
       this.onLoadComplete();
     }
   }
