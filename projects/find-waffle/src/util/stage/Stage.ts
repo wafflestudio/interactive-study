@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export default abstract class Stage {
+export abstract class Stage {
   constructor(
     public renderer: THREE.WebGLRenderer,
     public app: HTMLElement,

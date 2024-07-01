@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
-import Stage from './Stage';
+import { Stage } from './Stage';
 
-export default class StageManager {
+export class StageManager {
   private static _instance: StageManager;
   public app: HTMLElement;
   public renderer: THREE.WebGLRenderer;

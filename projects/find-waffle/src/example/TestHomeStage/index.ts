@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import Stage from '../../util/stage/Stage';
-import StageManager from '../../util/stage/StageManager';
+import { Stage } from '../../util/stage/Stage';
+import { StageManager } from '../../util/stage/StageManager';
 
 export default class TestHomeStage extends Stage {
   stages: Stage[];
