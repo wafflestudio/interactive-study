@@ -71,6 +71,13 @@ export default class TestBlueStage extends Stage {
     this.renderer.render(this.scene, this.camera);
   }
 
+  public resize() {
+    if (!this.camera) return;
+    this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
+    this.camera.aspect = this.app.clientWidth / this.app.clientHeight;
+    this.camera.updateProjectionMatrix();
+  }
+
   public unmount() {
     // dispose objects
     this.scene?.children.forEach((child) => {

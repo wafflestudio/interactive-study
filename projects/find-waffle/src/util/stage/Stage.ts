@@ -8,4 +8,5 @@ export abstract class Stage {
   abstract mount(): void;
   abstract unmount(): void;
   abstract animate(time: DOMHighResTimeStamp): void;
+  abstract resize(e: Event): void;
 }

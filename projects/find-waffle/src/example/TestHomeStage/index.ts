@@ -68,11 +68,18 @@ export default class TestHomeStage extends Stage {
     console.log('TestHomeStage mounted');
   }
 
-  public animate(): void {
+  public animate() {
     if (!this.scene || !this.camera || !this.cube) return;
     this.cube.rotation.x += 0.01;
     this.cube.rotation.y += 0.01;
     this.renderer.render(this.scene, this.camera);
+  }
+
+  public resize() {
+    if (!this.camera) return;
+    this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
+    this.camera.aspect = this.app.clientWidth / this.app.clientHeight;
+    this.camera.updateProjectionMatrix();
   }
 
   public unmount() {

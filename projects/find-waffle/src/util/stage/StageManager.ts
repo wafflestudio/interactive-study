@@ -46,4 +46,8 @@ export class StageManager {
     this.currentStage?.animate(time);
     window.requestAnimationFrame((t) => this.animate(t));
   }
+
+  public resize(e: Event) {
+    this.currentStage?.resize(e);
+  }
 }
