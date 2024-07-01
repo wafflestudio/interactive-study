@@ -13,3 +13,4 @@ const testHome = new TestHomeStage(stageManager.renderer, stageManager.app, [
 ]);
 
 stageManager.setHome(testHome);
+window.requestAnimationFrame((t) => stageManager.animate(t));

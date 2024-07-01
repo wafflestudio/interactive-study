@@ -8,6 +8,8 @@ export default class TestYellowStage extends Stage {
   camera?: THREE.PerspectiveCamera;
   onKeyDown?: (e: KeyboardEvent) => void;
   hint?: HTMLElement;
+  cube?: THREE.Mesh;
+  light?: THREE.DirectionalLight;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -28,11 +30,11 @@ export default class TestYellowStage extends Stage {
     // add objects
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1).normalize();
-    this.scene.add(light);
-    this.scene.add(cube);
+    this.cube = new THREE.Mesh(geometry, material);
+    this.light = new THREE.DirectionalLight(0xffffff, 1);
+    this.light.position.set(1, 1, 1).normalize();
+    this.scene.add(this.light);
+    this.scene.add(this.cube);
 
     // key mapping
     const stageManager = StageManager.instance;
@@ -45,16 +47,6 @@ export default class TestYellowStage extends Stage {
       }
     };
     window.addEventListener('keydown', this.onKeyDown);
-
-    // animate
-    const animate = () => {
-      if (!this.scene || !this.camera) return;
-      requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      this.renderer.render(this.scene, this.camera);
-    };
-    animate();
 
     // add div
     const div = document.createElement('div');
@@ -70,6 +62,13 @@ export default class TestYellowStage extends Stage {
 
     // done!
     console.log('TestYellowStage mounted');
+  }
+
+  public animate(): void {
+    if (!this.scene || !this.camera || !this.cube) return;
+    this.cube.rotation.x += 0.01;
+    this.cube.rotation.y += 0.01;
+    this.renderer.render(this.scene, this.camera);
   }
 
   public unmount() {

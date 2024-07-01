@@ -31,15 +31,19 @@ export class StageManager {
     this.currentStage = stage;
   }
 
-  public toHome() {
-    this.currentStage?.unmount();
-    this.home?.mount();
-    this.currentStage = this.home;
-  }
-
   public toStage(stage: Stage) {
     this.currentStage?.unmount();
     stage.mount();
     this.currentStage = stage;
+  }
+
+  public toHome() {
+    if (!this.home) return;
+    this.toStage(this.home);
+  }
+
+  public animate(time: DOMHighResTimeStamp) {
+    this.currentStage?.animate(time);
+    window.requestAnimationFrame((t) => this.animate(t));
   }
 }
