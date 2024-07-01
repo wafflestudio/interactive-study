@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { Stage } from '../../util/stage/Stage';
-import { StageManager } from '../../util/stage/StageManager';
+import { Stage } from '../../core/stage/Stage';
+import { StageManager } from '../../core/stage/StageManager';
 
 export default class TestBlueStage extends Stage {
   scene?: THREE.Scene;
