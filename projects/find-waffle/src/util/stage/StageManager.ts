@@ -1,11 +1,21 @@
+import * as THREE from 'three';
+
 import Stage from './Stage';
 
 export default class StageManager {
   private static _instance: StageManager;
+  public app: HTMLElement;
+  public renderer: THREE.WebGLRenderer;
   public home?: Stage;
   public currentStage?: Stage;
 
-  private constructor() {}
+  private constructor() {
+    this.app = document.querySelector('#app')!;
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.app.querySelector('canvas')!,
+      antialias: true,
+    });
+  }
 
   public static get instance(): StageManager {
     if (!StageManager._instance) {
