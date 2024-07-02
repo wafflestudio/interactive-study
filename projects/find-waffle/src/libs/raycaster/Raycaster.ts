@@ -18,17 +18,26 @@ export class Raycaster extends THREE.Raycaster {
   selectedObject: THREE.Object3D | null = null;
   offset: THREE.Vector3 = new THREE.Vector3();
   callbacks: EventCallbacks = {};
+  eventListeners: {
+    [key in keyof EventCallbacks]?: (event: MouseEvent) => void;
+  } = {};
 
   constructor(camera: THREE.Camera, scene: THREE.Scene) {
     super();
     this.camera = camera;
     this.scene = scene;
 
-    window.addEventListener('mousemove', this.handleEvent('mousemove'));
-    window.addEventListener('click', this.handleEvent('click'));
-    window.addEventListener('mousedown', this.handleEvent('mousedown'));
-    window.addEventListener('mouseup', this.handleEvent('mouseup'));
-    window.addEventListener('dblclick', this.handleEvent('dblclick'));
+    this.eventListeners.mousemove = this.handleEvent('mousemove');
+    this.eventListeners.click = this.handleEvent('click');
+    this.eventListeners.mousedown = this.handleEvent('mousedown');
+    this.eventListeners.mouseup = this.handleEvent('mouseup');
+    this.eventListeners.dblclick = this.handleEvent('dblclick');
+
+    window.addEventListener('mousemove', this.eventListeners.mousemove);
+    window.addEventListener('click', this.eventListeners.click);
+    window.addEventListener('mousedown', this.eventListeners.mousedown);
+    window.addEventListener('mouseup', this.eventListeners.mouseup);
+    window.addEventListener('dblclick', this.eventListeners.dblclick);
   }
 
   // 공통 동작: 마우스 좌표값 업데이트, 레이캐스팅 통해 교차점 찾기
@@ -62,10 +71,21 @@ export class Raycaster extends THREE.Raycaster {
 
   // raycaster.dispose() 호출 시 이벤트 리스너 제거
   dispose() {
-    window.removeEventListener('mousemove', this.handleEvent('mousemove'));
-    window.removeEventListener('click', this.handleEvent('click'));
-    window.removeEventListener('mousedown', this.handleEvent('mousedown'));
-    window.removeEventListener('mouseup', this.handleEvent('mouseup'));
-    window.removeEventListener('dblclick', this.handleEvent('dblclick'));
+    this.callbacks = {};
+    if (this.eventListeners.mousemove) {
+      window.removeEventListener('mousemove', this.eventListeners.mousemove);
+    }
+    if (this.eventListeners.click) {
+      window.removeEventListener('click', this.eventListeners.click);
+    }
+    if (this.eventListeners.mousedown) {
+      window.removeEventListener('mousedown', this.eventListeners.mousedown);
+    }
+    if (this.eventListeners.mouseup) {
+      window.removeEventListener('mouseup', this.eventListeners.mouseup);
+    }
+    if (this.eventListeners.dblclick) {
+      window.removeEventListener('dblclick', this.eventListeners.dblclick);
+    }
   }
 }

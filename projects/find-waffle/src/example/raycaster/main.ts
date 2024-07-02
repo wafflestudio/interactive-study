@@ -121,3 +121,5 @@ raycaster.registerCallback('mousemove', mouseMoveCallbackForDrag);
 raycaster.registerCallback('click', clickCallback);
 raycaster.registerCallback('mousedown', mouseDownCallback);
 raycaster.registerCallback('mouseup', mouseUpCallback);
+
+raycaster.dispose();
