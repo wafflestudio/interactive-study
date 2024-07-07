@@ -1,0 +1,75 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Resource Loader Example</title>
+
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .flex {
+        display: flex;
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .gap-0\.5 {
+        gap: 0.5rem;
+      }
+
+      #progress-bar {
+        width: 50%;
+        height: 20px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        position: relative;
+        margin-top: 20px;
+      }
+
+      #progress-bar-fill {
+        height: 100%;
+        background-color: #007bff;
+        border-radius: 5px;
+        width: 0;
+        transition: width 0.2s;
+      }
+
+      #progress {
+        margin-top: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script type="module" src="./main.ts"></script>
+
+    <div class="flex flex-col gap-0.5">
+      <button id="load">Load All</button>
+      <button id="print">Print to Console</button>
+    </div>
+
+    <div id="progress-bar">
+      <div id="progress-bar-fill"></div>
+    </div>
+    <div id="progress">0%</div>
+  </body>
+</html>
