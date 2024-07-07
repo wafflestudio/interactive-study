@@ -2756,6 +2756,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cannon-es@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "cannon-es@npm:0.20.0"
+  checksum: 80f3904049d969d81fec76927fc4af88bb137616f63937918acec4c5759ff5129c321f8925ddf7efed0e5c833309d1520bcf4072a6217b55687cfa5fe229c58c
+  languageName: node
+  linkType: hard
+
 "chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
@@ -3190,6 +3197,13 @@ __metadata:
     is-date-object: "npm:^1.0.1"
     is-symbol: "npm:^1.0.2"
   checksum: 74aeeefe2714cf99bb40cab7ce3012d74e1e2c1bd60d0a913b467b269edde6e176ca644b5ba03a5b865fb044a29bca05671cd445c85ca2cdc2de155d7fc8fe9b
+  languageName: node
+  linkType: hard
+
+"es-toolkit@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "es-toolkit@npm:1.8.0"
+  checksum: df668b2b979409b623012a2985d67a8d0bd7050f89350ee32093b7feb494029c812420e5e70b8c68e0cbe37657aadff25b1e049b6699bcd3bdcc019050752834
   languageName: node
   linkType: hard
 
@@ -3725,11 +3739,14 @@ __metadata:
     "@types/three": "npm:^0.165.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
     "@typescript-eslint/parser": "npm:^6.10.0"
+    cannon-es: "npm:^0.20.0"
+    es-toolkit: "npm:^1.8.0"
     eslint: "npm:^8.53.0"
     lil-gui: "npm:^0.19.2"
     three: "npm:^0.165.0"
     typescript: "npm:^5.2.2"
     vite: "npm:^5.0.0"
+    zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -6623,6 +6640,13 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.23.8":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 846fd73e1af0def79c19d510ea9e4a795544a67d5b34b7e1c4d0425bf6bfd1c719446d94cdfa1721c1987d891321d61f779e8236fde517dc0e524aa851a6eff1
   languageName: node
   linkType: hard
 
