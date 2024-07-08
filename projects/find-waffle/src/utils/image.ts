@@ -2,7 +2,7 @@
  * 주어진 URL로부터 이미지를 로드합니다.
  *
  * @param url 이미지 URL
- * @returns 이미지 비트맵 Promise
+ * @returns 로딩된 이미지 프로미스
  */
 export async function loadImage(url: string): Promise<ImageBitmap> {
   const response = await fetch(url);
@@ -15,6 +15,13 @@ export async function loadImage(url: string): Promise<ImageBitmap> {
 
 type ColorSource = CanvasFillStrokeStyles['fillStyle'];
 
+/**
+ * 주어진 색상으로 채워진 이미지를 생성합니다.
+ * @param color 색상
+ * @param width 이미지 너비
+ * @param height 이미지 높이
+ * @returns 생성된 이미지
+ */
 export function createSolidColorImage(
   color: ColorSource,
   width: number,
