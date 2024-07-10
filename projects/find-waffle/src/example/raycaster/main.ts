@@ -57,7 +57,7 @@ function animate() {
 animate();
 
 /* Raycaster Settings */
-const raycaster = new Raycaster(camera, scene);
+const raycaster = new Raycaster(camera, scene, renderer);
 
 // 마우스가 오브젝트 위에 있을 때 색상 변경 예제
 const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
@@ -121,5 +121,3 @@ raycaster.registerCallback('mousemove', mouseMoveCallbackForDrag);
 raycaster.registerCallback('click', clickCallback);
 raycaster.registerCallback('mousedown', mouseDownCallback);
 raycaster.registerCallback('mouseup', mouseUpCallback);
-
-raycaster.dispose();

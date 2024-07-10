@@ -13,6 +13,7 @@ interface EventCallbacks {
 export class Raycaster extends THREE.Raycaster {
   camera: THREE.Camera;
   scene: THREE.Scene;
+  renderer: THREE.WebGLRenderer;
   mouseCoords: MouseCoords = new THREE.Vector2();
   dragging: boolean = false;
   selectedObject: THREE.Object3D | null = null;
@@ -22,10 +23,15 @@ export class Raycaster extends THREE.Raycaster {
     [key in keyof EventCallbacks]?: (event: MouseEvent) => void;
   } = {};
 
-  constructor(camera: THREE.Camera, scene: THREE.Scene) {
+  constructor(
+    camera: THREE.Camera,
+    scene: THREE.Scene,
+    renderer: THREE.WebGLRenderer,
+  ) {
     super();
     this.camera = camera;
     this.scene = scene;
+    this.renderer = renderer;
 
     this.eventListeners.mousemove = this.handleEvent('mousemove');
     this.eventListeners.click = this.handleEvent('click');
@@ -42,8 +48,11 @@ export class Raycaster extends THREE.Raycaster {
 
   // 공통 동작: 마우스 좌표값 업데이트, 레이캐스팅 통해 교차점 찾기
   getIntersects(event: MouseEvent): THREE.Intersection[] {
-    this.mouseCoords.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouseCoords.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    const canvas = this.renderer.domElement;
+    const rect = canvas.getBoundingClientRect();
+
+    this.mouseCoords.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouseCoords.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     this.setFromCamera(this.mouseCoords, this.camera);
     return this.intersectObjects(this.scene.children);
   }
