@@ -36,11 +36,11 @@ export class ListenableRaycaster extends THREE.Raycaster {
       ['dblclick', []],
     ]);
 
-    this.eventListeners.mousemove = this.handleEvent('mousemove');
-    this.eventListeners.click = this.handleEvent('click');
-    this.eventListeners.mousedown = this.handleEvent('mousedown');
-    this.eventListeners.mouseup = this.handleEvent('mouseup');
-    this.eventListeners.dblclick = this.handleEvent('dblclick');
+    this.eventListeners.mousemove = this.createEventHandler('mousemove');
+    this.eventListeners.click = this.createEventHandler('click');
+    this.eventListeners.mousedown = this.createEventHandler('mousedown');
+    this.eventListeners.mouseup = this.createEventHandler('mouseup');
+    this.eventListeners.dblclick = this.createEventHandler('dblclick');
 
     window.addEventListener('mousemove', this.eventListeners.mousemove);
     window.addEventListener('click', this.eventListeners.click);
@@ -74,7 +74,7 @@ export class ListenableRaycaster extends THREE.Raycaster {
   }
 
   // 이벤트 핸들러 설정
-  private handleEvent(eventType: EventType) {
+  private createEventHandler(eventType: EventType) {
     return (event: MouseEvent) => {
       const callbackEntries = this.eventCallbackMap.get(eventType);
       if (callbackEntries) {

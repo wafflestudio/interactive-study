@@ -71,17 +71,17 @@ const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   if (intersects.length > 0) {
     const intersectedObject = intersects[0].object;
 
-    if (raycaster.selectedObject !== intersectedObject) {
-      if (raycaster.selectedObject) {
-        raycaster.selectedObject.material.color.set('#00ff00');
+    if (selectedObject !== intersectedObject) {
+      if (selectedObject) {
+        selectedObject.material.color.set('#00ff00');
       }
-      raycaster.selectedObject = intersectedObject;
-      raycaster.selectedObject.material.color.set('#ff0000');
+      selectedObject = intersectedObject;
+      selectedObject.material.color.set('#ff0000');
     }
   } else {
-    if (raycaster.selectedObject) {
-      raycaster.selectedObject.material.color.set('#00ff00');
-      raycaster.selectedObject = null;
+    if (selectedObject) {
+      selectedObject.material.color.set('#00ff00');
+      selectedObject = null;
     }
   }
 };
