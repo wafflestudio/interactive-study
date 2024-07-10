@@ -2,14 +2,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { Stage } from '../../core/stage/Stage';
-import loadResources from './temp/resource';
-import { animation } from './temp/walk';
+import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import { animation, setFoxWalk, updateAnimation } from './temp/walk';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
   camera?: THREE.PerspectiveCamera;
   onKeyDown?: (e: KeyboardEvent) => void;
-  hint?: HTMLElement;
   light?: THREE.DirectionalLight;
   controls?: OrbitControls;
   clock?: THREE.Clock;
@@ -53,14 +52,39 @@ export default class WaffleRoomStage extends Stage {
     this.clock = new THREE.Clock();
 
     // load resources
-    loadResources().then((items) => {
-      const fox = items.foxModel.scene;
-      const room = items.waffleRoom.scene;
-      fox.scale.set(0.01, 0.01, 0.01);
-      room.scale.set(4, 4, 4);
-      this.scene?.add(fox);
-      this.scene?.add(room);
+    const resourceLoader = new ResourceLoader();
+    resourceLoader.registerModel('foxModel', '/models/Fox/glTF/Fox.gltf', {
+      onLoad: (fox) => {
+        setFoxWalk(fox);
+        const keysPressed = {};
+
+        // TODO: Add Keymap
+        document.addEventListener('keydown', (event) => {
+          keysPressed[event.key] = true;
+          updateAnimation(fox, keysPressed);
+          console.log(keysPressed);
+        });
+
+        document.addEventListener('keyup', (event) => {
+          keysPressed[event.key] = false;
+          updateAnimation(fox, keysPressed);
+          console.log(keysPressed);
+        });
+        fox.scene.scale.set(0.01, 0.01, 0.01);
+        this.scene?.add(fox.scene);
+      },
     });
+    resourceLoader.registerModel(
+      'waffleRoom',
+      '/models/WaffleRoom/WaffleRoom.gltf',
+      {
+        onLoad: ({ scene: room }) => {
+          room.scale.set(4, 4, 4);
+          this.scene?.add(room);
+        },
+      },
+    );
+    resourceLoader.loadAll();
   }
 
   public animate(): void {
@@ -97,9 +121,6 @@ export default class WaffleRoomStage extends Stage {
 
     // remove key mapping
     if (this.onKeyDown) window.removeEventListener('keydown', this.onKeyDown);
-
-    // clean DOM
-    this.hint?.remove();
 
     // done!
     console.log('TestBlueStage unmounted');
