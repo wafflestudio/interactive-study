@@ -1,14 +1,12 @@
 import * as THREE from 'three';
 
 type MouseCoords = THREE.Vector2;
+type EventType = 'mousemove' | 'click' | 'mousedown' | 'mouseup' | 'dblclick';
+type EventCallbackMap = Map<
+  EventType,
+  { callback: EventCallback; targetObjects: THREE.Object3D[] }[]
+>;
 export type EventCallback = (intersects: THREE.Intersection[]) => void;
-interface EventCallbacks {
-  mousemove?: EventCallback[];
-  click?: EventCallback[];
-  mousedown?: EventCallback[];
-  mouseup?: EventCallback[];
-  dblclick?: EventCallback[];
-}
 
 export class Raycaster extends THREE.Raycaster {
   camera: THREE.Camera;
@@ -18,9 +16,9 @@ export class Raycaster extends THREE.Raycaster {
   dragging: boolean = false;
   selectedObject: THREE.Object3D | null = null;
   offset: THREE.Vector3 = new THREE.Vector3();
-  callbacks: EventCallbacks = {};
+  eventCallbackMap: EventCallbackMap = new Map();
   eventListeners: {
-    [key in keyof EventCallbacks]?: (event: MouseEvent) => void;
+    [key in EventType]?: (event: MouseEvent) => void;
   } = {};
 
   constructor(
@@ -32,6 +30,14 @@ export class Raycaster extends THREE.Raycaster {
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
+
+    this.eventCallbackMap = new Map([
+      ['mousemove', []],
+      ['click', []],
+      ['mousedown', []],
+      ['mouseup', []],
+      ['dblclick', []],
+    ]);
 
     this.eventListeners.mousemove = this.handleEvent('mousemove');
     this.eventListeners.click = this.handleEvent('click');
@@ -47,32 +53,37 @@ export class Raycaster extends THREE.Raycaster {
   }
 
   // 공통 동작: 마우스 좌표값 업데이트, 레이캐스팅 통해 교차점 찾기
-  getIntersects(event: MouseEvent): THREE.Intersection[] {
+  getIntersects(
+    event: MouseEvent,
+    targetObjects: THREE.Object3D[],
+  ): THREE.Intersection[] {
     const canvas = this.renderer.domElement;
     const rect = canvas.getBoundingClientRect();
 
     this.mouseCoords.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouseCoords.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
     this.setFromCamera(this.mouseCoords, this.camera);
-    return this.intersectObjects(this.scene.children);
+    return this.intersectObjects(targetObjects, true);
   }
 
   // 이벤트 핸들러에 콜백 등록
-  registerCallback(eventType: keyof EventCallbacks, callback: EventCallback) {
-    if (!this.callbacks[eventType]) {
-      this.callbacks[eventType] = [];
-    }
-    this.callbacks[eventType]!.push(callback);
+  registerCallback(
+    eventType: EventType,
+    callback: EventCallback,
+    targetObjects: THREE.Object3D[],
+  ) {
+    this.eventCallbackMap.get(eventType)!.push({ callback, targetObjects });
   }
 
   // 이벤트 핸들러 설정
-  handleEvent(eventType: keyof EventCallbacks) {
+  handleEvent(eventType: EventType) {
     return (event: MouseEvent) => {
-      const callbacksForEvent = this.callbacks[eventType];
-      const intersects = this.getIntersects(event);
-      if (callbacksForEvent) {
-        for (const callback of callbacksForEvent) {
-          callback(intersects);
+      const callbackEntries = this.eventCallbackMap.get(eventType);
+      if (callbackEntries) {
+        for (const entry of callbackEntries) {
+          const intersects = this.getIntersects(event, entry.targetObjects);
+          entry.callback(intersects);
         }
       }
     };
@@ -80,7 +91,7 @@ export class Raycaster extends THREE.Raycaster {
 
   // raycaster.dispose() 호출 시 이벤트 리스너 제거
   dispose() {
-    this.callbacks = {};
+    this.eventCallbackMap.clear();
     if (this.eventListeners.mousemove) {
       window.removeEventListener('mousemove', this.eventListeners.mousemove);
     }

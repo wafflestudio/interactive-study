@@ -58,6 +58,7 @@ animate();
 
 /* Raycaster Settings */
 const raycaster = new Raycaster(camera, scene, renderer);
+const targetObjects: THREE.Object3D[] = [cube1, cube2, cube3];
 
 // 마우스가 오브젝트 위에 있을 때 색상 변경 예제
 const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
@@ -116,8 +117,12 @@ const mouseUpCallback: EventCallback = () => {
   raycaster.selectedObject = null;
 };
 
-raycaster.registerCallback('mousemove', mouseMoveCallback);
-raycaster.registerCallback('mousemove', mouseMoveCallbackForDrag);
-raycaster.registerCallback('click', clickCallback);
-raycaster.registerCallback('mousedown', mouseDownCallback);
-raycaster.registerCallback('mouseup', mouseUpCallback);
+raycaster.registerCallback('mousemove', mouseMoveCallback, targetObjects);
+raycaster.registerCallback(
+  'mousemove',
+  mouseMoveCallbackForDrag,
+  targetObjects,
+);
+raycaster.registerCallback('click', clickCallback, targetObjects);
+raycaster.registerCallback('mousedown', mouseDownCallback, targetObjects);
+raycaster.registerCallback('mouseup', mouseUpCallback, targetObjects);
