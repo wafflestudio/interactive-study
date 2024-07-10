@@ -6,13 +6,17 @@ type EventCallbackMap = Map<
   EventType,
   { callback: EventCallback; targetObjects: THREE.Object3D[] }[]
 >;
-export type EventCallback = (intersects: THREE.Intersection[]) => void;
+export type EventCallback = (
+  intersects: THREE.Intersection[],
+  mouseCoords?: THREE.Vector2,
+) => void;
 
 export class ListenableRaycaster extends THREE.Raycaster {
   camera: THREE.Camera;
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   mouseCoords: MouseCoords = new THREE.Vector2();
+  selectedObject: THREE.Object3D | null = null;
   private eventCallbackMap: EventCallbackMap = new Map();
   private eventListeners: {
     [key in EventType]?: (event: MouseEvent) => void;
@@ -61,7 +65,9 @@ export class ListenableRaycaster extends THREE.Raycaster {
     this.mouseCoords.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.setFromCamera(this.mouseCoords, this.camera);
-    return this.intersectObjects(targetObjects, true);
+    const intersects = this.intersectObjects(targetObjects, true);
+    this.selectedObject = intersects.length > 0 ? intersects[0].object : null;
+    return intersects;
   }
 
   // 이벤트 핸들러에 콜백 등록
@@ -80,7 +86,9 @@ export class ListenableRaycaster extends THREE.Raycaster {
       if (callbackEntries) {
         for (const entry of callbackEntries) {
           const intersects = this.getIntersects(event, entry.targetObjects);
-          entry.callback(intersects);
+          entry.callback.length == 2
+            ? entry.callback(intersects, this.mouseCoords)
+            : entry.callback(intersects);
         }
       }
     };

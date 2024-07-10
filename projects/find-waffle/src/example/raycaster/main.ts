@@ -63,7 +63,7 @@ animate();
 const raycaster = new ListenableRaycaster(camera, scene, renderer);
 const targetObjects: THREE.Object3D[] = [cube1, cube2, cube3];
 let dragging = false;
-let selectedObject: THREE.Object3D | null = null;
+let selectedObject: THREE.Object3D | null = raycaster.selectedObject;
 let offset = new THREE.Vector3();
 
 // 마우스가 오브젝트 위에 있을 때 색상 변경 예제
@@ -86,9 +86,13 @@ const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   }
 };
 
-const clickCallback: EventCallback = (intersects: THREE.Intersection[]) => {
+const clickCallback: EventCallback = (
+  intersects: THREE.Intersection[],
+  mouseCoords?: THREE.Vector2,
+) => {
   if (intersects.length > 0) {
     console.log('Clicked', intersects[0].object);
+    mouseCoords && console.log(mouseCoords);
   }
 };
 
