@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 
-import { EventCallback, Raycaster } from '../../libs/raycaster/Raycaster.ts';
+import {
+  EventCallback,
+  ListenableRaycaster,
+} from '../../libs/raycaster/Raycaster.ts';
 
 /* Scene Settings */
 const canvas = document.createElement('canvas');
@@ -57,7 +60,7 @@ function animate() {
 animate();
 
 /* Raycaster Settings */
-const raycaster = new Raycaster(camera, scene, renderer);
+const raycaster = new ListenableRaycaster(camera, scene, renderer);
 const targetObjects: THREE.Object3D[] = [cube1, cube2, cube3];
 let dragging = false;
 let selectedObject: THREE.Object3D | null = null;

@@ -8,7 +8,7 @@ type EventCallbackMap = Map<
 >;
 export type EventCallback = (intersects: THREE.Intersection[]) => void;
 
-export class Raycaster extends THREE.Raycaster {
+export class ListenableRaycaster extends THREE.Raycaster {
   camera: THREE.Camera;
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
