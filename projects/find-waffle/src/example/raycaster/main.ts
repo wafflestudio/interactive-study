@@ -59,6 +59,9 @@ animate();
 /* Raycaster Settings */
 const raycaster = new Raycaster(camera, scene, renderer);
 const targetObjects: THREE.Object3D[] = [cube1, cube2, cube3];
+let dragging = false;
+let selectedObject: THREE.Object3D | null = null;
+let offset = new THREE.Vector3();
 
 // 마우스가 오브젝트 위에 있을 때 색상 변경 예제
 const mouseMoveCallback: EventCallback = (intersects: THREE.Intersection[]) => {
@@ -90,31 +93,27 @@ const clickCallback: EventCallback = (intersects: THREE.Intersection[]) => {
 const mouseMoveCallbackForDrag: EventCallback = (
   intersects: THREE.Intersection[],
 ) => {
-  if (raycaster.dragging && raycaster.selectedObject) {
+  if (dragging && selectedObject) {
     if (intersects.length > 0) {
       const intersect = intersects[0];
-      const newPosition = new THREE.Vector3()
-        .copy(intersect.point)
-        .add(raycaster.offset);
-      newPosition.z = raycaster.selectedObject.position.z; // z좌표 고정하고 x, y축으로만 drag -> customizing이 필요할 것
-      raycaster.selectedObject.position.copy(newPosition);
+      const newPosition = new THREE.Vector3().copy(intersect.point).add(offset);
+      newPosition.z = selectedObject.position.z; // z좌표 고정하고 x, y축으로만 drag -> customizing이 필요할 것
+      selectedObject.position.copy(newPosition);
     }
   }
 };
 
 const mouseDownCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   if (intersects.length > 0) {
-    raycaster.dragging = true;
-    raycaster.selectedObject = intersects[0].object;
-    raycaster.offset
-      .copy(raycaster.selectedObject.position)
-      .sub(intersects[0].point);
+    dragging = true;
+    selectedObject = intersects[0].object;
+    offset.copy(selectedObject.position).sub(intersects[0].point);
   }
 };
 
 const mouseUpCallback: EventCallback = () => {
-  raycaster.dragging = false;
-  raycaster.selectedObject = null;
+  dragging = false;
+  selectedObject = null;
 };
 
 raycaster.registerCallback('mousemove', mouseMoveCallback, targetObjects);

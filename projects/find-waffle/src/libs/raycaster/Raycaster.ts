@@ -13,11 +13,8 @@ export class Raycaster extends THREE.Raycaster {
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   mouseCoords: MouseCoords = new THREE.Vector2();
-  dragging: boolean = false;
-  selectedObject: THREE.Object3D | null = null;
-  offset: THREE.Vector3 = new THREE.Vector3();
-  eventCallbackMap: EventCallbackMap = new Map();
-  eventListeners: {
+  private eventCallbackMap: EventCallbackMap = new Map();
+  private eventListeners: {
     [key in EventType]?: (event: MouseEvent) => void;
   } = {};
 
@@ -53,7 +50,7 @@ export class Raycaster extends THREE.Raycaster {
   }
 
   // 공통 동작: 마우스 좌표값 업데이트, 레이캐스팅 통해 교차점 찾기
-  getIntersects(
+  private getIntersects(
     event: MouseEvent,
     targetObjects: THREE.Object3D[],
   ): THREE.Intersection[] {
@@ -77,7 +74,7 @@ export class Raycaster extends THREE.Raycaster {
   }
 
   // 이벤트 핸들러 설정
-  handleEvent(eventType: EventType) {
+  private handleEvent(eventType: EventType) {
     return (event: MouseEvent) => {
       const callbackEntries = this.eventCallbackMap.get(eventType);
       if (callbackEntries) {
