@@ -113,8 +113,7 @@ const mouseMoveCallbackForDrag: EventCallback = (
 const mouseDownCallback: EventCallback = (intersects: THREE.Intersection[]) => {
   if (intersects.length > 0) {
     dragging = true;
-    selectedObject = intersects[0].object;
-    offset.copy(selectedObject.position).sub(intersects[0].point);
+    offset.copy(selectedObject!.position).sub(intersects[0].point);
   }
 };
 
