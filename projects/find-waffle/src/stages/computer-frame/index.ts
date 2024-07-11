@@ -31,8 +31,9 @@ export default class ComputerFrameStage extends Stage {
   scene?: THREE.Scene;
   camera?: THREE.PerspectiveCamera;
 
-  screen?: HTMLElement; // computer screen (including taskbar)
-  canvas?: HTMLCanvasElement; // only canvas
+  computerElement?: HTMLElement; // computer
+  screenElement?: HTMLElement; // computer screen (including taskbar)
+  canvasElement?: HTMLCanvasElement; // only canvas
 
   aspectRatio?: number; // canvas aspect ratio
 
@@ -79,8 +80,9 @@ export default class ComputerFrameStage extends Stage {
     computer.appendChild(computerImage);
     this.app.appendChild(computer);
 
-    this.screen = computerScreen;
-    this.canvas = canvas;
+    this.computerElement = computer;
+    this.screenElement = computerScreen;
+    this.canvasElement = canvas;
     this.resize();
   }
 
@@ -94,7 +96,7 @@ export default class ComputerFrameStage extends Stage {
      * 1. Update screen size and position
      */
     const windowAspect = window.innerWidth / window.innerHeight;
-    const screen = this.screen as HTMLElement;
+    const screen = this.screenElement as HTMLElement;
 
     if (windowAspect < imageAspect) {
       // height is full and width is cropped
@@ -145,7 +147,7 @@ export default class ComputerFrameStage extends Stage {
     /**
      * 2. Update renderer and camera
      */
-    const canvas = this.canvas as HTMLCanvasElement;
+    const canvas = this.canvasElement as HTMLCanvasElement;
 
     const width = canvas.parentElement?.clientWidth;
     const height = canvas.parentElement?.clientHeight;
@@ -163,15 +165,18 @@ export default class ComputerFrameStage extends Stage {
   }
 
   public unmount() {
-    if (this.canvas) {
-      this.app.appendChild(this.canvas);
+    if (this.computerElement) {
+      this.app.removeChild(this.computerElement);
+    }
+    if (this.canvasElement) {
+      this.app.appendChild(this.canvasElement);
     }
 
     // clear properties
     this.scene = undefined;
     this.camera = undefined;
-    this.screen = undefined;
-    this.canvas = undefined;
+    this.screenElement = undefined;
+    this.canvasElement = undefined;
     this.aspectRatio = undefined;
   }
 }
