@@ -1,0 +1,106 @@
+:root {
+  --white: #ffffff;
+  --gray-background: #c0c0c0;
+  --dark-gray-background: #aaaaaa;
+  --gray-border: #878787;
+  --blue-background: #44619b;
+
+  --taskbar-height: 3.2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.computer {
+  width: 100vw;
+  height: 100vh;
+}
+
+.computer__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.computer__screen {
+  position: absolute;
+  background-color: var(--blue-background);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.computer__main {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+}
+
+.computer__taskbar {
+  display: flex;
+  align-items: center;
+  height: var(--taskbar-height);
+  background-color: var(--gray-background);
+  border-top: 2px solid var(--white);
+  padding: 0 0.6rem 0 0.6rem;
+}
+
+.computer__start-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 7.8rem;
+  height: 2.2rem;
+}
+
+.computer__start-button .computer__text {
+  width: 2.7rem;
+  height: 1.3rem;
+}
+
+.computer__taskbar-divider {
+  width: 0;
+  height: 2.4rem;
+  border-left: 1px solid var(--gray-border);
+  border-right: 1px solid var(--white);
+  border-radius: 1px;
+  margin: 0 0.5rem;
+}
+
+.computer__taskbar-time {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 12rem;
+  height: 2.2rem;
+  padding: 0 0.5rem;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--gray-border) var(--white) var(--white) var(--gray-border);
+}
+
+.computer__taskbar-time .computer__text {
+  width: 4.2rem;
+  height: 1.3rem;
+}
+
+.computer__button {
+  background-color: var(--gray-background);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--white) var(--gray-border) var(--gray-border) var(--white);
+}
+.computer__button:active {
+  background-color: var(--dark-gray-background);
+  border-color: var(--gray-border) var(--white) var(--white) var(--gray-border);
+}
+
+.computer canvas {
+  width: 100%;
+  height: 100%;
+}
