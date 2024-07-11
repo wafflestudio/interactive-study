@@ -1,3 +1,5 @@
+import * as CANNON from 'cannon-es';
+import CannonDebugger from 'cannon-es-debugger';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -12,6 +14,10 @@ export default class WaffleRoomStage extends Stage {
   light?: THREE.DirectionalLight;
   controls?: OrbitControls;
   clock?: THREE.Clock;
+  world?: CANNON.World;
+  cannonDebugger?: { update: () => void };
+  foxBody?: CANNON.Body;
+  wallBody?: CANNON.Body;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -40,6 +46,17 @@ export default class WaffleRoomStage extends Stage {
     sunLight.shadow.normalBias = 0.05;
     sunLight.position.set(3, 3, -2.25);
 
+    // cannon setting
+    this.world = new CANNON.World();
+    // this.world.gravity.set(0, -9.82, 0);
+    const wallmaterial = new CANNON.Material();
+    this.wallBody = new CANNON.Body({
+      mass: 100,
+      position: new CANNON.Vec3(1.2, 1.6, -1.2),
+      shape: new CANNON.Box(new CANNON.Vec3(2.5, 2.3, 0.2)),
+    });
+    this.world!.addBody(this.wallBody);
+
     // add objects
     this.scene.add(sunLight);
     this.scene.add(this.camera);
@@ -55,23 +72,41 @@ export default class WaffleRoomStage extends Stage {
     const resourceLoader = new ResourceLoader();
     resourceLoader.registerModel('foxModel', '/models/Fox/glTF/Fox.gltf', {
       onLoad: (fox) => {
+        fox.scene.traverse((child) => {
+          console.log(child);
+        });
         setFoxWalk(fox);
         const keysPressed = {};
+        fox.scene.position.set(2, 0, 2);
+
+        // connect fox model to cannon-es
+        const foxShape = new CANNON.Box(new CANNON.Vec3(0.3, 0.3, 0.5));
+        this.foxBody = new CANNON.Body({
+          mass: 1,
+          position: new CANNON.Vec3(
+            fox.scene.position.x,
+            fox.scene.position.y + 0.3,
+            fox.scene.position.z,
+          ),
+          shape: foxShape,
+        });
+        this.world!.addBody(this.foxBody);
 
         // TODO: Add Keymap
         document.addEventListener('keydown', (event) => {
           keysPressed[event.key] = true;
-          updateAnimation(fox, keysPressed);
-          console.log(keysPressed);
+          updateAnimation(fox, keysPressed, this.foxBody);
         });
 
         document.addEventListener('keyup', (event) => {
           keysPressed[event.key] = false;
-          updateAnimation(fox, keysPressed);
-          console.log(keysPressed);
+          updateAnimation(fox, keysPressed, this.foxBody);
         });
         fox.scene.scale.set(0.01, 0.01, 0.01);
         this.scene?.add(fox.scene);
+
+        // initialize cannon-es debugger
+        this.cannonDebugger = CannonDebugger(this.scene, this.world);
       },
     });
     resourceLoader.registerModel(
@@ -79,6 +114,9 @@ export default class WaffleRoomStage extends Stage {
       '/models/WaffleRoom/WaffleRoom.gltf',
       {
         onLoad: ({ scene: room }) => {
+          // room.traverse((child) => {
+          //   console.log(child);
+          // });
           room.scale.set(4, 4, 4);
           this.scene?.add(room);
         },
@@ -95,6 +133,18 @@ export default class WaffleRoomStage extends Stage {
 
     const delta = this.clock.getDelta();
     if (animation.mixer) animation.mixer.update(delta);
+
+    this.world!.step(1 / 60, delta, 3);
+
+    // 충돌 감지
+    this.world!.contacts.forEach((contact) => {
+      if (contact.bi === this.foxBody || contact.bj === this.foxBody) {
+        console.log('Collision detected');
+        // TODO: 충돌 시 이동 제한 로직 추가
+      }
+    });
+
+    this.cannonDebugger?.update();
   }
 
   public resize() {

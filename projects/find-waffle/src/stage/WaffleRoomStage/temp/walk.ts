@@ -1,3 +1,4 @@
+import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
 type FoxModel = {
@@ -48,7 +49,11 @@ const setFoxWalk = (foxModel: FoxModel) => {
 };
 
 // 키보드 이벤트에 따라 애니메이션 업데이트
-const updateAnimation = (foxModel: FoxModel, keysPressed: KeysPressed) => {
+const updateAnimation = (
+  foxModel: FoxModel,
+  keysPressed: KeysPressed,
+  foxBody: CANNON.Body,
+) => {
   let moving = false;
   let newDirection = null;
 
@@ -98,13 +103,27 @@ const updateAnimation = (foxModel: FoxModel, keysPressed: KeysPressed) => {
   if (newDirection !== null) {
     const targetQuaternion = new THREE.Quaternion();
     targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), newDirection);
-    foxModel.scene.quaternion.slerp(targetQuaternion, 0.5); // 0.1은 회전 속도를 조절하는 값입니다.
+    foxModel.scene.quaternion.slerp(targetQuaternion, 0.5); // 회전 속도 조절
   }
 
   if (moving && animation.actions.current !== animation.actions.walking) {
     animation.play('walking');
   } else if (!moving && animation.actions.current !== animation.actions.idle) {
     animation.play('idle');
+  }
+
+  if (foxBody) {
+    foxBody.position.set(
+      foxModel.scene.position.x,
+      foxModel.scene.position.y + 0.3,
+      foxModel.scene.position.z,
+    );
+    foxBody.quaternion.set(
+      foxModel.scene.quaternion.x,
+      foxModel.scene.quaternion.y,
+      foxModel.scene.quaternion.z,
+      foxModel.scene.quaternion.w,
+    );
   }
 };
 
