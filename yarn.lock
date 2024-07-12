@@ -3742,6 +3742,7 @@ __metadata:
     cannon-es: "npm:^0.20.0"
     es-toolkit: "npm:^1.8.0"
     eslint: "npm:^8.53.0"
+    gsap: "npm:^3.12.5"
     lil-gui: "npm:^0.19.2"
     three: "npm:^0.165.0"
     typescript: "npm:^5.2.2"
@@ -4036,6 +4037,13 @@ __metadata:
   version: 3.12.4
   resolution: "gsap@npm:3.12.4"
   checksum: 82c3ea32dd00440bd52000067375159cd22f5eab8b497143d417630bc1d8bbc329e622e96ee07aafb802835b0889c76986e0fd8aba517de1a66ca63043063f8a
+  languageName: node
+  linkType: hard
+
+"gsap@npm:^3.12.5":
+  version: 3.12.5
+  resolution: "gsap@npm:3.12.5"
+  checksum: 192e9f6b11e54d8a0d26cff76573278d42748c6a54906fa42c81425390238ea8f6abbba5c0bca75c4bba32e4f2db957f22c2158fab1be7d4a8d71fc2fb24e8c3
   languageName: node
   linkType: hard
 
