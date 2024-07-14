@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cannon-es": "^0.20.0",
+    "es-toolkit": "^1.8.0",
+    "gsap": "^3.12.5",
     "lil-gui": "^0.19.2",
-    "three": "^0.165.0"
+    "three": "^0.165.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/three": "^0.165.0",
