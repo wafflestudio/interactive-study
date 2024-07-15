@@ -15,6 +15,12 @@ const cubeObjectSchema = z.object({
   texture: z.string().optional(),
   background: z.string().optional(),
   transparent: z.boolean().default(false),
+  border: z
+    .object({
+      color: z.string(),
+      width: z.number(),
+    })
+    .optional(),
   positions: positionsSchema,
 });
 export type CubeObject = z.infer<typeof cubeObjectSchema>;
