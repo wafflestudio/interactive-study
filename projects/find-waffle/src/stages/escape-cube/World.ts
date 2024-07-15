@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
-import { compositeImage, loadImage, url } from '../../utils';
+import { addBorderToMaterial, compositeImage, loadImage, url } from '../../utils';
 import {
   CubeObject,
   MapData,
@@ -89,33 +89,7 @@ export class World {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshStandardMaterial(materialParams);
     const border = cubeObject.border;
-    if (border) {
-      material.defines.USE_UV = '';
-      material.onBeforeCompile = (shader) => {
-        shader.uniforms.size = { value: new THREE.Vector2(1, 1) };
-        shader.uniforms.borderWidth = { value: border.width };
-        shader.uniforms.borderColor = { value: new THREE.Color(border.color) };
-        shader.fragmentShader = `
-        uniform vec2 size;
-        uniform float borderWidth;
-        uniform vec3 borderColor;
-        ${shader.fragmentShader}
-      `.replace(
-          '#include <color_fragment>',
-          `
-      #include <color_fragment>
-      vec3 col = diffuseColor.rgb;
-      vec2 s = (size * 0.5) - borderWidth;
-      
-      vec2 ruv = abs((vUv - 0.5) * size);
-      vec2 fe = fwidth(ruv);
-      float e = min(fe.x, fe.y) * 0.5;
-      float border = smoothstep(s.x + e, s.x - e, ruv.x) * smoothstep(s.y + e, s.y - e, ruv.y);
-      diffuseColor.rgb = mix(borderColor, col, clamp(border, 0., 1.));   
-        `,
-        );
-      };
-    }
+    if (border) addBorderToMaterial(material, border.color, border.width);
     material.transparent = cubeObject.transparent;
     const cube = new THREE.Mesh(geometry, material);
 
