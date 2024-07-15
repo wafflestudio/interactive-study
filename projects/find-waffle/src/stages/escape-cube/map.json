@@ -1,0 +1,129 @@
+{
+  "objects": [
+    {
+      "type": "cube",
+      "background": "white",
+      "transparent": true,
+      "positions": [
+        {
+          "start": [-5, 0, 2],
+          "end": [5, 10, 3],
+          "step": 1
+        },
+        {
+          "start": [-3, 9, 4],
+          "end": [2, 9, 4],
+          "step": 1
+        },
+        {
+          "start": [-3, 8, 4],
+          "end": [0, 8, 4],
+          "step": 1
+        },
+        {
+          "start": [-3, 7, 4],
+          "end": [2, 7, 4],
+          "step": 1
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "texture": "grid",
+      "background": "white",
+      "transparent": true,
+      "positions": [
+        [-5, 0, 5],
+        [-5, 1, 5],
+        [-5, 3, 5],
+        [-5, 4, 5],
+        [-5, 5, 5],
+        [-5, 6, 5],
+        [-5, 7, 5],
+        [-5, 8, 5],
+        [-5, 9, 5],
+        [-5, 10, 5],
+        {
+          "start": [-4, 5, 5],
+          "end": [4, 5, 5],
+          "step": 1
+        },
+        [5, 10, 5],
+        [5, 9, 5],
+        [5, 7, 5],
+        [5, 6, 5],
+        [5, 5, 5],
+        [5, 4, 5],
+        [5, 3, 5],
+        [5, 1, 5],
+        [5, 0, 5]
+      ]
+    },
+    {
+      "type": "cube",
+      "texture": "dotted",
+      "background": "white",
+      "transparent": true,
+      "positions": [
+        {
+          "start": [-4, 3, 4],
+          "end": [-1, 4, 4],
+          "step": 1
+        },
+        {
+          "start": [-4, 0, 4],
+          "end": [-1, 1, 4],
+          "step": 1
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "cannon",
+      "position": [-3, 2, 5.3],
+      "overrides": [
+        {
+          "name": "Boolean",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        }
+      ]
+    },
+    { "type": "model", "name": "text_1", "position": [0.5, 7.96, 5.35] }
+  ],
+  "resources": [
+    {
+      "type": "texture",
+      "name": "grid",
+      "path": "/2d-or-3d/textures/grid.png"
+    },
+    {
+      "type": "texture",
+      "name": "dotted",
+      "path": "/2d-or-3d/textures/dotted.png"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_4",
+      "path": "/2d-or-3d/textures/matcap_roughness_4.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "gltf",
+      "name": "cannon",
+      "path": "/2d-or-3d/models/cannon.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "text_1",
+      "path": "/2d-or-3d/models/text_1.gltf"
+    }
+  ]
+}
