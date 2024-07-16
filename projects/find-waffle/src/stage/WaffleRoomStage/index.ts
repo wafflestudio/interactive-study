@@ -87,38 +87,30 @@ export default class WaffleRoomStage extends Stage {
 
     // load resources
     const resourceLoader = new ResourceLoader();
-    resourceLoader.registerModel('foxModel', '/models/Fox/glTF/Fox.gltf', {
-      onLoad: (fox) => {
-        setFoxWalk(fox);
-        const keysPressed = {};
-        fox.scene.position.set(2, 0, 2);
+    resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
+      onLoad: ({ scene: iceCream }) => {
+        console.log(iceCream);
+        const scale = 0.005;
+        const position = new THREE.Vector3(2, 0, 2);
 
-        // connect fox model to cannon-es
-        // const foxShape = new CANNON.Box(new CANNON.Vec3(0.3, 0.3, 0.5));
-        // this.foxBody = new CANNON.Body({
-        //   mass: 1,
-        //   position: new CANNON.Vec3(
-        //     fox.scene.position.x,
-        //     fox.scene.position.y + 0.3,
-        //     fox.scene.position.z,
-        //   ),
-        //   shape: foxShape,
-        //   material: defaultMaterial,
-        // });
-        // this.world!.addBody(this.foxBody);
+        const keysPressed = {};
+
+        iceCream.position.set(position.x, position.y, position.z);
+        this.cannon.wrap([iceCream], scale, 0, position);
 
         // TODO: Add Keymap
-        document.addEventListener('keydown', (event) => {
-          keysPressed[event.key] = true;
-          updateAnimation(fox, keysPressed, this.foxBody);
-        });
+        // document.addEventListener('keydown', (event) => {
+        //   keysPressed[event.key] = true;
+        //   updateAnimation(fox, keysPressed, this.foxBody);
+        // });
 
-        document.addEventListener('keyup', (event) => {
-          keysPressed[event.key] = false;
-          updateAnimation(fox, keysPressed, this.foxBody);
-        });
-        fox.scene.scale.set(0.01, 0.01, 0.01);
-        this.scene?.add(fox.scene);
+        // document.addEventListener('keyup', (event) => {
+        //   keysPressed[event.key] = false;
+        //   updateAnimation(fox, keysPressed, this.foxBody);
+        // });
+
+        iceCream.scale.set(scale, scale, scale);
+        this.scene?.add(iceCream);
       },
     });
     resourceLoader.registerModel(
@@ -126,11 +118,11 @@ export default class WaffleRoomStage extends Stage {
       '/models/WaffleRoom/WaffleRoom.gltf',
       {
         onLoad: ({ scene: room }) => {
-          console.log(this.cannon);
           const scale = 4;
           const targetObjects = [];
           room.traverse((child) => {
             if (child.type === 'Mesh') {
+              // console.log(child);
               targetObjects.push(child);
             }
           });
