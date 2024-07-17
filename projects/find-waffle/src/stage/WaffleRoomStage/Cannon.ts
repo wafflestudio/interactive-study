@@ -1,5 +1,4 @@
 import * as CANNON from 'cannon-es';
-import CannonDebugger from 'cannon-es-debugger';
 import * as THREE from 'three';
 
 export default class Cannon {
@@ -52,6 +51,20 @@ export default class Cannon {
       box.getCenter(center);
 
       body.position.set(center.x, center.y, center.z);
+    });
+  }
+
+  public renderMovement() {
+    this.bodies.forEach(({ mesh, body }) => {
+      mesh.position.copy(body.position);
+      mesh.quaternion.copy(
+        new THREE.Quaternion(
+          body.quaternion.x,
+          body.quaternion.y,
+          body.quaternion.z,
+          body.quaternion.w,
+        ),
+      );
     });
   }
 }

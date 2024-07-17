@@ -83,6 +83,7 @@ export default class WaffleRoomStage extends Stage {
 
         iceCream.position.set(position.x, position.y, position.z);
         const body = this.cannon.wrap([iceCream], scale, 0, position);
+        console.log(body);
         this.character = iceCream;
         this.characterBody = body[0];
         // TODO: Add Keymap
@@ -154,7 +155,7 @@ export default class WaffleRoomStage extends Stage {
     )
       return;
 
-    animateCharacter(this.character, this.characterBody, this.keysPressed);
+    animateCharacter(this.characterBody, this.keysPressed);
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
@@ -163,6 +164,8 @@ export default class WaffleRoomStage extends Stage {
     if (animation.mixer) animation.mixer.update(delta);
 
     this.cannon.world.step(1 / 60, delta, 3);
+
+    this.cannon.renderMovement();
 
     // 키맵 테스트
     // if (this.keysPressed.size > 0) console.log(this.keysPressed.entries());
