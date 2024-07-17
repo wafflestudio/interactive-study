@@ -83,7 +83,7 @@ export default class WaffleRoomStage extends Stage {
 
         iceCream.position.set(position.x, position.y, position.z);
         const body = this.cannon.wrap([iceCream], scale, 0, position);
-        console.log(body);
+
         this.character = iceCream;
         this.characterBody = body[0];
         // TODO: Add Keymap
