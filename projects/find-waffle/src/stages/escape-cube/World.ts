@@ -15,6 +15,7 @@ import {
 export class World {
   scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
+  player?: THREE.Mesh;
   initialized = false;
   _onInitialized: () => void = () => {};
 
@@ -31,10 +32,23 @@ export class World {
   }
 
   private init() {
-    Promise.all([this.initMap(), this.initLight()]).then(() => {
+    Promise.all([this.initPlayer(), this.initMap(), this.initLight()]).then(() => {
       this.initialized = true;
       this._onInitialized();
     });
+  }
+
+  private async initPlayer() {
+    const geometry = new THREE.SphereGeometry(0.3);
+    const material = new THREE.MeshStandardMaterial({ color: 0xADADEE });
+    this.player = new THREE.Mesh(geometry, material);
+    this.player.position.set(-4, 10, 4);
+    this.player.name = 'player';
+    this.player.userData = {
+      direction: new THREE.Vector3(0, 0, 0),
+      speed: 0.1,
+    }
+    this.scene.add(this.player);
   }
 
   private async initMap() {
@@ -148,12 +162,12 @@ export class World {
   private async initLight() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     this.scene.add(ambientLight);
-    // const zDirectionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    // zDirectionalLight.position.set(0, 15, 1270);
-    // this.scene.add(zDirectionalLight);
-    // const xDirectionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    // xDirectionalLight.position.set(1270, 15, 0);
-    // this.scene.add(xDirectionalLight);
+    const sunLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
+    sunLight1.position.set(-1270, 15, 1270);
+    this.scene.add(sunLight1);
+    const sunLight2 = new THREE.DirectionalLight(0xffffff, 0.7);
+    sunLight2.position.set(1270, 15, 1270);
+    this.scene.add(sunLight2);
   }
 
   public dispose() {

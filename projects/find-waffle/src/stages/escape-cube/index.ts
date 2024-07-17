@@ -7,19 +7,20 @@ import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { pivotOnParentAxis, resize } from '../../utils';
 import { World } from './World';
 
-type UnmountedContext = {
-  mounted: false;
-  scene?: THREE.Scene;
-  camera?: THREE.Camera;
-  world?: World;
-};
-
-type MountedContext = {
-  mounted: true;
+type ContextVariables = {
   scene: THREE.Scene;
   camera: THREE.Camera;
   world: World;
+  worldIsRotating: boolean;
 };
+
+type UnmountedContext = {
+  mounted: false;
+} & Partial<ContextVariables>;
+
+type MountedContext = {
+  mounted: true;
+} & ContextVariables;
 
 type Context = UnmountedContext | MountedContext;
 
@@ -51,24 +52,73 @@ export default class EscapeCubeStage extends Stage {
     camera.position.set(0, 5, 15);
     camera.lookAt(0, 5, 0);
     scene.add(camera);
-    this.context = { mounted: true, scene, camera, world };
+    this.context = {
+      mounted: true,
+      scene,
+      camera,
+      world,
+      worldIsRotating: false,
+    };
   }
 
   private initKeymap(): void {
-    let worldIsRotating = false;
-
     this.keymap.bind('->', () => {
-      if (!this.context.mounted || worldIsRotating) return;
-      this.pivotCameraAnimation(90);
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      player.userData.direction.x = 1;
+    }, () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      if (this.keymap.pressedKeys.has('ArrowLeft')) {
+        player.userData.direction.x = -1;
+      } else {
+        player.userData.direction.x = 0;
+      }
     });
 
     this.keymap.bind('<-', () => {
-      if (!this.context.mounted || worldIsRotating) return;
-      this.pivotCameraAnimation(-90);
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      player.userData.direction.x = -1;
+    }, () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      if (this.keymap.pressedKeys.has('ArrowRight')) {
+        player.userData.direction.x = 1;
+      } else {
+        player.userData.direction.x = 0;
+      }
     });
+    this.keymap.bind('↑', () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      player.userData.direction.y = 1;
+    }, () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      if (this.keymap.pressedKeys.has('ArrowDown')) {
+        player.userData.direction.y = -1;
+      } else {
+        player.userData.direction.y = 0;
+      }
+    })
+    this.keymap.bind('↓', () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      player.userData.direction.y = -1;
+    }, () => {
+      if (!this.context.mounted || !this.context.world.player) return;
+      const player = this.context.world.player;
+      if (this.keymap.pressedKeys.has('ArrowUp')) {
+        player.userData.direction.y = 1;
+      } else {
+        player.userData.direction.y = 0;
+      }
+    })
   }
 
   private pivotCameraAnimation(angle: number) {
+    if (this.context.worldIsRotating) return;
     const helper = { t: 0 };
     let prevT = 0;
     let duration = 1;
@@ -101,6 +151,8 @@ export default class EscapeCubeStage extends Stage {
 
   public animate() {
     if (!this.context.mounted || !this.context.world.initialized) return;
+    const player = this.context.world.player!;
+    player.position.add(player.userData.direction.clone().multiplyScalar(player.userData.speed));
     this.renderer.render(this.context.scene, this.context.camera);
   }
 
