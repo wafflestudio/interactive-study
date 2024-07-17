@@ -16,7 +16,7 @@ export default class Cannon {
     mass: number,
     presetPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
   ) {
-    targetObjects.forEach((obj) => {
+    const bodies = targetObjects.map((obj) => {
       const box = new THREE.Box3().setFromObject(obj);
       const size = new THREE.Vector3();
       box.getSize(size);
@@ -40,7 +40,9 @@ export default class Cannon {
 
       this.world.addBody(body);
       this.bodies.push({ mesh: obj, body: body });
+      return body;
     });
+    return bodies;
   }
 
   public updateBodies() {
