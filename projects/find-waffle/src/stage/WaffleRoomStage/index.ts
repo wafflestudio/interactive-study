@@ -22,7 +22,6 @@ export default class WaffleRoomStage extends Stage {
   cannonDebugger?: { update: () => void };
   character?: THREE.Object3D;
   characterBody?: CANNON.Body;
-  // foxBody?: CANNON.Body;
   wallBody?: CANNON.Body;
   cannon: Cannon = new Cannon();
   keysPressed: Map<string, boolean> = new Map();
@@ -58,26 +57,6 @@ export default class WaffleRoomStage extends Stage {
     sunLight.shadow.normalBias = 0.05;
     sunLight.position.set(3, 3, -2.25);
 
-    // cannon setting
-    // this.world.gravity.set(0, -9.82, 0);
-    // const defaultMaterial = new CANNON.Material('default');
-    // const wallMaterial = new CANNON.ContactMaterial(
-    //   defaultMaterial,
-    //   defaultMaterial,
-    //   {
-    //     friction: 0.1,
-    //     restitution: 0.9,
-    //   },
-    // );
-    // this.wallBody = new CANNON.Body({
-    //   mass: 0,
-    //   position: new CANNON.Vec3(1.2, 1.6, -1.2),
-    //   shape: new CANNON.Box(new CANNON.Vec3(2.5, 2.3, 0.2)),
-    //   material: defaultMaterial,
-    // });
-    // this.world!.addContactMaterial(wallMaterial);
-    // this.world!.addBody(this.wallBody);
-
     // initialize cannon-es debugger
     this.cannonDebugger = CannonDebugger(this.scene, this.cannon.world);
 
@@ -99,12 +78,12 @@ export default class WaffleRoomStage extends Stage {
     const resourceLoader = new ResourceLoader();
     resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
       onLoad: ({ scene: iceCream }) => {
-        console.log(iceCream);
         const scale = 0.005;
         const position = new THREE.Vector3(2, 0, 2);
 
         iceCream.position.set(position.x, position.y, position.z);
         const body = this.cannon.wrap([iceCream], scale, 0, position);
+        console.log(body);
         this.character = iceCream;
         this.characterBody = body[0];
         // TODO: Add Keymap
@@ -153,11 +132,9 @@ export default class WaffleRoomStage extends Stage {
           const targetObjects: THREE.Object3D[] = [];
           room.traverse((child) => {
             if (child.type === 'Mesh') {
-              // console.log(child);
               targetObjects.push(child);
             }
           });
-          // targetObjects[0].material.color = new THREE.Color('#ff0000');
           this.cannon.wrap(targetObjects, scale, 0);
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
@@ -178,7 +155,7 @@ export default class WaffleRoomStage extends Stage {
     )
       return;
 
-    animateCharacter(this.character, this.characterBody, this.keysPressed);
+    animateCharacter(this.characterBody, this.keysPressed);
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
@@ -188,19 +165,7 @@ export default class WaffleRoomStage extends Stage {
 
     this.cannon.world.step(1 / 60, delta, 3);
 
-    // 키맵 테스트
-    // if (this.keysPressed.size > 0) console.log(this.keysPressed.entries());
-
-    // 충돌 감지
-    // this.world!.contacts.forEach((contact) => {
-    //   if (contact.bi === this.foxBody || contact.bj === this.foxBody) {
-    //     console.log('Collision detected');
-
-    //     console.log('hi');
-    //     this.foxBody.velocity.set(0, 0, 0);
-    //     this.foxBody.angularVelocity.set(0, 0, 0);
-    //   }
-    // });
+    this.cannon.renderMovement();
 
     this.cannonDebugger?.update();
   }
