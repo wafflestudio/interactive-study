@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-const singlePositionSchema = z.tuple([z.number(), z.number(), z.number()]);
+const vector3Schema = z.tuple([z.number(), z.number(), z.number()]);
+
+const singlePositionSchema = vector3Schema;
 const rangePositionSchema = z.object({
   start: singlePositionSchema,
   end: singlePositionSchema,
@@ -13,6 +15,7 @@ const positionsSchema = z.array(
 const cubeObjectSchema = z.object({
   type: z.literal('cube'),
   texture: z.string().optional(),
+  size: vector3Schema.default([1, 1, 1]),
   background: z.string().optional(),
   transparent: z.boolean().default(false),
   border: z

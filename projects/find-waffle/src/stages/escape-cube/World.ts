@@ -85,7 +85,8 @@ export class World {
       materialParams.color = new THREE.Color(cubeObject.background);
     }
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const [w, h, d] = cubeObject.size;
+    const geometry = new THREE.BoxGeometry(w, h, d);
     const material = new THREE.MeshStandardMaterial(materialParams);
     const border = cubeObject.border;
     if (border) addBorderToMaterial(material, border.color, border.width);
