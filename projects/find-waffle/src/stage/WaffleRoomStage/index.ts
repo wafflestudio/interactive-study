@@ -4,9 +4,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { Stage } from '../../core/stage/Stage';
+import { KeyMap } from '../../libs/keyboard/KeyMap.ts';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
-import { animation, setFoxWalk, updateAnimation } from './temp/walk';
+import { animateCharacter } from './animation/character.ts';
+import { Dialogue } from './dialogue/Dialogue.ts';
+import { animation } from './temp/walk';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -17,9 +20,13 @@ export default class WaffleRoomStage extends Stage {
   clock?: THREE.Clock;
   world?: CANNON.World;
   cannonDebugger?: { update: () => void };
-  foxBody?: CANNON.Body;
+  character?: THREE.Object3D;
+  characterBody?: CANNON.Body;
+  // foxBody?: CANNON.Body;
   wallBody?: CANNON.Body;
   cannon: Cannon = new Cannon();
+  keysPressed: Map<string, boolean> = new Map();
+  dialogue?: Dialogue;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -85,6 +92,9 @@ export default class WaffleRoomStage extends Stage {
     );
     this.clock = new THREE.Clock();
 
+    // init dialogue
+    this.dialogue = new Dialogue({ app: this.app });
+
     // load resources
     const resourceLoader = new ResourceLoader();
     resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
@@ -93,24 +103,45 @@ export default class WaffleRoomStage extends Stage {
         const scale = 0.005;
         const position = new THREE.Vector3(2, 0, 2);
 
-        const keysPressed = {};
-
         iceCream.position.set(position.x, position.y, position.z);
-        this.cannon.wrap([iceCream], scale, 0, position);
-
+        const body = this.cannon.wrap([iceCream], scale, 0, position);
+        this.character = iceCream;
+        this.characterBody = body[0];
         // TODO: Add Keymap
-        // document.addEventListener('keydown', (event) => {
-        //   keysPressed[event.key] = true;
-        //   updateAnimation(fox, keysPressed, this.foxBody);
-        // });
+        const keyMap = new KeyMap();
+        keyMap.bind(
+          'w',
+          () => this.keysPressed.set('up', true),
+          () => this.keysPressed.delete('up'),
+        );
+        keyMap.bind(
+          's',
+          () => this.keysPressed.set('down', true),
+          () => this.keysPressed.delete('down'),
+        );
+        keyMap.bind(
+          'a',
+          () => this.keysPressed.set('left', true),
+          () => this.keysPressed.delete('left'),
+        );
+        keyMap.bind(
+          'd',
+          () => this.keysPressed.set('right', true),
+          () => this.keysPressed.delete('right'),
+        );
+        keyMap.bind('Space', () => {
+          this.dialogue?.next();
+        });
 
-        // document.addEventListener('keyup', (event) => {
-        //   keysPressed[event.key] = false;
-        //   updateAnimation(fox, keysPressed, this.foxBody);
-        // });
+        keyMap.activate();
 
         iceCream.scale.set(scale, scale, scale);
         this.scene?.add(iceCream);
+
+        // start dialogue
+        this.dialogue?.begin(['안녕하세요!', '저는 아이스크림입니다.'], () => {
+          console.log('end dialogue');
+        });
       },
     });
     resourceLoader.registerModel(
@@ -119,7 +150,7 @@ export default class WaffleRoomStage extends Stage {
       {
         onLoad: ({ scene: room }) => {
           const scale = 4;
-          const targetObjects = [];
+          const targetObjects: THREE.Object3D[] = [];
           room.traverse((child) => {
             if (child.type === 'Mesh') {
               // console.log(child);
@@ -137,7 +168,17 @@ export default class WaffleRoomStage extends Stage {
   }
 
   public animate(): void {
-    if (!this.scene || !this.camera || !this.controls || !this.clock) return;
+    if (
+      !this.scene ||
+      !this.camera ||
+      !this.controls ||
+      !this.clock ||
+      !this.character ||
+      !this.characterBody
+    )
+      return;
+
+    animateCharacter(this.character, this.characterBody, this.keysPressed);
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
@@ -146,6 +187,9 @@ export default class WaffleRoomStage extends Stage {
     if (animation.mixer) animation.mixer.update(delta);
 
     this.cannon.world.step(1 / 60, delta, 3);
+
+    // 키맵 테스트
+    // if (this.keysPressed.size > 0) console.log(this.keysPressed.entries());
 
     // 충돌 감지
     // this.world!.contacts.forEach((contact) => {
