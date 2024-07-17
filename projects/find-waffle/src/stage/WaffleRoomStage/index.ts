@@ -1,8 +1,11 @@
+import * as CANNON from 'cannon-es';
+import CannonDebugger from 'cannon-es-debugger';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { Stage } from '../../core/stage/Stage';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import Cannon from './Cannon.ts';
 import { animation, setFoxWalk, updateAnimation } from './temp/walk';
 
 export default class WaffleRoomStage extends Stage {
@@ -12,6 +15,11 @@ export default class WaffleRoomStage extends Stage {
   light?: THREE.DirectionalLight;
   controls?: OrbitControls;
   clock?: THREE.Clock;
+  world?: CANNON.World;
+  cannonDebugger?: { update: () => void };
+  foxBody?: CANNON.Body;
+  wallBody?: CANNON.Body;
+  cannon: Cannon = new Cannon();
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -21,6 +29,9 @@ export default class WaffleRoomStage extends Stage {
     // init scene
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
     this.scene = new THREE.Scene();
+
+    const axesHelper = new THREE.AxesHelper(5);
+    this.scene.add(axesHelper);
 
     // init camera
     this.camera = new THREE.PerspectiveCamera(
@@ -40,6 +51,29 @@ export default class WaffleRoomStage extends Stage {
     sunLight.shadow.normalBias = 0.05;
     sunLight.position.set(3, 3, -2.25);
 
+    // cannon setting
+    // this.world.gravity.set(0, -9.82, 0);
+    // const defaultMaterial = new CANNON.Material('default');
+    // const wallMaterial = new CANNON.ContactMaterial(
+    //   defaultMaterial,
+    //   defaultMaterial,
+    //   {
+    //     friction: 0.1,
+    //     restitution: 0.9,
+    //   },
+    // );
+    // this.wallBody = new CANNON.Body({
+    //   mass: 0,
+    //   position: new CANNON.Vec3(1.2, 1.6, -1.2),
+    //   shape: new CANNON.Box(new CANNON.Vec3(2.5, 2.3, 0.2)),
+    //   material: defaultMaterial,
+    // });
+    // this.world!.addContactMaterial(wallMaterial);
+    // this.world!.addBody(this.wallBody);
+
+    // initialize cannon-es debugger
+    this.cannonDebugger = CannonDebugger(this.scene, this.cannon.world);
+
     // add objects
     this.scene.add(sunLight);
     this.scene.add(this.camera);
@@ -53,25 +87,30 @@ export default class WaffleRoomStage extends Stage {
 
     // load resources
     const resourceLoader = new ResourceLoader();
-    resourceLoader.registerModel('foxModel', '/models/Fox/glTF/Fox.gltf', {
-      onLoad: (fox) => {
-        setFoxWalk(fox);
+    resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
+      onLoad: ({ scene: iceCream }) => {
+        console.log(iceCream);
+        const scale = 0.005;
+        const position = new THREE.Vector3(2, 0, 2);
+
         const keysPressed = {};
 
-        // TODO: Add Keymap
-        document.addEventListener('keydown', (event) => {
-          keysPressed[event.key] = true;
-          updateAnimation(fox, keysPressed);
-          console.log(keysPressed);
-        });
+        iceCream.position.set(position.x, position.y, position.z);
+        this.cannon.wrap([iceCream], scale, 0, position);
 
-        document.addEventListener('keyup', (event) => {
-          keysPressed[event.key] = false;
-          updateAnimation(fox, keysPressed);
-          console.log(keysPressed);
-        });
-        fox.scene.scale.set(0.01, 0.01, 0.01);
-        this.scene?.add(fox.scene);
+        // TODO: Add Keymap
+        // document.addEventListener('keydown', (event) => {
+        //   keysPressed[event.key] = true;
+        //   updateAnimation(fox, keysPressed, this.foxBody);
+        // });
+
+        // document.addEventListener('keyup', (event) => {
+        //   keysPressed[event.key] = false;
+        //   updateAnimation(fox, keysPressed, this.foxBody);
+        // });
+
+        iceCream.scale.set(scale, scale, scale);
+        this.scene?.add(iceCream);
       },
     });
     resourceLoader.registerModel(
@@ -79,7 +118,17 @@ export default class WaffleRoomStage extends Stage {
       '/models/WaffleRoom/WaffleRoom.gltf',
       {
         onLoad: ({ scene: room }) => {
-          room.scale.set(4, 4, 4);
+          const scale = 4;
+          const targetObjects = [];
+          room.traverse((child) => {
+            if (child.type === 'Mesh') {
+              // console.log(child);
+              targetObjects.push(child);
+            }
+          });
+          // targetObjects[0].material.color = new THREE.Color('#ff0000');
+          this.cannon.wrap(targetObjects, scale, 0);
+          room.scale.set(scale, scale, scale);
           this.scene?.add(room);
         },
       },
@@ -95,6 +144,21 @@ export default class WaffleRoomStage extends Stage {
 
     const delta = this.clock.getDelta();
     if (animation.mixer) animation.mixer.update(delta);
+
+    this.cannon.world.step(1 / 60, delta, 3);
+
+    // 충돌 감지
+    // this.world!.contacts.forEach((contact) => {
+    //   if (contact.bi === this.foxBody || contact.bj === this.foxBody) {
+    //     console.log('Collision detected');
+
+    //     console.log('hi');
+    //     this.foxBody.velocity.set(0, 0, 0);
+    //     this.foxBody.angularVelocity.set(0, 0, 0);
+    //   }
+    // });
+
+    this.cannonDebugger?.update();
   }
 
   public resize() {
