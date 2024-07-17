@@ -28,7 +28,8 @@
           "start": [-3, 7, 4],
           "end": [2, 7, 4],
           "step": 1
-        }
+        },
+        [4, 7, 4]
       ]
     },
     {
@@ -84,7 +85,7 @@
     {
       "type": "model",
       "name": "cannon",
-      "position": [-3, 2, 5.3],
+      "position": [-4.5, 0.5, 4.5],
       "overrides": [
         {
           "name": "Boolean",
@@ -100,7 +101,7 @@
         }
       ]
     },
-    { "type": "model", "name": "text_1", "position": [0.5, 7.96, 5.35] }
+    { "type": "model", "name": "text_1", "position": [-3.5, 6.5, 4.5] }
   ],
   "resources": [
     {

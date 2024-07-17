@@ -6,7 +6,7 @@ const singlePositionSchema = vector3Schema;
 const rangePositionSchema = z.object({
   start: singlePositionSchema,
   end: singlePositionSchema,
-  step: z.number().default(1),
+  step: z.number().int().gte(1).default(1),
 });
 const positionsSchema = z.array(
   z.union([singlePositionSchema, rangePositionSchema]),
