@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
-import { addBorderToMaterial, compositeImage, loadImage, url } from '../../utils';
+import { addBorderToMaterial, compositeImage, url } from '../../utils';
 import {
   CubeObject,
   MapData,
@@ -71,11 +71,10 @@ export class World {
 
     if (cubeObject.texture !== undefined) {
       if (cubeObject.background) {
-        const texturePath = `/2d-or-3d/textures/${cubeObject.texture}.png`;
-        const textureUrl = url(texturePath);
+        const texture = this.loader.getTexture(cubeObject.texture)!;
         const compositeCanvas = compositeImage(
           cubeObject.background,
-          await loadImage(textureUrl),
+          texture.image,
         );
         materialParams.map = new THREE.CanvasTexture(compositeCanvas);
       } else {

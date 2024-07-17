@@ -106,28 +106,28 @@
     {
       "type": "texture",
       "name": "grid",
-      "path": "/2d-or-3d/textures/grid.png"
+      "path": "/escape-cube/textures/grid.png"
     },
     {
       "type": "texture",
       "name": "dotted",
-      "path": "/2d-or-3d/textures/dotted.png"
+      "path": "/escape-cube/textures/dotted.png"
     },
     {
       "type": "texture",
       "name": "matcap_roughness_4",
-      "path": "/2d-or-3d/textures/matcap_roughness_4.png",
+      "path": "/escape-cube/textures/matcap_roughness_4.png",
       "colorSpace": "srgb"
     },
     {
       "type": "gltf",
       "name": "cannon",
-      "path": "/2d-or-3d/models/cannon.gltf"
+      "path": "/escape-cube/models/cannon.gltf"
     },
     {
       "type": "gltf",
       "name": "text_1",
-      "path": "/2d-or-3d/models/text_1.gltf"
+      "path": "/escape-cube/models/text_1.gltf"
     }
   ]
 }
