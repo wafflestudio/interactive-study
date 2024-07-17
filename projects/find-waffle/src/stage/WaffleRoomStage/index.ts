@@ -167,9 +167,6 @@ export default class WaffleRoomStage extends Stage {
 
     this.cannon.renderMovement();
 
-    // 키맵 테스트
-    // if (this.keysPressed.size > 0) console.log(this.keysPressed.entries());
-
     this.cannonDebugger?.update();
   }
 

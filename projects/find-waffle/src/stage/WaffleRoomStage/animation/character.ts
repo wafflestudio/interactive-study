@@ -1,7 +1,6 @@
 import * as CANNON from 'cannon-es';
 
 export const animateCharacter = (
-  // target: THREE.Object3D,
   body: CANNON.Body,
   keysPressed: Map<string, boolean>,
 ) => {
