@@ -82,7 +82,7 @@ export default class WaffleRoomStage extends Stage {
         const position = new THREE.Vector3(2, 0, 2);
 
         iceCream.position.set(position.x, position.y, position.z);
-        const body = this.cannon.wrap([iceCream], scale, 0, position);
+        const body = this.cannon.wrap([iceCream], scale, 0, position, true);
 
         this.character = iceCream;
         this.characterBody = body[0];
@@ -115,6 +115,7 @@ export default class WaffleRoomStage extends Stage {
         keyMap.activate();
 
         iceCream.scale.set(scale, scale, scale);
+
         this.scene?.add(iceCream);
 
         // start dialogue
@@ -164,9 +165,7 @@ export default class WaffleRoomStage extends Stage {
     if (animation.mixer) animation.mixer.update(delta);
 
     this.cannon.world.step(1 / 60, delta, 3);
-
     this.cannon.renderMovement();
-
     this.cannonDebugger?.update();
   }
 

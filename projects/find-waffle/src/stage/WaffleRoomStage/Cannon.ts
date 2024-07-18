@@ -3,7 +3,12 @@ import * as THREE from 'three';
 
 export default class Cannon {
   public world: CANNON.World;
-  private bodies: { mesh: THREE.Object3D; body: CANNON.Body }[] = [];
+  private bodies: {
+    mesh: THREE.Object3D;
+    body: CANNON.Body;
+    isMovable: boolean;
+    presetPosition: THREE.Vector3;
+  }[] = [];
 
   constructor() {
     this.world = new CANNON.World();
@@ -14,11 +19,11 @@ export default class Cannon {
     scale: number,
     mass: number,
     presetPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
+    isMovable: boolean = false,
   ) {
     const bodies = targetObjects.map((obj) => {
       const box = new THREE.Box3().setFromObject(obj);
       const size = new THREE.Vector3();
-      box.getSize(size);
 
       const shape = new CANNON.Box(
         new CANNON.Vec3(
@@ -38,9 +43,18 @@ export default class Cannon {
       });
 
       this.world.addBody(body);
-      this.bodies.push({ mesh: obj, body: body });
+
+      const flagMovable = isMovable;
+
+      this.bodies.push({
+        mesh: obj,
+        body: body,
+        isMovable: flagMovable,
+        presetPosition: presetPosition,
+      });
       return body;
     });
+    console.log('bodies', bodies);
     return bodies;
   }
 
@@ -55,8 +69,15 @@ export default class Cannon {
   }
 
   public renderMovement() {
-    this.bodies.forEach(({ mesh, body }) => {
-      mesh.position.copy(body.position);
+    this.bodies.forEach(({ mesh, body, isMovable, presetPosition }) => {
+      if (!isMovable) return;
+      mesh.position.copy(
+        new THREE.Vector3(
+          body.position.x - 0.0659,
+          0,
+          body.position.z + 0.1094,
+        ),
+      );
       mesh.quaternion.copy(
         new THREE.Quaternion(
           body.quaternion.x,
