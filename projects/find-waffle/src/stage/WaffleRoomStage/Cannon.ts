@@ -48,7 +48,6 @@ export default class Cannon {
           boxCenter.z + presetPosition.z,
         ),
       });
-      console.log(boxCenter);
 
       this.world.addBody(body);
 
@@ -64,16 +63,6 @@ export default class Cannon {
       return body;
     });
     return bodies;
-  }
-
-  public updateBodies() {
-    this.bodies.forEach(({ mesh, body }) => {
-      const box = new THREE.Box3().setFromObject(mesh);
-      const center = new THREE.Vector3();
-      box.getCenter(center);
-
-      body.position.set(center.x, center.y, center.z);
-    });
   }
 
   public renderMovement() {
