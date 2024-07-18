@@ -146,7 +146,6 @@ export default class WaffleRoomStage extends Stage {
               mesh.name === '큐브012' ||
               mesh.name === '큐브101'
             ) {
-              mesh.material.color = new THREE.Color(0x0000ff); // for debugging
               this.cannon.filterCollision(body, 2, 1);
             } else if (mesh.name === 'iceCream') {
               console.log(body.position);
@@ -184,7 +183,7 @@ export default class WaffleRoomStage extends Stage {
     this.cannon.world.step(1 / 60, delta, 3);
     this.cannon.renderMovement();
     this.cannon.stopIfCollided();
-    // this.cannonDebugger?.update();
+    this.cannonDebugger?.update();
   }
 
   public resize() {
