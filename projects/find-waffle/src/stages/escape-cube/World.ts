@@ -185,9 +185,7 @@ export class World {
     const shape = new CANNON.Box(
       new CANNON.Vec3(...size.map((s) => s / 2))
     );
-    const body = new CANNON.Body({ mass: 0 });
-    body.addShape(shape, new CANNON.Vec3(...position));
-    this.cannonWorld.addBody(body);
+    this.mapBody.addShape(shape, new CANNON.Vec3(...position));
   }
 
   private async initLight() {
