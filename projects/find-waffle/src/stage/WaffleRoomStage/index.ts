@@ -9,7 +9,6 @@ import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
 import { animateCharacter } from './animation/character.ts';
 import { Dialogue } from './dialogue/Dialogue.ts';
-import { animation } from './temp/walk';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -181,12 +180,11 @@ export default class WaffleRoomStage extends Stage {
     this.renderer.render(this.scene, this.camera);
 
     const delta = this.clock.getDelta();
-    if (animation.mixer) animation.mixer.update(delta);
 
     this.cannon.world.step(1 / 60, delta, 3);
     this.cannon.renderMovement();
     this.cannon.stopIfCollided();
-    this.cannonDebugger?.update();
+    // this.cannonDebugger?.update();
   }
 
   public resize() {
