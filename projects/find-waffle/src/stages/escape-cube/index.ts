@@ -1,4 +1,3 @@
-import gsap from 'gsap';
 import * as THREE from 'three';
 
 import { Stage } from '../../core/stage/Stage';
@@ -63,97 +62,82 @@ export default class EscapeCubeStage extends Stage {
   }
 
   private initKeymap(): void {
-    this.keymap.bind('->', () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      player.direction.x = 1;
-    }, () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      if (this.keymap.pressedKeys.has('ArrowLeft')) {
-        player.direction.x = -1;
-      } else {
-        player.direction.x = 0;
-      }
-    });
-
-    this.keymap.bind('<-', () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      player.direction.x = -1;
-    }, () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      if (this.keymap.pressedKeys.has('ArrowRight')) {
+    this.keymap.bind(
+      '->',
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
         player.direction.x = 1;
-      } else {
-        player.direction.x = 0;
-      }
-    });
-    this.keymap.bind('↑', () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      player.direction.y = 1;
-    }, () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      if (this.keymap.pressedKeys.has('ArrowDown')) {
-        player.direction.y = -1;
-      } else {
-        player.direction.y = 0;
-      }
-    })
-    this.keymap.bind('↓', () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      player.direction.y = -1;
-    }, () => {
-      if (!this.context.mounted || !this.context.world.player) return;
-      const player = this.context.world.player;
-      if (this.keymap.pressedKeys.has('ArrowUp')) {
-        player.direction.y = 1;
-      } else {
-        player.direction.y = 0;
-      }
-    })
-  }
-
-  private pivotCameraAnimation(angle: number) {
-    if (this.context.worldIsRotating) return;
-    const helper = { t: 0 };
-    let prevT = 0;
-    let duration = 1;
-
-    const currentTween = gsap.to(helper, {
-      id: 'pivot-camera',
-      paused: true,
-      t: 1,
-      duration,
-      onUpdate: ({ t }: typeof helper) => {
-        if (!this.context.mounted) {
-          gsap.getById('pivot-camera')?.kill();
-          return;
-        }
-        const deltaT = t - prevT;
-        prevT = t;
-        pivotOnParentAxis(
-          this.context.camera,
-          new THREE.Vector3(0, 0, 0),
-          new THREE.Vector3(0, 1, 0),
-          angle * deltaT,
-        );
       },
-      onUpdateParams: [helper],
-      data: helper,
-    });
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        if (this.keymap.pressedKeys.has('ArrowLeft')) {
+          player.direction.x = -1;
+        } else {
+          player.direction.x = 0;
+        }
+      },
+    );
 
-    currentTween.resume();
+    this.keymap.bind(
+      '<-',
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        player.direction.x = -1;
+      },
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        if (this.keymap.pressedKeys.has('ArrowRight')) {
+          player.direction.x = 1;
+        } else {
+          player.direction.x = 0;
+        }
+      },
+    );
+    this.keymap.bind(
+      '↑',
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        player.direction.y = 1;
+      },
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        if (this.keymap.pressedKeys.has('ArrowDown')) {
+          player.direction.y = -1;
+        } else {
+          player.direction.y = 0;
+        }
+      },
+    );
+    this.keymap.bind(
+      '↓',
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        player.direction.y = -1;
+      },
+      () => {
+        if (!this.context.mounted || !this.context.world.player) return;
+        const player = this.context.world.player;
+        if (this.keymap.pressedKeys.has('ArrowUp')) {
+          player.direction.y = 1;
+        } else {
+          player.direction.y = 0;
+        }
+      },
+    );
   }
 
   public animate(time: DOMHighResTimeStamp) {
     const prevTime = this.prevTime;
     this.prevTime = time;
-    if (!prevTime || !this.context.mounted || !this.context.world.initialized) return;
+    if (!prevTime || !this.context.mounted || !this.context.world.initialized)
+      return;
     const deltaSeconds = (time - prevTime) / 1000;
     this.context.world.update(deltaSeconds);
     this.renderer.render(this.context.scene, this.context.camera);

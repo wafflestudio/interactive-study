@@ -1,3 +1,5 @@
+import gsap from 'gsap';
+
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
@@ -16,8 +18,10 @@ import { Player } from './Player';
 export class World {
   scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
+  map: THREE.Group;
   player: Player;
   initialized = false;
+  isRotating = false;
   _onInitialized: () => void = () => {};
 
   set onInitialized(value: () => void) {
@@ -29,8 +33,10 @@ export class World {
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
-    this.init();
+    this.map = new THREE.Group();
+    scene.add(this.map);
     this.player = new Player(this);
+    this.init();
   }
 
   private init() {
@@ -101,7 +107,7 @@ export class World {
       if (Array.isArray(position)) {
         const clone = cube.clone();
         clone.position.set(position[0], position[1], position[2]);
-        this.scene.add(clone);
+        this.map.add(clone);
       } else {
         const step = position.step;
         const [x1, y1, z1] = position.start;
@@ -112,7 +118,7 @@ export class World {
             for (let z = z1; z <= z2; z += step) {
               const clone = cube.clone();
               clone.position.set(x, y, z);
-              this.scene.add(clone);
+              this.map.add(clone);
             }
           }
         }
@@ -127,7 +133,7 @@ export class World {
     modelObject.overrides?.forEach(this.overrideModel.bind(this, model));
 
     model.scene.position.set(...modelObject.position);
-    this.scene.add(model.scene);
+    this.map.add(model.scene);
   }
 
   private overrideModel(model: GLTF, override: ModelOverride): void {
@@ -150,17 +156,17 @@ export class World {
 
   private async initLight() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-    this.scene.add(ambientLight);
+    this.map.add(ambientLight);
     const sunLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
     sunLight1.position.set(-1270, 15, 1270);
-    this.scene.add(sunLight1);
+    this.map.add(sunLight1);
     const sunLight2 = new THREE.DirectionalLight(0xffffff, 0.7);
     sunLight2.position.set(1270, 15, 1270);
-    this.scene.add(sunLight2);
+    this.map.add(sunLight2);
   }
 
   public dispose() {
-    this.scene.traverse((object) => {
+    this.map.traverse((object) => {
       if (object instanceof THREE.Mesh) {
         object.geometry.dispose();
         object.material.dispose();
@@ -170,5 +176,28 @@ export class World {
 
   public update(deltaSeconds: number) {
     this.player.update(deltaSeconds);
+  }
+
+  public rotate(angle: number) {
+    if (this.isRotating) return;
+    this.isRotating = true;
+    const helper = { t: 0 };
+    const start = this.map.quaternion.clone();
+    const dest = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      THREE.MathUtils.degToRad(angle),
+    );
+
+    gsap.to(helper, {
+      t: 1,
+      duration: 1,
+      onUpdate: ({ t }: typeof helper) => {
+        this.map.quaternion.slerpQuaternions(start, dest, t);
+      },
+      onUpdateParams: [helper],
+      onComplete: () => {
+        this.isRotating = false;
+      },
+    })
   }
 }
