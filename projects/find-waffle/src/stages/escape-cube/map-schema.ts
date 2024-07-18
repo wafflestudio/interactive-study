@@ -66,11 +66,17 @@ const modelOverrideSchema = z.object({
 });
 export type ModelOverride = z.infer<typeof modelOverrideSchema>;
 
+const ModelShapeSchema = z.object({
+  position: singlePositionSchema,
+  size: vector3Schema,
+});
+
 const modelObjectSchema = z.object({
   type: z.literal('model'),
   name: z.string(),
   position: singlePositionSchema,
   overrides: z.array(modelOverrideSchema).optional(),
+  shapes: z.array(ModelShapeSchema).optional(),
 });
 export type ModelObject = z.infer<typeof modelObjectSchema>;
 

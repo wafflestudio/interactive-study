@@ -132,10 +132,7 @@ export class World {
               const clone = cube.clone();
               clone.position.set(x, y, z);
               this.map.add(clone);
-              const shape = new CANNON.Box(
-                new CANNON.Vec3(w / 2, h / 2, d / 2),
-              );
-              this.mapBody.addShape(shape, new CANNON.Vec3(x, y, z));
+              this.addMapShape([x, y, z], [w, h, d]);
             }
           }
         }
@@ -151,6 +148,16 @@ export class World {
 
     model.scene.position.set(...modelObject.position);
     this.map.add(model.scene);
+
+    if (modelObject.shapes) {
+      for (const shape of modelObject.shapes) {
+        const shapePosition: [number, number, number] = [0, 0, 0];
+        for (let i = 0; i < 3; i++) {
+          shapePosition[i] = shape.position[i] + modelObject.position[i] + shape.size[i] / 2;
+        }
+        this.addMapShape(shapePosition, shape.size);
+      }
+    }
   }
 
   private overrideModel(model: GLTF, override: ModelOverride): void {
@@ -169,6 +176,18 @@ export class World {
       }
       object.material = new (THREE as any)[override.material.type](params);
     }
+  }
+
+  private addMapShape(
+    position: [number, number, number],
+    size: [number, number, number],
+  ) {
+    const shape = new CANNON.Box(
+      new CANNON.Vec3(...size.map((s) => s / 2))
+    );
+    const body = new CANNON.Body({ mass: 0 });
+    body.addShape(shape, new CANNON.Vec3(...position));
+    this.cannonWorld.addBody(body);
   }
 
   private async initLight() {
