@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 export default class Cannon {
   public world: CANNON.World;
-  private bodies: {
+  public bodies: {
     mesh: THREE.Object3D;
     body: CANNON.Body;
     isMovable: boolean;
@@ -39,6 +39,8 @@ export default class Cannon {
         box.min.y * scale + (size.y * scale) / 2,
         box.min.z * scale + (size.z * scale) / 2,
       );
+      const defaultMaterial = new CANNON.Material('default');
+
       const body = new CANNON.Body({
         mass: mass,
         shape: shape,
@@ -47,6 +49,7 @@ export default class Cannon {
           boxCenter.y + presetPosition.y,
           boxCenter.z + presetPosition.z,
         ),
+        material: defaultMaterial,
       });
 
       this.world.addBody(body);
@@ -63,6 +66,15 @@ export default class Cannon {
       return body;
     });
     return bodies;
+  }
+
+  public filterCollision(
+    body: CANNON.Body,
+    collisionFilterGroup: number,
+    collisionFilterMask: number,
+  ) {
+    body.collisionFilterGroup = collisionFilterGroup;
+    body.collisionFilterMask = collisionFilterMask;
   }
 
   public renderMovement() {

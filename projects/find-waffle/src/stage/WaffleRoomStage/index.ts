@@ -82,7 +82,8 @@ export default class WaffleRoomStage extends Stage {
         const position = new THREE.Vector3(2, 0, 2);
 
         iceCream.position.set(position.x, position.y, position.z);
-        const body = this.cannon.wrap([iceCream], scale, 0, position, true);
+        const body = this.cannon.wrap([iceCream], scale, 1, position, true);
+        this.cannon.bodies[0].mesh.name = 'iceCream';
 
         this.character = iceCream;
         this.characterBody = body[0];
@@ -139,6 +140,17 @@ export default class WaffleRoomStage extends Stage {
           this.cannon.wrap(targetObjects, scale, 0);
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
+
+          this.cannon.bodies.forEach(({ body, mesh }) => {
+            if (mesh.name === '큐브011' || mesh.name === '큐브012') {
+              mesh.material.color = new THREE.Color(0x0000ff);
+              this.cannon.filterCollision(body, 2, 1);
+            } else if (mesh.name === 'iceCream') {
+              this.cannon.filterCollision(body, 1, 2);
+            } else {
+              this.cannon.filterCollision(body, 4, 8);
+            }
+          });
         },
       },
     );
