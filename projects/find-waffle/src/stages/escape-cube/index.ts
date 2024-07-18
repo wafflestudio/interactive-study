@@ -28,6 +28,7 @@ export default class EscapeCubeStage extends Stage {
   context: Context;
   keymap: KeyMap;
   stageManager: StageManager;
+  prevTime?: number;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -65,54 +66,54 @@ export default class EscapeCubeStage extends Stage {
     this.keymap.bind('->', () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
-      player.userData.direction.x = 1;
+      player.direction.x = 1;
     }, () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
       if (this.keymap.pressedKeys.has('ArrowLeft')) {
-        player.userData.direction.x = -1;
+        player.direction.x = -1;
       } else {
-        player.userData.direction.x = 0;
+        player.direction.x = 0;
       }
     });
 
     this.keymap.bind('<-', () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
-      player.userData.direction.x = -1;
+      player.direction.x = -1;
     }, () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
       if (this.keymap.pressedKeys.has('ArrowRight')) {
-        player.userData.direction.x = 1;
+        player.direction.x = 1;
       } else {
-        player.userData.direction.x = 0;
+        player.direction.x = 0;
       }
     });
     this.keymap.bind('↑', () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
-      player.userData.direction.y = 1;
+      player.direction.y = 1;
     }, () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
       if (this.keymap.pressedKeys.has('ArrowDown')) {
-        player.userData.direction.y = -1;
+        player.direction.y = -1;
       } else {
-        player.userData.direction.y = 0;
+        player.direction.y = 0;
       }
     })
     this.keymap.bind('↓', () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
-      player.userData.direction.y = -1;
+      player.direction.y = -1;
     }, () => {
       if (!this.context.mounted || !this.context.world.player) return;
       const player = this.context.world.player;
       if (this.keymap.pressedKeys.has('ArrowUp')) {
-        player.userData.direction.y = 1;
+        player.direction.y = 1;
       } else {
-        player.userData.direction.y = 0;
+        player.direction.y = 0;
       }
     })
   }
@@ -149,10 +150,12 @@ export default class EscapeCubeStage extends Stage {
     currentTween.resume();
   }
 
-  public animate() {
-    if (!this.context.mounted || !this.context.world.initialized) return;
-    const player = this.context.world.player!;
-    player.position.add(player.userData.direction.clone().multiplyScalar(player.userData.speed));
+  public animate(time: DOMHighResTimeStamp) {
+    const prevTime = this.prevTime;
+    this.prevTime = time;
+    if (!prevTime || !this.context.mounted || !this.context.world.initialized) return;
+    const deltaSeconds = (time - prevTime) / 1000;
+    this.context.world.update(deltaSeconds);
     this.renderer.render(this.context.scene, this.context.camera);
   }
 

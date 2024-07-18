@@ -11,11 +11,12 @@ import {
   Resource,
   mapDataSchema,
 } from './map-schema';
+import { Player } from './Player';
 
 export class World {
   scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
-  player?: THREE.Mesh;
+  player: Player;
   initialized = false;
   _onInitialized: () => void = () => {};
 
@@ -29,26 +30,14 @@ export class World {
   constructor(scene: THREE.Scene) {
     this.scene = scene;
     this.init();
+    this.player = new Player(this);
   }
 
   private init() {
-    Promise.all([this.initPlayer(), this.initMap(), this.initLight()]).then(() => {
+    Promise.all([this.initMap(), this.initLight()]).then(() => {
       this.initialized = true;
       this._onInitialized();
     });
-  }
-
-  private async initPlayer() {
-    const geometry = new THREE.SphereGeometry(0.3);
-    const material = new THREE.MeshStandardMaterial({ color: 0xADADEE });
-    this.player = new THREE.Mesh(geometry, material);
-    this.player.position.set(-4, 10, 4);
-    this.player.name = 'player';
-    this.player.userData = {
-      direction: new THREE.Vector3(0, 0, 0),
-      speed: 0.1,
-    }
-    this.scene.add(this.player);
   }
 
   private async initMap() {
@@ -177,5 +166,9 @@ export class World {
         object.material.dispose();
       }
     });
+  }
+
+  public update(deltaSeconds: number) {
+    this.player.update(deltaSeconds);
   }
 }
