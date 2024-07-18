@@ -183,16 +183,16 @@ export class World {
     this.isRotating = true;
     const helper = { t: 0 };
     const start = this.map.quaternion.clone();
-    const dest = new THREE.Quaternion().setFromAxisAngle(
+    const rotation = new THREE.Quaternion().setFromAxisAngle(
       new THREE.Vector3(0, 1, 0),
       THREE.MathUtils.degToRad(angle),
     );
-
+    const dest = start.clone().multiply(rotation).normalize();
     gsap.to(helper, {
       t: 1,
       duration: 1,
       onUpdate: ({ t }: typeof helper) => {
-        this.map.quaternion.slerpQuaternions(start, dest, t);
+        this.map.quaternion.copy(start).slerp(dest, t);
       },
       onUpdateParams: [helper],
       onComplete: () => {
