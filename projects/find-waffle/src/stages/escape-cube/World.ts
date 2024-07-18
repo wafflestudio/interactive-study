@@ -1,10 +1,12 @@
+import * as CANNON from 'cannon-es';
+import CannonDebugger from 'cannon-es-debugger';
 import gsap from 'gsap';
-
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
+import { Player } from './Player';
 import {
   CubeObject,
   MapData,
@@ -13,12 +15,15 @@ import {
   Resource,
   mapDataSchema,
 } from './map-schema';
-import { Player } from './Player';
 
 export class World {
+  isDebug = window.location.hash === '#debug';
+  cannonWorld = new CANNON.World();
+  cannonDebugger?: ReturnType<typeof CannonDebugger>;
   scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
-  map: THREE.Group;
+  map: THREE.Group = new THREE.Group();
+  mapBody: CANNON.Body = new CANNON.Body({ mass: 0 });
   player: Player;
   initialized = false;
   isRotating = false;
@@ -33,10 +38,18 @@ export class World {
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
-    this.map = new THREE.Group();
     scene.add(this.map);
+    this.cannonWorld.addBody(this.mapBody);
     this.player = new Player(this);
+    this.initCannonWorld();
     this.init();
+    if (this.isDebug)
+      this.cannonDebugger = CannonDebugger(scene, this.cannonWorld);
+  }
+
+  private initCannonWorld() {
+    this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
+    (this.cannonWorld.solver as CANNON.GSSolver).iterations = 10;
   }
 
   private init() {
@@ -119,6 +132,10 @@ export class World {
               const clone = cube.clone();
               clone.position.set(x, y, z);
               this.map.add(clone);
+              const shape = new CANNON.Box(
+                new CANNON.Vec3(w / 2, h / 2, d / 2),
+              );
+              this.mapBody.addShape(shape, new CANNON.Vec3(x, y, z));
             }
           }
         }
@@ -172,15 +189,19 @@ export class World {
         object.material.dispose();
       }
     });
+    this.player.dispose();
   }
 
-  public update(deltaSeconds: number) {
-    this.player.update(deltaSeconds);
+  public animate(timeDelta: number) {
+    this.player.animate();
+    this.cannonWorld.step(1 / 60, timeDelta);
+    this.cannonDebugger?.update();
   }
 
   public rotate(angle: number) {
     if (this.isRotating) return;
     this.isRotating = true;
+    this.pause();
     const helper = { t: 0 };
     const start = this.map.quaternion.clone();
     const rotation = new THREE.Quaternion().setFromAxisAngle(
@@ -192,12 +213,23 @@ export class World {
       t: 1,
       duration: 1,
       onUpdate: ({ t }: typeof helper) => {
-        this.map.quaternion.copy(start).slerp(dest, t);
+        const q = start.clone().slerp(dest, t);
+        this.map.quaternion.copy(q);
+        this.mapBody.quaternion.copy(new CANNON.Quaternion(q.x, q.y, q.z, q.w));
       },
       onUpdateParams: [helper],
       onComplete: () => {
         this.isRotating = false;
+        this.resume();
       },
-    })
+    });
+  }
+
+  public pause() {
+    this.player.pause();
+  }
+
+  public resume() {
+    this.player.resume();
   }
 }
