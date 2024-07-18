@@ -10,9 +10,23 @@ export default class Cannon {
     boxCenter: THREE.Vector3;
     presetPosition: THREE.Vector3;
   }[] = [];
+  private defaultMaterial: CANNON.Material;
+  private contactMaterial: CANNON.ContactMaterial;
 
   constructor() {
     this.world = new CANNON.World();
+    this.defaultMaterial = new CANNON.Material('default');
+    this.contactMaterial = new CANNON.ContactMaterial(
+      this.defaultMaterial,
+      this.defaultMaterial,
+      {
+        friction: 10.0,
+        restitution: 0.0,
+        contactEquationRelaxation: 10.0,
+        frictionEquationStiffness: 1,
+      },
+    );
+    this.world.addContactMaterial(this.contactMaterial);
   }
 
   public wrap(
@@ -39,7 +53,6 @@ export default class Cannon {
         box.min.y * scale + (size.y * scale) / 2,
         box.min.z * scale + (size.z * scale) / 2,
       );
-      const defaultMaterial = new CANNON.Material('default');
 
       const body = new CANNON.Body({
         mass: mass,
@@ -49,7 +62,7 @@ export default class Cannon {
           boxCenter.y + presetPosition.y,
           boxCenter.z + presetPosition.z,
         ),
-        material: defaultMaterial,
+        material: this.defaultMaterial,
       });
 
       this.world.addBody(body);
@@ -75,6 +88,15 @@ export default class Cannon {
   ) {
     body.collisionFilterGroup = collisionFilterGroup;
     body.collisionFilterMask = collisionFilterMask;
+  }
+
+  public stopIfCollided() {
+    this.world.contacts.forEach((contact) => {
+      contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
+      contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
+      contact.bi.angularVelocity = new CANNON.Vec3(0, 0, 0);
+      contact.bj.angularVelocity = new CANNON.Vec3(0, 0, 0);
+    });
   }
 
   public renderMovement() {

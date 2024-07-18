@@ -142,10 +142,17 @@ export default class WaffleRoomStage extends Stage {
           this.scene?.add(room);
 
           this.cannon.bodies.forEach(({ body, mesh }) => {
-            if (mesh.name === '큐브011' || mesh.name === '큐브012') {
-              mesh.material.color = new THREE.Color(0x0000ff);
+            if (
+              mesh.name === '큐브011' ||
+              mesh.name === '큐브012' ||
+              mesh.name === '큐브101'
+            ) {
+              mesh.material.color = new THREE.Color(0x0000ff); // for debugging
               this.cannon.filterCollision(body, 2, 1);
             } else if (mesh.name === 'iceCream') {
+              console.log(body.position);
+              body.linearDamping = 0.9;
+              body.angularDamping = 0.9;
               this.cannon.filterCollision(body, 1, 2);
             } else {
               this.cannon.filterCollision(body, 4, 8);
@@ -178,6 +185,7 @@ export default class WaffleRoomStage extends Stage {
 
     this.cannon.world.step(1 / 60, delta, 3);
     this.cannon.renderMovement();
+    this.cannon.stopIfCollided();
     this.cannonDebugger?.update();
   }
 
