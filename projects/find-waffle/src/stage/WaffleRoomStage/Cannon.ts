@@ -7,6 +7,7 @@ export default class Cannon {
     mesh: THREE.Object3D;
     body: CANNON.Body;
     isMovable: boolean;
+    boxCenter: THREE.Vector3;
     presetPosition: THREE.Vector3;
   }[] = [];
 
@@ -24,6 +25,7 @@ export default class Cannon {
     const bodies = targetObjects.map((obj) => {
       const box = new THREE.Box3().setFromObject(obj);
       const size = new THREE.Vector3();
+      box.getSize(size);
 
       const shape = new CANNON.Box(
         new CANNON.Vec3(
@@ -32,15 +34,21 @@ export default class Cannon {
           (size.z * scale) / 2,
         ),
       );
+      const boxCenter = new THREE.Vector3(
+        box.min.x * scale + (size.x * scale) / 2,
+        box.min.y * scale + (size.y * scale) / 2,
+        box.min.z * scale + (size.z * scale) / 2,
+      );
       const body = new CANNON.Body({
         mass: mass,
         shape: shape,
         position: new CANNON.Vec3(
-          box.min.x * scale + (size.x * scale) / 2 + presetPosition.x,
-          box.min.y * scale + (size.y * scale) / 2 + presetPosition.y,
-          box.min.z * scale + (size.z * scale) / 2 + presetPosition.z,
+          boxCenter.x + presetPosition.x,
+          boxCenter.y + presetPosition.y,
+          boxCenter.z + presetPosition.z,
         ),
       });
+      console.log(boxCenter);
 
       this.world.addBody(body);
 
@@ -50,11 +58,11 @@ export default class Cannon {
         mesh: obj,
         body: body,
         isMovable: flagMovable,
+        boxCenter: boxCenter,
         presetPosition: presetPosition,
       });
       return body;
     });
-    console.log('bodies', bodies);
     return bodies;
   }
 
@@ -69,15 +77,14 @@ export default class Cannon {
   }
 
   public renderMovement() {
-    this.bodies.forEach(({ mesh, body, isMovable, presetPosition }) => {
+    this.bodies.forEach(({ mesh, body, isMovable, boxCenter }) => {
       if (!isMovable) return;
-      mesh.position.copy(
-        new THREE.Vector3(
-          body.position.x - 0.0659,
-          0,
-          body.position.z + 0.1094,
-        ),
+      const newPosition = new THREE.Vector3(
+        body.position.x - boxCenter.x,
+        body.position.y - boxCenter.y,
+        body.position.z - boxCenter.z,
       );
+      mesh.position.copy(newPosition);
       mesh.quaternion.copy(
         new THREE.Quaternion(
           body.quaternion.x,
