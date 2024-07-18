@@ -118,4 +118,18 @@ export default class Cannon {
       );
     });
   }
+
+  public renderMovement() {
+    this.bodies.forEach(({ mesh, body }) => {
+      mesh.position.copy(body.position);
+      mesh.quaternion.copy(
+        new THREE.Quaternion(
+          body.quaternion.x,
+          body.quaternion.y,
+          body.quaternion.z,
+          body.quaternion.w,
+        ),
+      );
+    });
+  }
 }
