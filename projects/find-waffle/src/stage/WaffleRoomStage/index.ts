@@ -142,9 +142,9 @@ export default class WaffleRoomStage extends Stage {
 
           this.cannon.bodies.forEach(({ body, mesh }) => {
             if (
-              mesh.name === '큐브011' ||
-              mesh.name === '큐브012' ||
-              mesh.name === '큐브101'
+              mesh.name === '큐브011' || // 거울
+              mesh.name === '큐브012' || // 거울
+              mesh.name === '큐브101' // 바닥면
             ) {
               this.cannon.filterCollision(body, 2, 1);
             } else if (mesh.name === 'iceCream') {
