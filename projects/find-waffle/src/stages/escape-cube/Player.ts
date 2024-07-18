@@ -30,18 +30,20 @@ export class Player {
 
   private updatePosition(deltaSeconds: number) {
     if (this.world.isRotating) return;
+    console.log(this.direction);
+
     const movement = this.direction
+      .clone()
       .normalize()
       .multiplyScalar(this.speed * deltaSeconds);
     const worldPosition = this.worldPosition;
     worldPosition.add(movement);
     if (worldPosition.x > 5) {
-        worldPosition.x = 5;
-        this.world.rotate(-90);
-    }
-    else if (worldPosition.x < -5) {
-        worldPosition.x = -5;
-        this.world.rotate(90);
+      worldPosition.x = 5;
+      this.world.rotate(-90);
+    } else if (worldPosition.x < -5) {
+      worldPosition.x = -5;
+      this.world.rotate(90);
     }
     this.worldPosition = worldPosition;
   }

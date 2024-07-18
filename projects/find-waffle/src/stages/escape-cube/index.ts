@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Stage } from '../../core/stage/Stage';
 import { StageManager } from '../../core/stage/StageManager';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
-import { pivotOnParentAxis, resize } from '../../utils';
+import { resize } from '../../utils';
 import { World } from './World';
 
 type ContextVariables = {
