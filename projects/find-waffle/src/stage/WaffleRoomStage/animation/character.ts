@@ -6,8 +6,20 @@ export const animateCharacter = (
 ) => {
   let newDirection: number | null = null;
   if (keysPressed.has('up')) {
-    body.position.z -= 0.1;
+    body.position.z -= 0.05;
     newDirection = Math.PI;
+  }
+  if (keysPressed.has('down')) {
+    body.position.z += 0.05;
+    newDirection = 0;
+  }
+  if (keysPressed.has('left')) {
+    body.position.x -= 0.05;
+    newDirection = -Math.PI / 2;
+  }
+  if (keysPressed.has('right')) {
+    body.position.x += 0.05;
+    newDirection = Math.PI / 2;
   }
 
   if (newDirection !== null) {
