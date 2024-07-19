@@ -9,7 +9,6 @@ import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
 import { animateCharacter } from './animation/character.ts';
 import { Dialogue } from './dialogue/Dialogue.ts';
-import { animation } from './temp/walk';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -76,14 +75,15 @@ export default class WaffleRoomStage extends Stage {
 
     // load resources
     const resourceLoader = new ResourceLoader();
-    resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
+    resourceLoader.registerModel('iceCream', '/models/IceCream/iceice.glb', {
       onLoad: ({ scene: iceCream }) => {
         const scale = 0.005;
         const position = new THREE.Vector3(2, 0, 2);
 
         iceCream.position.set(position.x, position.y, position.z);
-        const body = this.cannon.wrap([iceCream], scale, 0, position);
-        console.log(body);
+        const body = this.cannon.wrap([iceCream], scale, 1, position, true);
+        this.cannon.bodies[0].mesh.name = 'iceCream';
+
         this.character = iceCream;
         this.characterBody = body[0];
         // TODO: Add Keymap
@@ -115,6 +115,7 @@ export default class WaffleRoomStage extends Stage {
         keyMap.activate();
 
         iceCream.scale.set(scale, scale, scale);
+
         this.scene?.add(iceCream);
 
         // start dialogue
@@ -138,6 +139,32 @@ export default class WaffleRoomStage extends Stage {
           this.cannon.wrap(targetObjects, scale, 0);
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
+
+          const meshNameList = [
+            '큐브011',
+            '큐브012',
+            '큐브101',
+            '큐브010',
+            '큐브093',
+            '큐브096',
+            '큐브114',
+            '큐브111',
+          ];
+
+          this.cannon.bodies.forEach(({ body, mesh }) => {
+            if (meshNameList.includes(mesh.name)) {
+              mesh.material.color = new THREE.Color(0xff0000);
+              this.cannon.filterCollision(body, 2, 1);
+              console.log(body);
+            } else if (mesh.name === 'iceCream') {
+              console.log(body.position);
+              body.linearDamping = 0.9;
+              body.angularDamping = 0.9;
+              this.cannon.filterCollision(body, 1, 2);
+            } else {
+              this.cannon.filterCollision(body, 4, 8);
+            }
+          });
         },
       },
     );
@@ -161,12 +188,10 @@ export default class WaffleRoomStage extends Stage {
     this.renderer.render(this.scene, this.camera);
 
     const delta = this.clock.getDelta();
-    if (animation.mixer) animation.mixer.update(delta);
 
     this.cannon.world.step(1 / 60, delta, 3);
-
     this.cannon.renderMovement();
-
+    this.cannon.stopIfCollided();
     this.cannonDebugger?.update();
   }
 

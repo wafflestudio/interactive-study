@@ -3,10 +3,32 @@ import * as THREE from 'three';
 
 export default class Cannon {
   public world: CANNON.World;
-  private bodies: { mesh: THREE.Object3D; body: CANNON.Body }[] = [];
+  public bodies: {
+    mesh: THREE.Object3D;
+    body: CANNON.Body;
+    isMovable: boolean;
+    boxCenter: THREE.Vector3;
+    presetPosition: THREE.Vector3;
+  }[] = [];
+  private defaultMaterial: CANNON.Material;
+  private contactMaterial: CANNON.ContactMaterial;
 
   constructor() {
-    this.world = new CANNON.World();
+    this.world = new CANNON.World({
+      // gravity: new CANNON.Vec3(0, -9.82, 0),
+    });
+    this.defaultMaterial = new CANNON.Material('default');
+    // this.contactMaterial = new CANNON.ContactMaterial(
+    //   this.defaultMaterial,
+    //   this.defaultMaterial,
+    //   {
+    //     friction: 10.0,
+    //     restitution: 3.0,
+    //     contactEquationRelaxation: 10.0,
+    //     frictionEquationStiffness: 1,
+    //   },
+    // );
+    // this.world.addContactMwaterial(this.contactMaterial);
   }
 
   public wrap(
@@ -14,6 +36,7 @@ export default class Cannon {
     scale: number,
     mass: number,
     presetPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
+    isMovable: boolean = false,
   ) {
     const bodies = targetObjects.map((obj) => {
       const box = new THREE.Box3().setFromObject(obj);
@@ -27,36 +50,67 @@ export default class Cannon {
           (size.z * scale) / 2,
         ),
       );
+      const boxCenter = new THREE.Vector3(
+        box.min.x * scale + (size.x * scale) / 2,
+        box.min.y * scale + (size.y * scale) / 2,
+        box.min.z * scale + (size.z * scale) / 2,
+      );
+
       const body = new CANNON.Body({
         mass: mass,
         shape: shape,
         position: new CANNON.Vec3(
-          box.min.x * scale + (size.x * scale) / 2 + presetPosition.x,
-          box.min.y * scale + (size.y * scale) / 2 + presetPosition.y,
-          box.min.z * scale + (size.z * scale) / 2 + presetPosition.z,
+          boxCenter.x + presetPosition.x,
+          boxCenter.y + presetPosition.y,
+          boxCenter.z + presetPosition.z,
         ),
+        material: this.defaultMaterial,
       });
 
       this.world.addBody(body);
-      this.bodies.push({ mesh: obj, body: body });
+
+      const flagMovable = isMovable;
+
+      this.bodies.push({
+        mesh: obj,
+        body: body,
+        isMovable: flagMovable,
+        boxCenter: boxCenter,
+        presetPosition: presetPosition,
+      });
       return body;
     });
     return bodies;
   }
 
-  public updateBodies() {
-    this.bodies.forEach(({ mesh, body }) => {
-      const box = new THREE.Box3().setFromObject(mesh);
-      const center = new THREE.Vector3();
-      box.getCenter(center);
+  public filterCollision(
+    body: CANNON.Body,
+    collisionFilterGroup: number,
+    collisionFilterMask: number,
+  ) {
+    body.collisionFilterGroup = collisionFilterGroup;
+    body.collisionFilterMask = collisionFilterMask;
+  }
 
-      body.position.set(center.x, center.y, center.z);
+  public stopIfCollided() {
+    this.world.contacts.forEach((contact) => {
+      console.log('contact');
+      contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
+      contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
+      contact.bi.angularVelocity = new CANNON.Vec3(0, 0, 0);
+      contact.bj.angularVelocity = new CANNON.Vec3(0, 0, 0);
     });
   }
 
   public renderMovement() {
-    this.bodies.forEach(({ mesh, body }) => {
-      mesh.position.copy(body.position);
+    this.bodies.forEach(({ mesh, body, isMovable, boxCenter }) => {
+      if (!isMovable) return;
+      const newPosition = new THREE.Vector3(
+        body.position.x - boxCenter.x,
+        body.position.y - boxCenter.y,
+        body.position.z - boxCenter.z,
+      );
+      mesh.position.copy(newPosition);
       mesh.quaternion.copy(
         new THREE.Quaternion(
           body.quaternion.x,
