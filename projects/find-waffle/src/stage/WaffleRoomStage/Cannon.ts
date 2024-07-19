@@ -14,19 +14,21 @@ export default class Cannon {
   private contactMaterial: CANNON.ContactMaterial;
 
   constructor() {
-    this.world = new CANNON.World();
+    this.world = new CANNON.World({
+      // gravity: new CANNON.Vec3(0, -9.82, 0),
+    });
     this.defaultMaterial = new CANNON.Material('default');
-    this.contactMaterial = new CANNON.ContactMaterial(
-      this.defaultMaterial,
-      this.defaultMaterial,
-      {
-        friction: 10.0,
-        restitution: 0.0,
-        contactEquationRelaxation: 10.0,
-        frictionEquationStiffness: 1,
-      },
-    );
-    this.world.addContactMaterial(this.contactMaterial);
+    // this.contactMaterial = new CANNON.ContactMaterial(
+    //   this.defaultMaterial,
+    //   this.defaultMaterial,
+    //   {
+    //     friction: 10.0,
+    //     restitution: 3.0,
+    //     contactEquationRelaxation: 10.0,
+    //     frictionEquationStiffness: 1,
+    //   },
+    // );
+    // this.world.addContactMwaterial(this.contactMaterial);
   }
 
   public wrap(
@@ -92,6 +94,7 @@ export default class Cannon {
 
   public stopIfCollided() {
     this.world.contacts.forEach((contact) => {
+      console.log('contact');
       contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bi.angularVelocity = new CANNON.Vec3(0, 0, 0);
