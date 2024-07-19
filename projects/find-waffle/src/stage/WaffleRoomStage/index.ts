@@ -75,7 +75,7 @@ export default class WaffleRoomStage extends Stage {
 
     // load resources
     const resourceLoader = new ResourceLoader();
-    resourceLoader.registerModel('iceCream', '/models/IceCream/ice.glb', {
+    resourceLoader.registerModel('iceCream', '/models/IceCream/iceice.glb', {
       onLoad: ({ scene: iceCream }) => {
         const scale = 0.005;
         const position = new THREE.Vector3(2, 0, 2);
@@ -140,13 +140,22 @@ export default class WaffleRoomStage extends Stage {
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
 
+          const meshNameList = [
+            '큐브011',
+            '큐브012',
+            '큐브101',
+            '큐브010',
+            '큐브093',
+            '큐브096',
+            '큐브114',
+            '큐브111',
+          ];
+
           this.cannon.bodies.forEach(({ body, mesh }) => {
-            if (
-              mesh.name === '큐브011' || // 거울
-              mesh.name === '큐브012' || // 거울
-              mesh.name === '큐브101' // 바닥면
-            ) {
+            if (meshNameList.includes(mesh.name)) {
+              mesh.material.color = new THREE.Color(0xff0000);
               this.cannon.filterCollision(body, 2, 1);
+              console.log(body);
             } else if (mesh.name === 'iceCream') {
               console.log(body.position);
               body.linearDamping = 0.9;
