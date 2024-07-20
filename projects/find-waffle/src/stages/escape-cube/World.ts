@@ -153,7 +153,8 @@ export class World {
       for (const shape of modelObject.shapes) {
         const shapePosition: [number, number, number] = [0, 0, 0];
         for (let i = 0; i < 3; i++) {
-          shapePosition[i] = shape.position[i] + modelObject.position[i] + shape.size[i] / 2;
+          shapePosition[i] =
+            shape.position[i] + modelObject.position[i] + shape.size[i] / 2;
         }
         this.addMapShape(shapePosition, shape.size);
       }
@@ -182,9 +183,7 @@ export class World {
     position: [number, number, number],
     size: [number, number, number],
   ) {
-    const shape = new CANNON.Box(
-      new CANNON.Vec3(...size.map((s) => s / 2))
-    );
+    const shape = new CANNON.Box(new CANNON.Vec3(...size.map((s) => s / 2)));
     this.mapBody.addShape(shape, new CANNON.Vec3(...position));
   }
 
