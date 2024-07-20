@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 import { Stage } from '../../core/stage/Stage';
 import { StageManager } from '../../core/stage/StageManager';
@@ -48,6 +49,10 @@ export default class EscapeCubeStage extends Stage {
     const world = new World(scene);
     const h = 6;
     const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
+    if (world.isDebug) {
+      const control = new OrbitControls(camera, this.renderer.domElement);
+      control.target.set(0, 5, 0);
+    }
     camera.position.set(0, 5, 15);
     camera.lookAt(0, 5, 0);
     scene.add(camera);
