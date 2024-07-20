@@ -22,9 +22,15 @@ export class Player {
     this.body = new CANNON.Body({
       mass: 1,
       shape: new CANNON.Sphere(0.3),
+      linearDamping: 0,
+      linearFactor: new CANNON.Vec3(1, 1, 0),
+      angularFactor: new CANNON.Vec3(0, 0, 0),
     });
     this.body.position.set(...initialPosition);
     this.world.cannonWorld.addBody(this.body);
+    this.world.cannonWorld.addEventListener('postStep', () => {
+      this.updateVelocity();
+    });
   }
 
   get velocity() {
@@ -33,6 +39,10 @@ export class Player {
 
   get position() {
     return this.body.position;
+  }
+
+  get isSleep() {
+    return this.body.sleepState === CANNON.Body.SLEEPING;
   }
 
   private updateVelocity() {
@@ -56,7 +66,7 @@ export class Player {
   }
 
   public animate() {
-    if (this.body.sleepState === CANNON.Body.SLEEPING) {
+    if (this.isSleep) {
       // sleep 일 때는 물리 세계가 threejs 세계를 모방
       this.body.position.set(
         ...this.world.map.localToWorld(this.object.position.clone()).toArray(),
