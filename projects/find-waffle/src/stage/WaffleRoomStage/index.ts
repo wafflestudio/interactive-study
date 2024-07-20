@@ -153,7 +153,7 @@ export default class WaffleRoomStage extends Stage {
 
           this.cannon.bodies.forEach(({ body, mesh }) => {
             if (meshNameList.includes(mesh.name)) {
-              mesh.material.color = new THREE.Color(0xff0000);
+              // mesh.material.color = new THREE.Color(0xff0000);
               this.cannon.filterCollision(body, 2, 1);
               console.log(body);
             } else if (mesh.name === 'iceCream') {
@@ -163,6 +163,11 @@ export default class WaffleRoomStage extends Stage {
               this.cannon.filterCollision(body, 1, 2);
             } else {
               this.cannon.filterCollision(body, 4, 8);
+            }
+          });
+          this.cannon.bodies.forEach(({ body, mesh }) => {
+            if (mesh.name === '큐브114') {
+              this.cannon.createInteractiveHitbox(mesh, 0.2);
             }
           });
         },

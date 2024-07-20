@@ -1,6 +1,14 @@
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
+type InteractiveHitbox = {
+  mesh: THREE.Object3D;
+  body: CANNON.Body;
+  margin: number;
+  activatedSubstage: number;
+  onActivate: (contact: CANNON.ContactEquation) => void;
+};
+
 export default class Cannon {
   public world: CANNON.World;
   public bodies: {
@@ -10,8 +18,9 @@ export default class Cannon {
     boxCenter: THREE.Vector3;
     presetPosition: THREE.Vector3;
   }[] = [];
+  public interactiveHitboxMap: Map<string, InteractiveHitbox> = new Map();
   private defaultMaterial: CANNON.Material;
-  private contactMaterial: CANNON.ContactMaterial;
+  // private contactMaterial: CANNON.ContactMaterial;
 
   constructor() {
     this.world = new CANNON.World({
@@ -81,6 +90,26 @@ export default class Cannon {
       return body;
     });
     return bodies;
+  }
+
+  public createInteractiveHitbox(targetObject: THREE.Object3D, margin: number) {
+    this.bodies.forEach((body) => {
+      if (body.mesh === targetObject) {
+        const hitboxBody = new CANNON.Body({
+          mass: 0,
+          shape: new CANNON.Box(
+            new CANNON.Vec3(
+              body.body.shapes[0].halfExtents.x + margin,
+              body.body.shapes[0].halfExtents.y + margin,
+              body.body.shapes[0].halfExtents.z + margin,
+            ),
+          ),
+          position: body.body.position,
+        });
+        this.world.addBody(hitboxBody);
+        console.log(hitboxBody);
+      }
+    });
   }
 
   public filterCollision(
