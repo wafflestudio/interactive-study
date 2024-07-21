@@ -9,6 +9,7 @@ import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
 import { animateCharacter } from './animation/character.ts';
 import { Dialogue } from './dialogue/Dialogue.ts';
+import { sampleFunction } from './temp/sampleFunction.ts';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -167,7 +168,7 @@ export default class WaffleRoomStage extends Stage {
           });
           this.cannon.bodies.forEach(({ body, mesh }) => {
             if (mesh.name === '큐브114') {
-              this.cannon.createInteractiveHitbox(mesh, 0.2);
+              this.cannon.createInteractiveHitbox(mesh, 0.2, sampleFunction);
             }
           });
         },

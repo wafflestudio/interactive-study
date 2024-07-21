@@ -92,24 +92,37 @@ export default class Cannon {
     return bodies;
   }
 
-  public createInteractiveHitbox(targetObject: THREE.Object3D, margin: number) {
+  public createInteractiveHitbox(
+    targetObject: THREE.Object3D,
+    margin: number,
+    onActivate: (contact: CANNON.ContactEquation) => void,
+  ) {
     this.bodies.forEach((body) => {
       if (body.mesh === targetObject) {
+        const originalShape = body.body.shapes[0] as CANNON.Box;
         const hitboxBody = new CANNON.Body({
           mass: 0,
           shape: new CANNON.Box(
             new CANNON.Vec3(
-              body.body.shapes[0].halfExtents.x + margin,
-              body.body.shapes[0].halfExtents.y + margin,
-              body.body.shapes[0].halfExtents.z + margin,
+              originalShape.halfExtents.x + margin,
+              originalShape.halfExtents.y + margin,
+              originalShape.halfExtents.z + margin,
             ),
           ),
           position: body.body.position,
         });
         this.world.addBody(hitboxBody);
-        console.log(hitboxBody);
+
+        this.interactiveHitboxMap.set(body.mesh.name, {
+          mesh: targetObject,
+          body: hitboxBody,
+          margin: margin,
+          activatedSubstage: 0,
+          onActivate: onActivate,
+        });
       }
     });
+    console.log(this.interactiveHitboxMap);
   }
 
   public filterCollision(
