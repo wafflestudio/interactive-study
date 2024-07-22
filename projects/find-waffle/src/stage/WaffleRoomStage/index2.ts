@@ -65,7 +65,7 @@ export default class WaffleRoomStage extends Stage {
 
     const resourceLoader = new ResourceLoader();
     const keyMap = new KeyMap();
-    const scenarioManager = new ScenarioManager();
+    const scenarioManager = new ScenarioManager(this.renderer, this.camera);
     const cannonManager = new CannonManager();
 
     // Player

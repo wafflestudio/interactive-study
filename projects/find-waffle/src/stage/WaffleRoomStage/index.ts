@@ -8,7 +8,7 @@ import { KeyMap } from '../../libs/keyboard/KeyMap.ts';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
 import { animateCharacter } from './animation/character.ts';
-import { Dialogue } from './dialogue/Dialogue.ts';
+import { Dialogue } from './core/dialogue/Dialogue.ts';
 import { sampleFunction } from './temp/sampleFunction.ts';
 
 export default class WaffleRoomStage extends Stage {
