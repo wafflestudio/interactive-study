@@ -1,0 +1,939 @@
+{
+  "data": [
+    {
+      "bodyId": 0,
+      "meshName": "iceCream",
+      "nickname": "아이스크림"
+    },
+    {
+      "bodyId": 1,
+      "meshName": "큐브002",
+      "nickname": "1층 좌측 박스"
+    },
+    {
+      "bodyId": 2,
+      "meshName": "큐브003",
+      "nickname": "1층 중앙 박스"
+    },
+    {
+      "bodyId": 3,
+      "meshName": "큐브004",
+      "nickname": "1층 우측 박스"
+    },
+    {
+      "bodyId": 4,
+      "meshName": "큐브007",
+      "nickname": "2층 좌측 박스"
+    },
+    {
+      "bodyId": 5,
+      "meshName": "큐브008",
+      "nickname": "2층 우측 박스"
+    },
+    {
+      "bodyId": 6,
+      "meshName": "큐브009",
+      "nickname": "3층 박스"
+    },
+    {
+      "bodyId": 7,
+      "meshName": "큐브010",
+      "nickname": "옷장 프레임"
+    },
+    {
+      "bodyId": 8,
+      "meshName": "큐브011",
+      "nickname": "거울 프레임"
+    },
+    {
+      "bodyId": 9,
+      "meshName": "큐브012",
+      "nickname": "거울 유리"
+    },
+    {
+      "bodyId": 10,
+      "meshName": "큐브013",
+      "nickname": "액자 프레임"
+    },
+    {
+      "bodyId": 11,
+      "meshName": "큐브094",
+      "nickname": ""
+    },
+    {
+      "bodyId": 12,
+      "meshName": "큐브098",
+      "nickname": "타일 (8,8)"
+    },
+    {
+      "bodyId": 13,
+      "meshName": "큐브030",
+      "nickname": "타일 (8,6)"
+    },
+    {
+      "bodyId": 14,
+      "meshName": "큐브038",
+      "nickname": "타일 (8,5)"
+    },
+    {
+      "bodyId": 15,
+      "meshName": "큐브046",
+      "nickname": "타일 (8,4)"
+    },
+    {
+      "bodyId": 16,
+      "meshName": "큐브054",
+      "nickname": "타일 (8,3)"
+    },
+    {
+      "bodyId": 17,
+      "meshName": "큐브062",
+      "nickname": "타일 (8,2)"
+    },
+    {
+      "bodyId": 18,
+      "meshName": "큐브070",
+      "nickname": "타일 (8,1)"
+    },
+    {
+      "bodyId": 19,
+      "meshName": "큐브093",
+      "nickname": "옷장 우측 문"
+    },
+    {
+      "bodyId": 20,
+      "meshName": "큐브096",
+      "nickname": "옷장 좌측 문"
+    },
+    {
+      "bodyId": 21,
+      "meshName": "큐브097",
+      "nickname": "벽"
+    },
+    {
+      "bodyId": 22,
+      "meshName": "큐브101",
+      "nickname": "바닥"
+    },
+    {
+      "bodyId": 23,
+      "meshName": "텍스트",
+      "nickname": "텍스트 (0,8)"
+    },
+    {
+      "bodyId": 24,
+      "meshName": "텍스트001",
+      "nickname": "텍스트 (0,7)"
+    },
+    {
+      "bodyId": 25,
+      "meshName": "텍스트002",
+      "nickname": "텍스트 (0,6)"
+    },
+    {
+      "bodyId": 26,
+      "meshName": "텍스트003",
+      "nickname": "텍스트 (0,5)"
+    },
+    {
+      "bodyId": 27,
+      "meshName": "텍스트004",
+      "nickname": "텍스트 (0,4)"
+    },
+    {
+      "bodyId": 28,
+      "meshName": "텍스트005",
+      "nickname": "텍스트 (0,3)"
+    },
+    {
+      "bodyId": 29,
+      "meshName": "텍스트006",
+      "nickname": "텍스트 (0,2)"
+    },
+    {
+      "bodyId": 30,
+      "meshName": "텍스트007",
+      "nickname": "텍스트 (0,1)"
+    },
+    {
+      "bodyId": 31,
+      "meshName": "텍스트008",
+      "nickname": "텍스트 (0,0)"
+    },
+    {
+      "bodyId": 32,
+      "meshName": "텍스트009",
+      "nickname": "텍스트 (1,8)"
+    },
+    {
+      "bodyId": 33,
+      "meshName": "텍스트010",
+      "nickname": "텍스트 (2,8)"
+    },
+    {
+      "bodyId": 34,
+      "meshName": "텍스트011",
+      "nickname": "텍스트 (2,7)"
+    },
+    {
+      "bodyId": 35,
+      "meshName": "텍스트012",
+      "nickname": "텍스트 (1,7)"
+    },
+    {
+      "bodyId": 36,
+      "meshName": "텍스트013",
+      "nickname": "텍스트 (3,8)"
+    },
+    {
+      "bodyId": 37,
+      "meshName": "텍스트014",
+      "nickname": "텍스트 (3,7)"
+    },
+    {
+      "bodyId": 38,
+      "meshName": "텍스트015",
+      "nickname": "텍스트 (4,8)"
+    },
+    {
+      "bodyId": 39,
+      "meshName": "텍스트016",
+      "nickname": "텍스트 (5,8)"
+    },
+    {
+      "bodyId": 40,
+      "meshName": "텍스트017",
+      "nickname": "텍스트 (5,7)"
+    },
+    {
+      "bodyId": 41,
+      "meshName": "텍스트018",
+      "nickname": "텍스트 (4,7)"
+    },
+    {
+      "bodyId": 42,
+      "meshName": "텍스트019",
+      "nickname": "텍스트 (6,8)"
+    },
+    {
+      "bodyId": 43,
+      "meshName": "텍스트020",
+      "nickname": "텍스트 (6,7)"
+    },
+    {
+      "bodyId": 44,
+      "meshName": "텍스트021",
+      "nickname": "텍스트 (7,8)"
+    },
+    {
+      "bodyId": 45,
+      "meshName": "텍스트022",
+      "nickname": "텍스트 (8,8)"
+    },
+    {
+      "bodyId": 46,
+      "meshName": "텍스트023",
+      "nickname": "텍스트 (7,6)"
+    },
+    {
+      "bodyId": 47,
+      "meshName": "텍스트024",
+      "nickname": "텍스트 (7,7)"
+    },
+    {
+      "bodyId": 48,
+      "meshName": "텍스트025",
+      "nickname": ""
+    },
+    {
+      "bodyId": 49,
+      "meshName": "텍스트026",
+      "nickname": "텍스트 (2,6)"
+    },
+    {
+      "bodyId": 50,
+      "meshName": "텍스트027",
+      "nickname": "텍스트 (2,5)"
+    },
+    {
+      "bodyId": 51,
+      "meshName": "텍스트028",
+      "nickname": "텍스트 (1,5)"
+    },
+    {
+      "bodyId": 52,
+      "meshName": "텍스트029",
+      "nickname": "텍스트 (3,6)"
+    },
+    {
+      "bodyId": 53,
+      "meshName": "텍스트030",
+      "nickname": "텍스트 (3,5)"
+    },
+    {
+      "bodyId": 54,
+      "meshName": "텍스트031",
+      "nickname": "텍스트 (4,6)"
+    },
+    {
+      "bodyId": 55,
+      "meshName": "텍스트032",
+      "nickname": "텍스트 (5,6)"
+    },
+    {
+      "bodyId": 56,
+      "meshName": "텍스트033",
+      "nickname": "텍스트 (5,5)"
+    },
+    {
+      "bodyId": 57,
+      "meshName": "텍스트034",
+      "nickname": "텍스트 (4,5)"
+    },
+    {
+      "bodyId": 58,
+      "meshName": "텍스트035",
+      "nickname": "텍스트 (6,6)"
+    },
+    {
+      "bodyId": 59,
+      "meshName": "텍스트036",
+      "nickname": "텍스트 (6,5)"
+    },
+    {
+      "bodyId": 60,
+      "meshName": "텍스트038",
+      "nickname": "텍스트 (8,6)"
+    },
+    {
+      "bodyId": 61,
+      "meshName": "텍스트039",
+      "nickname": "텍스트 (8,5)"
+    },
+    {
+      "bodyId": 62,
+      "meshName": "텍스트040",
+      "nickname": "텍스트 (7,5)"
+    },
+    {
+      "bodyId": 63,
+      "meshName": "텍스트041",
+      "nickname": "텍스트 (1,4)"
+    },
+    {
+      "bodyId": 64,
+      "meshName": "텍스트042",
+      "nickname": "텍스트 (2,4)"
+    },
+    {
+      "bodyId": 65,
+      "meshName": "텍스트043",
+      "nickname": "텍스트 (2,3)"
+    },
+    {
+      "bodyId": 66,
+      "meshName": "텍스트044",
+      "nickname": "텍스트 (1,3)"
+    },
+    {
+      "bodyId": 67,
+      "meshName": "텍스트045",
+      "nickname": "텍스트 (3,4)"
+    },
+    {
+      "bodyId": 68,
+      "meshName": "텍스트046",
+      "nickname": "텍스트 (3,3)"
+    },
+    {
+      "bodyId": 69,
+      "meshName": "텍스트047",
+      "nickname": "텍스트 (4,4)"
+    },
+    {
+      "bodyId": 70,
+      "meshName": "텍스트048",
+      "nickname": "텍스트 (5,4)"
+    },
+    {
+      "bodyId": 71,
+      "meshName": "텍스트049",
+      "nickname": "텍스트 (5,3)"
+    },
+    {
+      "bodyId": 72,
+      "meshName": "텍스트050",
+      "nickname": "텍스트 (4,3)"
+    },
+    {
+      "bodyId": 73,
+      "meshName": "텍스트051",
+      "nickname": "텍스트 (6,4)"
+    },
+    {
+      "bodyId": 74,
+      "meshName": "텍스트052",
+      "nickname": "텍스트 (6,3)"
+    },
+    {
+      "bodyId": 75,
+      "meshName": "텍스트053",
+      "nickname": "텍스트 (7,4)"
+    },
+    {
+      "bodyId": 76,
+      "meshName": "텍스트054",
+      "nickname": "텍스트 (8,4)"
+    },
+    {
+      "bodyId": 77,
+      "meshName": "텍스트055",
+      "nickname": "텍스트 (8,3)"
+    },
+    {
+      "bodyId": 78,
+      "meshName": "텍스트056",
+      "nickname": "텍스트 (7,3)"
+    },
+    {
+      "bodyId": 79,
+      "meshName": "텍스트057",
+      "nickname": "텍스트 (1,2)"
+    },
+    {
+      "bodyId": 80,
+      "meshName": "텍스트058",
+      "nickname": "텍스트 (2,2)"
+    },
+    {
+      "bodyId": 81,
+      "meshName": "텍스트059",
+      "nickname": "텍스트 (2,1)"
+    },
+    {
+      "bodyId": 82,
+      "meshName": "텍스트060",
+      "nickname": "텍스트 (1,1)"
+    },
+    {
+      "bodyId": 83,
+      "meshName": "텍스트061",
+      "nickname": "텍스트 (3,2)"
+    },
+    {
+      "bodyId": 84,
+      "meshName": "텍스트062",
+      "nickname": "텍스트 (3,1)"
+    },
+    {
+      "bodyId": 85,
+      "meshName": "텍스트063",
+      "nickname": "텍스트 (4,2)"
+    },
+    {
+      "bodyId": 86,
+      "meshName": "텍스트064",
+      "nickname": "텍스트 (5,2)"
+    },
+    {
+      "bodyId": 87,
+      "meshName": "텍스트065",
+      "nickname": "텍스트 (5,1)"
+    },
+    {
+      "bodyId": 88,
+      "meshName": "텍스트066",
+      "nickname": "텍스트 (4,1)"
+    },
+    {
+      "bodyId": 89,
+      "meshName": "텍스트067",
+      "nickname": "텍스트 (6,2)"
+    },
+    {
+      "bodyId": 90,
+      "meshName": "텍스트068",
+      "nickname": "텍스트 (6,1)"
+    },
+    {
+      "bodyId": 91,
+      "meshName": "텍스트069",
+      "nickname": "텍스트 (7,2)"
+    },
+    {
+      "bodyId": 92,
+      "meshName": "텍스트070",
+      "nickname": "텍스트 (8,2)"
+    },
+    {
+      "bodyId": 93,
+      "meshName": "텍스트071",
+      "nickname": "텍스트 (8,1)"
+    },
+    {
+      "bodyId": 94,
+      "meshName": "텍스트072",
+      "nickname": "텍스트 (7,1)"
+    },
+    {
+      "bodyId": 95,
+      "meshName": "텍스트073",
+      "nickname": "텍스트 (2,0)"
+    },
+    {
+      "bodyId": 96,
+      "meshName": "텍스트074",
+      "nickname": ""
+    },
+    {
+      "bodyId": 97,
+      "meshName": "텍스트075",
+      "nickname": "텍스트 (3,0)"
+    },
+    {
+      "bodyId": 98,
+      "meshName": "텍스트076",
+      "nickname": "텍스트 (5,0)"
+    },
+    {
+      "bodyId": 99,
+      "meshName": "텍스트077",
+      "nickname": "텍스트 (4,0)"
+    },
+    {
+      "bodyId": 100,
+      "meshName": "텍스트078",
+      "nickname": ""
+    },
+    {
+      "bodyId": 101,
+      "meshName": "텍스트079",
+      "nickname": ""
+    },
+    {
+      "bodyId": 102,
+      "meshName": "텍스트080",
+      "nickname": ""
+    },
+    {
+      "bodyId": 103,
+      "meshName": "큐브020",
+      "nickname": "타일 (7,8)"
+    },
+    {
+      "bodyId": 104,
+      "meshName": "큐브028",
+      "nickname": "타일 (7,7)"
+    },
+    {
+      "bodyId": 105,
+      "meshName": "텍스트023_1",
+      "nickname": "텍스트 (8,7)"
+    },
+    {
+      "bodyId": 106,
+      "meshName": "큐브031_2",
+      "nickname": ""
+    },
+    {
+      "bodyId": 107,
+      "meshName": "큐브031",
+      "nickname": "타일 (7,6)"
+    },
+    {
+      "bodyId": 108,
+      "meshName": "큐브039",
+      "nickname": "타일 (7,5)"
+    },
+    {
+      "bodyId": 109,
+      "meshName": "큐브047",
+      "nickname": "타일 (7,4)"
+    },
+    {
+      "bodyId": 110,
+      "meshName": "큐브055",
+      "nickname": "타일 (7,3)"
+    },
+    {
+      "bodyId": 111,
+      "meshName": "큐브063",
+      "nickname": "타일 (7,2)"
+    },
+    {
+      "bodyId": 112,
+      "meshName": "큐브071",
+      "nickname": "타일 (7,1)"
+    },
+    {
+      "bodyId": 113,
+      "meshName": "큐브018",
+      "nickname": "타일 (6,8)"
+    },
+    {
+      "bodyId": 114,
+      "meshName": "큐브019",
+      "nickname": "타일 (8,7)"
+    },
+    {
+      "bodyId": 115,
+      "meshName": "큐브032",
+      "nickname": "타일 (6,7)"
+    },
+    {
+      "bodyId": 116,
+      "meshName": "큐브040",
+      "nickname": "타일 (6,6)"
+    },
+    {
+      "bodyId": 117,
+      "meshName": "큐브048",
+      "nickname": "타일 (6,5)"
+    },
+    {
+      "bodyId": 118,
+      "meshName": "큐브056",
+      "nickname": "타일 (6,4)"
+    },
+    {
+      "bodyId": 119,
+      "meshName": "큐브064",
+      "nickname": "타일 (6,3)"
+    },
+    {
+      "bodyId": 120,
+      "meshName": "큐브072",
+      "nickname": "타일 (6,2)"
+    },
+    {
+      "bodyId": 121,
+      "meshName": "큐브095",
+      "nickname": "타일 (6,1)"
+    },
+    {
+      "bodyId": 122,
+      "meshName": "큐브027",
+      "nickname": "타일 (5,8)"
+    },
+    {
+      "bodyId": 123,
+      "meshName": "큐브033",
+      "nickname": "타일 (5,7)"
+    },
+    {
+      "bodyId": 124,
+      "meshName": "큐브041",
+      "nickname": "타일 (5,6)"
+    },
+    {
+      "bodyId": 125,
+      "meshName": "큐브049",
+      "nickname": "타일 (5,5)"
+    },
+    {
+      "bodyId": 126,
+      "meshName": "큐브057",
+      "nickname": "타일 (5,4)"
+    },
+    {
+      "bodyId": 127,
+      "meshName": "큐브065",
+      "nickname": "타일 (5,3)"
+    },
+    {
+      "bodyId": 128,
+      "meshName": "큐브073",
+      "nickname": "타일 (5,2)"
+    },
+    {
+      "bodyId": 129,
+      "meshName": "큐브081",
+      "nickname": "타일 (5,1)"
+    },
+    {
+      "bodyId": 130,
+      "meshName": "큐브017",
+      "nickname": ""
+    },
+    {
+      "bodyId": 131,
+      "meshName": "큐브042",
+      "nickname": ""
+    },
+    {
+      "bodyId": 132,
+      "meshName": "큐브058",
+      "nickname": ""
+    },
+    {
+      "bodyId": 133,
+      "meshName": "큐브066",
+      "nickname": ""
+    },
+    {
+      "bodyId": 134,
+      "meshName": "큐브074",
+      "nickname": ""
+    },
+    {
+      "bodyId": 135,
+      "meshName": "큐브025",
+      "nickname": "타일 (3,8)"
+    },
+    {
+      "bodyId": 136,
+      "meshName": "큐브035",
+      "nickname": "타일 (3,7)"
+    },
+    {
+      "bodyId": 137,
+      "meshName": "큐브043",
+      "nickname": "타일 (3,6)"
+    },
+    {
+      "bodyId": 138,
+      "meshName": "큐브051",
+      "nickname": "타일 (3,5)"
+    },
+    {
+      "bodyId": 139,
+      "meshName": "큐브059",
+      "nickname": "타일 (3,4)"
+    },
+    {
+      "bodyId": 140,
+      "meshName": "큐브067",
+      "nickname": "타일 (3,3)"
+    },
+    {
+      "bodyId": 141,
+      "meshName": "큐브075",
+      "nickname": "타일 (3,2)"
+    },
+    {
+      "bodyId": 142,
+      "meshName": "큐브083",
+      "nickname": "타일 (3,1)"
+    },
+    {
+      "bodyId": 143,
+      "meshName": "큐브015",
+      "nickname": "타일 (4,8)"
+    },
+    {
+      "bodyId": 144,
+      "meshName": "큐브036",
+      "nickname": "타일 (4,7)"
+    },
+    {
+      "bodyId": 145,
+      "meshName": "큐브044",
+      "nickname": "타일 (4,6)"
+    },
+    {
+      "bodyId": 146,
+      "meshName": "큐브052",
+      "nickname": "타일 (4,5)"
+    },
+    {
+      "bodyId": 147,
+      "meshName": "큐브060",
+      "nickname": "타일 (4,4)"
+    },
+    {
+      "bodyId": 148,
+      "meshName": "큐브068",
+      "nickname": "타일 (4,3)"
+    },
+    {
+      "bodyId": 149,
+      "meshName": "큐브076",
+      "nickname": "타일 (4,2)"
+    },
+    {
+      "bodyId": 150,
+      "meshName": "큐브084",
+      "nickname": "타일 (4,1)"
+    },
+    {
+      "bodyId": 151,
+      "meshName": "큐브103",
+      "nickname": "타일 (2,8)"
+    },
+    {
+      "bodyId": 152,
+      "meshName": "큐브104",
+      "nickname": "타일 (2,7)"
+    },
+    {
+      "bodyId": 153,
+      "meshName": "큐브105",
+      "nickname": "타일 (2,6)"
+    },
+    {
+      "bodyId": 154,
+      "meshName": "큐브106",
+      "nickname": "타일 (2,5)"
+    },
+    {
+      "bodyId": 155,
+      "meshName": "큐브107",
+      "nickname": "타일 (2,4)"
+    },
+    {
+      "bodyId": 156,
+      "meshName": "큐브108",
+      "nickname": "타일 (2,3)"
+    },
+    {
+      "bodyId": 157,
+      "meshName": "큐브109",
+      "nickname": "타일 (2,2)"
+    },
+    {
+      "bodyId": 158,
+      "meshName": "큐브110",
+      "nickname": "타일 (2,1)"
+    },
+    {
+      "bodyId": 159,
+      "meshName": "큐브023",
+      "nickname": "타일 (1,8)"
+    },
+    {
+      "bodyId": 160,
+      "meshName": "큐브037",
+      "nickname": "타일 (1,7)"
+    },
+    {
+      "bodyId": 161,
+      "meshName": "큐브045",
+      "nickname": "타일 (1,6)"
+    },
+    {
+      "bodyId": 162,
+      "meshName": "큐브053",
+      "nickname": "타일 (1,5)"
+    },
+    {
+      "bodyId": 163,
+      "meshName": "큐브061",
+      "nickname": "타일 (1,4)"
+    },
+    {
+      "bodyId": 164,
+      "meshName": "큐브069",
+      "nickname": "타일 (1,3)"
+    },
+    {
+      "bodyId": 165,
+      "meshName": "큐브077",
+      "nickname": "타일 (1,2)"
+    },
+    {
+      "bodyId": 166,
+      "meshName": "큐브085",
+      "nickname": "타일 (1,1)"
+    },
+    {
+      "bodyId": 167,
+      "meshName": "큐브086",
+      "nickname": "타일 (0,8)"
+    },
+    {
+      "bodyId": 168,
+      "meshName": "큐브087",
+      "nickname": ""
+    },
+    {
+      "bodyId": 169,
+      "meshName": "큐브088",
+      "nickname": ""
+    },
+    {
+      "bodyId": 170,
+      "meshName": "큐브089",
+      "nickname": ""
+    },
+    {
+      "bodyId": 171,
+      "meshName": "큐브090",
+      "nickname": "타일 (0,4)"
+    },
+    {
+      "bodyId": 172,
+      "meshName": "큐브091",
+      "nickname": "타일 (0,3)"
+    },
+    {
+      "bodyId": 173,
+      "meshName": "큐브092",
+      "nickname": "타일 (0,2)"
+    },
+    {
+      "bodyId": 174,
+      "meshName": "큐브100",
+      "nickname": "타일 (0,1)"
+    },
+    {
+      "bodyId": 175,
+      "meshName": "큐브111",
+      "nickname": "옷장 하단 문"
+    },
+    {
+      "bodyId": 176,
+      "meshName": "큐브014",
+      "nickname": "타일 (8,0)"
+    },
+    {
+      "bodyId": 177,
+      "meshName": "큐브016",
+      "nickname": "타일 (7,0)"
+    },
+    {
+      "bodyId": 178,
+      "meshName": "큐브022",
+      "nickname": "타일 (6,0)"
+    },
+    {
+      "bodyId": 179,
+      "meshName": "큐브024",
+      "nickname": "타일 (5,0)"
+    },
+    {
+      "bodyId": 180,
+      "meshName": "큐브026",
+      "nickname": "타일 (3,0)"
+    },
+    {
+      "bodyId": 181,
+      "meshName": "큐브029",
+      "nickname": "타일 (4,0)"
+    },
+    {
+      "bodyId": 182,
+      "meshName": "큐브078",
+      "nickname": "타일 (2,0)"
+    },
+    {
+      "bodyId": 183,
+      "meshName": "큐브079",
+      "nickname": "타일 (1,0)"
+    },
+    {
+      "bodyId": 184,
+      "meshName": "큐브080",
+      "nickname": "타일 (0,0)"
+    },
+    {
+      "bodyId": 185,
+      "meshName": "평면",
+      "nickname": "액자 속지"
+    },
+    {
+      "bodyId": 186,
+      "meshName": "큐브114",
+      "nickname": "소파"
+    }
+  ]
+}
