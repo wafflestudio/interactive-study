@@ -46,10 +46,6 @@ export default class WaffleRoomStage extends Stage {
     );
     this.camera.position.set(6, 4, 8);
 
-    // debug
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
-
     // sunlight
     const sunLight = new THREE.DirectionalLight('#ffffff', 4);
 
@@ -69,6 +65,11 @@ export default class WaffleRoomStage extends Stage {
     const keyMap = new KeyMap();
     this.cannonManager = new CannonManager();
     const dialogue = new Dialogue({ app: this.app });
+
+    // debug
+    const axesHelper = new THREE.AxesHelper(5);
+    this.scene.add(axesHelper);
+    this.cannonDebugger = CannonDebugger(this.scene, this.cannonManager.world);
 
     scenarioManager.addPlot(
       'test',
@@ -118,20 +119,33 @@ export default class WaffleRoomStage extends Stage {
           const scale = 4;
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
+          const targetObjects: THREE.Object3D[] = [];
           room.traverse((child) => {
-            if (isWardrobe(child)) {
-              // const wardrobe = new Wardrobe(
-              //   child,
-              //   resourceLoader,
-              //   keyMap,
-              //   scenarioManager,
-              //   cannonManager,
-              // );
-              // this.onAnimateCallbacks.push(wardrobe.onAnimate);
-              // this.onUnmountCallbacks.push(wardrobe.onUnmount);
-            }
+            child.type === 'Mesh' && targetObjects.push(child);
+
+            // if (isWardrobe(child)) {
+            // const wardrobe = new Wardrobe(
+            //   child,
+            //   resourceLoader,
+            //   keyMap,
+            //   scenarioManager,
+            //   cannonManager,
+            // );
+            // this.onAnimateCallbacks.push(wardrobe.onAnimate);
+            // this.onUnmountCallbacks.push(wardrobe.onUnmount);
+            // }
             // if (isProp(child)) new PropObject(child, cannonManager);
           });
+          this.cannonManager?.wrap(targetObjects, scale, 0);
+          this.cannonManager?.totalObjectMap.forEach(({ body }) => {
+            this.cannonManager?.filterCollision(body, 4, 8);
+          });
+          const character = this.cannonManager?.totalObjectMap.get('Scene');
+          this.cannonManager?.filterCollision(character!.body, 1, 2);
+          const wardrobe = this.cannonManager?.totalObjectMap.get('큐브010');
+          const sofa = this.cannonManager?.totalObjectMap.get('큐브114');
+          this.cannonManager?.filterCollision(wardrobe!.body, 2, 1);
+          this.cannonManager?.filterCollision(sofa!.body, 2, 1);
         },
       },
     );

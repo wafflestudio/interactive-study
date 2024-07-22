@@ -20,8 +20,6 @@ export class Player extends GameObject {
   ) {
     super('Player', resourceLoader, keyMap, scenarioManager, cannonManager);
 
-    console.log(this.resourceLoader);
-
     this.resourceLoader.registerModel(
       'iceCream',
       '/models/IceCream/iceice.glb',
@@ -30,9 +28,7 @@ export class Player extends GameObject {
           const scale = 0.005;
           const position = new THREE.Vector3(2, 0, 2);
 
-          iceCream.position.set(position.x, position.y, position.z);
-          iceCream.scale.set(scale, scale, scale);
-          this.object3D = iceCream;
+          // wrap Cannon body
           this.body = this.cannonManager.wrap(
             [iceCream],
             scale,
@@ -41,9 +37,19 @@ export class Player extends GameObject {
             true,
           )[0];
 
+          iceCream.position.set(position.x, position.y, position.z);
+          iceCream.scale.set(scale, scale, scale);
+          this.object3D = this.cannonManager.totalObjectMap.get('Scene')!.mesh;
+
+          // Customize mesh.name of character
           const character = this.cannonManager.totalObjectMap.get('Scene');
           character!.mesh.name = 'iceCream';
           this.cannonManager.totalObjectMap.set('Scene', character!);
+
+          // Filter collision
+          this.cannonManager.filterCollision(this.body, 1, 2);
+
+          console.log(this.cannonManager.totalObjectMap.get('Scene'));
 
           scene.add(iceCream);
 

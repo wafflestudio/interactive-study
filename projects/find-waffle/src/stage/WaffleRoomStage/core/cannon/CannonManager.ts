@@ -133,6 +133,7 @@ export class CannonManager {
 
   public stopIfCollided() {
     this.world.contacts.forEach((contact) => {
+      console.log('contact');
       contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bi.angularVelocity = new CANNON.Vec3(0, 0, 0);
