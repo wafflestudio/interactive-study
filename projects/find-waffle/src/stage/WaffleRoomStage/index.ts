@@ -9,6 +9,7 @@ import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import Cannon from './Cannon.ts';
 import { animateCharacter } from './animation/character.ts';
 import { Dialogue } from './dialogue/Dialogue.ts';
+import { sampleFunction } from './temp/sampleFunction.ts';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -71,7 +72,7 @@ export default class WaffleRoomStage extends Stage {
     this.clock = new THREE.Clock();
 
     // init dialogue
-    this.dialogue = new Dialogue({ app: this.app });
+    // this.dialogue = new Dialogue({ app: this.app });
 
     // load resources
     const resourceLoader = new ResourceLoader();
@@ -82,7 +83,9 @@ export default class WaffleRoomStage extends Stage {
 
         iceCream.position.set(position.x, position.y, position.z);
         const body = this.cannon.wrap([iceCream], scale, 1, position, true);
-        this.cannon.bodies[0].mesh.name = 'iceCream';
+        const character = this.cannon.gameObjectMap.get('Scene');
+        character!.mesh.name = 'iceCream';
+        this.cannon.gameObjectMap.set('Scene', character);
 
         this.character = iceCream;
         this.characterBody = body[0];
@@ -151,11 +154,10 @@ export default class WaffleRoomStage extends Stage {
             '큐브111',
           ];
 
-          this.cannon.bodies.forEach(({ body, mesh }) => {
+          this.cannon.gameObjectMap.forEach(({ body, mesh }) => {
             if (meshNameList.includes(mesh.name)) {
-              mesh.material.color = new THREE.Color(0xff0000);
+              // mesh.material.color = new THREE.Color(0xff0000);
               this.cannon.filterCollision(body, 2, 1);
-              console.log(body);
             } else if (mesh.name === 'iceCream') {
               console.log(body.position);
               body.linearDamping = 0.9;
@@ -165,9 +167,15 @@ export default class WaffleRoomStage extends Stage {
               this.cannon.filterCollision(body, 4, 8);
             }
           });
+          this.cannon.gameObjectMap.forEach(({ body, mesh }) => {
+            if (mesh.name === '큐브114') {
+              this.cannon.createInteractiveHitbox(mesh, 0.2, sampleFunction);
+            }
+          });
         },
       },
     );
+
     resourceLoader.loadAll();
   }
 
