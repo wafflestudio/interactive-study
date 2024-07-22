@@ -86,14 +86,6 @@ export default class Cannon {
         boxCenter: boxCenter,
         presetPosition: presetPosition,
       });
-
-      // this.bodies.push({
-      //   mesh: obj,
-      //   body: body,
-      //   isMovable: isMovable,
-      //   boxCenter: boxCenter,
-      //   presetPosition: presetPosition,
-      // });
       return body;
     });
     console.log(this.gameObjectMap);
@@ -141,6 +133,7 @@ export default class Cannon {
 
   public stopIfCollided() {
     this.world.contacts.forEach((contact) => {
+      console.log(contact);
       console.log('contact');
       contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
