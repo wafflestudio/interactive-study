@@ -7,13 +7,10 @@ type Plot = {
 };
 
 export class ScenarioManager {
-  renderer?: THREE.WebGLRenderer;
   currentPlot?: Plot;
   plots: Plot[] = [];
 
-  constructor(renderer: THREE.WebGLRenderer) {
-    this.renderer = renderer;
-  }
+  constructor() {}
 
   addPlot(name: string, onMount: () => {}, onUnmount: () => {}) {
     this.plots.push({ name, onMount, onUnmount });
@@ -34,5 +31,7 @@ export class ScenarioManager {
     this.changePlot(name);
   }
 
-  isPlot(name: string) {}
+  isPlot(name: string) {
+    return this.currentPlot?.name === name;
+  }
 }
