@@ -1,3 +1,9 @@
+/**
+ * GameObjects: 게임 내 생성되는 오브젝트를 가리킵니다.
+ * Bodies: CANNON.js의 Body를 가리킵니다.
+ * Mesh: THREE.js의 Object3D를 가리킵니다.
+ * InteractiveHitbox: 캐릭터 오브젝트와 상호작용하는 hitbox(cannon body)를 가리킵니다.
+ */
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
@@ -7,6 +13,14 @@ type InteractiveHitbox = {
   margin: number;
   activatedSubstage: number;
   onActivate: (contact: CANNON.ContactEquation) => void;
+};
+
+type GameObject = {
+  mesh: THREE.Object3D;
+  body: CANNON.Body;
+  isMovable: boolean;
+  boxCenter: THREE.Vector3;
+  presetPosition: THREE.Vector3;
 };
 
 export default class Cannon {
@@ -19,6 +33,7 @@ export default class Cannon {
     presetPosition: THREE.Vector3;
   }[] = [];
   public interactiveHitboxMap: Map<string, InteractiveHitbox> = new Map();
+  public gameObjectMap: Map<string, GameObject> = new Map();
   private defaultMaterial: CANNON.Material;
   // private contactMaterial: CANNON.ContactMaterial;
 
@@ -40,14 +55,17 @@ export default class Cannon {
     // this.world.addContactMwaterial(this.contactMaterial);
   }
 
+  /**
+   * THREE.js의 Object3D를 CANNON.js의 Body로 wrapping합니다.
+   */
   public wrap(
-    targetObjects: THREE.Object3D[],
+    targetMeshes: THREE.Object3D[],
     scale: number,
     mass: number,
     presetPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
     isMovable: boolean = false,
   ) {
-    const bodies = targetObjects.map((obj) => {
+    const bodies = targetMeshes.map((obj) => {
       const box = new THREE.Box3().setFromObject(obj);
       const size = new THREE.Vector3();
       box.getSize(size);
@@ -78,51 +96,55 @@ export default class Cannon {
 
       this.world.addBody(body);
 
-      const flagMovable = isMovable;
-
-      this.bodies.push({
+      this.gameObjectMap.set(obj.name, {
         mesh: obj,
         body: body,
-        isMovable: flagMovable,
+        isMovable: isMovable,
         boxCenter: boxCenter,
         presetPosition: presetPosition,
       });
+
+      // this.bodies.push({
+      //   mesh: obj,
+      //   body: body,
+      //   isMovable: isMovable,
+      //   boxCenter: boxCenter,
+      //   presetPosition: presetPosition,
+      // });
       return body;
     });
+    console.log(this.gameObjectMap);
     return bodies;
   }
 
   public createInteractiveHitbox(
-    targetObject: THREE.Object3D,
+    targetMesh: THREE.Object3D,
     margin: number,
     onActivate: (contact: CANNON.ContactEquation) => void,
   ) {
-    this.bodies.forEach((body) => {
-      if (body.mesh === targetObject) {
-        const originalShape = body.body.shapes[0] as CANNON.Box;
-        const hitboxBody = new CANNON.Body({
-          mass: 0,
-          shape: new CANNON.Box(
-            new CANNON.Vec3(
-              originalShape.halfExtents.x + margin,
-              originalShape.halfExtents.y + margin,
-              originalShape.halfExtents.z + margin,
-            ),
-          ),
-          position: body.body.position,
-        });
-        this.world.addBody(hitboxBody);
-
-        this.interactiveHitboxMap.set(body.mesh.name, {
-          mesh: targetObject,
-          body: hitboxBody,
-          margin: margin,
-          activatedSubstage: 0,
-          onActivate: onActivate,
-        });
-      }
+    const targetObject = this.gameObjectMap.get(targetMesh.name);
+    if (!targetObject) return;
+    const originalShape = targetObject.body.shapes[0] as CANNON.Box;
+    const hitboxBody = new CANNON.Body({
+      mass: 0,
+      shape: new CANNON.Box(
+        new CANNON.Vec3(
+          originalShape.halfExtents.x + margin,
+          originalShape.halfExtents.y + margin,
+          originalShape.halfExtents.z + margin,
+        ),
+      ),
+      position: targetObject.body.position,
     });
-    console.log(this.interactiveHitboxMap);
+    this.world.addBody(hitboxBody);
+
+    this.interactiveHitboxMap.set(targetMesh.name, {
+      mesh: targetMesh,
+      body: hitboxBody,
+      margin: margin,
+      activatedSubstage: 0,
+      onActivate: onActivate,
+    });
   }
 
   public filterCollision(
@@ -145,7 +167,7 @@ export default class Cannon {
   }
 
   public renderMovement() {
-    this.bodies.forEach(({ mesh, body, isMovable, boxCenter }) => {
+    this.gameObjectMap.forEach(({ mesh, body, isMovable, boxCenter }) => {
       if (!isMovable) return;
       const newPosition = new THREE.Vector3(
         body.position.x - boxCenter.x,
