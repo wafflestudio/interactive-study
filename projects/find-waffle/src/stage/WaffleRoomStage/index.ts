@@ -172,14 +172,6 @@ export default class WaffleRoomStage extends Stage {
               this.cannon.createInteractiveHitbox(mesh, 0.2, sampleFunction);
             }
           });
-          // Debug
-          this.cannon.gameObjectMap.forEach(({ body, mesh }) => {
-            if (body.id === 186) {
-              console.log(body.id, mesh.name);
-              mesh.material.color = new THREE.Color(0xff0000);
-            }
-          });
-          console.log(this.cannon.gameObjectMap);
         },
       },
     );
