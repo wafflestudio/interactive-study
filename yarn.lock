@@ -2739,6 +2739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es-toolkit@npm:^1.13.1":
+  version: 1.13.1
+  resolution: "es-toolkit@npm:1.13.1"
+  checksum: cc4dbf6ec09d32573828ed19679fe83f69b465e9b613f0401aac510cdee58cc230aa354bdf07069e437d5d19d6536d1666825617dbbd1c947c2e9f1f49fb349a
+  languageName: node
+  linkType: hard
+
 "esbuild@npm:^0.21.3":
   version: 0.21.5
   resolution: "esbuild@npm:0.21.5"
@@ -3302,7 +3309,9 @@ __metadata:
     "@typescript-eslint/parser": "npm:^6.10.0"
     cannon-es: "npm:^0.20.0"
     cannon-es-debugger: "npm:^1.0.0"
+    es-toolkit: "npm:^1.13.1"
     eslint: "npm:^8.53.0"
+    gsap: "npm:^3.12.5"
     lil-gui: "npm:^0.19.2"
     three: "npm:^0.165.0"
     typescript: "npm:^5.2.2"
@@ -3600,7 +3609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gsap@npm:^3.12.2, gsap@npm:^3.12.4":
+"gsap@npm:^3.12.2, gsap@npm:^3.12.4, gsap@npm:^3.12.5":
   version: 3.12.5
   resolution: "gsap@npm:3.12.5"
   checksum: 192e9f6b11e54d8a0d26cff76573278d42748c6a54906fa42c81425390238ea8f6abbba5c0bca75c4bba32e4f2db957f22c2158fab1be7d4a8d71fc2fb24e8c3
