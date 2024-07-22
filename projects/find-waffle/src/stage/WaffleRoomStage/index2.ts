@@ -6,6 +6,7 @@ import { Stage } from '../../core/stage/Stage';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { CannonManager } from './core/cannon/CannonManager';
+import { Dialogue } from './core/dialogue/Dialogue';
 import { PropObject, isProp } from './core/object/PropObject';
 import { ScenarioManager } from './core/scenario/ScenarioManager';
 import { Player } from './object/Player';
@@ -18,21 +19,23 @@ export default class WaffleRoomStage extends Stage {
   controls?: OrbitControls;
   clock?: THREE.Clock;
   cannonDebugger?: { update: () => void };
-  onAnimateCallbacks: ((time: DOMHighResTimeStamp) => void)[] = [];
+  onAnimateCallbacks: {
+    cb: (time: DOMHighResTimeStamp) => void;
+    bindTarget: any;
+  }[] = [];
   onUnmountCallbacks: (() => void)[] = [];
+  cannonManager?: CannonManager;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
   }
 
   public mount() {
-    // init scene
-
+    /*
+     * 1. init scene
+     */
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
     this.scene = new THREE.Scene();
-
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
 
     // init camera
     this.camera = new THREE.PerspectiveCamera(
@@ -42,6 +45,10 @@ export default class WaffleRoomStage extends Stage {
       100,
     );
     this.camera.position.set(6, 4, 8);
+
+    // debug
+    const axesHelper = new THREE.AxesHelper(5);
+    this.scene.add(axesHelper);
 
     // sunlight
     const sunLight = new THREE.DirectionalLight('#ffffff', 4);
@@ -56,6 +63,34 @@ export default class WaffleRoomStage extends Stage {
     this.scene.add(sunLight);
     this.scene.add(this.camera);
 
+    // implement managers
+    const scenarioManager = new ScenarioManager(this.renderer, this.camera);
+    const resourceLoader = new ResourceLoader();
+    const keyMap = new KeyMap();
+    this.cannonManager = new CannonManager();
+    const dialogue = new Dialogue({ app: this.app });
+
+    scenarioManager.addPlot(
+      'test',
+      () => {
+        dialogue.begin(['시작했습니다!', '메인으로 갑시다'], () => {
+          scenarioManager.changePlot('main');
+        });
+      },
+      () => {},
+    );
+
+    scenarioManager.addPlot(
+      'main',
+      () => {},
+      () => {},
+    );
+
+    scenarioManager.startPlot('test');
+
+    /*
+     * 2. load resources
+     */
     // add controls & animation
     this.controls = new OrbitControls(
       this.camera,
@@ -63,23 +98,18 @@ export default class WaffleRoomStage extends Stage {
     );
     this.clock = new THREE.Clock();
 
-    const resourceLoader = new ResourceLoader();
-    const keyMap = new KeyMap();
-    const scenarioManager = new ScenarioManager(this.renderer, this.camera);
-    const cannonManager = new CannonManager();
-
     // Player
     const player = new Player(
+      this.scene,
       resourceLoader,
       keyMap,
       scenarioManager,
-      cannonManager,
+      this.cannonManager,
     );
-    this.onAnimateCallbacks.push(player.onAnimate);
+    this.onAnimateCallbacks.push({ cb: player.onAnimate, bindTarget: player });
     this.onUnmountCallbacks.push(player.onUnmount);
 
     // Props
-
     resourceLoader.registerModel(
       'waffleRoom',
       '/models/WaffleRoom/WaffleRoom.gltf',
@@ -90,21 +120,32 @@ export default class WaffleRoomStage extends Stage {
           this.scene?.add(room);
           room.traverse((child) => {
             if (isWardrobe(child)) {
-              const wardrobe = new Wardrobe(
-                child,
-                resourceLoader,
-                keyMap,
-                scenarioManager,
-                cannonManager,
-              );
-              this.onAnimateCallbacks.push(wardrobe.onAnimate);
-              this.onUnmountCallbacks.push(wardrobe.onUnmount);
+              // const wardrobe = new Wardrobe(
+              //   child,
+              //   resourceLoader,
+              //   keyMap,
+              //   scenarioManager,
+              //   cannonManager,
+              // );
+              // this.onAnimateCallbacks.push(wardrobe.onAnimate);
+              // this.onUnmountCallbacks.push(wardrobe.onUnmount);
             }
-            if (isProp(child)) new PropObject(child, cannonManager);
+            // if (isProp(child)) new PropObject(child, cannonManager);
           });
         },
       },
     );
+
+    // temp
+    keyMap.bind('Space', () => {
+      dialogue.next();
+    });
+
+    /*
+     * 3. activate
+     */
+    resourceLoader.loadAll();
+    keyMap.activate();
   }
 
   public resize() {
@@ -116,8 +157,29 @@ export default class WaffleRoomStage extends Stage {
     this.camera.updateProjectionMatrix();
   }
 
-  public animate(t: number) {
-    this.onAnimateCallbacks.forEach((callback) => callback(t));
+  public animate(t: DOMHighResTimeStamp) {
+    if (
+      !this.scene ||
+      !this.camera ||
+      !this.controls ||
+      !this.clock ||
+      !this.cannonManager
+    )
+      return;
+
+    this.onAnimateCallbacks.forEach(({ cb, bindTarget }) =>
+      cb.bind(bindTarget)(t),
+    );
+
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+
+    const delta = this.clock.getDelta();
+
+    this.cannonManager.world.step(1 / 60, delta, 3);
+    this.cannonManager.renderMovement();
+    this.cannonManager.stopIfCollided();
+    this.cannonDebugger?.update();
   }
 
   public unmount() {
