@@ -34,25 +34,9 @@ export default class Cannon {
   }[] = [];
   public interactiveHitboxMap: Map<string, InteractiveHitbox> = new Map();
   public gameObjectMap: Map<string, GameObject> = new Map();
-  private defaultMaterial: CANNON.Material;
-  // private contactMaterial: CANNON.ContactMaterial;
 
   constructor() {
-    this.world = new CANNON.World({
-      // gravity: new CANNON.Vec3(0, -9.82, 0),
-    });
-    this.defaultMaterial = new CANNON.Material('default');
-    // this.contactMaterial = new CANNON.ContactMaterial(
-    //   this.defaultMaterial,
-    //   this.defaultMaterial,
-    //   {
-    //     friction: 10.0,
-    //     restitution: 3.0,
-    //     contactEquationRelaxation: 10.0,
-    //     frictionEquationStiffness: 1,
-    //   },
-    // );
-    // this.world.addContactMwaterial(this.contactMaterial);
+    this.world = new CANNON.World({});
   }
 
   /**
@@ -91,7 +75,6 @@ export default class Cannon {
           boxCenter.y + presetPosition.y,
           boxCenter.z + presetPosition.z,
         ),
-        material: this.defaultMaterial,
       });
 
       this.world.addBody(body);
