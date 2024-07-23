@@ -1,5 +1,4 @@
 import * as CANNON from 'cannon-es';
-import CannonDebugger from 'cannon-es-debugger';
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
@@ -17,9 +16,7 @@ import {
 } from './map-schema';
 
 export class World {
-  isDebug = window.location.hash === '#debug';
   cannonWorld = new CANNON.World();
-  cannonDebugger?: ReturnType<typeof CannonDebugger>;
   scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
   map: THREE.Group = new THREE.Group();
@@ -43,8 +40,6 @@ export class World {
     this.player = new Player(this);
     this.initCannonWorld();
     this.init();
-    if (this.isDebug)
-      this.cannonDebugger = CannonDebugger(scene, this.cannonWorld);
   }
 
   private initCannonWorld() {
@@ -211,7 +206,6 @@ export class World {
   public animate(timeDelta: number) {
     this.player.animate();
     this.cannonWorld.step(1 / 60, timeDelta);
-    this.cannonDebugger?.update();
   }
 
   public rotate(angle: number) {

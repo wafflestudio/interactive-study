@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 import { Stage } from '../../core/stage/Stage';
 import { StageManager } from '../../core/stage/StageManager';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { resize } from '../../utils';
+import { StageDebugger } from './StageDebugger';
 import { World } from './World';
 
 type ContextVariables = {
@@ -49,13 +49,14 @@ export default class EscapeCubeStage extends Stage {
     const world = new World(scene);
     const h = 6;
     const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
-    if (world.isDebug) {
-      const control = new OrbitControls(camera, this.renderer.domElement);
-      control.target.set(0, 5, 0);
-    }
     camera.position.set(0, 5, 15);
     camera.lookAt(0, 5, 0);
     scene.add(camera);
+
+    if (window.location.hash === '#debug') {
+      StageDebugger.init(world, camera, this.renderer.domElement);
+    }
+
     this.context = {
       mounted: true,
       scene,
@@ -136,6 +137,7 @@ export default class EscapeCubeStage extends Stage {
       return;
     const timeDelta = (time - prevTime) / 1000; // seconds
     this.context.world.animate(timeDelta);
+    StageDebugger.animate();
     this.renderer.render(this.context.scene, this.context.camera);
   }
 
