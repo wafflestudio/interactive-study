@@ -38,6 +38,13 @@ export class StageDebugger {
       });
     });
 
+    this.context.resetCamera = () => {
+      camera.position.set(0, 5, 15);
+      controls.target.set(0, 5, 0);
+      controls.update();
+    };
+    this.gui.add(this.context, 'resetCamera').name('카메라 초기화');
+
     world.player.object.geometry.morphAttributes.position = [
       // 바닥 충돌
       new THREE.Float32BufferAttribute(
