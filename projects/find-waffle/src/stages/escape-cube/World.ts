@@ -116,6 +116,7 @@ export class World {
         const clone = cube.clone();
         clone.position.set(position[0], position[1], position[2]);
         this.map.add(clone);
+        this.addMapShape(position, [w, h, d]);
       } else {
         const step = position.step;
         const [x1, y1, z1] = position.start;
