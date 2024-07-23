@@ -143,6 +143,9 @@ export class World {
     modelObject.overrides?.forEach(this.overrideModel.bind(this, model));
 
     model.scene.position.set(...modelObject.position);
+    model.scene.quaternion.setFromEuler(
+      new THREE.Euler(...modelObject.rotation.map(THREE.MathUtils.degToRad)),
+    );
     this.map.add(model.scene);
 
     if (modelObject.shapes) {

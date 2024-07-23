@@ -74,6 +74,7 @@ const ModelShapeSchema = z.object({
 const modelObjectSchema = z.object({
   type: z.literal('model'),
   name: z.string(),
+  rotation: vector3Schema.default([0, 0, 0]),
   position: singlePositionSchema,
   overrides: z.array(modelOverrideSchema).optional(),
   shapes: z.array(ModelShapeSchema).optional(),

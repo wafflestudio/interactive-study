@@ -128,7 +128,7 @@
     },
     {
       "type": "model",
-      "name": "text_1",
+      "name": "go_get_that_waffle_over_there",
       "position": [-3.5, 6.5, 4.5],
       "shapes": [
         {
@@ -148,6 +148,23 @@
           "size": [1, 1, 1]
         }
       ]
+    },
+    {
+      "type": "cube",
+      "texture": "dotted",
+      "background": "#FCEE42",
+      "positions": [
+        {
+          "start": [6, 7, -2],
+          "end": [6, 9, 1]
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "watch_out",
+      "rotation": [0, 90, 0],
+      "position": [6.51, 8, -0.5]
     }
   ],
   "resources": [
@@ -174,8 +191,13 @@
     },
     {
       "type": "gltf",
-      "name": "text_1",
-      "path": "/escape-cube/models/text_1.gltf"
+      "name": "go_get_that_waffle_over_there",
+      "path": "/escape-cube/models/go_get_that_waffle_over_there.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "watch_out",
+      "path": "/escape-cube/models/watch_out.gltf"
     }
   ]
 }
