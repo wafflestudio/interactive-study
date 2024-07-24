@@ -17,12 +17,13 @@ export class Dialogue {
   }
 
   public begin(queue: string[], onEndDialogue?: () => void) {
+    console.log('begin: ', queue[0] ?? '');
     this.queue = queue;
     this.endCallback = onEndDialogue;
-    this.element?.classList.remove('invisible');
     this.next();
   }
   public next() {
+    console.log('next: ', this.queue[0] ?? '');
     if (this.isAnimating) return;
     if (this.queue.length === 0) {
       if (this.endCallback) this.endCallback();
@@ -37,7 +38,10 @@ export class Dialogue {
     const animate = (text: string, index: number) =>
       setTimeout(() => {
         const sliced = text.slice(0, index);
-        if (this.element) this.element.innerHTML = sliced;
+        if (this.element) {
+          this.element.innerHTML = sliced;
+          this.element.classList.remove('invisible'); // TODO: 최적화
+        }
         if (index >= text.length) {
           this.isAnimating = false;
         } else {

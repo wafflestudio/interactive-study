@@ -7,18 +7,26 @@ import { animateCharacter } from '../animation/character';
 import { CannonManager } from '../core/cannon/CannonManager';
 import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
+import { SceneManager } from '../core/scene/SceneManager';
 
 export class Player extends GameObject {
   keysPressed = new Map<string, boolean>();
 
   constructor(
-    scene: THREE.Scene,
     resourceLoader: ResourceLoader,
     keyMap: KeyMap,
+    sceneManager: SceneManager,
     scenarioManager: ScenarioManager,
     cannonManager: CannonManager,
   ) {
-    super('Player', resourceLoader, keyMap, scenarioManager, cannonManager);
+    super(
+      'Player',
+      resourceLoader,
+      keyMap,
+      sceneManager,
+      scenarioManager,
+      cannonManager,
+    );
 
     this.resourceLoader.registerModel(
       'iceCream',
@@ -51,7 +59,7 @@ export class Player extends GameObject {
 
           console.log(this.cannonManager.totalObjectMap.get('Scene'));
 
-          scene.add(iceCream);
+          this.sceneManager.roomScene.add(iceCream);
 
           this.keyMap.bind(
             'w',

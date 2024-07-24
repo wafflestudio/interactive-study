@@ -18,9 +18,7 @@ import { spinboxScenario } from './scenario/spinBox';
 import { wardrobeScenario } from './scenario/wardrobe';
 
 export default class WaffleRoomStage extends Stage {
-  scene?: THREE.Scene;
-  camera?: THREE.PerspectiveCamera;
-  light?: THREE.DirectionalLight;
+  sceneManager?: SceneManager;
   controls?: OrbitControls;
   clock?: THREE.Clock;
   cannonDebugger?: { update: () => void };
@@ -40,34 +38,9 @@ export default class WaffleRoomStage extends Stage {
      * 1. init scene
      */
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
-    this.scene = new THREE.Scene();
-
-    // init camera
-    this.camera = new THREE.PerspectiveCamera(
-      35,
-      this.app.clientWidth / this.app.clientHeight,
-      0.1,
-      100,
-    );
-    this.camera.position.set(9, 6, 9);
-    const lookAtPoint = new THREE.Vector3(0, 0, 0);
-    this.camera.lookAt(lookAtPoint);
-
-    // sunlight
-    const sunLight = new THREE.DirectionalLight('#ffffff', 4);
-
-    sunLight.castShadow = true;
-    sunLight.shadow.camera.far = 15;
-    sunLight.shadow.mapSize.set(1024, 1024);
-    sunLight.shadow.normalBias = 0.05;
-    sunLight.position.set(3, 3, -2.25);
-
-    // add objects
-    this.scene.add(sunLight);
-    this.scene.add(this.camera);
 
     // implement managers
-    const sceneManager = new SceneManager(this.renderer);
+    this.sceneManager = new SceneManager(this.renderer, this.app);
     const scenarioManager = new ScenarioManager();
     const resourceLoader = new ResourceLoader();
     const keyMap = new KeyMap();
@@ -75,15 +48,16 @@ export default class WaffleRoomStage extends Stage {
     const dialogue = new Dialogue({ app: this.app });
 
     // debug
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
-    this.cannonDebugger = CannonDebugger(this.scene, this.cannonManager.world);
+    this.cannonDebugger = CannonDebugger(
+      this.sceneManager.roomScene,
+      this.cannonManager.world,
+    );
 
     // add scenario
-    scenarioManager.addScenario(openingScenario(sceneManager, dialogue));
+    scenarioManager.addScenario(openingScenario(this.sceneManager, dialogue));
     scenarioManager.addScenario(wardrobeScenario());
     scenarioManager.addScenario(
-      spinboxScenario(sceneManager, this.cannonManager, keyMap, dialogue),
+      spinboxScenario(this.sceneManager, this.cannonManager, keyMap, dialogue),
     );
 
     // 테스트 끝나면 지우기
@@ -114,16 +88,16 @@ export default class WaffleRoomStage extends Stage {
      */
     // add controls & animation
     this.controls = new OrbitControls(
-      this.camera,
+      this.sceneManager.currentCamera,
       this.app.querySelector('canvas') as HTMLCanvasElement,
     );
     this.clock = new THREE.Clock();
 
     // Player
     const player = new Player(
-      this.scene,
       resourceLoader,
       keyMap,
+      this.sceneManager,
       scenarioManager,
       this.cannonManager,
     );
@@ -138,7 +112,7 @@ export default class WaffleRoomStage extends Stage {
         onLoad: ({ scene: room }) => {
           const scale = 4;
           room.scale.set(scale, scale, scale);
-          this.scene?.add(room);
+          this.sceneManager?.roomScene.add(room);
 
           // wrap cannon body for all room objects
           const targetObjects: THREE.Object3D[] = [];
@@ -165,6 +139,7 @@ export default class WaffleRoomStage extends Stage {
             wardrobeInfo!.body,
             resourceLoader,
             keyMap,
+            this.sceneManager!,
             scenarioManager,
             this.cannonManager!,
           );
@@ -183,6 +158,7 @@ export default class WaffleRoomStage extends Stage {
             packagesInfo!.body,
             resourceLoader,
             keyMap,
+            this.sceneManager!,
             scenarioManager,
             this.cannonManager!,
           );
@@ -210,23 +186,27 @@ export default class WaffleRoomStage extends Stage {
 
   public resize() {
     // TODO: Update to common util function
-    if (!this.camera) return;
+    if (!this.sceneManager) return;
 
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
-    this.camera.aspect = this.app.clientWidth / this.app.clientHeight;
-    this.camera.updateProjectionMatrix();
+    this.sceneManager.currentCamera.aspect =
+      this.app.clientWidth / this.app.clientHeight;
+    this.sceneManager.currentCamera.updateProjectionMatrix();
   }
 
   public animate(t: DOMHighResTimeStamp) {
-    if (!this.scene || !this.camera || !this.clock || !this.cannonManager)
-      return;
+    if (!this.sceneManager || !this.clock || !this.cannonManager) return;
 
     this.onAnimateCallbacks.forEach(({ cb, bindTarget }) =>
       cb.bind(bindTarget)(t),
     );
 
     this.controls?.update();
-    this.renderer.render(this.scene, this.camera);
+    this.sceneManager.render();
+    // this.renderer.render(
+    //   this.sceneManager.currentScene,
+    //   this.sceneManager.currentCamera,
+    // );
 
     const delta = this.clock.getDelta();
 
@@ -237,8 +217,15 @@ export default class WaffleRoomStage extends Stage {
   }
 
   public unmount() {
+    if (!this.sceneManager) return;
     // dispose objects
-    this.scene?.children.forEach((child) => {
+    this.sceneManager.roomScene.children.forEach((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    });
+    this.sceneManager.wardrobeScene.children.forEach((child) => {
       if (child instanceof THREE.Mesh) {
         child.geometry.dispose();
         child.material.dispose();
@@ -246,10 +233,6 @@ export default class WaffleRoomStage extends Stage {
     });
 
     this.onUnmountCallbacks.forEach((callback) => callback());
-
-    // clear properties
-    this.scene = undefined;
-    this.camera = undefined;
 
     // done!
     console.log('TestBlueStage unmounted');

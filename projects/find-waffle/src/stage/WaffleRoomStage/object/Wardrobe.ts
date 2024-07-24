@@ -6,6 +6,7 @@ import { ResourceLoader } from '../../../libs/resource-loader/ResourceLoader';
 import { CannonManager } from '../core/cannon/CannonManager';
 import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
+import { SceneManager } from '../core/scene/SceneManager';
 
 export class Wardrobe extends GameObject {
   hitbox;
@@ -14,10 +15,18 @@ export class Wardrobe extends GameObject {
     body: CANNON.Body,
     resourceLoader: ResourceLoader,
     keyMap: KeyMap,
+    sceneManager: SceneManager,
     scenarioManager: ScenarioManager,
     cannonManager: CannonManager,
   ) {
-    super('Wardrobe', resourceLoader, keyMap, scenarioManager, cannonManager);
+    super(
+      'Wardrobe',
+      resourceLoader,
+      keyMap,
+      sceneManager,
+      scenarioManager,
+      cannonManager,
+    );
     this.object3D = object3D;
     this.body = body;
     this.hitbox = this.cannonManager.createInteractiveHitbox(
