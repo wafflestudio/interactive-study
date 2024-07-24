@@ -87,6 +87,12 @@ export default class WaffleRoomStage extends Stage {
       () => {},
     );
 
+    scenarioManager.addPlot(
+      'test2',
+      () => {},
+      () => {},
+    );
+
     scenarioManager.startPlot('test');
 
     /*
@@ -142,6 +148,7 @@ export default class WaffleRoomStage extends Stage {
             this.cannonManager?.totalObjectMap.get('큐브010');
           const wardrobe = new Wardrobe(
             wardrobeInfo!.mesh,
+            wardrobeInfo!.body,
             resourceLoader,
             keyMap,
             scenarioManager,
@@ -152,7 +159,6 @@ export default class WaffleRoomStage extends Stage {
             bindTarget: wardrobe,
           });
           this.onUnmountCallbacks.push(wardrobe.onUnmount);
-
           this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
         },
       },

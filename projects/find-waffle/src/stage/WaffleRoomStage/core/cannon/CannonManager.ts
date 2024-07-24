@@ -113,13 +113,15 @@ export class CannonManager {
     });
     this.world.addBody(hitboxBody);
 
-    this.interactiveHitboxMap.set(targetMesh.name, {
+    const hitboxInfo = {
       mesh: targetMesh,
       body: hitboxBody,
       margin: margin,
-      activatedSubstage: 0,
+      activatedSubstage: 'main',
       onActivate: onActivate,
-    });
+    };
+    this.interactiveHitboxMap.set(targetMesh.name, hitboxInfo);
+    return hitboxInfo;
   }
 
   public filterCollision(
