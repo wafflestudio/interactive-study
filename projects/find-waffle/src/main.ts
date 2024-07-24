@@ -1,5 +1,5 @@
 import { StageManager } from './core/stage/StageManager';
-import WaffleRoomStage from './stage/WaffleRoomStage/index2';
+import WaffleRoomStage from './stage/WaffleRoomStage';
 
 // Stages
 const stageManager = StageManager.instance;
