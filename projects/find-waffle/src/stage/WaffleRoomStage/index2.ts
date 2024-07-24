@@ -46,8 +46,8 @@ export default class WaffleRoomStage extends Stage {
       0.1,
       100,
     );
-    this.camera.position.set(6, 4, 8);
-    const lookAtPoint = new THREE.Vector3(0, 10, 0);
+    this.camera.position.set(9, 6, 9);
+    const lookAtPoint = new THREE.Vector3(0, 0, 0);
     this.camera.lookAt(lookAtPoint);
 
     // sunlight
@@ -222,20 +222,14 @@ export default class WaffleRoomStage extends Stage {
   }
 
   public animate(t: DOMHighResTimeStamp) {
-    if (
-      !this.scene ||
-      !this.camera ||
-      !this.controls ||
-      !this.clock ||
-      !this.cannonManager
-    )
+    if (!this.scene || !this.camera || !this.clock || !this.cannonManager)
       return;
 
     this.onAnimateCallbacks.forEach(({ cb, bindTarget }) =>
       cb.bind(bindTarget)(t),
     );
 
-    this.controls.update();
+    this.controls?.update();
     this.renderer.render(this.scene, this.camera);
 
     const delta = this.clock.getDelta();
