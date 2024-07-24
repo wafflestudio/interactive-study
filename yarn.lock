@@ -10154,7 +10154,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
     "@typescript-eslint/parser": "npm:^6.10.0"
     cannon-es: "npm:^0.20.0"
-    cannon-es-debugger: "npm:^1.0.0"
     es-toolkit: "npm:^1.8.0"
     eslint: "npm:^8.53.0"
     gsap: "npm:^3.12.5"
