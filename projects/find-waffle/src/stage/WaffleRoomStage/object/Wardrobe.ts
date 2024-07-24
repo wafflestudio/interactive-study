@@ -17,6 +17,9 @@ export class Wardrobe extends GameObject {
   ) {
     super('Wardrobe', resourceLoader, keyMap, scenarioManager, cannonManager);
     this.object3D = object3D;
+    this.cannonManager.createInteractiveHitbox(this.object3D, 0.2, () => {
+      console.log('created');
+    });
   }
   onAnimate() {}
   onUnmount() {}

@@ -119,33 +119,41 @@ export default class WaffleRoomStage extends Stage {
           const scale = 4;
           room.scale.set(scale, scale, scale);
           this.scene?.add(room);
+
+          // wrap cannon body for all room objects
           const targetObjects: THREE.Object3D[] = [];
           room.traverse((child) => {
             child.type === 'Mesh' && targetObjects.push(child);
-
-            // if (isWardrobe(child)) {
-            // const wardrobe = new Wardrobe(
-            //   child,
-            //   resourceLoader,
-            //   keyMap,
-            //   scenarioManager,
-            //   cannonManager,
-            // );
-            // this.onAnimateCallbacks.push(wardrobe.onAnimate);
-            // this.onUnmountCallbacks.push(wardrobe.onUnmount);
-            // }
-            // if (isProp(child)) new PropObject(child, cannonManager);
           });
           this.cannonManager?.wrap(targetObjects, scale, 0);
-          this.cannonManager?.totalObjectMap.forEach(({ body }) => {
+
+          // filter collision
+          const filteredMap = new Map(
+            [...this.cannonManager?.totalObjectMap!].filter(
+              ([key]) => key != 'Scene',
+            ),
+          );
+          filteredMap.forEach(({ body }) => {
             this.cannonManager?.filterCollision(body, 4, 8);
           });
-          const character = this.cannonManager?.totalObjectMap.get('Scene');
-          this.cannonManager?.filterCollision(character!.body, 1, 2);
-          const wardrobe = this.cannonManager?.totalObjectMap.get('큐브010');
-          const sofa = this.cannonManager?.totalObjectMap.get('큐브114');
-          this.cannonManager?.filterCollision(wardrobe!.body, 2, 1);
-          this.cannonManager?.filterCollision(sofa!.body, 2, 1);
+
+          // specify interactive objects (temp: only wardrobe for now)
+          const wardrobeInfo =
+            this.cannonManager?.totalObjectMap.get('큐브010');
+          const wardrobe = new Wardrobe(
+            wardrobeInfo!.mesh,
+            resourceLoader,
+            keyMap,
+            scenarioManager,
+            this.cannonManager!,
+          );
+          this.onAnimateCallbacks.push({
+            cb: wardrobe.onAnimate,
+            bindTarget: wardrobe,
+          });
+          this.onUnmountCallbacks.push(wardrobe.onUnmount);
+
+          this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
         },
       },
     );
