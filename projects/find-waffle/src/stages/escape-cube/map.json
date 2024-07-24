@@ -290,6 +290,20 @@
       "name": "watch_out",
       "rotation": [0, 90, 0],
       "position": [6.51, 8, -0.5]
+    },
+    {
+      "type": "model",
+      "name": "car",
+      "rotation": [-8, 0, 0],
+      "scale": 3,
+      "position": [5.5, 4.3, 3]
+    },
+    {
+      "type": "model",
+      "name": "clock",
+      "scale": 0.5,
+      "rotation": [-5, 188, -10],
+      "position": [2.4, 1.5, -6]
     }
   ],
   "resources": [
@@ -323,6 +337,16 @@
       "type": "gltf",
       "name": "watch_out",
       "path": "/escape-cube/models/watch_out.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "car",
+      "path": "/escape-cube/models/car.glb"
+    },
+    {
+      "type": "gltf",
+      "name": "clock",
+      "path": "/escape-cube/models/clock.glb"
     }
   ]
 }
