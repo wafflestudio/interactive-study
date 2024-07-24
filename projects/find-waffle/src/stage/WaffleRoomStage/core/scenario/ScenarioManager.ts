@@ -21,7 +21,6 @@ export class ScenarioManager {
   }
 
   set(name: string) {
-    console.log('set: ', name);
     const target = this.plots.find((plot) => plot.name === name);
     if (!target) throw new Error(`Plot ${name} not found`);
     if (this.currentPlot) this.currentPlot.onUnmount?.();

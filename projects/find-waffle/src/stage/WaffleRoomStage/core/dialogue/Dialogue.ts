@@ -17,13 +17,11 @@ export class Dialogue {
   }
 
   public begin(queue: string[], onEndDialogue?: () => void) {
-    console.log('begin: ', queue[0] ?? '');
     this.queue = queue;
     this.endCallback = onEndDialogue;
     this.next();
   }
   public next() {
-    console.log('next: ', this.queue[0] ?? '');
     if (this.isAnimating) return;
     if (this.queue.length === 0) {
       if (this.endCallback) this.endCallback();
