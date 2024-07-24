@@ -19,7 +19,6 @@ export class Dialogue {
   public begin(queue: string[], onEndDialogue?: () => void) {
     this.queue = queue;
     this.endCallback = onEndDialogue;
-    this.element?.classList.remove('invisible');
     this.next();
   }
   public next() {
@@ -37,7 +36,10 @@ export class Dialogue {
     const animate = (text: string, index: number) =>
       setTimeout(() => {
         const sliced = text.slice(0, index);
-        if (this.element) this.element.innerHTML = sliced;
+        if (this.element) {
+          this.element.innerHTML = sliced;
+          this.element.classList.remove('invisible'); // TODO: 최적화
+        }
         if (index >= text.length) {
           this.isAnimating = false;
         } else {

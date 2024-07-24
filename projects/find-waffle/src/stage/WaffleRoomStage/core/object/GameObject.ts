@@ -5,6 +5,7 @@ import { KeyMap } from '../../../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../../../libs/resource-loader/ResourceLoader';
 import { CannonManager } from '../cannon/CannonManager';
 import { ScenarioManager } from '../scenario/ScenarioManager';
+import { SceneManager } from '../scene/SceneManager';
 
 export abstract class GameObject {
   public object3D?: THREE.Object3D;
@@ -14,6 +15,7 @@ export abstract class GameObject {
     public objectName: string,
     public resourceLoader: ResourceLoader,
     public keyMap: KeyMap,
+    public sceneManager: SceneManager,
     public scenarioManager: ScenarioManager,
     public cannonManager: CannonManager,
   ) {}
