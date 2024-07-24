@@ -19,8 +19,8 @@ export class ScenarioManager {
 
   addPlot(
     name: string,
-    onMount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => {},
-    onUnmount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => {},
+    onMount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void,
+    onUnmount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void,
   ) {
     this.plots.push({ name, onMount, onUnmount });
   }
@@ -44,4 +44,6 @@ export class ScenarioManager {
   isPlot(name: string) {
     return this.currentPlot?.name === name;
   }
+
+  getScene(name: string) {}
 }
