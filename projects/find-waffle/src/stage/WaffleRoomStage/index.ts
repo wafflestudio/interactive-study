@@ -81,7 +81,7 @@ export default class WaffleRoomStage extends Stage {
     //   () => {},
     // );
 
-    scenarioManager.set('opening_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+    scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
 
     /*
      * 2. load resources
@@ -94,6 +94,7 @@ export default class WaffleRoomStage extends Stage {
     this.clock = new THREE.Clock();
 
     // Player
+    console.log(this.sceneManager.currentScene.children);
     const player = new Player(
       resourceLoader,
       keyMap,
@@ -107,7 +108,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      '/models/WaffleRoom/WaffleRoom.gltf',
+      'static/models/WaffleRoom/WaffleRoom.gltf',
       {
         onLoad: ({ scene: room }) => {
           const scale = 4;
