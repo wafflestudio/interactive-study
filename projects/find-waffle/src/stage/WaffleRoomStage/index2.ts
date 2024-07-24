@@ -1,4 +1,5 @@
 import CannonDebugger from 'cannon-es-debugger';
+import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
@@ -9,6 +10,7 @@ import { CannonManager } from './core/cannon/CannonManager';
 import { Dialogue } from './core/dialogue/Dialogue';
 import { PropObject, isProp } from './core/object/PropObject';
 import { ScenarioManager } from './core/scenario/ScenarioManager';
+import { Packages, isPackages } from './object/Packages';
 import { Player } from './object/Player';
 import { Wardrobe, isWardrobe } from './object/Wardrobe';
 
@@ -45,6 +47,8 @@ export default class WaffleRoomStage extends Stage {
       100,
     );
     this.camera.position.set(6, 4, 8);
+    const lookAtPoint = new THREE.Vector3(0, 10, 0);
+    this.camera.lookAt(lookAtPoint);
 
     // sunlight
     const sunLight = new THREE.DirectionalLight('#ffffff', 4);
@@ -89,7 +93,21 @@ export default class WaffleRoomStage extends Stage {
 
     scenarioManager.addPlot(
       'test2',
-      () => {},
+      () => {
+        dialogue.begin(['박스를 찾았습니다', '뭐할까?'], () => {});
+        gsap.to(this.camera!.position, {
+          duration: 2,
+          x: 2,
+          y: 3,
+          z: 2,
+        });
+        // gsap.to(this.camera!.lookAt, {
+        //   duration: 2,
+        //   x: 0,
+        //   y: 10,
+        //   z: 0,
+        // });
+      },
       () => {},
     );
 
@@ -160,6 +178,24 @@ export default class WaffleRoomStage extends Stage {
           });
           this.onUnmountCallbacks.push(wardrobe.onUnmount);
           this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
+
+          // Set Packages to interactive objects
+          const packagesInfo =
+            this.cannonManager?.totalObjectMap.get('큐브003');
+          const packages = new Packages(
+            packagesInfo!.mesh,
+            packagesInfo!.body,
+            resourceLoader,
+            keyMap,
+            scenarioManager,
+            this.cannonManager!,
+          );
+          this.onAnimateCallbacks.push({
+            cb: packages.onAnimate,
+            bindTarget: packages,
+          });
+          this.onUnmountCallbacks.push(packages.onUnmount);
+          this.cannonManager?.filterCollision(packagesInfo!.body, 2, 1);
         },
       },
     );
