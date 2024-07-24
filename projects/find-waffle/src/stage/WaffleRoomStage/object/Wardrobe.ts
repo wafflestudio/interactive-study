@@ -35,7 +35,7 @@ export class Wardrobe extends GameObject {
       this.scenarioManager.currentPlot!.name === this.hitbox?.activatedSubstage
     ) {
       this.cannonManager.world.contacts.forEach((contact) => {
-        this.hitbox.onActivate(contact);
+        this.hitbox!.onActivate(contact);
       });
     }
   }
