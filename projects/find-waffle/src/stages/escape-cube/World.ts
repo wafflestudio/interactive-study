@@ -146,6 +146,7 @@ export class World {
     model.scene.quaternion.setFromEuler(
       new THREE.Euler(...modelObject.rotation.map(THREE.MathUtils.degToRad)),
     );
+    model.scene.scale.setScalar(modelObject.scale);
     this.map.add(model.scene);
 
     if (modelObject.shapes) {
