@@ -15,7 +15,7 @@ type InteractiveHitbox = {
   onActivate: (contact: CANNON.ContactEquation) => void;
 };
 
-type IndividualObject = {
+export type IndividualObject = {
   mesh: THREE.Object3D;
   body: CANNON.Body;
   isMovable: boolean;
