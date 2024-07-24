@@ -17,8 +17,6 @@ export class StageDebugger {
 
   static init(world: World, camera: THREE.Camera, canvas: HTMLCanvasElement) {
     const controls = new OrbitControls(camera, canvas);
-    controls.target.set(0, 5, 0);
-    controls.update();
     this.cannonDebugger = CannonDebugger(world.scene, world.cannonWorld);
     this.gui = new GUI();
 
@@ -39,8 +37,8 @@ export class StageDebugger {
     });
 
     this.context.resetCamera = () => {
-      camera.position.set(0, 5, 15);
-      controls.target.set(0, 5, 0);
+      camera.position.set(0, 0, 15);
+      controls.target.set(0, 0, 0);
       controls.update();
     };
     this.gui.add(this.context, 'resetCamera').name('카메라 초기화');

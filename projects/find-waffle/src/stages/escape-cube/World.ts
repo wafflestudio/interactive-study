@@ -213,14 +213,14 @@ export class World {
     this.cannonWorld.step(1 / 60, timeDelta);
   }
 
-  public rotate(angle: number) {
+  public rotate(axis: THREE.Vector3, angle: number) {
     if (this.isRotating) return;
     this.isRotating = true;
     this.pause();
     const helper = { t: 0 };
     const start = this.map.quaternion.clone();
     const rotation = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0),
+      axis,
       THREE.MathUtils.degToRad(angle),
     );
     const dest = start.clone().multiply(rotation).normalize();

@@ -3,6 +3,10 @@ import * as THREE from 'three';
 
 import { World } from './World';
 
+const xAxis = new THREE.Vector3(1, 0, 0);
+const yAxis = new THREE.Vector3(0, 1, 0);
+const zAxis = new THREE.Vector3(0, 0, 1);
+
 export class Player {
   object: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>;
   body: CANNON.Body;
@@ -10,7 +14,7 @@ export class Player {
   private speed = 5;
 
   constructor(public world: World) {
-    const initialPosition = [-4, 10, 5] as const;
+    const initialPosition = [-4, 5, 5] as const;
 
     const geometry = new THREE.SphereGeometry(0.3);
     const material = new THREE.MeshStandardMaterial({ color: 0xadadee });
@@ -81,11 +85,15 @@ export class Player {
     }
     if (this.position.x > 5.001) {
       this.position.x = 5;
-      this.world.rotate(-90);
+      this.world.rotate(yAxis, -90);
     }
     if (this.position.x < -5.001) {
       this.position.x = -5;
-      this.world.rotate(90);
+      this.world.rotate(yAxis, 90);
+    }
+    if (this.position.y > 6.001) {
+      this.position.y = 10;
+      this.world.rotate(zAxis, 90);
     }
   }
 

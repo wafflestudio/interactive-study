@@ -49,8 +49,7 @@ export default class EscapeCubeStage extends Stage {
     const world = new World(scene);
     const h = 6;
     const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
-    camera.position.set(0, 5, 15);
-    camera.lookAt(0, 5, 0);
+    camera.position.set(0, 0, 15);
     scene.add(camera);
 
     if (window.location.hash === '#debug') {
