@@ -25,7 +25,7 @@ export class Wardrobe extends GameObject {
       0.5,
       () => {
         console.log('Wardrobe clicked');
-        this.scenarioManager.changePlot('test2');
+        this.scenarioManager.set('test2');
       },
     );
   }

@@ -25,16 +25,14 @@ export class Packages extends GameObject {
       0.5,
       () => {
         console.log('Packages clicked');
-        this.scenarioManager.changePlot('test2');
+        this.scenarioManager.set('test2');
       },
     );
     console.log(this.cannonManager.interactiveHitboxMap);
   }
   onAnimate() {
     if (!this.body) return;
-    if (
-      this.scenarioManager.currentPlot!.name === this.hitbox?.activatedSubstage
-    ) {
+    if (this.scenarioManager.isPlot(this.hitbox?.activatedSubstage)) {
       this.cannonManager.world.contacts.forEach((contact) => {
         this.hitbox!.onActivate(contact);
       });

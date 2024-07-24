@@ -9,7 +9,7 @@ import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
 
 export class Player extends GameObject {
-  keysPressed: Map<string, boolean> = new Map();
+  keysPressed = new Map<string, boolean>();
 
   constructor(
     scene: THREE.Scene,

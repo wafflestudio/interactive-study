@@ -1,49 +1,35 @@
-import * as THREE from 'three';
-
-type Plot = {
+export type Plot = {
   name: string;
-  onMount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void;
-  onUnmount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void;
+  onMount?: () => void;
+  onUnmount?: () => void;
 };
 
+export type Scenario = (set: (name: string) => void) => Plot[];
+
 export class ScenarioManager {
-  renderer: THREE.WebGLRenderer;
-  camera: THREE.Camera;
   plots: Plot[] = [];
-  currentPlot?: Plot;
+  currentPlot: Plot | null = null;
 
-  constructor(renderer: THREE.WebGLRenderer, camera: THREE.Camera) {
-    this.renderer = renderer;
-    this.camera = camera;
+  constructor() {}
+
+  add(plot: Plot) {
+    this.plots.push(plot);
   }
 
-  addPlot(
-    name: string,
-    onMount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void,
-    onUnmount: (renderer: THREE.WebGLRenderer, camera: THREE.Camera) => void,
-  ) {
-    this.plots.push({ name, onMount, onUnmount });
+  addScenario(scenario: Scenario) {
+    this.plots.push(...scenario(this.set.bind(this)));
   }
 
-  changePlot(name: string) {
+  set(name: string) {
     const target = this.plots.find((plot) => plot.name === name);
     if (!target) throw new Error(`Plot ${name} not found`);
-    if (this.currentPlot)
-      this.currentPlot.onUnmount(this.renderer, this.camera);
+    if (this.currentPlot) this.currentPlot.onUnmount?.();
     this.currentPlot = target;
-    this.currentPlot.onMount(this.renderer, this.camera);
+    this.currentPlot.onMount?.();
   }
 
-  startPlot(name: string) {
-    const target = this.plots.find((plot) => plot.name === name);
-    if (!target) throw new Error(`Plot ${name} not found`);
-    this.currentPlot = target;
-    this.currentPlot.onMount(this.renderer, this.camera);
+  isPlot(name: string | undefined | null) {
+    if (!this.currentPlot) return false;
+    return this.currentPlot.name === name;
   }
-
-  isPlot(name: string) {
-    return this.currentPlot?.name === name;
-  }
-
-  getScene(name: string) {}
 }

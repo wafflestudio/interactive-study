@@ -8,11 +8,14 @@ import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { CannonManager } from './core/cannon/CannonManager';
 import { Dialogue } from './core/dialogue/Dialogue';
-import { PropObject, isProp } from './core/object/PropObject';
 import { ScenarioManager } from './core/scenario/ScenarioManager';
-import { Packages, isPackages } from './object/Packages';
+import { SceneManager } from './core/scene/SceneManager';
+import { Packages } from './object/Packages';
 import { Player } from './object/Player';
-import { Wardrobe, isWardrobe } from './object/Wardrobe';
+import { Wardrobe } from './object/Wardrobe';
+import { openingScenario } from './scenario/opening';
+import { spinboxScenario } from './scenario/spinBox';
+import { wardrobeScenario } from './scenario/wardrobe';
 
 export default class WaffleRoomStage extends Stage {
   scene?: THREE.Scene;
@@ -64,7 +67,8 @@ export default class WaffleRoomStage extends Stage {
     this.scene.add(this.camera);
 
     // implement managers
-    const scenarioManager = new ScenarioManager(this.renderer, this.camera);
+    const sceneManager = new SceneManager(this.renderer);
+    const scenarioManager = new ScenarioManager();
     const resourceLoader = new ResourceLoader();
     const keyMap = new KeyMap();
     this.cannonManager = new CannonManager();
@@ -75,43 +79,35 @@ export default class WaffleRoomStage extends Stage {
     this.scene.add(axesHelper);
     this.cannonDebugger = CannonDebugger(this.scene, this.cannonManager.world);
 
-    scenarioManager.addPlot(
-      'test',
-      () => {
-        dialogue.begin(['시작했습니다!', '메인으로 갑시다'], () => {
-          scenarioManager.changePlot('main');
-        });
-      },
-      () => {},
+    // add scenario
+    scenarioManager.addScenario(openingScenario(sceneManager, dialogue));
+    scenarioManager.addScenario(wardrobeScenario());
+    scenarioManager.addScenario(
+      spinboxScenario(sceneManager, this.cannonManager, keyMap, dialogue),
     );
 
-    scenarioManager.addPlot(
-      'main',
-      () => {},
-      () => {},
-    );
+    // 테스트 끝나면 지우기
+    // scenarioManager.add(
+    //   'test2',
+    //   () => {
+    //     dialogue.begin(['박스를 찾았습니다', '뭐할까?'], () => {});
+    //     gsap.to(this.camera!.position, {
+    //       duration: 2,
+    //       x: 2,
+    //       y: 3,
+    //       z: 2,
+    //     });
+    //     // gsap.to(this.camera!.lookAt, {
+    //     //   duration: 2,
+    //     //   x: 0,
+    //     //   y: 10,
+    //     //   z: 0,
+    //     // });
+    //   },
+    //   () => {},
+    // );
 
-    scenarioManager.addPlot(
-      'test2',
-      () => {
-        dialogue.begin(['박스를 찾았습니다', '뭐할까?'], () => {});
-        gsap.to(this.camera!.position, {
-          duration: 2,
-          x: 2,
-          y: 3,
-          z: 2,
-        });
-        // gsap.to(this.camera!.lookAt, {
-        //   duration: 2,
-        //   x: 0,
-        //   y: 10,
-        //   z: 0,
-        // });
-      },
-      () => {},
-    );
-
-    scenarioManager.startPlot('test');
+    scenarioManager.set('opening_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
 
     /*
      * 2. load resources
