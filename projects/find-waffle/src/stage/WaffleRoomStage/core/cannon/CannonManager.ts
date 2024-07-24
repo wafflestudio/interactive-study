@@ -15,7 +15,7 @@ type InteractiveHitbox = {
   onActivate: (contact: CANNON.ContactEquation) => void;
 };
 
-type IndividualObject = {
+export type IndividualObject = {
   mesh: THREE.Object3D;
   body: CANNON.Body;
   isMovable: boolean;
@@ -113,13 +113,15 @@ export class CannonManager {
     });
     this.world.addBody(hitboxBody);
 
-    this.interactiveHitboxMap.set(targetMesh.name, {
+    const hitboxInfo = {
       mesh: targetMesh,
       body: hitboxBody,
       margin: margin,
-      activatedSubstage: 0,
+      activatedSubstage: 'main',
       onActivate: onActivate,
-    });
+    };
+    this.interactiveHitboxMap.set(targetMesh.name, hitboxInfo);
+    return hitboxInfo;
   }
 
   public filterCollision(
@@ -133,6 +135,7 @@ export class CannonManager {
 
   public stopIfCollided() {
     this.world.contacts.forEach((contact) => {
+      console.log('contact');
       contact.bi.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bj.velocity = new CANNON.Vec3(0, 0, 0);
       contact.bi.angularVelocity = new CANNON.Vec3(0, 0, 0);

@@ -7,7 +7,7 @@ import { CannonManager } from '../core/cannon/CannonManager';
 import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
 
-export class Wardrobe extends GameObject {
+export class Packages extends GameObject {
   hitbox;
   constructor(
     object3D: THREE.Object3D,
@@ -17,17 +17,18 @@ export class Wardrobe extends GameObject {
     scenarioManager: ScenarioManager,
     cannonManager: CannonManager,
   ) {
-    super('Wardrobe', resourceLoader, keyMap, scenarioManager, cannonManager);
+    super('Packages', resourceLoader, keyMap, scenarioManager, cannonManager);
     this.object3D = object3D;
     this.body = body;
     this.hitbox = this.cannonManager.createInteractiveHitbox(
       this.object3D,
       0.5,
       () => {
-        console.log('Wardrobe clicked');
+        console.log('Packages clicked');
         this.scenarioManager.changePlot('test2');
       },
     );
+    console.log(this.cannonManager.interactiveHitboxMap);
   }
   onAnimate() {
     if (!this.body) return;
@@ -42,4 +43,4 @@ export class Wardrobe extends GameObject {
   onUnmount() {}
 }
 
-export const isWardrobe = (object3D: THREE.Object3D) => true;
+export const isPackages = (object3D: THREE.Object3D) => true;
