@@ -2756,6 +2756,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cannon-es-debugger@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "cannon-es-debugger@npm:1.0.0"
+  peerDependencies:
+    cannon-es: 0.x
+    three: 0.x
+    typescript: ">=3.8"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 1d4a67038f4cd7ae70d1d9e4a88d8129b2cb246a53a1e165f651e17b1af40f29d4b5150d0d4ee827687107cb654ba4443969f2d7488cf1f5d0e4d0b35465ca04
+  languageName: node
+  linkType: hard
+
 "cannon-es@npm:^0.20.0":
   version: 0.20.0
   resolution: "cannon-es@npm:0.20.0"
@@ -3740,6 +3754,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
     "@typescript-eslint/parser": "npm:^6.10.0"
     cannon-es: "npm:^0.20.0"
+    cannon-es-debugger: "npm:^1.0.0"
     es-toolkit: "npm:^1.8.0"
     eslint: "npm:^8.53.0"
     gsap: "npm:^3.12.5"
