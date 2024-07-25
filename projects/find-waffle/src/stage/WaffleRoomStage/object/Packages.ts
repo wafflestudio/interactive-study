@@ -4,12 +4,14 @@ import * as THREE from 'three';
 import { KeyMap } from '../../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../../libs/resource-loader/ResourceLoader';
 import { CannonManager } from '../core/cannon/CannonManager';
+import { InteractiveHitbox } from '../core/cannon/CannonManager';
 import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
 import { SceneManager } from '../core/scene/SceneManager';
 
 export class Packages extends GameObject {
-  hitbox;
+  hitboxes: InteractiveHitbox[] = [];
+
   constructor(
     object3D: THREE.Object3D,
     body: CANNON.Body,
@@ -29,24 +31,31 @@ export class Packages extends GameObject {
     );
     this.object3D = object3D;
     this.body = body;
-    this.hitbox = this.cannonManager.createInteractiveHitbox(
-      this.object3D,
-      0.5,
-      () => {
-        console.log('Packages clicked');
-        this.scenarioManager.set('test2');
-      },
+    this.hitboxes.push(
+      this.cannonManager.createInteractiveHitbox(
+        this.object3D,
+        0.5,
+        'spinbox_02',
+        (contact) => {
+          console.log('Packages clicked');
+          this.scenarioManager.set('test2');
+        },
+      ),
     );
-    console.log(this.cannonManager.interactiveHitboxMap);
   }
+
   onAnimate() {
     if (!this.body) return;
-    if (this.scenarioManager.isPlot(this.hitbox?.activatedSubstage)) {
-      this.cannonManager.world.contacts.forEach((contact) => {
-        this.hitbox!.onActivate(contact);
-      });
-    }
+    this.hitboxes.forEach((hitbox) => {
+      if (this.scenarioManager.isPlot(hitbox.activatedPlot)) {
+        this.cannonManager.world.contacts.forEach((contact) => {
+          console.log('hi');
+          hitbox.onActivate(contact);
+        });
+      }
+    });
   }
+
   onUnmount() {}
 }
 

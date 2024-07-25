@@ -7,7 +7,7 @@
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
-type InteractiveHitbox = {
+export type InteractiveHitbox = {
   mesh: THREE.Object3D;
   body: CANNON.Body;
   margin: number;
@@ -99,8 +99,7 @@ export class CannonManager {
     onActivate: (contact: CANNON.ContactEquation) => void,
   ) {
     const targetObject = this.totalObjectMap.get(targetMesh.name);
-    if (!targetObject) return;
-    const originalShape = targetObject.body.shapes[0] as CANNON.Box;
+    const originalShape = targetObject!.body.shapes[0] as CANNON.Box;
     const hitboxBody = new CANNON.Body({
       mass: 0,
       shape: new CANNON.Box(
@@ -110,7 +109,7 @@ export class CannonManager {
           originalShape.halfExtents.z + margin,
         ),
       ),
-      position: targetObject.body.position,
+      position: targetObject!.body.position,
     });
     this.world.addBody(hitboxBody);
 
