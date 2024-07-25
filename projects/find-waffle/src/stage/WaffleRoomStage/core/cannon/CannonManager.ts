@@ -11,7 +11,7 @@ type InteractiveHitbox = {
   mesh: THREE.Object3D;
   body: CANNON.Body;
   margin: number;
-  activatedSubstage: number;
+  activatedPlot: string;
   onActivate: (contact: CANNON.ContactEquation) => void;
 };
 
@@ -95,6 +95,7 @@ export class CannonManager {
   public createInteractiveHitbox(
     targetMesh: THREE.Object3D,
     margin: number,
+    activatedPlot: string,
     onActivate: (contact: CANNON.ContactEquation) => void,
   ) {
     const targetObject = this.totalObjectMap.get(targetMesh.name);
@@ -117,7 +118,7 @@ export class CannonManager {
       mesh: targetMesh,
       body: hitboxBody,
       margin: margin,
-      activatedSubstage: 'main',
+      activatedPlot: activatedPlot,
       onActivate: onActivate,
     };
     this.interactiveHitboxMap.set(targetMesh.name, hitboxInfo);
