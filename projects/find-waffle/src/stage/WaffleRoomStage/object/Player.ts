@@ -5,12 +5,14 @@ import { KeyMap } from '../../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../../libs/resource-loader/ResourceLoader';
 import { animateCharacter } from '../animation/character';
 import { CannonManager } from '../core/cannon/CannonManager';
+import { IndividualObject } from '../core/cannon/CannonManager';
 import { GameObject } from '../core/object/GameObject';
 import { ScenarioManager } from '../core/scenario/ScenarioManager';
 import { SceneManager } from '../core/scene/SceneManager';
 
 export class Player extends GameObject {
   keysPressed = new Map<string, boolean>();
+  public info: IndividualObject | undefined;
 
   constructor(
     resourceLoader: ResourceLoader,
@@ -57,7 +59,8 @@ export class Player extends GameObject {
           // Filter collision
           this.cannonManager.filterCollision(this.body, 1, 2);
 
-          console.log(this.cannonManager.totalObjectMap.get('Scene'));
+          // Create PlayerInfo
+          this.info = this.cannonManager.totalObjectMap.get('Scene');
 
           this.sceneManager.roomScene.add(iceCream);
 
