@@ -87,14 +87,13 @@ export default class WaffleRoomStage extends Stage {
      * 2. load resources
      */
     // add controls & animation
-    this.controls = new OrbitControls(
-      this.sceneManager.currentCamera,
-      this.app.querySelector('canvas') as HTMLCanvasElement,
-    );
+    // this.controls = new OrbitControls(
+    //   this.sceneManager.currentCamera,
+    //   this.app.querySelector('canvas') as HTMLCanvasElement,
+    // );
     this.clock = new THREE.Clock();
 
     // Player
-    console.log(this.sceneManager.currentScene.children);
     const player = new Player(
       resourceLoader,
       keyMap,
