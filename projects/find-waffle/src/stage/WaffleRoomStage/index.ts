@@ -60,27 +60,6 @@ export default class WaffleRoomStage extends Stage {
       spinboxScenario(this.sceneManager, this.cannonManager, keyMap, dialogue),
     );
 
-    // 테스트 끝나면 지우기
-    // scenarioManager.add(
-    //   'test2',
-    //   () => {
-    //     dialogue.begin(['박스를 찾았습니다', '뭐할까?'], () => {});
-    //     gsap.to(this.camera!.position, {
-    //       duration: 2,
-    //       x: 2,
-    //       y: 3,
-    //       z: 2,
-    //     });
-    //     // gsap.to(this.camera!.lookAt, {
-    //     //   duration: 2,
-    //     //   x: 0,
-    //     //   y: 10,
-    //     //   z: 0,
-    //     // });
-    //   },
-    //   () => {},
-    // );
-
     scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
 
     /*
