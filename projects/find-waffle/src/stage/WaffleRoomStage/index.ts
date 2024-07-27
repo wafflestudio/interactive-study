@@ -176,10 +176,22 @@ export default class WaffleRoomStage extends Stage {
     // TODO: Update to common util function
     if (!this.sceneManager) return;
 
-    this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
-    this.sceneManager.currentCamera.aspect =
-      this.app.clientWidth / this.app.clientHeight;
-    this.sceneManager.currentCamera.updateProjectionMatrix();
+    if (this.sceneManager.currentCamera instanceof THREE.OrthographicCamera) {
+      this.sceneManager.aspectRatio =
+        this.app.clientWidth / this.app.clientHeight;
+      this.sceneManager.currentCamera.left =
+        (-this.sceneManager.frustumSize * this.sceneManager.aspectRatio) / 2;
+      this.sceneManager.currentCamera.right =
+        (this.sceneManager.frustumSize * this.sceneManager.aspectRatio) / 2;
+      this.sceneManager.currentCamera.top = this.sceneManager.frustumSize / 2;
+      this.sceneManager.currentCamera.bottom =
+        -this.sceneManager.frustumSize / 2;
+    } else {
+      this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
+      this.sceneManager.currentCamera.aspect =
+        this.app.clientWidth / this.app.clientHeight;
+      this.sceneManager.currentCamera.updateProjectionMatrix();
+    }
   }
 
   public animate(t: DOMHighResTimeStamp) {
