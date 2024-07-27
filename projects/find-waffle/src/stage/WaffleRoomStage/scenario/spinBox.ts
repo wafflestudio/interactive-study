@@ -50,23 +50,20 @@ export const spinboxScenario =
           playerInfo!.isMovable = false;
           sceneManager.currentScene.remove(playerInfo!.mesh);
 
-          // camera animation
-          const lookAtPoint = new THREE.Vector3(0, 0, 0);
-          gsap.to(lookAtPoint, {
+          const frustumSize = { frustumSize: sceneManager.frustumSize };
+          gsap.to(frustumSize, {
             duration: 3,
-            x: -2,
-            y: 0,
-            z: -2,
+            frustumSize: 2.5,
             ease: 'power2.inOut',
             onUpdate: () => {
-              sceneManager.currentCamera.lookAt(lookAtPoint);
+              sceneManager.roomCamera.left =
+                (-frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.right =
+                (frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.bottom = -frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.updateProjectionMatrix();
             },
-          });
-          gsap.to(sceneManager.currentCamera.position, {
-            duration: 3,
-            x: 2,
-            y: 2,
-            z: 2,
           });
 
           dialogue.begin(['박스를 찾았다!', '이걸로 뭐하지'], () => {
@@ -123,12 +120,27 @@ export const spinboxScenario =
               );
               const objectCenter = objectInfo!.boxCenter; // 현재 세계에서 박스 위치와 정확히 일치하는 중심
 
-              pivotOnWorldAxis(
-                selectedObject,
-                objectCenter,
-                new THREE.Vector3(1, 1, 1).normalize(),
-                180,
-              );
+              const currentAngle = { angle: 0 };
+
+              gsap.to(currentAngle, {
+                duration: 1,
+                angle: 180,
+                ease: 'power1.inOut',
+                onUpdate: () => {
+                  const deltaAngle =
+                    currentAngle.angle - selectedObject.userData.lastAngle;
+                  pivotOnWorldAxis(
+                    selectedObject,
+                    objectCenter,
+                    new THREE.Vector3(1, 1, 1).normalize(),
+                    deltaAngle,
+                  );
+                  selectedObject.userData.lastAngle = currentAngle.angle;
+                },
+                onStart: () => {
+                  selectedObject.userData.lastAngle = 0;
+                },
+              });
             }
           };
           spinBoxRaycaster.registerCallback(
