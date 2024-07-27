@@ -34,11 +34,10 @@ export class Packages extends GameObject {
     this.hitboxes.push(
       this.cannonManager.createInteractiveHitbox(
         this.object3D,
-        0.5,
+        0.8,
         'spinbox_02',
         (contact) => {
-          console.log('Packages clicked');
-          this.scenarioManager.set('test2');
+          this.scenarioManager.set('spinbox_03');
         },
       ),
     );
