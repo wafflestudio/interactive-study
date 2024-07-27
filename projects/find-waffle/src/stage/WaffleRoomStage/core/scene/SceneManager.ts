@@ -33,7 +33,7 @@ export class SceneManager {
       1000,
     );
     this.roomCamera.position.set(5, 6, 5);
-    const lookAtPoint = new THREE.Vector3(0, 0, 0);
+    const lookAtPoint = new THREE.Vector3(-1, 0, -1);
     this.roomCamera.lookAt(lookAtPoint);
 
     const sunLight = new THREE.DirectionalLight('#ffffff', 4);
