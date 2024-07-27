@@ -53,15 +53,6 @@ export default class WaffleRoomStage extends Stage {
       this.cannonManager.world,
     );
 
-    // add scenario
-    scenarioManager.addScenario(openingScenario(this.sceneManager, dialogue));
-    scenarioManager.addScenario(wardrobeScenario());
-    scenarioManager.addScenario(
-      spinboxScenario(this.sceneManager, this.cannonManager, keyMap, dialogue),
-    );
-
-    scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
-
     /*
      * 2. load resources
      */
@@ -160,7 +151,25 @@ export default class WaffleRoomStage extends Stage {
      * 3. activate
      */
     resourceLoader.loadAll();
-    keyMap.activate();
+    resourceLoader.onLoadComplete = () => {
+      // add scenario
+      scenarioManager.addScenario(
+        openingScenario(this.sceneManager!, dialogue),
+      );
+      scenarioManager.addScenario(wardrobeScenario());
+      scenarioManager.addScenario(
+        spinboxScenario(
+          this.sceneManager!,
+          this.cannonManager!,
+          keyMap,
+          dialogue,
+          this.renderer,
+        ),
+      );
+
+      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      keyMap.activate();
+    };
   }
 
   public resize() {
@@ -192,7 +201,7 @@ export default class WaffleRoomStage extends Stage {
     this.cannonManager.world.step(1 / 60, delta, 3);
     this.cannonManager.renderMovement();
     this.cannonManager.stopIfCollided();
-    this.cannonDebugger?.update();
+    // this.cannonDebugger?.update();
   }
 
   public unmount() {
