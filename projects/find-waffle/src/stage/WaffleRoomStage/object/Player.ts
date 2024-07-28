@@ -30,7 +30,7 @@ export class Player extends GameObject {
 
     this.resourceLoader.registerModel(
       'iceCream',
-      '/models/IceCream/iceice.glb',
+      'static/models/IceCream/iceice.glb',
       {
         onLoad: ({ scene: iceCream }) => {
           const scale = 0.005;
@@ -56,8 +56,6 @@ export class Player extends GameObject {
 
           // Filter collision
           this.cannonManager.filterCollision(this.body, 1, 2);
-
-          console.log(this.cannonManager.totalObjectMap.get('Scene'));
 
           this.sceneManager.roomScene.add(iceCream);
 

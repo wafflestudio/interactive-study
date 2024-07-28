@@ -53,44 +53,14 @@ export default class WaffleRoomStage extends Stage {
       this.cannonManager.world,
     );
 
-    // add scenario
-    scenarioManager.addScenario(openingScenario(this.sceneManager, dialogue));
-    scenarioManager.addScenario(wardrobeScenario());
-    scenarioManager.addScenario(
-      spinboxScenario(this.sceneManager, this.cannonManager, keyMap, dialogue),
-    );
-
-    // 테스트 끝나면 지우기
-    // scenarioManager.add(
-    //   'test2',
-    //   () => {
-    //     dialogue.begin(['박스를 찾았습니다', '뭐할까?'], () => {});
-    //     gsap.to(this.camera!.position, {
-    //       duration: 2,
-    //       x: 2,
-    //       y: 3,
-    //       z: 2,
-    //     });
-    //     // gsap.to(this.camera!.lookAt, {
-    //     //   duration: 2,
-    //     //   x: 0,
-    //     //   y: 10,
-    //     //   z: 0,
-    //     // });
-    //   },
-    //   () => {},
-    // );
-
-    scenarioManager.set('opening_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
-
     /*
      * 2. load resources
      */
     // add controls & animation
-    this.controls = new OrbitControls(
-      this.sceneManager.currentCamera,
-      this.app.querySelector('canvas') as HTMLCanvasElement,
-    );
+    // this.controls = new OrbitControls(
+    //   this.sceneManager.currentCamera,
+    //   this.app.querySelector('canvas') as HTMLCanvasElement,
+    // );
     this.clock = new THREE.Clock();
 
     // Player
@@ -107,7 +77,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      '/models/WaffleRoom/WaffleRoom.gltf',
+      'static/models/WaffleRoom/WaffleRoom.gltf',
       {
         onLoad: ({ scene: room }) => {
           const scale = 4;
@@ -181,17 +151,47 @@ export default class WaffleRoomStage extends Stage {
      * 3. activate
      */
     resourceLoader.loadAll();
-    keyMap.activate();
+    resourceLoader.onLoadComplete = () => {
+      // add scenario
+      scenarioManager.addScenario(
+        openingScenario(this.sceneManager!, dialogue),
+      );
+      scenarioManager.addScenario(wardrobeScenario());
+      scenarioManager.addScenario(
+        spinboxScenario(
+          this.sceneManager!,
+          this.cannonManager!,
+          keyMap,
+          dialogue,
+          this.renderer,
+        ),
+      );
+
+      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      keyMap.activate();
+    };
   }
 
   public resize() {
     // TODO: Update to common util function
     if (!this.sceneManager) return;
 
-    this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
-    this.sceneManager.currentCamera.aspect =
-      this.app.clientWidth / this.app.clientHeight;
-    this.sceneManager.currentCamera.updateProjectionMatrix();
+    if (this.sceneManager.currentCamera instanceof THREE.OrthographicCamera) {
+      this.sceneManager.aspectRatio =
+        this.app.clientWidth / this.app.clientHeight;
+      this.sceneManager.currentCamera.left =
+        (-this.sceneManager.frustumSize * this.sceneManager.aspectRatio) / 2;
+      this.sceneManager.currentCamera.right =
+        (this.sceneManager.frustumSize * this.sceneManager.aspectRatio) / 2;
+      this.sceneManager.currentCamera.top = this.sceneManager.frustumSize / 2;
+      this.sceneManager.currentCamera.bottom =
+        -this.sceneManager.frustumSize / 2;
+    } else {
+      this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
+      this.sceneManager.currentCamera.aspect =
+        this.app.clientWidth / this.app.clientHeight;
+      this.sceneManager.currentCamera.updateProjectionMatrix();
+    }
   }
 
   public animate(t: DOMHighResTimeStamp) {
@@ -213,7 +213,7 @@ export default class WaffleRoomStage extends Stage {
     this.cannonManager.world.step(1 / 60, delta, 3);
     this.cannonManager.renderMovement();
     this.cannonManager.stopIfCollided();
-    this.cannonDebugger?.update();
+    // this.cannonDebugger?.update();
   }
 
   public unmount() {

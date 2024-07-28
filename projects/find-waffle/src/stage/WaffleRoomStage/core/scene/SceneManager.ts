@@ -6,26 +6,34 @@ export class SceneManager {
   private renderer: THREE.WebGLRenderer;
   private app: HTMLElement;
   roomScene: THREE.Scene;
-  roomCamera: THREE.PerspectiveCamera;
+  // roomCamera: THREE.PerspectiveCamera;
+  roomCamera: THREE.OrthographicCamera;
   wardrobeScene: THREE.Scene;
   wardrobeCamera: THREE.PerspectiveCamera;
   currentScene: THREE.Scene;
-  currentCamera: THREE.PerspectiveCamera;
+  // currentCamera: THREE.PerspectiveCamera;
+  currentCamera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+  aspectRatio: number;
+  frustumSize: number;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     this.renderer = renderer;
     this.app = app;
+    this.aspectRatio = this.app.clientWidth / this.app.clientHeight;
+    this.frustumSize = 8;
 
     // room
     this.roomScene = new THREE.Scene();
-    this.roomCamera = new THREE.PerspectiveCamera(
-      35,
-      this.app.clientWidth / this.app.clientHeight,
+    this.roomCamera = new THREE.OrthographicCamera(
+      (-this.frustumSize * this.aspectRatio) / 2,
+      (this.frustumSize * this.aspectRatio) / 2,
+      this.frustumSize / 2,
+      -this.frustumSize / 2,
       0.1,
-      100,
+      1000,
     );
-    this.roomCamera.position.set(9, 6, 9);
-    const lookAtPoint = new THREE.Vector3(0, 0, 0);
+    this.roomCamera.position.set(5, 6, 5);
+    const lookAtPoint = new THREE.Vector3(-1, 0, -1);
     this.roomCamera.lookAt(lookAtPoint);
 
     const sunLight = new THREE.DirectionalLight('#ffffff', 4);
