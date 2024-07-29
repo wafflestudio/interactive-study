@@ -15,6 +15,7 @@ import { Player } from './object/Player';
 import { Wardrobe } from './object/Wardrobe';
 import { openingScenario } from './scenario/opening';
 import { spinboxScenario } from './scenario/spinBox';
+import { spinTileScenario } from './scenario/spinTile';
 import { wardrobeScenario } from './scenario/wardrobe';
 
 export default class WaffleRoomStage extends Stage {
@@ -166,8 +167,17 @@ export default class WaffleRoomStage extends Stage {
           this.renderer,
         ),
       );
+      scenarioManager.addScenario(
+        spinTileScenario(
+          this.sceneManager!,
+          this.cannonManager!,
+          keyMap,
+          dialogue,
+          this.renderer,
+        ),
+      );
 
-      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      scenarioManager.set('spintile_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
       keyMap.activate();
     };
   }
