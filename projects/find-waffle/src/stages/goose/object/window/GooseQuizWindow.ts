@@ -6,7 +6,7 @@ export class GooseQuizWindow extends QuizWindow {
   #completed = false;
 
   constructor() {
-    super(GOOSE_QUIZ_ANGLE, '/goose/key.png');
+    super(GOOSE_QUIZ_ANGLE, '/goose/goose3.png');
     this.toolbar.innerText = 'Pet Goose';
     this.button.innerText = 'Done';
     this.input.hidden = true;
