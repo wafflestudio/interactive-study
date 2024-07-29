@@ -34,8 +34,10 @@ export default class ComputerFrameStage extends Stage {
   computerElement?: HTMLElement; // computer
   screenElement?: HTMLElement; // computer screen (including taskbar)
   canvasElement?: HTMLCanvasElement; // only canvas
+  timeElement?: HTMLTimeElement;
 
   aspectRatio?: number; // canvas aspect ratio
+  intervalId?: number;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -65,7 +67,7 @@ export default class ComputerFrameStage extends Stage {
       <div class="computer__taskbar-divider"></div>
 
       <div class="computer__taskbar-time">
-        <img class="computer__text" src="/computer-frame/images/time.svg" alt="PM 12:00" />
+        <time class="computer__text"></time>
       </div>
     `;
 
@@ -83,10 +85,14 @@ export default class ComputerFrameStage extends Stage {
     this.computerElement = computer;
     this.screenElement = computerScreen;
     this.canvasElement = canvas;
+    this.timeElement = computerTaskbar.querySelector('time') as HTMLTimeElement;
     this.resize();
+
+    this.updateTime();
+    this.intervalId = setInterval(this.updateTime.bind(this), 1000);
   }
 
-  public animate() {
+  public animate(_time: DOMHighResTimeStamp) {
     if (!this.scene || !this.camera) return;
     this.renderer.render(this.scene, this.camera);
   }
@@ -171,6 +177,8 @@ export default class ComputerFrameStage extends Stage {
     if (this.canvasElement) {
       this.app.appendChild(this.canvasElement);
     }
+    clearInterval(this.intervalId);
+    this.intervalId = undefined;
 
     // clear properties
     this.scene = undefined;
@@ -178,5 +186,15 @@ export default class ComputerFrameStage extends Stage {
     this.screenElement = undefined;
     this.canvasElement = undefined;
     this.aspectRatio = undefined;
+  }
+
+  private updateTime() {
+    if (this.timeElement) {
+      this.timeElement.innerText = new Date().toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+    }
   }
 }

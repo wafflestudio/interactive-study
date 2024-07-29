@@ -1,166 +1,195 @@
+import { random, throttle } from 'es-toolkit';
 import * as THREE from 'three';
 
-import { Stage } from '../../core/stage/Stage';
 import {
-  CAMERA_DRAG_DENOM,
-  RESOURCE_KEY_CLOUD,
-  RESOURCE_KEY_GOOSE1,
-  RESOURCE_KEY_GOOSE2,
-  RESOURCE_KEY_GOOSE3,
-  RESOURCE_KEY_GOOSE4,
-  RESOURCE_KEY_HILL,
-  SNAP_DISTANCE,
+  GOOSE_QUIZ_ANGLE,
+  MAX_GOOSE_NUM,
+  PASSWORD_QUIZ_ANGLE,
 } from './constant';
-import { GooseResourceLoader } from './loader';
-import { GooseCamera } from './object/camera';
-import { Goose } from './object/goose';
-import { GooseHill } from './object/hill';
-import { GooseWindowIcon } from './object/icon';
-import { GooseWindow } from './object/window';
-import { GooseRaycaster } from './raycaster';
+import { Goose } from './object/goose/Goose';
+import { GooseCircularAnimator } from './object/goose/animator';
+import { GooseIcon } from './object/icon/Icon';
+import { GooseWaffleIcon } from './object/icon/WaffleIcon';
+import { StaticGooseStage } from './staticStage';
+import { GOOSE_LOVE, WAFFLE_KEY } from './util/loader';
+import { traverseAncestor } from './util/object';
 
-export class GooseStage extends Stage {
-  #scene = new THREE.Scene();
-  #camera = new GooseCamera();
-  #raycaster = new GooseRaycaster();
-  #loader = new GooseResourceLoader();
-
-  #window1?: GooseWindow;
-  #window2?: GooseWindow;
-  #gooseList: Goose[] = [];
+/** 이벤트를 스스로/객체에 전달해 처리합니다. */
+export class GooseStage extends StaticGooseStage {
+  #draggingIcon?: GooseIcon;
+  #waffleIcon?: GooseWaffleIcon;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
-    this.handleHillDrag = this.handleHillDrag.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onHillMouseMove = this.onHillMouseMove.bind(this);
+    this.onHillMouseUp = this.onHillMouseUp.bind(this);
+    this.onIconMouseMove = this.onIconMouseMove.bind(this);
+    this.onIconMouseUp = this.onIconMouseUp.bind(this);
+    this.addGoose = throttle(this.addGoose.bind(this), 1000);
   }
 
-  mount() {
-    this.#scene.background = new THREE.Color('#B9EBFF');
-    this.#scene.add(this.#camera.object);
+  get hoverableObjects() {
+    return [
+      this.mixIcon,
+      this.makerIcon,
+      this.#waffleIcon,
+      this.gooseIcon,
+      this.mirrorIcon,
+      ...this.gooseList,
+      this.folderIcon,
+    ].filter((x) => x !== undefined);
+  }
 
-    this.#camera.mount();
-    this.#raycaster.mount();
+  get clickableObjects() {
+    return [
+      this.hill,
+      this.mixIcon,
+      this.makerIcon,
+      this.#waffleIcon,
+      this.gooseIcon,
+      this.mirrorIcon,
+      ...this.gooseList,
+      this.folderIcon,
+    ].filter((x) => x !== undefined);
+  }
 
-    // Object 추가
-    this.#addBasicObjects();
-    this.#loader.onLoad = this.addExternalObjects.bind(this);
-    this.#loader.loadAll();
-
-    // new OrbitControls(this.#camera.object, this.app.querySelector('canvas')!);
+  get windowObjects() {
+    return [this.window1, this.window2].filter((x) => x !== undefined);
   }
 
   unmount() {
-    this.#raycaster.unmount();
+    removeEventListener('mousedown', this.onMouseDown);
+    removeEventListener('mousemove', this.onHillMouseMove);
+    removeEventListener('mouseup', this.onHillMouseUp);
+    removeEventListener('mousemove', this.onIconMouseMove);
+    removeEventListener('mouseup', this.onIconMouseUp);
+    super.unmount();
   }
 
   animate(time: DOMHighResTimeStamp) {
-    this.renderer.render(this.#scene, this.#camera.object);
-    this.#raycaster.setFromCamera(this.#camera.object);
-    this.#gooseList.forEach((goose) => goose.animate(time));
+    super.animate(time);
+    const isHovering = this.raycaster.firstIntersect(this.hoverableObjects);
+    document.body.style.cursor = isHovering ? 'pointer' : 'auto';
   }
 
-  resize() {
-    // TODO: 바깥 프레임 사이즈 고려
-    this.renderer.setSize(innerWidth, innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    this.#camera.handleResize();
-    this.#window1?.resize();
-    this.#window2?.resize();
+  mountStaticObjs() {
+    super.mountStaticObjs();
+    if (this.camera) {
+      this.camera.maxAngle = GOOSE_QUIZ_ANGLE;
+    }
+    this.gooseQuizWindow?.addSolvedListener(() => {
+      this.camera!.maxAngle = PASSWORD_QUIZ_ANGLE;
+    });
+    this.passwordQuizWindow?.addSolvedListener(() => {
+      this.camera!.maxAngle = Math.PI * 2;
+    });
   }
 
-  /** 외부 리소스가 아닌 오브젝트들을 scene에 추가합니다. */
-  #addBasicObjects() {
-    const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-    const sunlight = new THREE.DirectionalLight('white', 3);
-    sunlight.position.set(-100, 10, 0);
-    sunlight.lookAt(0, 0, 0);
-    sunlight.castShadow = true;
-
-    this.#window1 = new GooseWindow(0, this.#raycaster);
-    this.#window2 = new GooseWindow(Math.PI, this.#raycaster);
-
-    this.#scene.add(
-      hemisphereLight,
-      sunlight,
-      this.#window1.object,
-      this.#window2.object,
-    );
+  mountExternalObjs() {
+    super.mountExternalObjs();
+    addEventListener('mousedown', this.onMouseDown);
+    if (this.gooseIcon) {
+      this.gooseIcon.addGoose = this.addGoose;
+    }
   }
 
-  addExternalObjects() {
-    // hill
-    const hillModel = this.#loader.loader.getModel(RESOURCE_KEY_HILL)!;
-    const hill = new GooseHill(hillModel, this.#raycaster);
-    hill.onMouseMove = this.handleHillDrag;
-    hill.onMouseUp = () => {
-      if (this.#angleDiff(this.#camera.angle, 0) < SNAP_DISTANCE) {
-        this.#camera.angle = 0;
-      } else if (this.#angleDiff(this.#camera.angle, Math.PI) < SNAP_DISTANCE) {
-        this.#camera.angle = Math.PI;
+  // event handling
+  onMouseDown() {
+    const intersection = this.raycaster.firstIntersect(this.clickableObjects);
+    if (intersection === null) return;
+
+    traverseAncestor(intersection.object, (object) => {
+      if (object === this.hill) {
+        this.onHillMouseDown();
+        return true;
+      } else if (object instanceof GooseIcon) {
+        this.onIconMouseDown(object);
+        return true;
+      } else if (object instanceof Goose) {
+        object.onMouseDown();
+        this.gooseQuizWindow?.gooseClicked(object.id);
+        return true;
+      } else {
+        return false;
       }
-    };
+    });
+  }
 
-    // cloud
-    const cloudModel = this.#loader.loader.getModel(RESOURCE_KEY_CLOUD)!;
-    const cloud = cloudModel.scene.children[0];
+  // Hill events
+  onHillMouseDown() {
+    addEventListener('mousemove', this.onHillMouseMove);
+    addEventListener('mouseup', this.onHillMouseUp);
+  }
 
-    // goose
-    const gooseTexture1 = this.#loader.loader.getTexture(RESOURCE_KEY_GOOSE1)!;
-    const gooseTexture2 = this.#loader.loader.getTexture(RESOURCE_KEY_GOOSE2)!;
-    const gooseTexture3 = this.#loader.loader.getTexture(RESOURCE_KEY_GOOSE3)!;
-    const gooseTexture4 = this.#loader.loader.getTexture(RESOURCE_KEY_GOOSE4)!;
-    const gooseTextureList = [
-      gooseTexture1,
-      gooseTexture2,
-      gooseTexture3,
-      gooseTexture4,
-    ];
-    this.#gooseList.push(
-      new Goose(
-        gooseTextureList,
-        hill.object,
-        45,
-        THREE.MathUtils.degToRad(-40),
-      ),
-    );
-    this.#gooseList.push(
-      new Goose(
-        gooseTextureList,
-        hill.object,
-        35,
-        THREE.MathUtils.degToRad(-60),
-      ),
-    );
+  onHillMouseMove(e: MouseEvent) {
+    this.camera?.onMouseMove(e);
+  }
 
-    // icon
-    const icon1 = new GooseWindowIcon();
-    const icon2 = new GooseWindowIcon();
-    this.#window1?.register(icon1, icon2);
-    icon1.onMouseDown = () => {
-      const goose = new Goose(
-        [gooseTexture1, gooseTexture2, gooseTexture3, gooseTexture4],
-        hill.object,
-        THREE.MathUtils.randInt(35, 45),
-        THREE.MathUtils.degToRad(-180),
+  onHillMouseUp() {
+    this.camera?.onMouseUp();
+    removeEventListener('mousemove', this.onHillMouseMove);
+    removeEventListener('mouseup', this.onHillMouseUp);
+  }
+
+  // Icon event
+  onIconMouseDown(icon: GooseIcon) {
+    this.#draggingIcon = icon;
+    icon.onMouseDown();
+
+    // 와플을 클릭한 경우 unmount되므로 더 이상의 작업이 필요 없음
+    if (icon === this.#waffleIcon) return;
+
+    addEventListener('mousemove', this.onIconMouseMove);
+    addEventListener('mouseup', this.onIconMouseUp);
+  }
+
+  onIconMouseMove(e: MouseEvent) {
+    const intersection = this.raycaster.firstIntersect(this.windowObjects);
+    if (intersection === null) return;
+    this.#draggingIcon?.onMouseMove(intersection.point, e);
+  }
+
+  onIconMouseUp() {
+    this.#draggingIcon?.onMouseUp();
+
+    // 와플이 생겨야하는 경우 처리
+    if (this.#isMixOnMaker()) {
+      this.#waffleIcon = new GooseWaffleIcon(
+        this.loader?.getModelObject(WAFFLE_KEY)!,
       );
-      this.#scene.add(goose.object);
-      this.#gooseList.push(goose);
-    };
+      this.scene?.add(this.#waffleIcon!);
+      this.mixIcon?.removeFromParent();
+      this.window2?.registerIcon(this.#waffleIcon!);
+      this.makerIcon?.shrink();
+    }
 
-    this.#scene.add(hill.object, cloud, icon1.object, icon2.object);
-    this.#gooseList.forEach((goose) => this.#scene.add(goose.object));
-
-    this.resize();
+    this.#draggingIcon = undefined;
+    removeEventListener('mousemove', this.onIconMouseMove);
+    removeEventListener('mouseup', this.onIconMouseUp);
   }
 
-  handleHillDrag(delta: number) {
-    let newValue = this.#camera.angle + -delta / CAMERA_DRAG_DENOM;
-    this.#camera.angle = newValue;
+  // Actions
+  #isMixOnMaker() {
+    const mouseOnMix = this.raycaster.firstIntersect(this.mixIcon!) !== null;
+    const mouseOnMaker =
+      this.raycaster.firstIntersect(this.makerIcon!) !== null;
+    const draggingMix = this.#draggingIcon === this.mixIcon;
+    const mixRotated = this.mixIcon?.status === 'drag';
+
+    return mouseOnMix && mouseOnMaker && draggingMix && mixRotated;
   }
 
-  #angleDiff(a: number, b: number) {
-    let diff = Math.abs(a - b);
-    return Math.PI < diff ? 2 * Math.PI - diff : diff;
+  addGoose() {
+    if (!this.hill || MAX_GOOSE_NUM <= this.gooseList.length) return;
+
+    const goose = new Goose(
+      this.loader!.loadGooseTextures(),
+      this.loader?.getTexture(GOOSE_LOVE)!,
+      new GooseCircularAnimator(this.hill, random(30, 50), -20),
+    );
+
+    this.gooseList.push(goose);
+    this.scene?.add(goose);
   }
 }
