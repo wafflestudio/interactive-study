@@ -383,6 +383,11 @@
       "type": "gltf",
       "name": "clock",
       "path": "/escape-cube/models/clock.glb"
+    },
+    {
+      "type": "font",
+      "name": "helvetiker",
+      "path": "/escape-cube/fonts/helvetiker_regular.typeface.json"
     }
   ]
 }

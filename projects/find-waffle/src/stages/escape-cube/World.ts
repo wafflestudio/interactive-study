@@ -1,7 +1,8 @@
 import * as CANNON from 'cannon-es';
+import { zip } from 'es-toolkit';
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { GLTF } from 'three/examples/jsm/Addons.js';
+import { GLTF, TextGeometry } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
@@ -60,6 +61,7 @@ export class World {
     );
 
     await this.loadResources(mapData.resources);
+    await this.initClock();
     await Promise.all(
       mapData.objects.map(async (mapObject) => {
         if (mapObject.type === 'cube') await this.initCube(mapObject);
@@ -76,10 +78,48 @@ export class World {
         });
       else if (resource.type === 'gltf')
         this.loader.registerModel(resource.name, url(resource.path));
+      else if (resource.type === 'font')
+        this.loader.registerFont(resource.name, url(resource.path));
     }
     this.loader.loadAll();
     return await new Promise((r) => {
       this.loader.onLoadComplete = () => r(null);
+    });
+  }
+
+  private async initClock() {
+    const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const material = new THREE.MeshStandardMaterial({ color: 'black' });
+    const sphere = new THREE.Mesh(geometry, material);
+    const positions = [
+      new THREE.Vector3(-1.2, -4.6, -6),
+      new THREE.Vector3(-2.2, -3.8, -6),
+      new THREE.Vector3(-3.1, -4.8, -6),
+      new THREE.Vector3(-3.8, -4.2, -6),
+    ];
+    const texts = ['1', ':', '3', '0'];
+    zip(positions, texts).forEach(([position, text]) => {
+      const clone = sphere.clone();
+      clone.position.copy(position);
+      this.map.add(clone);
+
+      const textGeometry = new TextGeometry(text, {
+        font: this.loader.getFont('helvetiker')!,
+        size: 0.7,
+        depth: 0.1,
+        curveSegments: 4,
+        // setting for ExtrudeGeometry
+        // bevelEnabled: false,
+        // bevelThickness: 0.7,
+        // bevelSize: 0.7,
+        // bevelSegments: 2,
+      });
+      const textMaterial = new THREE.MeshBasicMaterial();
+      const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+      textMesh.position.set(0.25, -0.35, -1);
+      textMesh.rotation.set(0, Math.PI, 0);
+
+      clone.add(textMesh);
     });
   }
 

@@ -99,7 +99,17 @@ const gltfResourceSchema = z.object({
   path: z.string(),
 });
 
-const resourceSchema = z.union([textureResourceSchema, gltfResourceSchema]);
+const fontResourceSchema = z.object({
+  type: z.literal('font'),
+  name: z.string(),
+  path: z.string(),
+});
+
+const resourceSchema = z.union([
+  textureResourceSchema,
+  gltfResourceSchema,
+  fontResourceSchema,
+]);
 export type Resource = z.infer<typeof resourceSchema>;
 
 export const mapDataSchema = z.object({
