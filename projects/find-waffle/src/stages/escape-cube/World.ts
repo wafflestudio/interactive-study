@@ -106,7 +106,7 @@ export class World {
       const textGeometry = new TextGeometry(text, {
         font: this.loader.getFont('helvetiker')!,
         size: 0.7,
-        depth: 0.1,
+        depth: 0.01,
         curveSegments: 4,
         // setting for ExtrudeGeometry
         // bevelEnabled: false,
@@ -114,9 +114,13 @@ export class World {
         // bevelSize: 0.7,
         // bevelSegments: 2,
       });
+      textGeometry.computeBoundingBox();
+      const boundingBox = textGeometry.boundingBox!;
+      const xOffset = (boundingBox.max.x + boundingBox.min.x) / 2;
+      const yOffset = (boundingBox.max.y + boundingBox.min.y) / 2;
       const textMaterial = new THREE.MeshBasicMaterial();
       const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-      textMesh.position.set(0.25, -0.35, -1);
+      textMesh.position.set(xOffset, -yOffset, -1);
       textMesh.rotation.set(0, Math.PI, 0);
 
       clone.add(textMesh);
