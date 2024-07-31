@@ -71,7 +71,6 @@ export const spinTileScenario =
             const euler = new CANNON.Vec3();
             quaternion.toEuler(euler, 'YZX');
             const yaw = euler.y * (180 / Math.PI);
-            console.log(yaw);
 
             let playerDirection = '';
             const errorRange = 20;
