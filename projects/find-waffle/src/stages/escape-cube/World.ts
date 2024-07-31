@@ -1,12 +1,12 @@
 import * as CANNON from 'cannon-es';
-import { zip } from 'es-toolkit';
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { GLTF, TextGeometry } from 'three/examples/jsm/Addons.js';
+import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
 import { Player } from './Player';
+import { Timer } from './Timer';
 import {
   CubeObject,
   MapData,
@@ -16,6 +16,11 @@ import {
   mapDataSchema,
 } from './map-schema';
 
+const TIMER_START_QUATERNION = new THREE.Quaternion().setFromAxisAngle(
+  new THREE.Vector3(0, 1, 0),
+  Math.PI,
+);
+
 export class World {
   cannonWorld = new CANNON.World();
   scene: THREE.Scene;
@@ -23,6 +28,7 @@ export class World {
   map: THREE.Group = new THREE.Group();
   mapBody: CANNON.Body = new CANNON.Body({ mass: 0 });
   player: Player;
+  timer?: Timer;
   initialized = false;
   isRotating = false;
   _onInitialized: () => void = () => {};
@@ -61,7 +67,7 @@ export class World {
     );
 
     await this.loadResources(mapData.resources);
-    await this.initClock();
+    this.initTimer();
     await Promise.all(
       mapData.objects.map(async (mapObject) => {
         if (mapObject.type === 'cube') await this.initCube(mapObject);
@@ -87,44 +93,8 @@ export class World {
     });
   }
 
-  private async initClock() {
-    const geometry = new THREE.SphereGeometry(0.5, 16, 16);
-    const material = new THREE.MeshStandardMaterial({ color: 'black' });
-    const sphere = new THREE.Mesh(geometry, material);
-    const positions = [
-      new THREE.Vector3(-1.2, -4.6, -6),
-      new THREE.Vector3(-2.2, -3.8, -6),
-      new THREE.Vector3(-3.1, -4.8, -6),
-      new THREE.Vector3(-3.8, -4.2, -6),
-    ];
-    const texts = ['1', ':', '3', '0'];
-    zip(positions, texts).forEach(([position, text]) => {
-      const clone = sphere.clone();
-      clone.position.copy(position);
-      this.map.add(clone);
-
-      const textGeometry = new TextGeometry(text, {
-        font: this.loader.getFont('helvetiker')!,
-        size: 0.7,
-        depth: 0.01,
-        curveSegments: 4,
-        // setting for ExtrudeGeometry
-        // bevelEnabled: false,
-        // bevelThickness: 0.7,
-        // bevelSize: 0.7,
-        // bevelSegments: 2,
-      });
-      textGeometry.computeBoundingBox();
-      const boundingBox = textGeometry.boundingBox!;
-      const xOffset = (boundingBox.max.x + boundingBox.min.x) / 2;
-      const yOffset = (boundingBox.max.y + boundingBox.min.y) / 2;
-      const textMaterial = new THREE.MeshBasicMaterial();
-      const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-      textMesh.position.set(xOffset, -yOffset, -1);
-      textMesh.rotation.set(0, Math.PI, 0);
-
-      clone.add(textMesh);
-    });
+  private initTimer() {
+    this.timer = new Timer(this.loader.getFont('helvetiker')!, this);
   }
 
   private async initCube(cubeObject: CubeObject) {
@@ -255,6 +225,7 @@ export class World {
   public animate(timeDelta: number) {
     this.player.animate();
     this.cannonWorld.step(1 / 60, timeDelta);
+    this.timer?.pass(timeDelta);
   }
 
   public rotate(axis: THREE.Vector3, angle: number) {
@@ -278,6 +249,9 @@ export class World {
       },
       onUpdateParams: [helper],
       onComplete: () => {
+        if (this.map.quaternion.angleTo(TIMER_START_QUATERNION) < 0.01) {
+          this.timer?.start();
+        }
         this.isRotating = false;
         this.resume();
       },
