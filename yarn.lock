@@ -3761,6 +3761,7 @@ __metadata:
     lil-gui: "npm:^0.19.2"
     three: "npm:^0.165.0"
     typescript: "npm:^5.2.2"
+    vanjs-core: "npm:^1.5.1"
     vite: "npm:^5.0.0"
     zod: "npm:^3.23.8"
   languageName: unknown
@@ -6417,6 +6418,13 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: a676216affc203876bd47981103f201f28c2731361bb186367e12d287a7566763213a8816910c6eb88265eccd4c230426eb783d64c373c4a180905be8820ed8e
+  languageName: node
+  linkType: hard
+
+"vanjs-core@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "vanjs-core@npm:1.5.1"
+  checksum: 17a2e9e07dc17c961fd26acb104609fe3c0733563f0657a6a42a6931fcdee3e7adf00dd717f1a8e335e39b00b771eaad845eef5bfaddc35c72ac4a2bfc485e86
   languageName: node
   linkType: hard
 
