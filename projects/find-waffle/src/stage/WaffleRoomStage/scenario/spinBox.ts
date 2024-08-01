@@ -25,6 +25,11 @@ export const spinboxScenario =
       sceneManager.currentScene,
       renderer,
     );
+    const spinBoxRaycaster2 = new ListenableRaycaster(
+      sceneManager.currentCamera,
+      sceneManager.currentScene,
+      renderer,
+    );
     return [
       {
         name: 'spinbox_01', // 오프닝
@@ -160,6 +165,7 @@ export const spinboxScenario =
                     targetObjects.forEach((obj) => {
                       obj.userData.isDraggable = true;
                     });
+                    spinBoxRaycaster.dispose();
                     set('spinbox_05');
                   }
                 },
@@ -176,7 +182,6 @@ export const spinboxScenario =
       {
         name: 'spinbox_05', // 박스 조각을 액자로 드래그
         onMount: () => {
-          // spinBoxRaycaster.dispose();
           const frustumSize = { frustumSize: 15 };
           gsap.to(frustumSize, {
             duration: 3,
@@ -206,7 +211,6 @@ export const spinboxScenario =
                 const intersect = intersects[0];
                 const newPosition = new THREE.Vector3().copy(intersect.point);
                 sceneManager.currentScene.attach(selectedObject);
-                console.log(newPosition);
                 selectedObject.position.x = newPosition.x;
                 selectedObject.position.y = newPosition.y;
                 selectedObject.position.z = newPosition.z;
@@ -242,17 +246,17 @@ export const spinboxScenario =
             console.log(obj);
           });
 
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mousemove',
             mouseMoveCallbackForDrag,
             targetObjects,
           );
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mousedown',
             mouseDownCallback,
             targetObjects,
           );
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mouseup',
             mouseUpCallback,
             targetObjects,
