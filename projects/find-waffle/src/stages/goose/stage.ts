@@ -85,9 +85,9 @@ export class GooseStage extends StaticGooseStage {
   mountStaticObjs() {
     super.mountStaticObjs();
     if (this.camera) {
-      // this.camera.maxAngle = Math.PI * 2;
-      this.camera.maxAngle = GOOSE_QUIZ_ANGLE;
-      this.setStartButtonText('Start');
+      this.camera.maxAngle = Math.PI * 2;
+      // this.camera.maxAngle = GOOSE_QUIZ_ANGLE;
+      // this.setStartButtonText('Start');
     }
     this.gooseQuizWindow?.addSolvedListener(() => {
       this.camera!.maxAngle = PASSWORD_QUIZ_ANGLE;
