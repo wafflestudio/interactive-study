@@ -1,6 +1,5 @@
 import { gsap } from 'gsap';
 import * as THREE from 'three';
-import { object } from 'zod';
 
 import { KeyMap } from '../../../libs/keyboard/KeyMap';
 import {
@@ -53,7 +52,7 @@ export const spinboxScenario =
           const frustumSize = { frustumSize: sceneManager.frustumSize };
           gsap.to(frustumSize, {
             duration: 3,
-            frustumSize: 2.5,
+            frustumSize: 15,
             ease: 'power2.inOut',
             onUpdate: () => {
               sceneManager.roomCamera.left =
@@ -76,13 +75,17 @@ export const spinboxScenario =
         onMount: () => {
           // raycaster
           const targetObjects = [
-            cannonManager.totalObjectMap.get('큐브002')!.mesh,
-            cannonManager.totalObjectMap.get('큐브003')!.mesh,
-            cannonManager.totalObjectMap.get('큐브004')!.mesh,
-            cannonManager.totalObjectMap.get('큐브007')!.mesh,
-            cannonManager.totalObjectMap.get('큐브008')!.mesh,
-            cannonManager.totalObjectMap.get('큐브009')!.mesh,
+            cannonManager.totalObjectMap.get('box1')!.mesh,
+            cannonManager.totalObjectMap.get('box2')!.mesh,
+            cannonManager.totalObjectMap.get('box3')!.mesh,
+            cannonManager.totalObjectMap.get('box4')!.mesh,
+            cannonManager.totalObjectMap.get('box5')!.mesh,
+            cannonManager.totalObjectMap.get('box6')!.mesh,
           ];
+
+          targetObjects.forEach((object) => {
+            object.userData.clicked = false;
+          });
 
           function pivotOnWorldAxis(
             object: THREE.Object3D,
@@ -91,7 +94,6 @@ export const spinboxScenario =
             angle: number,
           ): void {
             const parent = object.parent;
-
             if (parent === null) {
               console.error("object can't be found in the world");
             } else {
@@ -115,8 +117,16 @@ export const spinboxScenario =
           ) => {
             if (intersects.length > 0) {
               const selectedObject = intersects[0].object;
+              let targetObject = selectedObject;
+              if (
+                selectedObject.name === 'box_sample_left' ||
+                selectedObject.name === 'box_sample_right'
+              ) {
+                targetObject = selectedObject.parent!;
+              }
+
               const objectInfo = cannonManager.totalObjectMap.get(
-                selectedObject.name,
+                targetObject.name,
               );
               const objectCenter = objectInfo!.boxCenter; // 현재 세계에서 박스 위치와 정확히 일치하는 중심
 
@@ -127,18 +137,31 @@ export const spinboxScenario =
                 angle: 180,
                 ease: 'power1.inOut',
                 onUpdate: () => {
-                  const deltaAngle =
-                    currentAngle.angle - selectedObject.userData.lastAngle;
-                  pivotOnWorldAxis(
-                    selectedObject,
-                    objectCenter,
-                    new THREE.Vector3(1, 1, 1).normalize(),
-                    deltaAngle,
-                  );
-                  selectedObject.userData.lastAngle = currentAngle.angle;
+                  if (!targetObject.userData.clicked) {
+                    const deltaAngle =
+                      currentAngle.angle - targetObject.userData.lastAngle;
+                    pivotOnWorldAxis(
+                      targetObject,
+                      objectCenter,
+                      new THREE.Vector3(1, 1, 1).normalize(),
+                      deltaAngle,
+                    );
+                    targetObject.userData.lastAngle = currentAngle.angle;
+                  }
                 },
                 onStart: () => {
-                  selectedObject.userData.lastAngle = 0;
+                  targetObject.userData.lastAngle = 0;
+                },
+                onComplete: () => {
+                  targetObject.userData.clicked = true;
+                  if (
+                    targetObjects.every((object) => object.userData.clicked)
+                  ) {
+                    targetObjects.forEach((obj) => {
+                      obj.userData.isDraggable = true;
+                    });
+                    set('spinbox_05');
+                  }
                 },
               });
             }
@@ -146,6 +169,92 @@ export const spinboxScenario =
           spinBoxRaycaster.registerCallback(
             'click',
             clickCallback,
+            targetObjects,
+          );
+        },
+      },
+      {
+        name: 'spinbox_05', // 박스 조각을 액자로 드래그
+        onMount: () => {
+          // spinBoxRaycaster.dispose();
+          const frustumSize = { frustumSize: 15 };
+          gsap.to(frustumSize, {
+            duration: 3,
+            frustumSize: 30,
+            ease: 'power2.inOut',
+            onUpdate: () => {
+              sceneManager.roomCamera.left =
+                (-frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.right =
+                (frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.bottom = -frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.updateProjectionMatrix();
+            },
+          });
+
+          // Drag 이벤트 구현
+          let dragging = false;
+          let selectedObject: THREE.Object3D | null = null;
+          let offset = new THREE.Vector3();
+
+          const mouseMoveCallbackForDrag: EventCallback = (
+            intersects: THREE.Intersection[],
+          ) => {
+            if (dragging && selectedObject) {
+              if (intersects.length > 0) {
+                const intersect = intersects[0];
+                const newPosition = new THREE.Vector3().copy(intersect.point);
+                sceneManager.currentScene.attach(selectedObject);
+                console.log(newPosition);
+                selectedObject.position.x = newPosition.x;
+                selectedObject.position.y = newPosition.y;
+                selectedObject.position.z = newPosition.z;
+              }
+            }
+          };
+
+          const mouseDownCallback: EventCallback = (
+            intersects: THREE.Intersection[],
+          ) => {
+            if (intersects.length > 0) {
+              selectedObject = intersects[0].object;
+              dragging = true;
+              offset.copy(selectedObject!.position).sub(intersects[0].point);
+            }
+          };
+
+          const mouseUpCallback: EventCallback = () => {
+            dragging = false;
+            selectedObject = null;
+          };
+
+          const targetObjects = [
+            ...cannonManager.totalObjectMap.get('box1')!.mesh.children,
+            ...cannonManager.totalObjectMap.get('box2')!.mesh.children,
+            ...cannonManager.totalObjectMap.get('box3')!.mesh.children,
+            ...cannonManager.totalObjectMap.get('box4')!.mesh.children,
+            ...cannonManager.totalObjectMap.get('box5')!.mesh.children,
+            ...cannonManager.totalObjectMap.get('box6')!.mesh.children,
+          ];
+
+          targetObjects.forEach((obj) => {
+            console.log(obj);
+          });
+
+          spinBoxRaycaster.registerCallback(
+            'mousemove',
+            mouseMoveCallbackForDrag,
+            targetObjects,
+          );
+          spinBoxRaycaster.registerCallback(
+            'mousedown',
+            mouseDownCallback,
+            targetObjects,
+          );
+          spinBoxRaycaster.registerCallback(
+            'mouseup',
+            mouseUpCallback,
             targetObjects,
           );
         },
