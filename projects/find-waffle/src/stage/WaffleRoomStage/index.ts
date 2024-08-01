@@ -129,6 +129,12 @@ export default class WaffleRoomStage extends Stage {
               // );
               // this.sceneManager?.roomScene.add(child);
             }
+            if (
+              child.name === 'wall_right001' ||
+              child.name === 'wall_left001'
+            ) {
+              child.visible = false;
+            }
             child.type === 'Mesh' && targetObjects.push(child);
           });
           // room.traverse((child) => {
