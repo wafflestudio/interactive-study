@@ -32,6 +32,7 @@ export class Wardrobe extends GameObject {
     this.hitbox = this.cannonManager.createInteractiveHitbox(
       this.object3D,
       0.5,
+      'test1',
       () => {
         console.log('Wardrobe clicked');
         this.scenarioManager.set('test2');
@@ -40,9 +41,7 @@ export class Wardrobe extends GameObject {
   }
   onAnimate() {
     if (!this.body) return;
-    if (
-      this.scenarioManager.currentPlot!.name === this.hitbox?.activatedSubstage
-    ) {
+    if (this.scenarioManager.currentPlot!.name === this.hitbox?.activatedPlot) {
       this.cannonManager.world.contacts.forEach((contact) => {
         this.hitbox!.onActivate(contact);
       });

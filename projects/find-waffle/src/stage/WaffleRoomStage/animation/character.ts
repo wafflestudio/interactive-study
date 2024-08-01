@@ -5,20 +5,21 @@ export const animateCharacter = (
   keysPressed: Map<string, boolean>,
 ) => {
   let newDirection: number | null = null;
+  let speed = 0.1;
   if (keysPressed.has('up')) {
-    body.position.z -= 0.02;
+    body.position.z -= speed;
     newDirection = Math.PI;
   }
   if (keysPressed.has('down')) {
-    body.position.z += 0.02;
+    body.position.z += speed;
     newDirection = 0;
   }
   if (keysPressed.has('left')) {
-    body.position.x -= 0.02;
+    body.position.x -= speed;
     newDirection = -Math.PI / 2;
   }
   if (keysPressed.has('right')) {
-    body.position.x += 0.02;
+    body.position.x += speed;
     newDirection = Math.PI / 2;
   }
 
