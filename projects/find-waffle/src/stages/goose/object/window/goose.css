@@ -1,0 +1,70 @@
+.goose * {
+  font-family: vt323;
+  margin: 0;
+  padding: 0;
+}
+
+.goose p {
+  background-color: #007d6e;
+  font-size: 14px;
+  color: white;
+  padding: 2px;
+  border-bottom: 2px solid #222222;
+  border-right: 2px solid #222222;
+}
+
+.goose h2 {
+  font-size: 20px;
+  color: #222222;
+}
+
+.goose img {
+  width: 43px;
+  height: 43px;
+}
+
+.goose input {
+  border-top: 2px solid #222;
+  border-left: 2px solid #222;
+  border-bottom: none;
+  border-right: none;
+  margin-top: 6px;
+  border-radius: 0px;
+  height: 22.69px;
+}
+
+.goose input:focus {
+  outline: none;
+}
+
+.goose button {
+  position: relative;
+  width: 64px;
+  height: 24px;
+  background-color: #c0c0c0;
+  font-size: 14px;
+  margin-top: 12.5px;
+  align-self: flex-end;
+  outline: 2px solid #222;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #797979;
+  border-right: 2px solid #797979;
+}
+
+.goose button:enabled:active {
+  background-color: #adadad;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  border-top: 2px solid #797979;
+  border-left: 2px solid #797979;
+}
+
+.goose button:disabled {
+  color: #aaa;
+}
+
+.goose > div {
+  border-right: 2px solid #222;
+  border-bottom: 2px solid #222;
+}
