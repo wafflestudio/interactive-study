@@ -58,10 +58,10 @@ export default class WaffleRoomStage extends Stage {
      * 2. load resources
      */
     // add controls & animation
-    this.controls = new OrbitControls(
-      this.sceneManager.currentCamera,
-      this.app.querySelector('canvas') as HTMLCanvasElement,
-    );
+    // this.controls = new OrbitControls(
+    //   this.sceneManager.currentCamera,
+    //   this.app.querySelector('canvas') as HTMLCanvasElement,
+    // );
     this.clock = new THREE.Clock();
 
     // Player
@@ -78,10 +78,10 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      'static/models/WaffleRoom/WaffleRoom.gltf',
+      'static/models/WaffleRoom/waffleRoomTest.glb',
       {
         onLoad: ({ scene: room }) => {
-          const scale = 4;
+          const scale = 1;
           room.scale.set(scale, scale, scale);
           this.sceneManager?.roomScene.add(room);
 
@@ -91,6 +91,10 @@ export default class WaffleRoomStage extends Stage {
             child.type === 'Mesh' && targetObjects.push(child);
           });
           this.cannonManager?.wrap(targetObjects, scale, 0);
+          // this.cannonManager?.totalObjectMap.forEach((obj) => {
+          //   obj.mesh.material.depthTest = false;
+          //   obj.mesh.renderOrder = 2;
+          // });
 
           // filter collision
           const filteredMap = new Map(
@@ -102,28 +106,92 @@ export default class WaffleRoomStage extends Stage {
             this.cannonManager?.filterCollision(body, 4, 8);
           });
 
+          console.log(this.cannonManager!.totalObjectMap);
+
           // specify interactive objects (temp: only wardrobe for now)
           const wardrobeInfo =
-            this.cannonManager?.totalObjectMap.get('큐브010');
-          const wardrobe = new Wardrobe(
-            wardrobeInfo!.mesh,
-            wardrobeInfo!.body,
-            resourceLoader,
-            keyMap,
-            this.sceneManager!,
-            scenarioManager,
-            this.cannonManager!,
-          );
-          this.onAnimateCallbacks.push({
-            cb: wardrobe.onAnimate,
-            bindTarget: wardrobe,
-          });
-          this.onUnmountCallbacks.push(wardrobe.onUnmount);
-          this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
+            this.cannonManager?.totalObjectMap.get('wardrobe_base');
+          console.log(wardrobeInfo);
+          // const wardrobe = new Wardrobe(
+          //   wardrobeInfo!.mesh,
+          //   wardrobeInfo!.body,
+          //   resourceLoader,
+          //   keyMap,
+          //   this.sceneManager!,
+          //   scenarioManager,
+          //   this.cannonManager!,
+          // );
+          // this.onAnimateCallbacks.push({
+          //   cb: wardrobe.onAnimate,
+          //   bindTarget: wardrobe,
+          // });
+          // this.onUnmountCallbacks.push(wardrobe.onUnmount);
+          // this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
 
           // Set Packages to interactive objects
           const packagesInfo =
-            this.cannonManager?.totalObjectMap.get('큐브003');
+            this.cannonManager?.totalObjectMap.get('box_sample_top');
+
+          const packageMesh = packagesInfo!.mesh;
+
+          const clonedMesh = packageMesh.clone();
+          clonedMesh.name = 'box2';
+          clonedMesh.position.set(1, packageMesh.position.y + 2, 3);
+          // clonedMesh.material.depthTest = false;
+          // clonedMesh.material.depthWrite = false;
+          // clonedMesh.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh);
+
+          const clonedMesh2 = packageMesh.clone();
+          clonedMesh2.name = 'box3';
+          clonedMesh2.position.set(3, packageMesh.position.y + 2, 1);
+          // clonedMesh2.material.depthTest = false;
+          // clonedMesh2.material.depthWrite = false;
+          // clonedMesh2.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh2);
+
+          const clonedMesh3 = packageMesh.clone();
+          clonedMesh3.name = 'box4';
+          clonedMesh3.position.set(1, packageMesh.position.y, 5);
+          // clonedMesh3.material.depthWrite = false;
+          // clonedMesh3.material.depthTest = false;
+          // clonedMesh3.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh3);
+
+          const clonedMesh4 = packageMesh.clone();
+          clonedMesh4.name = 'box5';
+          clonedMesh4.position.set(3, packageMesh.position.y, 3);
+          // clonedMesh4.material.depthWrite = false;
+          // clonedMesh4.material.depthTest = false;
+          // clonedMesh4.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh4);
+
+          const clonedMesh5 = packageMesh.clone();
+          clonedMesh5.name = 'box6';
+          clonedMesh5.position.set(5, packageMesh.position.y, 1);
+          // clonedMesh5.material.depthWrite = false;
+          // clonedMesh5.material.depthTest = false;
+          // clonedMesh5.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh5);
+
+          const clonedMesh6 = packageMesh.clone();
+          clonedMesh6.name = 'box1';
+          clonedMesh6.position.set(1, packageMesh.position.y + 4, 1);
+          // clonedMesh6.material.depthWrite = false;
+          // clonedMesh6.material.depthTest = false;
+          // clonedMesh6.renderOrder = 1;
+          this.sceneManager?.roomScene.add(clonedMesh6);
+
+          const clonedPackages = [
+            clonedMesh,
+            clonedMesh2,
+            clonedMesh3,
+            clonedMesh4,
+            clonedMesh5,
+            clonedMesh6,
+          ];
+          this.cannonManager?.wrap(clonedPackages, 1, 0);
+
           const packages = new Packages(
             packagesInfo!.mesh,
             packagesInfo!.body,
@@ -133,6 +201,10 @@ export default class WaffleRoomStage extends Stage {
             scenarioManager,
             this.cannonManager!,
           );
+
+          console.log(this.cannonManager!.totalObjectMap);
+          console.log(this.sceneManager!.roomScene.children);
+
           this.onAnimateCallbacks.push({
             cb: packages.onAnimate,
             bindTarget: packages,
@@ -177,7 +249,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      scenarioManager.set('spintile_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
       keyMap.activate();
     };
   }
