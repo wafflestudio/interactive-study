@@ -176,5 +176,22 @@ export class StageDebugger {
         'extraTime',
       )
       .name('10초 추가');
+
+    this.gui
+      .add({ fluidization: false }, 'fluidization')
+      .name('유체화')
+      .onChange((isFluid: boolean) => {
+        if (isFluid) {
+          world.player.body.shapes[0].collisionFilterGroup = 0;
+          world.player.object.material.transparent = true;
+          world.player.object.material.opacity = 0.5;
+          world.player.object.material.alphaTest = 0.5;
+        } else {
+          world.player.body.shapes[0].collisionFilterGroup = 1;
+          world.player.object.material.transparent = false;
+          world.player.object.material.opacity = 1;
+          world.player.object.material.alphaTest = 0;
+        }
+      });
   }
 }

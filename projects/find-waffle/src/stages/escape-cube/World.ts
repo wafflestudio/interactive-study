@@ -5,7 +5,7 @@ import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
-import { Player } from './Player';
+import { Player } from './Objects/Player';
 import { Timer } from './Timer';
 import {
   CubeObject,
@@ -246,7 +246,7 @@ export class World {
       onUpdateParams: [helper],
       onComplete: () => {
         this.isRotating = false;
-        this.resume();
+        if (!this.timer?.paused) this.resume();
       },
     });
   }
