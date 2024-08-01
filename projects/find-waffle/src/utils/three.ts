@@ -25,3 +25,62 @@ export function resize(
     camera.updateProjectionMatrix();
   }
 }
+
+/**
+ * Pivot object on world axis.
+ * @param object 회전하려는 객체
+ * @param center 회전 축이 지나는 점
+ * @param axis 회전 축 (world)
+ * @param angle 회전 각도 (degree)
+ * @see {@link pivotOnAxis}
+ */
+export function pivotOnWorldAxis(
+  object: THREE.Object3D,
+  center: THREE.Vector3,
+  axis: THREE.Vector3,
+  angle: number,
+): void {
+  const parent = object.parent;
+
+  if (parent === null) {
+    console.error("object can't be found in the world");
+  } else {
+    const radianAngle = THREE.MathUtils.degToRad(angle);
+
+    // rotate object on world axis
+    object.rotateOnWorldAxis(axis, radianAngle);
+
+    // rotate object position around center
+    parent.worldToLocal(
+      parent
+        .localToWorld(object.position)
+        .sub(center)
+        .applyAxisAngle(axis, radianAngle)
+        .add(center),
+    );
+  }
+}
+
+/**
+ * Pivot object on axis.
+ * @param object 회전하려는 객체
+ * @param center 회전 축이 지나는 점
+ * @param axis  회전 축 (local)
+ * @param angle 회전 각도 (degree)
+ */
+export function pivotOnParentAxis(
+  object: THREE.Object3D,
+  center: THREE.Vector3,
+  axis: THREE.Vector3,
+  angle: number,
+): void {
+  const parent = object.parent;
+
+  if (parent === null) {
+    console.error('object does not have parent');
+  } else {
+    parent.localToWorld(center);
+    axis.applyQuaternion(parent.getWorldQuaternion(new THREE.Quaternion()));
+    pivotOnWorldAxis(object, center, axis, angle);
+  }
+}
