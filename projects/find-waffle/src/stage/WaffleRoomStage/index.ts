@@ -78,7 +78,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      'static/models/WaffleRoom/waffleRoomTest.glb',
+      '/models/WaffleRoom/models/WaffleRoom.glb',
       {
         onLoad: ({ scene: room }) => {
           const scale = 1;
@@ -88,8 +88,52 @@ export default class WaffleRoomStage extends Stage {
           // wrap cannon body for all room objects
           const targetObjects: THREE.Object3D[] = [];
           room.traverse((child) => {
+            if (child.name.startsWith('Box179')) {
+              let loader = new THREE.TextureLoader();
+              let texture = loader.load(
+                '/models/WaffleRoom/textures/sofa_texture.jpg',
+              );
+              const material = new THREE.MeshPhysicalMaterial({
+                map: texture,
+              });
+              (child as THREE.Mesh).material = material;
+            }
+
+            if (child.name.startsWith('letter')) {
+              const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+              });
+              (child as THREE.Mesh).material = material;
+            }
+            if (child.name.startsWith('tile')) {
+              let loader = new THREE.TextureLoader();
+              let texture = loader.load(
+                '/models/WaffleRoom/textures/tile_texture.jpeg',
+              );
+              const material = new THREE.MeshStandardMaterial({ map: texture });
+              const colorList = [
+                '#e76fc9',
+                '#3693e7',
+                '#e7001e',
+                '#e79c30',
+                '#00d0e7',
+              ];
+              const randomIndex = Math.floor(Math.random() * colorList.length);
+
+              material.color.set(colorList[randomIndex]);
+              (child as THREE.Mesh).material = material;
+
+              // const Tile = new THREE.Mesh(
+              //   (child as THREE.Mesh).geometry,
+              //   material,
+              // );
+              // this.sceneManager?.roomScene.add(child);
+            }
             child.type === 'Mesh' && targetObjects.push(child);
           });
+          // room.traverse((child) => {
+          //   child.type === 'Mesh' && targetObjects.push(child);
+          // });
           this.cannonManager?.wrap(targetObjects, scale, 0);
           // this.cannonManager?.totalObjectMap.forEach((obj) => {
           //   obj.mesh.material.depthTest = false;
@@ -249,7 +293,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      scenarioManager.set('spintile_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
       keyMap.activate();
     };
   }
