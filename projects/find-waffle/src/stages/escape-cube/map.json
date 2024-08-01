@@ -337,7 +337,7 @@
     {
       "type": "model",
       "name": "clock",
-      "scale": 0.5,
+      "scale": 1,
       "rotation": [-5, 188, -10],
       "position": [2.4, -3.5, -6]
     }
@@ -382,7 +382,7 @@
     {
       "type": "gltf",
       "name": "clock",
-      "path": "/escape-cube/models/clock.glb"
+      "path": "/escape-cube/models/clock.gltf"
     },
     {
       "type": "font",
