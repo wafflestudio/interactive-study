@@ -7,10 +7,10 @@ import { GooseCamera } from './object/basic/camera';
 import { GooseLight } from './object/basic/light';
 import { Goose } from './object/goose/Goose';
 import { GooseCircularAnimator } from './object/goose/animator';
-import { GooseFolderIcon } from './object/icon/FolderIcon';
 import { GooseGooseIcon } from './object/icon/GooseIcon';
 import { GooseIcon } from './object/icon/Icon';
 import { GooseMakerIcon } from './object/icon/MakerIcon';
+import { MemoIcon } from './object/icon/MemoIcon';
 import { MirrorIcon } from './object/icon/MirrorIcon';
 import { GooseMixIcon } from './object/icon/MixIcon';
 import { GooseQuizWindow } from './object/window/GooseQuizWindow';
@@ -20,11 +20,11 @@ import { GooseVirtualWindow } from './object/window/VirtualWindow';
 import {
   CD_KEY,
   CLOUD_KEY,
-  FOLDER_KEY,
   GOOSE2_KEY,
   GOOSE_LOVE,
   GooseResourceLoader,
   HILL_KEY,
+  MEMO_KEY,
   WAFFLE_MAKER_KEY,
   WAFFLE_MIX_KEY,
 } from './util/loader';
@@ -44,6 +44,7 @@ export class StaticGooseStage extends ComputerFrameStage {
 
   // objects
   hill?: THREE.Object3D;
+  cloud?: THREE.Object3D;
   window1?: GooseVirtualWindow;
   window2?: GooseVirtualWindow;
   gooseQuizWindow?: GooseQuizWindow;
@@ -54,7 +55,10 @@ export class StaticGooseStage extends ComputerFrameStage {
   gooseIcon?: GooseGooseIcon;
   folderIcon?: GooseIcon;
   mirrorIcon?: MirrorIcon;
+  memoIcon?: MemoIcon;
   gooseList: Goose[] = [];
+
+  #startButton?: HTMLElement;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -65,6 +69,7 @@ export class StaticGooseStage extends ComputerFrameStage {
     super.mount();
     this.raycaster.mount();
 
+    this.#startButton = document.querySelector('.computer__text') ?? undefined;
     this.mountStaticObjs();
 
     // objects using resource (async)
@@ -118,7 +123,7 @@ export class StaticGooseStage extends ComputerFrameStage {
     this.hill = this.loader?.getModelObject(HILL_KEY)!;
 
     // cloud
-    const cloud = this.loader?.getModelObject(CLOUD_KEY)!;
+    this.cloud = this.loader?.getModelObject(CLOUD_KEY)!;
 
     // goose
     this.gooseList.push(
@@ -132,17 +137,18 @@ export class StaticGooseStage extends ComputerFrameStage {
         this.loader!.getTexture(GOOSE_LOVE)!,
         new GooseCircularAnimator(this.hill, 35, THREE.MathUtils.degToRad(-40)),
       ),
+      new Goose(
+        this.loader!.loadGooseTextures(),
+        this.loader!.getTexture(GOOSE_LOVE)!,
+        new GooseCircularAnimator(this.hill, 40, THREE.MathUtils.degToRad(-50)),
+      ),
     );
 
     // window1
     this.gooseIcon = new GooseGooseIcon(this.loader?.getTexture(GOOSE2_KEY)!);
     this.mirrorIcon = new MirrorIcon(this.loader?.getTexture(CD_KEY)!);
-    this.folderIcon = new GooseFolderIcon(this.loader?.getTexture(FOLDER_KEY)!);
-    this.window1?.registerIcon(
-      this.mirrorIcon,
-      this.gooseIcon,
-      this.folderIcon,
-    );
+    this.memoIcon = new MemoIcon(this.loader?.getModelObject(MEMO_KEY)!);
+    this.window1?.registerIcon(this.gooseIcon, this.mirrorIcon, this.memoIcon);
 
     // window2
     this.mixIcon = new GooseMixIcon(
@@ -155,13 +161,13 @@ export class StaticGooseStage extends ComputerFrameStage {
 
     this.scene?.add(
       this.hill,
-      cloud,
+      this.cloud,
       this.mirrorIcon,
       this.gooseIcon,
-      this.folderIcon,
       ...this.gooseList,
       this.mixIcon,
       this.makerIcon,
+      this.memoIcon,
     );
 
     this.resize();
@@ -177,6 +183,7 @@ export class StaticGooseStage extends ComputerFrameStage {
     this.gooseList.length = 0;
     this.raycaster.unmount();
     this.css3DRenderer?.domElement.remove();
+    this.setStartButtonText('Start');
     super.unmount();
   }
 
@@ -187,6 +194,10 @@ export class StaticGooseStage extends ComputerFrameStage {
     this.css3DRenderer?.render(this.scene, this.camera);
     this.raycaster.animate(this.camera);
     this.gooseList.forEach((goose) => goose.animate(time));
+
+    if (this.cloud) {
+      this.cloud.rotation.y = -time / 80000;
+    }
   }
 
   resize() {
@@ -203,5 +214,11 @@ export class StaticGooseStage extends ComputerFrameStage {
     this.raycaster.resize(rect);
     this.window1?.resize(rect);
     this.window2?.resize(rect);
+  }
+
+  setStartButtonText(str: string) {
+    if (this.#startButton) {
+      this.#startButton.innerText = str;
+    }
   }
 }

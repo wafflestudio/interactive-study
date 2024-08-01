@@ -33,7 +33,7 @@ export class QuizWindow extends CSS3DObject {
 
 const innerHTML = `<div style="display: flex; flex-direction: column; width: 266px;" class="goose">
   <p>Enter Password</p>
-  <div style="background-color: #C0C0C0; padding: 6px 16px; display: flex; flex-direction: column;">
+  <div style="background-color: #C0C0C0; padding: 8px 18px; display: flex; flex-direction: column;">
     <div style="display: flex; gap: 5px; align-items: center;">
       <img />
       <h2>Enter Password</h2>

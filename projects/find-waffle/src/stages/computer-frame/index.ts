@@ -59,7 +59,7 @@ export default class ComputerFrameStage extends Stage {
     computerTaskbar.className = 'computer__taskbar';
     computerTaskbar.innerHTML = `
       <button class="computer__start-button computer__button">
-        <img class="computer__text" src="/computer-frame/images/start.svg" alt="start" />
+        <p class="computer__text">Start</p>
       </button>
 
       <div class="computer__taskbar-divider"></div>

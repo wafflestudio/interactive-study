@@ -9,8 +9,8 @@
   font-size: 14px;
   color: white;
   padding: 2px;
-  border-bottom: 1px solid #222222;
-  border-right: 1px solid #222222;
+  border-bottom: 2px solid #222222;
+  border-right: 2px solid #222222;
 }
 
 .goose h2 {
@@ -45,21 +45,26 @@
   font-size: 14px;
   margin-top: 12.5px;
   align-self: flex-end;
-  outline: 1px solid #222;
-  border-top: 1px solid #ffffff;
-  border-left: 1px solid #ffffff;
-  border-bottom: 1px solid #797979;
-  border-right: 1px solid #797979;
+  outline: 2px solid #222;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #797979;
+  border-right: 2px solid #797979;
 }
 
 .goose button:enabled:active {
   background-color: #adadad;
-  border-bottom: 1px solid #ffffff;
-  border-right: 1px solid #ffffff;
-  border-top: 1px solid #797979;
-  border-left: 1px solid #797979;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  border-top: 2px solid #797979;
+  border-left: 2px solid #797979;
 }
 
 .goose button:disabled {
   color: #aaa;
+}
+
+.goose > div {
+  border-right: 2px solid #222;
+  border-bottom: 2px solid #222;
 }

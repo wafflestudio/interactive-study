@@ -1,6 +1,7 @@
 import { random, throttle } from 'es-toolkit';
 import * as THREE from 'three';
 
+import { StageManager } from '../../core/stage/StageManager';
 import {
   GOOSE_QUIZ_ANGLE,
   MAX_GOOSE_NUM,
@@ -18,6 +19,7 @@ import { traverseAncestor } from './util/object';
 export class GooseStage extends StaticGooseStage {
   #draggingIcon?: GooseIcon;
   #waffleIcon?: GooseWaffleIcon;
+  #stageCleared = false;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -29,6 +31,11 @@ export class GooseStage extends StaticGooseStage {
     this.addGoose = throttle(this.addGoose.bind(this), 1000);
   }
 
+  mount() {
+    super.mount();
+    this.#stageCleared = false;
+  }
+
   get hoverableObjects() {
     return [
       this.mixIcon,
@@ -38,6 +45,7 @@ export class GooseStage extends StaticGooseStage {
       this.mirrorIcon,
       ...this.gooseList,
       this.folderIcon,
+      this.memoIcon,
     ].filter((x) => x !== undefined);
   }
 
@@ -51,6 +59,7 @@ export class GooseStage extends StaticGooseStage {
       this.mirrorIcon,
       ...this.gooseList,
       this.folderIcon,
+      this.memoIcon,
     ].filter((x) => x !== undefined);
   }
 
@@ -76,7 +85,9 @@ export class GooseStage extends StaticGooseStage {
   mountStaticObjs() {
     super.mountStaticObjs();
     if (this.camera) {
-      this.camera.maxAngle = GOOSE_QUIZ_ANGLE;
+      this.camera.maxAngle = Math.PI * 2;
+      // this.camera.maxAngle = GOOSE_QUIZ_ANGLE;
+      // this.setStartButtonText('Start');
     }
     this.gooseQuizWindow?.addSolvedListener(() => {
       this.camera!.maxAngle = PASSWORD_QUIZ_ANGLE;
@@ -137,11 +148,28 @@ export class GooseStage extends StaticGooseStage {
     this.#draggingIcon = icon;
     icon.onMouseDown();
 
-    // 와플을 클릭한 경우 unmount되므로 더 이상의 작업이 필요 없음
-    if (icon === this.#waffleIcon) return;
+    if (icon === this.#waffleIcon) {
+      if (this.#stageCleared) return;
+      this.#stageCleared = true;
 
-    addEventListener('mousemove', this.onIconMouseMove);
-    addEventListener('mouseup', this.onIconMouseUp);
+      const message = 'Stage Clear!';
+      let idx = 0;
+      const id = setInterval(() => {
+        if (message.length < idx) {
+          clearInterval(id);
+          setTimeout(() => {
+            StageManager.instance.toHome();
+          }, 2000);
+        } else {
+          this.setStartButtonText(message.slice(0, idx));
+        }
+        idx++;
+      }, 150);
+    } else {
+      // 와플을 클릭한 경우 unmount되므로 아래 작업 필요 없음
+      addEventListener('mousemove', this.onIconMouseMove);
+      addEventListener('mouseup', this.onIconMouseUp);
+    }
   }
 
   onIconMouseMove(e: MouseEvent) {
@@ -158,9 +186,10 @@ export class GooseStage extends StaticGooseStage {
       this.#waffleIcon = new GooseWaffleIcon(
         this.loader?.getModelObject(WAFFLE_KEY)!,
       );
-      this.scene?.add(this.#waffleIcon!);
+      this.scene?.add(this.#waffleIcon);
+      this.window2?.registerIcon(this.#waffleIcon);
+
       this.mixIcon?.removeFromParent();
-      this.window2?.registerIcon(this.#waffleIcon!);
       this.makerIcon?.shrink();
     }
 

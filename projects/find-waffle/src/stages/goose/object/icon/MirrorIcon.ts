@@ -29,8 +29,8 @@ export class MirrorIcon extends GooseIcon {
     const front = new Reflector(ringGeometry, {
       clipBias: 0.003,
       color: 0xffffff,
-      textureWidth: 64,
-      textureHeight: 64,
+      textureWidth: 156,
+      textureHeight: 156,
     });
     front.rotateY(-Math.PI / 2);
 

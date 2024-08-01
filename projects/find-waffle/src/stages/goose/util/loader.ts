@@ -7,6 +7,7 @@ export const CLOUD_KEY = 'cloud';
 
 export const CD_KEY = 'cd';
 export const FOLDER_KEY = 'folder';
+export const MEMO_KEY = 'memo';
 
 export const GOOSE1_KEY = 'goose1';
 export const GOOSE2_KEY = 'goose2';
@@ -25,6 +26,7 @@ export class GooseResourceLoader extends ResourceLoader {
 
     this.registerTexture(CD_KEY, '/goose/cd.png');
     this.registerTexture(FOLDER_KEY, '/goose/folder.png');
+    this.registerModel(MEMO_KEY, '/goose/memo.glb');
 
     this.registerTexture(GOOSE1_KEY, '/goose/goose1.png');
     this.registerTexture(GOOSE2_KEY, '/goose/goose2.png');

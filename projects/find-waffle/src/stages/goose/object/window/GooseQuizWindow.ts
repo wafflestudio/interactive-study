@@ -7,7 +7,7 @@ export class GooseQuizWindow extends QuizWindow {
 
   constructor() {
     super(GOOSE_QUIZ_ANGLE, '/goose/goose3.png');
-    this.toolbar.innerText = 'Pet Goose';
+    this.toolbar.innerText = 'Make Goose Happy';
     this.button.innerText = 'Done';
     this.input.hidden = true;
     this.button.disabled = true;
@@ -36,6 +36,6 @@ export class GooseQuizWindow extends QuizWindow {
   }
 
   #updateHeading(cnt: number) {
-    this.heading.innerText = `Pet Goose (${cnt}/${GOOSE_TO_CLICK})`;
+    this.heading.innerText = `Click Goose (${cnt}/${GOOSE_TO_CLICK})`;
   }
 }
