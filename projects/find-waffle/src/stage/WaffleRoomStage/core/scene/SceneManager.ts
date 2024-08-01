@@ -20,7 +20,7 @@ export class SceneManager {
     this.renderer = renderer;
     this.app = app;
     this.aspectRatio = this.app.clientWidth / this.app.clientHeight;
-    this.frustumSize = 8;
+    this.frustumSize = 50;
 
     // room
     this.roomScene = new THREE.Scene();
@@ -32,17 +32,30 @@ export class SceneManager {
       0.1,
       1000,
     );
-    this.roomCamera.position.set(5, 6, 5);
-    const lookAtPoint = new THREE.Vector3(-1, 0, -1);
+    // this.roomCamera = new THREE.PerspectiveCamera(
+    //   35,
+    //   this.app.clientWidth / this.app.clientHeight,
+    //   0.1,
+    //   10000,
+    // );
+    this.roomCamera.position.set(100, 80, 100);
+    const lookAtPoint = new THREE.Vector3(0, 0, 0);
     this.roomCamera.lookAt(lookAtPoint);
 
-    const sunLight = new THREE.DirectionalLight('#ffffff', 4);
-    sunLight.castShadow = true;
+    const sunLight = new THREE.DirectionalLight('#ffffff', 3);
+    sunLight.castShadow = false;
     sunLight.shadow.camera.far = 15;
     sunLight.shadow.mapSize.set(1024, 1024);
     sunLight.shadow.normalBias = 0.05;
     sunLight.position.set(3, 3, -2.25);
     this.roomScene.add(sunLight);
+    const sunLight2 = new THREE.DirectionalLight('#ffffff', 4);
+    sunLight2.castShadow = true;
+    sunLight2.shadow.camera.far = 15;
+    sunLight2.shadow.mapSize.set(1024, 1024);
+    sunLight2.shadow.normalBias = 0.05;
+    sunLight2.position.set(-3, -3, 2.25);
+    this.roomScene.add(sunLight2);
 
     const axesHelper = new THREE.AxesHelper(5);
     this.roomScene.add(axesHelper);
