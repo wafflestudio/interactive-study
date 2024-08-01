@@ -16,11 +16,6 @@ import {
   mapDataSchema,
 } from './map-schema';
 
-const TIMER_START_QUATERNION = new THREE.Quaternion().setFromAxisAngle(
-  new THREE.Vector3(0, 1, 0),
-  Math.PI,
-);
-
 export class World {
   cannonWorld = new CANNON.World();
   scene: THREE.Scene;
@@ -95,6 +90,7 @@ export class World {
 
   private initTimer() {
     this.timer = new Timer(this.loader.getFont('helvetiker')!, this);
+    this.timer.start();
   }
 
   private async initCube(cubeObject: CubeObject) {
@@ -249,9 +245,6 @@ export class World {
       },
       onUpdateParams: [helper],
       onComplete: () => {
-        if (this.map.quaternion.angleTo(TIMER_START_QUATERNION) < 0.01) {
-          this.timer?.start();
-        }
         this.isRotating = false;
         this.resume();
       },
