@@ -58,10 +58,10 @@ export default class WaffleRoomStage extends Stage {
      * 2. load resources
      */
     // add controls & animation
-    // this.controls = new OrbitControls(
-    //   this.sceneManager.currentCamera,
-    //   this.app.querySelector('canvas') as HTMLCanvasElement,
-    // );
+    this.controls = new OrbitControls(
+      this.sceneManager.currentCamera,
+      this.app.querySelector('canvas') as HTMLCanvasElement,
+    );
     this.clock = new THREE.Clock();
 
     // Player
@@ -78,7 +78,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      '/models/WaffleRoom/models/WaffleRoom.glb',
+      '/models/WaffleRoom/models/WaffleRoom_final.glb',
       {
         onLoad: ({ scene: room }) => {
           const scale = 1;
