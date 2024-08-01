@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'vt323';
-  src: url('../../../../../public/goose/VT323-Regular.ttf');
+  src: url('/goose/VT323-Regular.ttf');
 }
 
 :root {
@@ -63,11 +63,6 @@ button {
   height: 2.2rem;
 }
 
-.computer__start-button .computer__text {
-  width: 2.7rem;
-  height: 1.3rem;
-}
-
 .computer__taskbar-divider {
   width: 0;
   height: 2.4rem;
@@ -90,11 +85,11 @@ button {
   border-color: var(--gray-border) var(--white) var(--white) var(--gray-border);
 }
 
-.computer__taskbar-time .computer__text {
-  width: 4.2rem;
-  height: 1.3rem;
+.computer__text {
   font-family: vt323;
   font-size: 20px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .computer__button {

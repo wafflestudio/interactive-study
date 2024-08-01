@@ -9,13 +9,13 @@ type Status = 'drag' | 'rotate' | 'none';
 export class GooseMixIcon extends GooseIcon {
   status: Status = 'rotate';
   #rotationManager = new RotationManager({
-    multiplierX: 1.5,
+    multiplierX: 1,
     multiplierY: 1,
     reversed: true,
   });
 
   constructor(object: THREE.Object3D) {
-    super(object, 'align_me');
+    super(object, 'FLIPME.txt');
     object.scale.set(ICON_SCALE, ICON_SCALE, ICON_SCALE);
     this.rotateX(0.4);
   }
@@ -37,7 +37,7 @@ export class GooseMixIcon extends GooseIcon {
     super.onMouseUp();
 
     if (this.status === 'rotate') {
-      if (Math.abs(this.rotation.y - Math.PI) < 0.1) {
+      if (Math.abs(this.rotation.y - Math.PI) < 0.2) {
         this.rotation.set(0, 0, 0);
       }
       this.#rotationManager.onMouseUp();
@@ -50,7 +50,7 @@ export class GooseMixIcon extends GooseIcon {
       if (angle < 10) {
         this.rotation.set(0, 0, 0);
         this.status = 'drag';
-        this.setLabel('waffle.raw', Math.PI);
+        this.setLabel('waffle.zip', Math.PI);
       }
     }
   }

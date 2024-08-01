@@ -4,7 +4,7 @@ export class GooseLight extends THREE.Group {
   constructor() {
     super();
 
-    const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 2);
+    const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.5);
     this.add(hemisphereLight);
 
     const sunlight = new THREE.DirectionalLight('white', 1);

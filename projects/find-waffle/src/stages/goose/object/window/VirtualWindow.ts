@@ -55,7 +55,7 @@ export class GooseVirtualWindow extends THREE.Mesh {
     iconList.forEach((icon) => {
       this.#iconList.push(icon);
       // TODO: 매직 넘버 손보기
-      this.#moveIcon(icon, 0.18 * (this.#iconList.length - 1) + 0.3, 0.5);
+      this.#moveIcon(icon, 0.15 * (this.#iconList.length - 1) + 0.3, 0.5);
     });
   }
 
