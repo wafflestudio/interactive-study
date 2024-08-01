@@ -163,5 +163,18 @@ export class StageDebugger {
     this.gui
       .add(this.context, 'collideRightAnimation')
       .name('오른쪽 충돌 애니메이션');
+
+    this.gui
+      .add(
+        {
+          extraTime: () => {
+            world.timer?.addTime(10);
+            world.timer?.start();
+            world.resume();
+          },
+        },
+        'extraTime',
+      )
+      .name('10초 추가');
   }
 }

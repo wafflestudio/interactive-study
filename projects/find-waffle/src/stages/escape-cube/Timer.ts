@@ -14,13 +14,14 @@ export class Timer {
     new THREE.Vector3(-3.8, -4.2, -6),
   ];
   private textObjects: THREE.Mesh<TextGeometry, THREE.MeshBasicMaterial>[] = [];
-  private font: Font;
   private paused = true;
 
-  constructor(font: Font, world: World) {
-    this.timeText = '3:00';
-    this.remainingTime = 180;
-    this.font = font;
+  constructor(
+    private font: Font,
+    private world: World,
+  ) {
+    this.timeText = '0:00';
+    this.remainingTime = 10;
 
     const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: 'black' });
@@ -35,22 +36,36 @@ export class Timer {
       textObject.rotation.set(0, Math.PI, 0);
       sphereObject.add(textObject);
       this.textObjects.push(textObject);
-      world.map.add(sphereObject);
+      this.world.map.add(sphereObject);
     }
     this.updateTextObjects();
+  }
+
+  pause() {
+    this.paused = true;
   }
 
   start() {
     this.paused = false;
   }
 
+  addTime(time: number) {
+    this.remainingTime += time;
+    this.timeText = this.formatTime(this.remainingTime);
+    this.updateTextObjects();
+  }
+
   pass(timeDelta: number) {
-    if (this.paused) return;
-    this.remainingTime -= timeDelta;
+    if (this.paused || this.remainingTime === 0) return;
+    this.remainingTime = Math.max(this.remainingTime - timeDelta, 0);
     const newText = this.formatTime(this.remainingTime);
     if (newText !== this.timeText) {
       this.timeText = newText;
       this.updateTextObjects();
+    }
+    if (this.remainingTime === 0) {
+      this.pause();
+      this.world.pause();
     }
   }
 
@@ -58,7 +73,7 @@ export class Timer {
     const minutes = Math.floor(time / 60)
       .toString()
       .slice(-1);
-    const seconds = Math.floor(time % 60)
+    const seconds = Math.ceil(time % 60)
       .toString()
       .padStart(2, '0');
     return `${minutes}:${seconds}`;
