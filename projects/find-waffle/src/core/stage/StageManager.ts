@@ -57,7 +57,7 @@ export class StageManager {
     this.currentStage?.resize(e);
   }
 
-  public puase() {
+  public pause() {
     this.clock.stop();
     this.pauseCallbacks.forEach((cb) => cb());
   }
