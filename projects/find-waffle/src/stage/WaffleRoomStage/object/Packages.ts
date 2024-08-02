@@ -34,10 +34,12 @@ export class Packages extends GameObject {
     this.hitboxes.push(
       this.cannonManager.createInteractiveHitbox(
         this.object3D,
-        2,
+        2.5,
         'spinbox_02',
         (contact) => {
-          this.scenarioManager.set('spinbox_03');
+          if (contact.bi === this.body || contact.bj === this.body) {
+            this.scenarioManager.set('spinbox_03');
+          }
         },
       ),
     );
@@ -48,7 +50,6 @@ export class Packages extends GameObject {
     this.hitboxes.forEach((hitbox) => {
       if (this.scenarioManager.isPlot(hitbox.activatedPlot)) {
         this.cannonManager.world.contacts.forEach((contact) => {
-          console.log('hi');
           hitbox.onActivate(contact);
         });
       }

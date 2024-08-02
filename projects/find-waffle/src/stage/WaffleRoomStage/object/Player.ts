@@ -103,7 +103,6 @@ export class Player extends GameObject {
             key: 'idle',
             action: this.actionsMap.get('idle')!,
           };
-          console.log(this.currentAction);
           this.currentAction?.action.play();
         },
       },
@@ -146,12 +145,8 @@ export class Player extends GameObject {
   changeAction(actionKey: string) {
     if (this.currentAction?.key === actionKey) return;
 
-    console.log(actionKey);
-
     const oldAction = this.currentAction?.action;
     const newAction = this.actionsMap.get(actionKey);
-    console.log(oldAction);
-    console.log(newAction);
     if (!newAction) return;
     if (oldAction) {
       oldAction.stop();

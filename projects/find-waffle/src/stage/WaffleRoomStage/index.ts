@@ -150,18 +150,10 @@ export default class WaffleRoomStage extends Stage {
               (child as THREE.Mesh).renderOrder = 0;
             }
 
-            // if (child.name === 'box_sample_top') {
-            //   child.visible = false;
-            // }
-
             child.type === 'Mesh' && targetObjects.push(child);
           });
 
           this.cannonManager?.wrap(targetObjects, scale, 0);
-          this.cannonManager?.totalObjectMap.forEach((obj) => {
-            // obj.mesh.material.depthTest = false;
-            // obj.mesh.renderOrder = 3;
-          });
 
           // filter collision
           const filteredMap = new Map(
@@ -173,25 +165,54 @@ export default class WaffleRoomStage extends Stage {
             this.cannonManager?.filterCollision(body, 4, 8);
           });
 
+          // sofa collision
+          const sofaInfo1 = this.cannonManager?.totalObjectMap.get('Box17951');
+          const sofaInfo2 = this.cannonManager?.totalObjectMap.get('Box17952');
+          const sofaInfo3 = this.cannonManager?.totalObjectMap.get('Box17955');
+          const sofaInfo4 = this.cannonManager?.totalObjectMap.get('Box17956');
+          this.cannonManager?.filterCollision(sofaInfo1!.body, 2, 1);
+          this.cannonManager?.filterCollision(sofaInfo2!.body, 2, 1);
+          this.cannonManager?.filterCollision(sofaInfo3!.body, 2, 1);
+          this.cannonManager?.filterCollision(sofaInfo4!.body, 2, 1);
+
+          // mirror collision
+          const mirrorInfo = this.cannonManager?.totalObjectMap.get('Box25995');
+          this.cannonManager?.filterCollision(mirrorInfo!.body, 2, 1);
+
+          // wall collision
+          const wallInfo1 =
+            this.cannonManager?.totalObjectMap.get('wall_right');
+          const wallInfo2 = this.cannonManager?.totalObjectMap.get('wall_left');
+          // const wallInfo3 =
+          //   this.cannonManager?.totalObjectMap.get('wall_right001');
+          // const wallInfo4 =
+          //   this.cannonManager?.totalObjectMap.get('wall_left001');
+          this.cannonManager?.filterCollision(wallInfo1!.body, 2, 1);
+          this.cannonManager?.filterCollision(wallInfo2!.body, 2, 1);
+          // this.cannonManager?.filterCollision(wallInfo3!.body, 2, 1);
+          // this.cannonManager?.filterCollision(wallInfo4!.body, 2, 1);
+
           // specify interactive objects (temp: only wardrobe for now)
-          const wardrobeInfo =
-            this.cannonManager?.totalObjectMap.get('wardrobe_base');
+          const wardrobeInfo = this.cannonManager?.totalObjectMap.get(
+            'Armadio_due__ante_Cube',
+          );
           console.log(wardrobeInfo);
-          // const wardrobe = new Wardrobe(
-          //   wardrobeInfo!.mesh,
-          //   wardrobeInfo!.body,
-          //   resourceLoader,
-          //   keyMap,
-          //   this.sceneManager!,
-          //   scenarioManager,
-          //   this.cannonManager!,
-          // );
-          // this.onAnimateCallbacks.push({
-          //   cb: wardrobe.onAnimate,
-          //   bindTarget: wardrobe,
-          // });
-          // this.onUnmountCallbacks.push(wardrobe.onUnmount);
-          // this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
+          this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
+          const wardrobe = new Wardrobe(
+            wardrobeInfo!.mesh,
+            wardrobeInfo!.body,
+            resourceLoader,
+            keyMap,
+            this.sceneManager!,
+            scenarioManager,
+            this.cannonManager!,
+          );
+          this.onAnimateCallbacks.push({
+            cb: wardrobe.onAnimate,
+            bindTarget: wardrobe,
+          });
+          this.onUnmountCallbacks.push(wardrobe.onUnmount);
+          this.cannonManager?.filterCollision(wardrobeInfo!.body, 2, 1);
 
           // Set Packages to interactive objects
           const packagesInfo =
@@ -401,7 +422,7 @@ export default class WaffleRoomStage extends Stage {
     this.cannonManager.world.step(1 / 60, delta, 3);
     this.cannonManager.renderMovement();
     this.cannonManager.stopIfCollided();
-    // this.cannonDebugger?.update();
+    this.cannonDebugger?.update();
   }
 
   public unmount() {
