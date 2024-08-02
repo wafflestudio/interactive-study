@@ -30,7 +30,7 @@ export class Player extends GameObject {
 
     this.resourceLoader.registerModel(
       'iceCream',
-      '/models/WaffleRoom/models/icecream.glb',
+      '/models/WaffleRoom/models/ice3.glb',
       {
         onLoad: ({ scene: iceCream }) => {
           const scale = 0.04;

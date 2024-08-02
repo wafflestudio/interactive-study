@@ -313,7 +313,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      scenarioManager.set('opening_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
       keyMap.activate();
     };
   }
