@@ -94,9 +94,6 @@ export class ResourceLoader {
     const progress = this.loadedResourcesCount / this.totalResourcesCount;
     this.onProgressUpdate(progress);
     if (this.loadedResourcesCount === this.totalResourcesCount) {
-      console.log('All resources loaded');
-      console.log(this.getFont('helvetiker'));
-
       this.onLoadComplete();
     }
   }
