@@ -6,7 +6,7 @@
       "transparent": true,
       "border": {
         "color": "black",
-        "width": 0.01
+        "width": 0.015
       },
       "positions": [
         {
@@ -190,7 +190,7 @@
       "background": "#FFBE34",
       "border": {
         "color": "black",
-        "width": 0.01
+        "width": 0.015
       },
       "positions": [
         {
