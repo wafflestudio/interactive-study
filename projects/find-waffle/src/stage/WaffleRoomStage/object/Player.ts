@@ -30,10 +30,13 @@ export class Player extends GameObject {
 
     this.resourceLoader.registerModel(
       'iceCream',
-      '/models/WaffleRoom/models/ice3.glb',
+      '/models/IceCream/icecream_standing.glb',
       {
-        onLoad: ({ scene: iceCream }) => {
-          const scale = 0.04;
+        onLoad: (gltf) => {
+          const iceCream = gltf.scene;
+          console.log(gltf);
+          console.log(iceCream);
+          const scale = 1;
           const position = new THREE.Vector3(10, 0.1, 10);
 
           // wrap Cannon body
