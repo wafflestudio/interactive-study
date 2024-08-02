@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es';
+import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
@@ -14,7 +15,7 @@ export class World {
   player: Player;
   timer?: Timer;
   initialized = false;
-  _monster?: Monster; // 디버깅용 몬스터
+  monsters: Monster[] = [];
   _onInitialized: () => void = () => {};
 
   set onInitialized(value: () => void) {
@@ -39,12 +40,45 @@ export class World {
   private init() {
     this.map.init().then(() => {
       this.initTimer();
+      this.initMonsters();
       this.initialized = true;
       this._onInitialized();
-
-      const m = new Monster(this, new THREE.Vector3(0, 5, 5));
-      this._monster = m;
     });
+  }
+
+  private initMonsters() {
+    const m1 = new Monster(this, new THREE.Vector3(5, 5, 4));
+    const tl = gsap.timeline();
+    tl.to(m1.object.position, {
+      x: 5,
+      y: 3,
+      z: 4,
+      duration: 1,
+      ease: GSAP.Power1.easeInOut,
+    })
+      .to(m1.object.position, {
+        x: 5,
+        y: 3,
+        z: 0,
+        duration: 1.5,
+        ease: GSAP.Power1.easeInOut,
+      })
+      .to(m1.object.position, {
+        x: 5,
+        y: 5,
+        z: 0,
+        duration: 1,
+        ease: GSAP.Power1.easeInOut,
+      })
+      .to(m1.object.position, {
+        x: 5,
+        y: 5,
+        z: 4,
+        duration: 1.5,
+        ease: GSAP.Power1.easeInOut,
+      })
+      .repeat(-1);
+    this.monsters.push(m1);
   }
 
   private initTimer() {
@@ -60,13 +94,14 @@ export class World {
     this.map.dispose();
     this.player.dispose();
     this.timer?.dispose();
+    this.monsters.forEach((m) => m.dispose());
   }
 
   public animate(timeDelta: number) {
-    this.player.animate(timeDelta);
     this.cannonWorld.step(1 / 60, timeDelta);
+    this.player.animate(timeDelta);
     this.timer?.animate(timeDelta);
-    this._monster?.animate(timeDelta);
+    this.monsters.forEach((m) => m.animate(timeDelta));
   }
 
   public pause() {

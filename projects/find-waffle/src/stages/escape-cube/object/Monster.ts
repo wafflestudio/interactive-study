@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es';
+import gsap from 'gsap';
 import * as THREE from 'three';
 import { SimplexNoise } from 'three/examples/jsm/Addons.js';
 
@@ -55,10 +56,20 @@ export class Monster extends BaseObject<
         );
       }
     });
+
+    const helper = { t: 0 };
+    gsap.to(helper, {
+      t: 1,
+      duration: 2,
+      onUpdate: function () {
+        object.scale.setScalar(helper.t);
+        (body.shapes[0] as CANNON.Sphere).radius = 0.35 * helper.t;
+      },
+    });
   }
 
   public animate(timeDelta: number) {
-    super.animate(timeDelta);
+    this.syncToThree();
     if (this.object.material.displacementMap) {
       const offset = this.object.material.displacementMap.offset;
       offset.set((offset.x + timeDelta * 0.3) % 1, offset.y);
