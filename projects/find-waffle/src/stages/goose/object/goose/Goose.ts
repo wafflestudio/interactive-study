@@ -10,6 +10,7 @@ export class Goose extends THREE.Group {
   #textures: THREE.Texture[];
   #loveTexture: THREE.Texture;
   #material: THREE.SpriteMaterial;
+  #elapsedTime = 0;
 
   constructor(
     textures: THREE.Texture[],
@@ -32,7 +33,8 @@ export class Goose extends THREE.Group {
     this.position.copy(pos);
     this.#material.rotation = slope;
 
-    const textureIdx = Math.floor(time / GOOSE_ANIMATION_TERM) % 4;
+    this.#elapsedTime += time * 1000;
+    const textureIdx = Math.floor(this.#elapsedTime / GOOSE_ANIMATION_TERM) % 4;
     this.#material.map = this.#textures[textureIdx];
     this.#material.needsUpdate = true;
   }
