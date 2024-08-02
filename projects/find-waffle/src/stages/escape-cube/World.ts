@@ -6,9 +6,6 @@ import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
-import { Monster } from './Objects/Monster';
-import { Player } from './Objects/Player';
-import { Timer } from './Objects/Timer';
 import {
   CubeObject,
   MapData,
@@ -17,6 +14,9 @@ import {
   Resource,
   mapDataSchema,
 } from './map-schema';
+import { Monster } from './object/Monster';
+import { Player } from './object/Player';
+import { Timer } from './object/Timer';
 
 export class World {
   cannonWorld = new CANNON.World();
@@ -132,8 +132,6 @@ export class World {
     for (const position of positions) {
       if (Array.isArray(position)) {
         const clone = cube.clone();
-        clone.receiveShadow = true;
-        clone.castShadow = true;
         clone.position.set(position[0], position[1], position[2]);
         this.map.add(clone);
         this.addMapShape(position, [w, h, d]);
@@ -213,15 +211,6 @@ export class World {
     const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
     sunLight.position.set(0, 5, 15);
     sunLight.lookAt(0, 0, 0);
-    // sunLight.castShadow = true;
-    // sunLight.shadow.mapSize.set(1024, 1024);
-    // sunLight.shadow.camera.far = 100;
-    // sunLight.shadow.camera.near = 0.1;
-    // sunLight.shadow.camera.left = -10;
-    // sunLight.shadow.camera.right = 10;
-    // sunLight.shadow.camera.top = 10;
-    // sunLight.shadow.camera.bottom = -10;
-    // this.scene.add(new THREE.DirectionalLightHelper(sunLight, 1));
     this.scene.add(sunLight);
   }
 

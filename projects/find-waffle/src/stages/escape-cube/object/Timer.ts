@@ -39,7 +39,7 @@ export class Timer extends BaseObject<THREE.Group> {
       textObject.rotation.set(0, Math.PI, 0);
       sphereObject.add(textObject);
       this.textObjects.push(textObject);
-      this.world.map.add(sphereObject);
+      this.object.add(sphereObject);
     }
     this.updateTextObjects();
   }
