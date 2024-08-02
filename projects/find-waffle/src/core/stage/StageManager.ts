@@ -14,6 +14,7 @@ export class StageManager {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.app.querySelector('canvas')!,
       antialias: true,
+      alpha: true,
     });
   }
 

@@ -6,7 +6,7 @@ const { div, img, span } = van.tags;
 
 // types
 export type Chunk = {
-  size: 'normal' | 'large' | 'huge';
+  size?: 'normal' | 'large' | 'huge';
   value: string;
 };
 
@@ -49,7 +49,9 @@ export const SlicedChunks = ({
       remainingCounts: currentIndex,
     },
   );
-  return slicedChunks.map(({ size, value }) => span({ class: size }, value));
+  return slicedChunks.map(({ size, value }) =>
+    span({ class: size ?? 'normal' }, value),
+  );
 };
 
 // states
