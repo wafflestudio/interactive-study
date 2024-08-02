@@ -6,6 +6,7 @@ import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
+import { Monster } from './Objects/Monster';
 import { Player } from './Objects/Player';
 import { Timer } from './Objects/Timer';
 import {
@@ -26,6 +27,7 @@ export class World {
   timer?: Timer;
   initialized = false;
   isRotating = false;
+  _monster?: Monster; // 디버깅용 몬스터
   _onInitialized: () => void = () => {};
 
   set onInitialized(value: () => void) {
@@ -52,6 +54,9 @@ export class World {
     Promise.all([this.initMap(), this.initLight()]).then(() => {
       this.initialized = true;
       this._onInitialized();
+
+      const m = new Monster(this, new THREE.Vector3(0, 5, 5));
+      this._monster = m;
     });
   }
 
@@ -127,6 +132,8 @@ export class World {
     for (const position of positions) {
       if (Array.isArray(position)) {
         const clone = cube.clone();
+        clone.receiveShadow = true;
+        clone.castShadow = true;
         clone.position.set(position[0], position[1], position[2]);
         this.map.add(clone);
         this.addMapShape(position, [w, h, d]);
@@ -206,6 +213,15 @@ export class World {
     const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
     sunLight.position.set(0, 5, 15);
     sunLight.lookAt(0, 0, 0);
+    // sunLight.castShadow = true;
+    // sunLight.shadow.mapSize.set(1024, 1024);
+    // sunLight.shadow.camera.far = 100;
+    // sunLight.shadow.camera.near = 0.1;
+    // sunLight.shadow.camera.left = -10;
+    // sunLight.shadow.camera.right = 10;
+    // sunLight.shadow.camera.top = 10;
+    // sunLight.shadow.camera.bottom = -10;
+    // this.scene.add(new THREE.DirectionalLightHelper(sunLight, 1));
     this.scene.add(sunLight);
   }
 
@@ -217,12 +233,14 @@ export class World {
       }
     });
     this.player.dispose();
+    this.timer?.dispose();
   }
 
   public animate(timeDelta: number) {
     this.player.animate();
     this.cannonWorld.step(1 / 60, timeDelta);
-    this.timer?.pass(timeDelta);
+    this.timer?.tick(timeDelta);
+    this._monster?.tick(timeDelta);
   }
 
   public rotate(axis: THREE.Vector3, angle: number): gsap.core.Tween {

@@ -2,18 +2,19 @@ import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
 import { World } from '../World';
+import { BaseObject } from './BaseObject';
 
 const xAxis = new THREE.Vector3(1, 0, 0);
 const yAxis = new THREE.Vector3(0, 1, 0);
 const zAxis = new THREE.Vector3(0, 0, 1);
 
-export class Player {
-  object: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>;
-  body: CANNON.Body;
+export class Player extends BaseObject<
+  THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>
+> {
   private direction = new THREE.Vector3();
   private speed = 5;
 
-  constructor(public world: World) {
+  constructor(world: World) {
     const initialPosition = [-4, 5, 5] as const;
 
     const geometry = new THREE.SphereGeometry(0.3);
@@ -21,25 +22,26 @@ export class Player {
       color: 0xadadee,
       format: THREE.RGBAFormat,
     });
-    this.object = new THREE.Mesh(geometry, material);
-    this.object.renderOrder = 1;
-    this.object.castShadow = true;
-    this.object.name = 'player';
-    this.object.position.set(...initialPosition);
-    world.map.add(this.object);
+    const object = new THREE.Mesh(geometry, material);
+    object.renderOrder = 1;
+    object.castShadow = true;
+    object.name = 'player';
+    object.position.set(...initialPosition);
+    world.map.add(object);
 
-    this.body = new CANNON.Body({
+    const body = new CANNON.Body({
       mass: 1,
       shape: new CANNON.Sphere(0.3),
       linearDamping: 0,
       linearFactor: new CANNON.Vec3(1, 1, 0),
       angularFactor: new CANNON.Vec3(0, 0, 0),
     });
-    this.body.position.set(...initialPosition);
-    this.world.cannonWorld.addBody(this.body);
-    this.world.cannonWorld.addEventListener('postStep', () => {
+    body.position.set(...initialPosition);
+    world.cannonWorld.addBody(body);
+    world.cannonWorld.addEventListener('postStep', () => {
       this.updateVelocity();
     });
+    super(world, object, body);
   }
 
   get velocity() {
@@ -72,20 +74,6 @@ export class Player {
     } = direction;
     this.direction.set(x, y, z);
     this.updateVelocity();
-  }
-
-  private syncToCannon() {
-    this.object.position.copy(
-      this.world.map.worldToLocal(
-        new THREE.Vector3(...this.body.position.toArray()),
-      ),
-    );
-  }
-
-  private syncToThree() {
-    this.body.position.set(
-      ...this.world.map.localToWorld(this.object.position.clone()).toArray(),
-    );
   }
 
   public animate() {

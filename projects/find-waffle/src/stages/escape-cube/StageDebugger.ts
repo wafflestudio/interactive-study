@@ -171,7 +171,7 @@ export class StageDebugger {
       .add(
         {
           extraTime: () => {
-            world.timer?.addTime(10);
+            world.timer?.increase(10);
             world.timer?.start();
             world.resume();
           },
@@ -179,6 +179,18 @@ export class StageDebugger {
         'extraTime',
       )
       .name('10초 추가');
+    this.gui
+      .add(
+        {
+          reduceTime: () => {
+            world.timer?.decrease(10);
+            world.timer?.start();
+            world.resume();
+          },
+        },
+        'reduceTime',
+      )
+      .name('10초 감소');
 
     this.gui
       .add({ fluidization: false }, 'fluidization')

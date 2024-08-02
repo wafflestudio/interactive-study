@@ -42,6 +42,20 @@ export default class EscapeCubeStage extends Stage {
     this.createContext();
     this.resize();
     this.keymap.activate();
+    this.renderer.shadowMap.enabled = true;
+  }
+
+  public unmount() {
+    if (!this.context.mounted) return;
+    this.context.scene.traverse((object) => {
+      if (object instanceof THREE.Mesh) {
+        object.geometry.dispose();
+        object.material.dispose();
+      }
+    });
+    this.context.world.dispose();
+    this.keymap.deactivate();
+    this.renderer.shadowMap.enabled = false;
   }
 
   private createContext(): void {
@@ -144,16 +158,5 @@ export default class EscapeCubeStage extends Stage {
       window.innerWidth,
       window.innerHeight,
     );
-  }
-
-  public unmount() {
-    if (!this.context.mounted) return;
-    this.context.scene.traverse((object) => {
-      if (object instanceof THREE.Mesh) {
-        object.geometry.dispose();
-        object.material.dispose();
-      }
-    });
-    this.keymap.deactivate();
   }
 }

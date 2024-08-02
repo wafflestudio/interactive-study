@@ -1,12 +1,14 @@
+import * as CANNON from 'cannon-es';
 import { zip } from 'es-toolkit';
 import * as THREE from 'three';
 import { Font, TextGeometry } from 'three/examples/jsm/Addons.js';
 
 import { World } from '../World';
+import { BaseObject } from './BaseObject';
 
-export class Timer {
-  private timeText: string;
-  private remainingTime: number;
+export class Timer extends BaseObject<THREE.Group> {
+  private timeText = '0:00';
+  private remainingTime = 180;
   private positions = [
     new THREE.Vector3(-1.2, -4.6, -6),
     new THREE.Vector3(-2.2, -3.8, -6),
@@ -17,13 +19,11 @@ export class Timer {
   paused = true;
 
   constructor(
-    private world: World,
+    world: World,
     private font: Font,
     matcap: THREE.Texture,
   ) {
-    this.timeText = '0:00';
-    this.remainingTime = 10;
-
+    super(world, new THREE.Group(), new CANNON.Body());
     const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
     const sphereMaterial = new THREE.MeshMatcapMaterial({ matcap });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -52,14 +52,20 @@ export class Timer {
     this.paused = false;
   }
 
-  addTime(time: number) {
+  increase(time: number) {
     this.remainingTime += time;
     this.timeText = this.formatTime(this.remainingTime);
     this.updateTextObjects();
   }
 
-  pass(timeDelta: number) {
-    if (this.paused || this.remainingTime === 0) return;
+  decrease(time: number) {
+    this.remainingTime = Math.max(this.remainingTime - time, 0);
+    this.timeText = this.formatTime(this.remainingTime);
+    this.updateTextObjects();
+  }
+
+  tick(timeDelta: number) {
+    if (this.paused) return;
     this.remainingTime = Math.max(this.remainingTime - timeDelta, 0);
     const newText = this.formatTime(this.remainingTime);
     if (newText !== this.timeText) {
