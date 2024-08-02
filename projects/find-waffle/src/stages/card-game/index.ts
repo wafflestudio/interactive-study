@@ -578,8 +578,8 @@ export default class CardGameStage extends ComputerFrameStage {
     this.resourceLoader.loadAll();
   }
 
-  public animate() {
-    super.animate();
+  public animate(time: DOMHighResTimeStamp) {
+    super.animate(time);
   }
 
   public resize() {
