@@ -22,7 +22,7 @@ export class Timer {
     matcap: THREE.Texture,
   ) {
     this.timeText = '0:00';
-    this.remainingTime = 10;
+    this.remainingTime = 60;
 
     const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
     const sphereMaterial = new THREE.MeshMatcapMaterial({ matcap });
