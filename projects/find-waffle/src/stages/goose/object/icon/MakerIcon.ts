@@ -12,7 +12,7 @@ export class GooseMakerIcon extends GooseIcon {
   });
 
   constructor(object: THREE.Object3D) {
-    super(object, 'My Documents');
+    super(object, 'Waffle Maker');
     object?.scale.set(ICON_SCALE, ICON_SCALE, ICON_SCALE);
   }
 
