@@ -37,4 +37,15 @@ export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
       }
     });
   }
+
+  public animate(timeDelta: number) {
+    if (this.world.map.isRotating) {
+      // sleep 일 때는 물리 세계가 threejs 세계를 모방
+      this.syncToThree();
+      return;
+    } else {
+      // sleep 이 아닐 때는 threejs 세계가 물리 세계를 모방
+      this.syncToCannon();
+    }
+  }
 }

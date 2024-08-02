@@ -64,7 +64,7 @@ export class Timer extends BaseObject<THREE.Group> {
     this.updateTextObjects();
   }
 
-  tick(timeDelta: number) {
+  public animate(timeDelta: number) {
     if (this.paused) return;
     this.remainingTime = Math.max(this.remainingTime - timeDelta, 0);
     const newText = this.formatTime(this.remainingTime);

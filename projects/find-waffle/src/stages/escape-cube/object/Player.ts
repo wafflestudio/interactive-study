@@ -81,15 +81,8 @@ export class Player extends BaseObject<
     this.direction.set(x, y, z);
   }
 
-  public animate() {
-    if (this.isSleep) {
-      // sleep 일 때는 물리 세계가 threejs 세계를 모방
-      this.syncToThree();
-      return;
-    } else {
-      // sleep 이 아닐 때는 threejs 세계가 물리 세계를 모방
-      this.syncToCannon();
-    }
+  public animate(timeDelta: number) {
+    super.animate(timeDelta);
     if (this.position.x > 5.001) {
       this.position.x = 5;
       this.syncToCannon();

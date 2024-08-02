@@ -57,11 +57,11 @@ export class Monster extends BaseObject<
     });
   }
 
-  tick(timeDelta: number) {
+  public animate(timeDelta: number) {
+    super.animate(timeDelta);
     if (this.object.material.displacementMap) {
       const offset = this.object.material.displacementMap.offset;
       offset.set((offset.x + timeDelta * 0.3) % 1, offset.y);
     }
-    this.syncToCannon();
   }
 }

@@ -63,10 +63,10 @@ export class World {
   }
 
   public animate(timeDelta: number) {
-    this.player.animate();
+    this.player.animate(timeDelta);
     this.cannonWorld.step(1 / 60, timeDelta);
-    this.timer?.tick(timeDelta);
-    this._monster?.tick(timeDelta);
+    this.timer?.animate(timeDelta);
+    this._monster?.animate(timeDelta);
   }
 
   public pause() {
