@@ -25,6 +25,36 @@ export const spinboxScenario =
       sceneManager.currentScene,
       renderer,
     );
+    const spinBoxRaycaster2 = new ListenableRaycaster(
+      sceneManager.currentCamera,
+      sceneManager.currentScene,
+      renderer,
+    );
+    function pivotOnWorldAxis(
+      object: THREE.Object3D,
+      center: THREE.Vector3,
+      axis: THREE.Vector3,
+      angle: number,
+    ): void {
+      const parent = object.parent;
+      if (parent === null) {
+        console.error("object can't be found in the world");
+      } else {
+        const radianAngle = THREE.MathUtils.degToRad(angle);
+
+        // rotate object on world axis
+        object.rotateOnWorldAxis(axis, radianAngle);
+
+        // rotate object position around center
+        parent.worldToLocal(
+          parent
+            .localToWorld(object.position)
+            .sub(center)
+            .applyAxisAngle(axis, radianAngle)
+            .add(center),
+        );
+      }
+    }
     return [
       {
         name: 'spinbox_01', // 오프닝
@@ -87,31 +117,6 @@ export const spinboxScenario =
             object.userData.clicked = false;
           });
 
-          function pivotOnWorldAxis(
-            object: THREE.Object3D,
-            center: THREE.Vector3,
-            axis: THREE.Vector3,
-            angle: number,
-          ): void {
-            const parent = object.parent;
-            if (parent === null) {
-              console.error("object can't be found in the world");
-            } else {
-              const radianAngle = THREE.MathUtils.degToRad(angle);
-
-              // rotate object on world axis
-              object.rotateOnWorldAxis(axis, radianAngle);
-
-              // rotate object position around center
-              parent.worldToLocal(
-                parent
-                  .localToWorld(object.position)
-                  .sub(center)
-                  .applyAxisAngle(axis, radianAngle)
-                  .add(center),
-              );
-            }
-          }
           const clickCallback: EventCallback = (
             intersects: THREE.Intersection[],
           ) => {
@@ -160,6 +165,7 @@ export const spinboxScenario =
                     targetObjects.forEach((obj) => {
                       obj.userData.isDraggable = true;
                     });
+                    spinBoxRaycaster.dispose();
                     set('spinbox_05');
                   }
                 },
@@ -176,7 +182,7 @@ export const spinboxScenario =
       {
         name: 'spinbox_05', // 박스 조각을 액자로 드래그
         onMount: () => {
-          // spinBoxRaycaster.dispose();
+          // 카메라 줌아웃
           const frustumSize = { frustumSize: 15 };
           gsap.to(frustumSize, {
             duration: 3,
@@ -198,6 +204,131 @@ export const spinboxScenario =
           let selectedObject: THREE.Object3D | null = null;
           let offset = new THREE.Vector3();
 
+          const box1 = cannonManager.totalObjectMap.get('box1')!.mesh;
+          const box2 = cannonManager.totalObjectMap.get('box2')!.mesh;
+          const box3 = cannonManager.totalObjectMap.get('box3')!.mesh;
+          const box4 = cannonManager.totalObjectMap.get('box4')!.mesh;
+          const box5 = cannonManager.totalObjectMap.get('box5')!.mesh;
+          const box6 = cannonManager.totalObjectMap.get('box6')!.mesh;
+
+          const frame = cannonManager.totalObjectMap.get('평면')!.mesh;
+
+          const piece1 = box1.children[0];
+          const piece2 = box1.children[1];
+          const piece3 = box2.children[1];
+          const piece4 = box3.children[0];
+          const piece5 = box4.children[1];
+          const piece6 = box6.children[0];
+
+          const targetObjects = [
+            frame,
+            piece1,
+            piece2,
+            piece3,
+            piece4,
+            piece5,
+            piece6,
+          ];
+
+          sceneManager.currentScene.attach(box5.children[1]);
+          sceneManager.currentScene.attach(box5.children[0]);
+          sceneManager.currentScene.attach(box4.children[1]);
+          sceneManager.currentScene.attach(box4.children[0]);
+          sceneManager.currentScene.attach(box6.children[1]);
+          sceneManager.currentScene.attach(box6.children[0]);
+
+          const piece7 = box4;
+          const piece8 = box5;
+          const piece9 = box6;
+
+          targetObjects.push(piece7);
+          targetObjects.push(piece8);
+          targetObjects.push(piece9);
+
+          const pieceMap = new Map([
+            [
+              piece1, // 00
+              {
+                color: '#221117',
+                position: new THREE.Vector3(0.5, 15, 16),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece2, // 11
+              {
+                color: '#f1985d',
+                position: new THREE.Vector3(0.5, 12, 13.1),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece3, // 12
+              {
+                color: '#f1985d',
+                position: new THREE.Vector3(0.5, 12, 10.2),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece4, // 01
+              {
+                color: '#221117',
+                position: new THREE.Vector3(0.5, 15, 13.1),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece5, // 21
+              {
+                color: '#f1985d',
+                position: new THREE.Vector3(0.5, 9, 13.1),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece6, // 02
+              {
+                color: '#221117',
+                position: new THREE.Vector3(0.5, 15, 10.2),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece7, // 10
+              {
+                color: '#221117',
+                position: new THREE.Vector3(0.5, 12, 16),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece8, // 20
+              {
+                color: '#221117',
+                position: new THREE.Vector3(0.5, 9, 16),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+            [
+              piece9, // 22
+              {
+                color: '#ee8674',
+                position: new THREE.Vector3(0.5, 9, 10.2),
+                quaternionAxis: new THREE.Vector3(0, 0, 1).normalize(),
+                attached: false,
+              },
+            ],
+          ]);
+
           const mouseMoveCallbackForDrag: EventCallback = (
             intersects: THREE.Intersection[],
           ) => {
@@ -206,7 +337,6 @@ export const spinboxScenario =
                 const intersect = intersects[0];
                 const newPosition = new THREE.Vector3().copy(intersect.point);
                 sceneManager.currentScene.attach(selectedObject);
-                console.log(newPosition);
                 selectedObject.position.x = newPosition.x;
                 selectedObject.position.y = newPosition.y;
                 selectedObject.position.z = newPosition.z;
@@ -217,46 +347,131 @@ export const spinboxScenario =
           const mouseDownCallback: EventCallback = (
             intersects: THREE.Intersection[],
           ) => {
-            if (intersects.length > 0) {
-              selectedObject = intersects[0].object;
-              dragging = true;
-              offset.copy(selectedObject!.position).sub(intersects[0].point);
+            if (intersects.length > 0 && intersects[0].object != frame) {
+              pieceMap.forEach((value, key) => {
+                if (intersects[0].object === key && !value.attached) {
+                  selectedObject = intersects[0].object;
+                  dragging = true;
+                  offset
+                    .copy(selectedObject!.position)
+                    .sub(intersects[0].point);
+                }
+              });
+              // selectedObject = intersects[0].object;
+              // dragging = true;
+              // offset.copy(selectedObject!.position).sub(intersects[0].point);
             }
           };
 
-          const mouseUpCallback: EventCallback = () => {
+          const mouseUpCallback: EventCallback = (
+            intersects: THREE.Intersection[],
+          ) => {
             dragging = false;
+
+            if (!selectedObject) return;
+            pieceMap.forEach((value, key) => {
+              if (selectedObject === key) {
+                selectedObject!.quaternion.setFromAxisAngle(
+                  value.quaternionAxis,
+                  -Math.PI / 2,
+                );
+              }
+            });
+
+            if (intersects.length > 0) {
+              intersects.forEach((intersect) => {
+                if (frame === intersect.object) {
+                  pieceMap.forEach((value, key) => {
+                    if (selectedObject === key) {
+                      (selectedObject as THREE.Mesh).material =
+                        new THREE.MeshStandardMaterial({
+                          depthTest: false,
+                          color: new THREE.Color(value.color),
+                        });
+                      selectedObject.position.set(
+                        value.position.x,
+                        value.position.y,
+                        value.position.z,
+                      );
+                      value.attached = true;
+                    }
+                  });
+                  // attached가 모두 true이면 클리어
+                  if (
+                    Array.from(pieceMap.values()).every(
+                      (value) => value.attached,
+                    )
+                  ) {
+                    set('spinbox_06');
+                  }
+                }
+              });
+            }
             selectedObject = null;
           };
 
-          const targetObjects = [
-            ...cannonManager.totalObjectMap.get('box1')!.mesh.children,
-            ...cannonManager.totalObjectMap.get('box2')!.mesh.children,
-            ...cannonManager.totalObjectMap.get('box3')!.mesh.children,
-            ...cannonManager.totalObjectMap.get('box4')!.mesh.children,
-            ...cannonManager.totalObjectMap.get('box5')!.mesh.children,
-            ...cannonManager.totalObjectMap.get('box6')!.mesh.children,
-          ];
-
-          targetObjects.forEach((obj) => {
-            console.log(obj);
-          });
-
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mousemove',
             mouseMoveCallbackForDrag,
             targetObjects,
           );
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mousedown',
             mouseDownCallback,
             targetObjects,
           );
-          spinBoxRaycaster.registerCallback(
+          spinBoxRaycaster2.registerCallback(
             'mouseup',
             mouseUpCallback,
             targetObjects,
           );
+        },
+      },
+      {
+        name: 'spinbox_06', // 클리어
+        onMount: () => {
+          dialogue.begin(['와플을 찾았다!', '야호!!'], () => {
+            const timeline = gsap.timeline();
+            const vars = {
+              lookAtX: 0,
+              lookAtY: 0,
+              lookAtZ: 0,
+              posX: 100,
+              posY: 80,
+              posZ: 100,
+              frustumSize: 30,
+            };
+            gsap.to(vars, {
+              duration: 3,
+              lookAtX: 0,
+              lookAtY: 11,
+              lookAtZ: 11,
+              posX: 100,
+              posY: 10,
+              posZ: 11,
+              frustumSize: 10,
+              ease: 'power2.inOut',
+              onUpdate: () => {
+                sceneManager.roomCamera.lookAt(
+                  vars.lookAtX,
+                  vars.lookAtY,
+                  vars.lookAtZ,
+                );
+                sceneManager.roomCamera.position.set(
+                  vars.posX,
+                  vars.posY,
+                  vars.posZ,
+                );
+                sceneManager.roomCamera.left =
+                  (-vars.frustumSize * sceneManager.aspectRatio) / 2;
+                sceneManager.roomCamera.right =
+                  (vars.frustumSize * sceneManager.aspectRatio) / 2;
+                sceneManager.roomCamera.top = vars.frustumSize / 2;
+                sceneManager.roomCamera.bottom = -vars.frustumSize / 2;
+                sceneManager.roomCamera.updateProjectionMatrix();
+              },
+            });
+          });
         },
       },
     ];
