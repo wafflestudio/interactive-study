@@ -355,6 +355,24 @@
     },
     {
       "type": "texture",
+      "name": "matcap_roughness_1",
+      "path": "/escape-cube/textures/matcap_roughness_1.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_2",
+      "path": "/escape-cube/textures/matcap_roughness_2.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_3",
+      "path": "/escape-cube/textures/matcap_roughness_3.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
       "name": "matcap_roughness_4",
       "path": "/escape-cube/textures/matcap_roughness_4.png",
       "colorSpace": "srgb"
@@ -388,6 +406,11 @@
       "type": "font",
       "name": "helvetiker",
       "path": "/escape-cube/fonts/helvetiker_regular.typeface.json"
+    },
+    {
+      "type": "texture",
+      "name": "displacement",
+      "path": "/escape-cube/textures/displacement.png"
     }
   ]
 }
