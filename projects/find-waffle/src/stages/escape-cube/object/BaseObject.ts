@@ -36,6 +36,8 @@ export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
         child.material.dispose();
       }
     });
+    this.object.removeFromParent();
+    this.world.cannonWorld.removeBody(this.body);
   }
 
   public animate(timeDelta: number) {
