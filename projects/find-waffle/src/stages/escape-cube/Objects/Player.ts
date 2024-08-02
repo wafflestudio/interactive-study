@@ -9,37 +9,37 @@ const yAxis = new THREE.Vector3(0, 1, 0);
 const zAxis = new THREE.Vector3(0, 0, 1);
 
 export class Player extends BaseObject<
-  THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>
+  THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>
 > {
-  private direction = new THREE.Vector3();
-  private speed = 5;
+  private direction = new CANNON.Vec3();
 
   constructor(world: World) {
     const initialPosition = [-4, 5, 5] as const;
 
-    const geometry = new THREE.SphereGeometry(0.3);
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5); // 구르는 거 디버깅 위해 박스로 변경
     const material = new THREE.MeshStandardMaterial({
       color: 0xadadee,
       format: THREE.RGBAFormat,
     });
     const object = new THREE.Mesh(geometry, material);
-    object.renderOrder = 1;
     object.castShadow = true;
     object.name = 'player';
     object.position.set(...initialPosition);
-    world.map.add(object);
 
     const body = new CANNON.Body({
       mass: 1,
       shape: new CANNON.Sphere(0.3),
-      linearDamping: 0,
+      linearDamping: 0.95,
       linearFactor: new CANNON.Vec3(1, 1, 0),
       angularFactor: new CANNON.Vec3(0, 0, 0),
     });
     body.position.set(...initialPosition);
-    world.cannonWorld.addBody(body);
+    world.cannonWorld.addEventListener('preStep', () => {
+      if (this.isSleep) return;
+      this.body.applyForce(this.direction.scale(10), this.position);
+    });
     world.cannonWorld.addEventListener('postStep', () => {
-      this.updateVelocity();
+      this.rollForward();
     });
     super(world, object, body);
   }
@@ -56,14 +56,20 @@ export class Player extends BaseObject<
     return this.body.sleepState === CANNON.Body.SLEEPING;
   }
 
-  private updateVelocity() {
-    this.velocity.set(
-      ...this.direction
-        .clone()
-        .normalize()
-        .multiplyScalar(this.speed)
-        .toArray(),
+  private rollForward() {
+    const displacement = this.body.position.vsub(this.body.previousPosition);
+    const distance = displacement.length();
+    const rotateAxis = new THREE.Vector3(
+      -displacement.y,
+      displacement.x,
+      0,
+    ).applyQuaternion(this.world.map.quaternion.clone().invert());
+
+    const q = new THREE.Quaternion().setFromAxisAngle(
+      rotateAxis.normalize(),
+      distance * 2,
     );
+    this.object.applyQuaternion(q);
   }
 
   public setDirection(direction: { x?: number; y?: number; z?: number }) {
@@ -73,7 +79,6 @@ export class Player extends BaseObject<
       z = this.direction.z,
     } = direction;
     this.direction.set(x, y, z);
-    this.updateVelocity();
   }
 
   public animate() {
@@ -108,6 +113,7 @@ export class Player extends BaseObject<
   }
 
   public pause() {
+    this.velocity.setZero();
     this.body.sleep();
   }
 
