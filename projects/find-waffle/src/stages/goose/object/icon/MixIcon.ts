@@ -37,7 +37,7 @@ export class GooseMixIcon extends GooseIcon {
     super.onMouseUp();
 
     if (this.status === 'rotate') {
-      if (Math.abs(this.rotation.y - Math.PI) < 0.2) {
+      if (Math.abs(this.rotation.y - Math.PI) < 0.1) {
         this.rotation.set(0, 0, 0);
       }
       this.#rotationManager.onMouseUp();
@@ -47,7 +47,7 @@ export class GooseMixIcon extends GooseIcon {
       let angle = THREE.MathUtils.radToDeg(
         tmp.angleTo(new THREE.Vector3(0, 0, 1)),
       );
-      if (angle < 10) {
+      if (angle < 45) {
         this.rotation.set(0, 0, 0);
         this.status = 'drag';
         this.setLabel('waffle.zip', Math.PI);
