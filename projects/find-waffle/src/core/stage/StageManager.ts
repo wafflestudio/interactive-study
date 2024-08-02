@@ -8,7 +8,7 @@ export class StageManager {
   public renderer: THREE.WebGLRenderer;
   public home?: Stage;
   public currentStage?: Stage;
-  public clock = new THREE.Clock();
+  public readonly clock = new THREE.Clock(false);
   public pauseCallbacks: Array<() => void> = [];
   public playCallbacks: Array<() => void> = [];
 
@@ -47,9 +47,10 @@ export class StageManager {
     this.toStage(this.home);
   }
 
-  public animate(time: DOMHighResTimeStamp) {
-    this.currentStage?.animate(time);
-    window.requestAnimationFrame(() => this.animate(this.clock.getDelta()));
+  public animate() {
+    const timeDelta = this.clock.getDelta(); // delta seconds
+    this.currentStage?.animate(timeDelta);
+    window.requestAnimationFrame(() => this.animate());
   }
 
   public resize(e: Event) {
