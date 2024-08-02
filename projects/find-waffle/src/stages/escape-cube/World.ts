@@ -1,5 +1,4 @@
 import * as CANNON from 'cannon-es';
-import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
@@ -47,37 +46,18 @@ export class World {
   }
 
   private initMonsters() {
-    const m1 = new Monster(this, new THREE.Vector3(5, 5, 4));
-    const tl = gsap.timeline();
-    tl.to(m1.object.position, {
-      x: 5,
-      y: 3,
-      z: 4,
-      duration: 1,
-      ease: GSAP.Power1.easeInOut,
-    })
-      .to(m1.object.position, {
-        x: 5,
-        y: 3,
-        z: 0,
-        duration: 1.5,
-        ease: GSAP.Power1.easeInOut,
-      })
-      .to(m1.object.position, {
-        x: 5,
-        y: 5,
-        z: 0,
-        duration: 1,
-        ease: GSAP.Power1.easeInOut,
-      })
-      .to(m1.object.position, {
-        x: 5,
-        y: 5,
-        z: 4,
-        duration: 1.5,
-        ease: GSAP.Power1.easeInOut,
-      })
-      .repeat(-1);
+    const m1 = new Monster(
+      this,
+      [
+        new THREE.Vector3(5, 5, 4),
+        new THREE.Vector3(5, 3, 4),
+        new THREE.Vector3(5, 3, 0),
+        new THREE.Vector3(5, 5, 0),
+        new THREE.Vector3(5, 5, 4),
+      ],
+      true,
+    );
+
     this.monsters.push(m1);
   }
 

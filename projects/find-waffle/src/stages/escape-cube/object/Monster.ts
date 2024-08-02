@@ -1,5 +1,5 @@
 import * as CANNON from 'cannon-es';
-import gsap from 'gsap';
+import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 import { SimplexNoise } from 'three/examples/jsm/Addons.js';
 
@@ -9,10 +9,9 @@ import { BaseObject } from './BaseObject';
 export class Monster extends BaseObject<
   THREE.Mesh<THREE.SphereGeometry, THREE.MeshMatcapMaterial>
 > {
-  position: THREE.Vector3;
   noise = new SimplexNoise();
 
-  constructor(world: World, initialPosition: THREE.Vector3) {
+  constructor(world: World, positions: THREE.Vector3[], repeat = true) {
     const displacementMap = world.loader.getTexture('displacement');
     displacementMap?.repeat.set(2, 1);
     displacementMap!.wrapS = THREE.RepeatWrapping;
@@ -29,6 +28,7 @@ export class Monster extends BaseObject<
       Math.PI / 4,
     );
 
+    const initialPosition = positions[0];
     object.position.copy(initialPosition);
     const body = new CANNON.Body({
       mass: 0,
@@ -42,7 +42,6 @@ export class Monster extends BaseObject<
     });
     body.addShape(new CANNON.Sphere(0.35));
     super(world, object, body);
-    this.position = initialPosition.clone();
     body.addEventListener('collide', (e: any) => {
       const contact = e.contact as CANNON.ContactEquation;
       const player = world.player;
@@ -66,6 +65,7 @@ export class Monster extends BaseObject<
         (body.shapes[0] as CANNON.Sphere).radius = 0.35 * helper.t;
       },
     });
+    this.initTimeline(positions, repeat);
   }
 
   public animate(timeDelta: number) {
@@ -74,5 +74,21 @@ export class Monster extends BaseObject<
       const offset = this.object.material.displacementMap.offset;
       offset.set((offset.x + timeDelta * 0.3) % 1, offset.y);
     }
+  }
+
+  private initTimeline(positions: THREE.Vector3[], repeat: boolean) {
+    const tl = gsap.timeline({ repeat: repeat ? -1 : 0 });
+    positions.slice(1).forEach((position, idx) => {
+      const prevPosition = positions[idx];
+      const distance = prevPosition.distanceTo(position);
+      tl.to(this.object.position, {
+        x: position.x,
+        y: position.y,
+        z: position.z,
+        duration: distance / 4 + 0.5,
+        ease: GSAP.Power1.easeInOut,
+      });
+    });
+    tl.play();
   }
 }
