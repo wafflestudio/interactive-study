@@ -11,6 +11,10 @@ import { SceneManager } from '../core/scene/SceneManager';
 
 export class Player extends GameObject {
   keysPressed = new Map<string, boolean>();
+  animationMixer?: THREE.AnimationMixer;
+  pendingActions: [] = [];
+  actionsMap: Map<string, THREE.AnimationAction> = new Map();
+  currentAction?: { key: string; action: THREE.AnimationAction };
 
   constructor(
     resourceLoader: ResourceLoader,
@@ -30,10 +34,12 @@ export class Player extends GameObject {
 
     this.resourceLoader.registerModel(
       'iceCream',
-      '/models/WaffleRoom/models/ice3.glb',
+      '/models/IceCream/icecream_standing_edit.glb',
       {
-        onLoad: ({ scene: iceCream }) => {
-          const scale = 0.04;
+        onLoad: (gltf) => {
+          const iceCream = gltf.scene;
+
+          const scale = 2;
           const position = new THREE.Vector3(10, 0.1, 10);
 
           // wrap Cannon body
@@ -79,17 +85,93 @@ export class Player extends GameObject {
             () => this.keysPressed.set('right', true),
             () => this.keysPressed.delete('right'),
           );
+
+          if (!this.animationMixer)
+            this.animationMixer = new THREE.AnimationMixer(iceCream);
+          iceCream.traverse((child) => {
+            if (child.isBone) {
+              const helper = new THREE.SkeletonHelper(child);
+              this.sceneManager.roomScene.add(helper);
+            }
+          });
+
+          // this.actionsMap.idle =
+          const clips = gltf.animations;
+          const clip = clips[0];
+          this.actionsMap.set('idle', this.animationMixer.clipAction(clip));
+          this.currentAction = {
+            key: 'idle',
+            action: this.actionsMap.get('idle')!,
+          };
+          console.log(this.currentAction);
+          this.currentAction?.action.play();
+        },
+      },
+    );
+
+    this.resourceLoader.registerModel(
+      'iceCream_walking',
+      '/models/IceCream/icecream_walking.glb',
+      {
+        onLoad: (gltf) => {
+          if (!this.animationMixer)
+            this.animationMixer = new THREE.AnimationMixer(gltf.scene);
+          const clips = gltf.animations;
+          const clip = clips[0];
+          const action = this.animationMixer.clipAction(clip);
+          action.loop = THREE.LoopPingPong;
+          this.actionsMap.set('walking', action);
+        },
+      },
+    );
+    this.resourceLoader.registerModel(
+      'iceCream_action',
+      '/models/IceCream/icecream_action.glb',
+      {
+        onLoad: (gltf) => {
+          if (!this.animationMixer)
+            this.animationMixer = new THREE.AnimationMixer(gltf.scene);
+          const clips = gltf.animations;
+          const clip = clips[0];
+          this.actionsMap.set('action', this.animationMixer!.clipAction(clip));
         },
       },
     );
   }
 
+  onUnmount() {
+    console.log(`${this.objectName} unmounted`);
+  }
+
+  changeAction(actionKey: string) {
+    if (this.currentAction?.key === actionKey) return;
+
+    console.log(actionKey);
+
+    const oldAction = this.currentAction?.action;
+    const newAction = this.actionsMap.get(actionKey);
+    console.log(oldAction);
+    console.log(newAction);
+    if (!newAction) return;
+    if (oldAction) {
+      oldAction.stop();
+      newAction.crossFadeFrom(oldAction, 0.5, true);
+    }
+    newAction.reset();
+    this.currentAction = { key: actionKey, action: newAction };
+    this.currentAction?.action.play();
+  }
+
   onAnimate(t: number) {
     if (!this.body) return;
     animateCharacter(t, this.body, this.keysPressed);
-  }
 
-  onUnmount() {
-    console.log(`${this.objectName} unmounted`);
+    if (this.keysPressed.size > 0) {
+      this.changeAction('walking');
+    } else {
+      this.changeAction('idle');
+    }
+
+    this.animationMixer?.update(t);
   }
 }

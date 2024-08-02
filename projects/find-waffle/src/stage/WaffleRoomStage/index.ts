@@ -78,7 +78,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      '/models/WaffleRoom/models/WaffleRoom_final.glb',
+      '/models/WaffleRoom/WaffleRoomTest2.glb',
       {
         onLoad: ({ scene: room }) => {
           const scale = 1;
@@ -115,12 +115,13 @@ export default class WaffleRoomStage extends Stage {
               );
               const material = new THREE.MeshStandardMaterial({ map: texture });
               const colorList = [
-                '#e76fc9',
-                '#3693e7',
-                '#e7001e',
-                '#e79c30',
-                '#00d0e7',
+                '#B2EBF4',
+                '#FFB2D9',
+                '#FAED7D',
+                '#B2CCFF',
+                '#B7F0B1',
               ];
+
               const randomIndex = Math.floor(Math.random() * colorList.length);
 
               material.color.set(colorList[randomIndex]);
@@ -197,6 +198,15 @@ export default class WaffleRoomStage extends Stage {
             this.cannonManager?.totalObjectMap.get('box_sample_top');
 
           const packageMesh = packagesInfo!.mesh;
+          (packageMesh as THREE.Mesh).material.color = new THREE.Color(
+            '#dbb790',
+          );
+          const packageLeft = packageMesh.children[0] as THREE.Mesh;
+          const packageRight = packageMesh.children[1] as THREE.Mesh;
+          packageLeft.material.color = new THREE.Color('#b9967a');
+          packageRight.material.color = new THREE.Color('#a47f61');
+
+          console.log(packageMesh);
 
           const clonedMesh = packageMesh.clone();
           clonedMesh.name = 'box2';
@@ -233,7 +243,7 @@ export default class WaffleRoomStage extends Stage {
           clonedPackages.forEach((clonedPackage) => {
             clonedPackage.traverse((child) => {
               if (child instanceof THREE.Mesh) {
-                child.material.depthTest = false;
+                child.material.depthTest = true;
                 child.renderOrder = 2;
               }
             });
@@ -265,13 +275,44 @@ export default class WaffleRoomStage extends Stage {
     // load bags
     resourceLoader.registerModel(
       `waffleBag`,
-      '/models/WaffleRoom/models/wafflebag.glb',
+      '/models/WaffleRoom/models/wafflebag_2.glb',
       {
         onLoad: ({ scene: bag }) => {
-          const scale = 0.1;
-          const position = new THREE.Vector3(0, -14, 0);
+          const scale = 2.5;
+          const position = new THREE.Vector3(0, -16, 0);
           bag.scale.set(scale, scale, scale);
           bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 1.1, 0);
+          // this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      'fakeBag1',
+      '/models/WaffleRoom/models/fake_1_black.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 10;
+          const position = new THREE.Vector3(0, 0, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 2, 0);
+          // this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      'fakeBag2',
+      '/models/WaffleRoom/models/backpack.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 7;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 1.25, 0);
           this.sceneManager?.wardrobeScene.add(bag);
         },
       },

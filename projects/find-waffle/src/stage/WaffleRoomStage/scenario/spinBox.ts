@@ -59,7 +59,7 @@ export const spinboxScenario =
       {
         name: 'spinbox_01', // 오프닝
         onMount: () => {
-          dialogue.begin(['박스 찾으러 가세요'], () => {
+          dialogue.begin([[{ value: '박스 찾으러 가세요' }]], () => {
             set('spinbox_02');
           });
         },
@@ -95,9 +95,12 @@ export const spinboxScenario =
             },
           });
 
-          dialogue.begin(['박스를 찾았다!', '이걸로 뭐하지'], () => {
-            set('spinbox_04');
-          });
+          dialogue.begin(
+            [[{ value: '박스를 찾았다!' }, { value: '이걸로 뭐하지' }]],
+            () => {
+              set('spinbox_04');
+            },
+          );
         },
       },
       {
@@ -430,48 +433,51 @@ export const spinboxScenario =
       {
         name: 'spinbox_06', // 클리어
         onMount: () => {
-          dialogue.begin(['와플을 찾았다!', '야호!!'], () => {
-            const timeline = gsap.timeline();
-            const vars = {
-              lookAtX: 0,
-              lookAtY: 0,
-              lookAtZ: 0,
-              posX: 100,
-              posY: 80,
-              posZ: 100,
-              frustumSize: 30,
-            };
-            gsap.to(vars, {
-              duration: 3,
-              lookAtX: 0,
-              lookAtY: 11,
-              lookAtZ: 11,
-              posX: 100,
-              posY: 10,
-              posZ: 11,
-              frustumSize: 10,
-              ease: 'power2.inOut',
-              onUpdate: () => {
-                sceneManager.roomCamera.lookAt(
-                  vars.lookAtX,
-                  vars.lookAtY,
-                  vars.lookAtZ,
-                );
-                sceneManager.roomCamera.position.set(
-                  vars.posX,
-                  vars.posY,
-                  vars.posZ,
-                );
-                sceneManager.roomCamera.left =
-                  (-vars.frustumSize * sceneManager.aspectRatio) / 2;
-                sceneManager.roomCamera.right =
-                  (vars.frustumSize * sceneManager.aspectRatio) / 2;
-                sceneManager.roomCamera.top = vars.frustumSize / 2;
-                sceneManager.roomCamera.bottom = -vars.frustumSize / 2;
-                sceneManager.roomCamera.updateProjectionMatrix();
-              },
-            });
-          });
+          dialogue.begin(
+            [[{ value: '와플을 찾았다!' }, { value: '야호!!' }]],
+            () => {
+              const timeline = gsap.timeline();
+              const vars = {
+                lookAtX: 0,
+                lookAtY: 0,
+                lookAtZ: 0,
+                posX: 100,
+                posY: 80,
+                posZ: 100,
+                frustumSize: 30,
+              };
+              gsap.to(vars, {
+                duration: 3,
+                lookAtX: 0,
+                lookAtY: 11,
+                lookAtZ: 11,
+                posX: 100,
+                posY: 10,
+                posZ: 11,
+                frustumSize: 10,
+                ease: 'power2.inOut',
+                onUpdate: () => {
+                  sceneManager.roomCamera.lookAt(
+                    vars.lookAtX,
+                    vars.lookAtY,
+                    vars.lookAtZ,
+                  );
+                  sceneManager.roomCamera.position.set(
+                    vars.posX,
+                    vars.posY,
+                    vars.posZ,
+                  );
+                  sceneManager.roomCamera.left =
+                    (-vars.frustumSize * sceneManager.aspectRatio) / 2;
+                  sceneManager.roomCamera.right =
+                    (vars.frustumSize * sceneManager.aspectRatio) / 2;
+                  sceneManager.roomCamera.top = vars.frustumSize / 2;
+                  sceneManager.roomCamera.bottom = -vars.frustumSize / 2;
+                  sceneManager.roomCamera.updateProjectionMatrix();
+                },
+              });
+            },
+          );
         },
       },
     ];
