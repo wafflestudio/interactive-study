@@ -1,6 +1,11 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import van from 'vanjs-core';
 
-export type SceneTransition = (change: () => void) => {};
+import { Items } from '../../ui/Items';
+import './test.css';
+
+export type SceneTransition = (change: () => void) => void;
 
 export class SceneManager {
   private renderer: THREE.WebGLRenderer;
@@ -9,7 +14,9 @@ export class SceneManager {
   // roomCamera: THREE.PerspectiveCamera;
   roomCamera: THREE.OrthographicCamera;
   wardrobeScene: THREE.Scene;
-  wardrobeCamera: THREE.PerspectiveCamera;
+  wardrobeCamera: THREE.OrthographicCamera;
+  control?: OrbitControls;
+
   currentScene: THREE.Scene;
   // currentCamera: THREE.PerspectiveCamera;
   currentCamera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
@@ -64,17 +71,43 @@ export class SceneManager {
 
     // wardrobe
     this.wardrobeScene = new THREE.Scene();
-    this.wardrobeCamera = new THREE.PerspectiveCamera(
-      35,
-      this.app.clientWidth / this.app.clientHeight,
+    this.wardrobeCamera = new THREE.OrthographicCamera(
+      (-this.frustumSize * this.aspectRatio) / 2,
+      (this.frustumSize * this.aspectRatio) / 2,
+      this.frustumSize / 2,
+      -this.frustumSize / 2,
       0.1,
-      100,
+      1000,
     );
+    this.wardrobeCamera.position.set(100, 80, 100);
+    this.wardrobeCamera.lookAt(lookAtPoint);
+
+    const sunLight3 = new THREE.DirectionalLight('#ffffff', 3);
+    sunLight3.castShadow = false;
+    sunLight3.shadow.camera.far = 15;
+    sunLight3.shadow.mapSize.set(1024, 1024);
+    sunLight3.shadow.normalBias = 0.05;
+    sunLight3.position.set(3, 3, -2.25);
+
+    const sunLight4 = new THREE.DirectionalLight('#ffffff', 4);
+    sunLight4.castShadow = true;
+    sunLight4.shadow.camera.far = 15;
+    sunLight4.shadow.mapSize.set(1024, 1024);
+    sunLight4.shadow.normalBias = 0.05;
+    sunLight4.position.set(-3, -3, 2.25);
+
+    this.wardrobeScene.add(sunLight3);
+    this.wardrobeScene.add(sunLight4);
+
+    // this.wardrobeScene.add(axesHelper);
+
     this.wardrobeScene.add(this.wardrobeCamera);
 
     // start
     this.currentScene = this.roomScene;
     this.currentCamera = this.roomCamera;
+    // this.currentScene = this.wardrobeScene;
+    // this.currentCamera = this.wardrobeCamera;
   }
 
   toRoomScene(transition: SceneTransition) {
@@ -86,13 +119,26 @@ export class SceneManager {
 
   toWardrobeScene(transition: SceneTransition) {
     transition(() => {
+      van.add(this.app, Items);
       this.currentScene = this.wardrobeScene;
       this.currentCamera = this.wardrobeCamera;
+
+      const target = this.app.querySelector('#canvas') as HTMLElement;
+      target.classList.add('wardrobeCanvas');
+
+      this.renderer.setSize(
+        this.app.clientWidth / 2,
+        this.app.clientHeight / 2,
+      );
+      this.control = new OrbitControls(this.wardrobeCamera, target!);
+      this.app.classList.add('noApp');
     });
   }
+  unmountWardrobeScene() {}
 
   render() {
     if (!this.currentScene || !this.currentCamera) return;
     this.renderer.render(this.currentScene, this.currentCamera);
+    if (this.control) this.control?.update();
   }
 }

@@ -1,57 +1,98 @@
+import { State } from 'vanjs-core';
+
+import {
+  Chunk,
+  DialogueContainer,
+  DialogueState,
+  SlicedChunks,
+  containerVisibility,
+} from './components';
+
 export class Dialogue {
-  public element?: HTMLElement;
-  public queue: string[] = [];
+  public element: HTMLElement;
+  public containerVisibility: State<boolean>;
+  public currentState: DialogueState;
+  public currentQueue: Chunk[][] = [];
   public endCallback?: () => void;
   public isAnimating = false;
 
   constructor({ app }: { app: HTMLElement }) {
-    const element = app.querySelector('#dialogue-wrapper');
+    this.containerVisibility = containerVisibility;
+    this.currentState = {
+      currentChunks: [],
+      currentIndex: 0,
+      lastIndex: 0,
+    };
+    this.currentQueue = [];
+
+    // check if element exists
+    const element = app.querySelector('.DialogueContainer');
     if (element) {
       this.element = element as HTMLElement;
       return;
     }
-    const wrapper = document.createElement('div');
-    wrapper.id = 'dialogue-wrapper';
-    app.appendChild(wrapper);
-    this.element = wrapper;
+
+    // add element
+    this.element = DialogueContainer;
+    app.appendChild(this.element);
   }
 
-  public begin(queue: string[], onEndDialogue?: () => void) {
-    this.queue = queue;
+  public begin(chunksQueue: Chunk[][], onEndDialogue?: () => void) {
+    this.currentQueue = chunksQueue;
     this.endCallback = onEndDialogue;
     this.next();
   }
+
   public next() {
-    if (this.isAnimating) return;
-    if (this.queue.length === 0) {
-      if (this.endCallback) this.endCallback();
-      this.endCallback = undefined;
-      this.element?.classList.add('invisible');
+    if (this.isAnimating) {
+      this.currentState.currentIndex = this.currentState.lastIndex;
       return;
     }
 
-    const text = this.queue.shift();
-    if (!text) return;
+    const nextChunks = this.currentQueue.shift();
 
-    const animate = (text: string, index: number) =>
-      setTimeout(() => {
-        const sliced = text.slice(0, index);
-        if (this.element) {
-          this.element.innerHTML = sliced;
-          this.element.classList.remove('invisible'); // TODO: 최적화
+    if (!nextChunks) {
+      if (this.endCallback) this.endCallback();
+      this.endCallback = undefined;
+      this.containerVisibility.val = false;
+      return;
+    }
+
+    this.currentState = {
+      currentChunks: nextChunks,
+      currentIndex: 0,
+      lastIndex: nextChunks.reduce(
+        (acc, { value }) => (acc += value.length),
+        0,
+      ),
+    };
+
+    const animate = () => {
+      const target = this.element.querySelector('.textsContainer');
+      if (target) {
+        target.innerHTML = '';
+        const chunks = SlicedChunks(this.currentState);
+        for (let i = 0; i < chunks.length; i++) {
+          target.appendChild(chunks[i]);
         }
-        if (index >= text.length) {
+      }
+      this.containerVisibility.val = true;
+      this.currentState.currentIndex += 1;
+
+      setTimeout(() => {
+        if (this.currentState.currentIndex > this.currentState.lastIndex) {
           this.isAnimating = false;
         } else {
           this.isAnimating = true;
-          animate(text, index + 1);
+          animate();
         }
-      }, 100);
+      }, 80);
+    };
 
-    animate(text, 0);
+    animate();
   }
 
   public dispose() {
-    this.element?.remove();
+    this.element.remove();
   }
 }

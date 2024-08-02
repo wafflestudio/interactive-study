@@ -262,6 +262,21 @@ export default class WaffleRoomStage extends Stage {
       },
     );
 
+    // load bags
+    resourceLoader.registerModel(
+      `waffleBag`,
+      '/models/WaffleRoom/models/wafflebag.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 0.1;
+          const position = new THREE.Vector3(0, -14, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
     // temp
     keyMap.bind('Space', () => {
       dialogue.next();
@@ -276,7 +291,9 @@ export default class WaffleRoomStage extends Stage {
       scenarioManager.addScenario(
         openingScenario(this.sceneManager!, dialogue),
       );
-      scenarioManager.addScenario(wardrobeScenario());
+      scenarioManager.addScenario(
+        wardrobeScenario(this.sceneManager!, dialogue),
+      );
       scenarioManager.addScenario(
         spinboxScenario(
           this.sceneManager!,
@@ -330,7 +347,6 @@ export default class WaffleRoomStage extends Stage {
       cb.bind(bindTarget)(t),
     );
 
-    this.controls?.update();
     this.sceneManager.render();
     // this.renderer.render(
     //   this.sceneManager.currentScene,

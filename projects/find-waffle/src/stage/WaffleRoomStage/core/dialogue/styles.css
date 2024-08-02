@@ -1,0 +1,42 @@
+.DialogueContainer {
+  font-family: 'KoreanTYGDE', serif;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 360px;
+
+  object-fit: contain;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.DialogueContainer.invisible {
+  display: none;
+}
+
+.DialogueContainer > img {
+  height: 100%;
+}
+
+.DialogueContainer .textsContainer {
+  position: absolute;
+  top: 150px;
+  height: 150px;
+  width: 600px;
+  padding: 10px 32px;
+  box-sizing: border-box;
+  color: #998470;
+  white-space: pre-wrap;
+}
+.DialogueContainer .textsContainer .normal {
+  font-size: 24px;
+  line-height: 135%;
+}
+.DialogueContainer .textsContainer .big {
+  font-size: 28px;
+}
+.DialogueContainer .textsContainer .huge {
+  font-size: 40px;
+}
