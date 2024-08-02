@@ -61,8 +61,24 @@ export class StageManager {
     this.pauseCallbacks.forEach((cb) => cb());
   }
 
+  public addPauseCallback(cb: () => void) {
+    this.pauseCallbacks.push(cb);
+  }
+
+  public removePauseCallback(cb: () => void) {
+    this.pauseCallbacks = this.pauseCallbacks.filter((c) => c !== cb);
+  }
+
   public play() {
     this.clock.start();
     this.playCallbacks.forEach((cb) => cb());
+  }
+
+  public addPlayCallback(cb: () => void) {
+    this.playCallbacks.push(cb);
+  }
+
+  public removePlayCallback(cb: () => void) {
+    this.playCallbacks = this.playCallbacks.filter((c) => c !== cb);
   }
 }
