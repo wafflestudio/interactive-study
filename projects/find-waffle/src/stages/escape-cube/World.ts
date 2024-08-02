@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es';
+import { noop } from 'es-toolkit';
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
@@ -18,7 +19,6 @@ import {
 
 export class World {
   cannonWorld = new CANNON.World();
-  scene: THREE.Scene;
   loader: ResourceLoader = new ResourceLoader();
   map: THREE.Group = new THREE.Group();
   mapBody: CANNON.Body = new CANNON.Body({ mass: 0 });
@@ -35,8 +35,7 @@ export class World {
     }
   }
 
-  constructor(scene: THREE.Scene) {
-    this.scene = scene;
+  constructor(public scene: THREE.Scene) {
     scene.add(this.map);
     this.cannonWorld.addBody(this.mapBody);
     this.player = new Player(this);
@@ -202,14 +201,12 @@ export class World {
   }
 
   private async initLight() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.map.add(ambientLight);
-    const sunLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
-    sunLight1.position.set(-1270, 15, 1270);
-    this.map.add(sunLight1);
-    const sunLight2 = new THREE.DirectionalLight(0xffffff, 0.7);
-    sunLight2.position.set(1270, 15, 1270);
-    this.map.add(sunLight2);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    sunLight.position.set(0, 5, 15);
+    sunLight.lookAt(0, 0, 0);
+    this.scene.add(sunLight);
   }
 
   public dispose() {
@@ -228,8 +225,8 @@ export class World {
     this.timer?.pass(timeDelta);
   }
 
-  public rotate(axis: THREE.Vector3, angle: number) {
-    if (this.isRotating) return;
+  public rotate(axis: THREE.Vector3, angle: number): gsap.core.Tween {
+    if (this.isRotating) return gsap.delayedCall(0, noop);
     this.isRotating = true;
     this.pause();
     const helper = { t: 0 };
@@ -239,7 +236,7 @@ export class World {
       THREE.MathUtils.degToRad(angle),
     );
     const dest = start.clone().multiply(rotation).normalize();
-    gsap.to(helper, {
+    return gsap.to(helper, {
       t: 1,
       duration: 1,
       onUpdate: ({ t }: typeof helper) => {

@@ -24,17 +24,20 @@ export class StageDebugger {
       if (this.context.cannonDebugger) this.cannonDebugger.update();
     };
 
-    this.gui.add(this.context, 'cannonDebugger').onChange((value: boolean) => {
-      world.scene.traverse((object) => {
-        if (
-          object instanceof THREE.Mesh &&
-          object.material instanceof THREE.MeshBasicMaterial &&
-          object.material.wireframe
-        ) {
-          object.visible = value;
-        }
+    this.gui
+      .add(this.context, 'cannonDebugger')
+      .name('물리 엔진 디버깅')
+      .onChange((value: boolean) => {
+        world.scene.traverse((object) => {
+          if (
+            object instanceof THREE.Mesh &&
+            object.material instanceof THREE.MeshBasicMaterial &&
+            object.material.wireframe
+          ) {
+            object.visible = value;
+          }
+        });
       });
-    });
 
     this.context.resetCamera = () => {
       camera.position.set(0, 0, 15);
