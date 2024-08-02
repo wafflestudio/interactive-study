@@ -6,7 +6,7 @@ import { GLTF } from 'three/examples/jsm/Addons.js';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { addBorderToMaterial, compositeImage, url } from '../../utils';
 import { Player } from './Objects/Player';
-import { Timer } from './Timer';
+import { Timer } from './Objects/Timer';
 import {
   CubeObject,
   MapData,
@@ -89,7 +89,11 @@ export class World {
   }
 
   private initTimer() {
-    this.timer = new Timer(this.loader.getFont('helvetiker')!, this);
+    this.timer = new Timer(
+      this,
+      this.loader.getFont('helvetiker')!,
+      this.loader.getTexture('matcap_roughness_4')!,
+    );
     this.timer.start();
   }
 

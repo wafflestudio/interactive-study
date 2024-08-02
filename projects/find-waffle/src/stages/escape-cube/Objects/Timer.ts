@@ -2,7 +2,7 @@ import { zip } from 'es-toolkit';
 import * as THREE from 'three';
 import { Font, TextGeometry } from 'three/examples/jsm/Addons.js';
 
-import { World } from './World';
+import { World } from '../World';
 
 export class Timer {
   private timeText: string;
@@ -14,20 +14,23 @@ export class Timer {
     new THREE.Vector3(-3.8, -4.2, -6),
   ];
   private textObjects: THREE.Mesh<TextGeometry, THREE.MeshBasicMaterial>[] = [];
-  private paused = true;
+  paused = true;
 
   constructor(
-    private font: Font,
     private world: World,
+    private font: Font,
+    matcap: THREE.Texture,
   ) {
     this.timeText = '0:00';
     this.remainingTime = 10;
 
     const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: 'black' });
+    const sphereMaterial = new THREE.MeshMatcapMaterial({ matcap });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     const textGeometry = new TextGeometry('', { font });
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 'white' });
+    const textMaterial = new THREE.MeshBasicMaterial({
+      color: 'white',
+    });
     const text = new THREE.Mesh(textGeometry, textMaterial);
     for (const position of this.positions) {
       const sphereObject = sphere.clone();
@@ -91,7 +94,7 @@ export class Timer {
         const newGeometry = new TextGeometry(char, {
           font: this.font,
           size: 0.7,
-          depth: 0.01,
+          depth: 0.1,
           curveSegments: 4,
         });
         textObject.geometry = newGeometry;
@@ -99,7 +102,7 @@ export class Timer {
         const boundingBox = newGeometry.boundingBox!;
         const xOffset = (boundingBox.max.x + boundingBox.min.x) / 2;
         const yOffset = (boundingBox.max.y + boundingBox.min.y) / 2;
-        textObject.position.set(xOffset, -yOffset, -1);
+        textObject.position.set(xOffset, -yOffset, -0.5);
       },
     );
   }
