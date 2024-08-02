@@ -19,7 +19,7 @@ export const GOOSE_IFRAME_ANGLE = (Math.PI / 180) * 270;
 
 // 거위
 export const GOOSE_SIZE = 5;
-export const GOOSE_ANIMATION_TERM = 200;
+export const GOOSE_ANIMATION_TERM = 250;
 export const MAX_GOOSE_NUM = 30;
 export const GOOSE_TO_CLICK = 5;
 

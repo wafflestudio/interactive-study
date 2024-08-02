@@ -5,7 +5,6 @@ import { CAMERA_FOV, GOOSE_SIZE } from '../../constant';
 export abstract class GooseAnimator {
   surface: THREE.Object3D;
   oldPos?: THREE.Vector3;
-  lastTime?: DOMHighResTimeStamp;
   speed = 1;
 
   static #rayOrigin = new THREE.Vector3();
@@ -66,14 +65,8 @@ export class GooseCircularAnimator extends GooseAnimator {
     this.angle = startAngle;
   }
 
-  animate(time: DOMHighResTimeStamp) {
-    if (this.lastTime === undefined) {
-      this.lastTime = time;
-    }
-
-    const delta = time - this.lastTime;
-    this.lastTime = time;
-    this.angle += (delta / 10000) * this.speed * (this.#inFOV() ? 1 : 30);
+  animate(delta: DOMHighResTimeStamp) {
+    this.angle += (delta / 10) * this.speed * (this.#inFOV() ? 1 : 30);
 
     const x = this.#radius * Math.cos(this.angle);
     const z = this.#radius * Math.sin(this.angle);
