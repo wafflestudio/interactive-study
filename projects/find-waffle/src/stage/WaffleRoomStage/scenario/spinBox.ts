@@ -59,9 +59,19 @@ export const spinboxScenario =
       {
         name: 'spinbox_01', // 오프닝
         onMount: () => {
-          dialogue.begin([[{ value: '박스 찾으러 가세요' }]], () => {
-            set('spinbox_02');
-          });
+          dialogue.begin(
+            [
+              [
+                {
+                  value:
+                    '흐음... 저기 박스 더미가 의심스러운데?\n당장 열어봐야겠어',
+                },
+              ],
+            ],
+            () => {
+              set('spinbox_02');
+            },
+          );
         },
       },
       {
@@ -96,7 +106,22 @@ export const spinboxScenario =
           });
 
           dialogue.begin(
-            [[{ value: '박스를 찾았다!' }, { value: '이걸로 뭐하지' }]],
+            [
+              [{ value: '오잉!?!?', size: 'huge' }],
+              [
+                { value: '이것들, ', size: 'normal' },
+                { value: '박스', size: 'large' },
+                { value: '가 아니라 ', size: 'normal' },
+                { value: '사각형 조각', size: 'large' },
+                { value: '이잖아!?', size: 'normal' },
+              ],
+              [
+                {
+                  value: '박스 조각들로 와플을 만들어 볼까?',
+                  size: 'normal',
+                },
+              ],
+            ],
             () => {
               set('spinbox_04');
             },
@@ -106,6 +131,8 @@ export const spinboxScenario =
       {
         name: 'spinbox_04', // 박스 클로즈업 씬, raycaster로 박스 돌리기
         onMount: () => {
+          let isAnimating = false;
+
           // raycaster
           const targetObjects = [
             cannonManager.totalObjectMap.get('box1')!.mesh,
@@ -118,11 +145,18 @@ export const spinboxScenario =
 
           targetObjects.forEach((object) => {
             object.userData.clicked = false;
+            object.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.material.depthTest = false;
+                child.renderOrder = 2;
+              }
+            });
           });
 
           const clickCallback: EventCallback = (
             intersects: THREE.Intersection[],
           ) => {
+            if (isAnimating) return;
             if (intersects.length > 0) {
               const selectedObject = intersects[0].object;
               let targetObject = selectedObject;
@@ -158,9 +192,11 @@ export const spinboxScenario =
                   }
                 },
                 onStart: () => {
+                  isAnimating = true;
                   targetObject.userData.lastAngle = 0;
                 },
                 onComplete: () => {
+                  isAnimating = false;
                   targetObject.userData.clicked = true;
                   if (
                     targetObjects.every((object) => object.userData.clicked)
@@ -199,6 +235,18 @@ export const spinboxScenario =
               sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
               sceneManager.roomCamera.bottom = -frustumSize.frustumSize / 2;
               sceneManager.roomCamera.updateProjectionMatrix();
+            },
+            onComplete: () => {
+              dialogue.begin(
+                [
+                  [
+                    {
+                      value: '어, 그러고 보니 액자가 텅 비어있네?!\n채워볼까?',
+                    },
+                  ],
+                ],
+                () => {},
+              );
             },
           });
 
@@ -433,51 +481,67 @@ export const spinboxScenario =
       {
         name: 'spinbox_06', // 클리어
         onMount: () => {
-          dialogue.begin(
-            [[{ value: '와플을 찾았다!' }, { value: '야호!!' }]],
-            () => {
-              const timeline = gsap.timeline();
-              const vars = {
-                lookAtX: 0,
-                lookAtY: 0,
-                lookAtZ: 0,
-                posX: 100,
-                posY: 80,
-                posZ: 100,
-                frustumSize: 30,
-              };
-              gsap.to(vars, {
-                duration: 3,
-                lookAtX: 0,
-                lookAtY: 11,
-                lookAtZ: 11,
-                posX: 100,
-                posY: 10,
-                posZ: 11,
-                frustumSize: 10,
+          const position = {
+            x: sceneManager.roomCamera.position.x,
+            y: sceneManager.roomCamera.position.y,
+            z: sceneManager.roomCamera.position.z,
+          };
+          gsap.to(position, {
+            duration: 1,
+            x: 100,
+            y: 11,
+            z: 11,
+            onUpdate: () => {
+              sceneManager.roomCamera.position.set(
+                position.x,
+                position.y,
+                position.z,
+              );
+            },
+            onComplete: () => {
+              const lookAtPoint = { x: 100, y: 69, z: 89 };
+              gsap.to(lookAtPoint, {
+                duration: 2,
+                x: 0,
+                y: 11,
+                z: 11,
                 ease: 'power2.inOut',
                 onUpdate: () => {
                   sceneManager.roomCamera.lookAt(
-                    vars.lookAtX,
-                    vars.lookAtY,
-                    vars.lookAtZ,
+                    lookAtPoint.x,
+                    lookAtPoint.y,
+                    lookAtPoint.z,
                   );
-                  sceneManager.roomCamera.position.set(
-                    vars.posX,
-                    vars.posY,
-                    vars.posZ,
-                  );
-                  sceneManager.roomCamera.left =
-                    (-vars.frustumSize * sceneManager.aspectRatio) / 2;
-                  sceneManager.roomCamera.right =
-                    (vars.frustumSize * sceneManager.aspectRatio) / 2;
-                  sceneManager.roomCamera.top = vars.frustumSize / 2;
-                  sceneManager.roomCamera.bottom = -vars.frustumSize / 2;
-                  sceneManager.roomCamera.updateProjectionMatrix();
+                },
+                onComplete: () => {
+                  const frustumSize = { frustumSize: 30 };
+                  gsap.to(frustumSize, {
+                    duration: 1,
+                    frustumSize: 12,
+                    ease: 'power2.inOut',
+                    onUpdate: () => {
+                      sceneManager.roomCamera.left =
+                        (-frustumSize.frustumSize * sceneManager.aspectRatio) /
+                        2;
+                      sceneManager.roomCamera.right =
+                        (frustumSize.frustumSize * sceneManager.aspectRatio) /
+                        2;
+                      sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
+                      sceneManager.roomCamera.bottom =
+                        -frustumSize.frustumSize / 2;
+                      sceneManager.roomCamera.updateProjectionMatrix();
+                    },
+                    onComplete: () => {
+                      dialogue.begin(
+                        [[{ value: '이얏호!!! 와플 액자를 만들었따!' }]],
+                        () => {},
+                      );
+                    },
+                  });
                 },
               });
             },
-          );
+          });
         },
       },
     ];

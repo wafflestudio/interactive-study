@@ -241,14 +241,16 @@ export default class WaffleRoomStage extends Stage {
             clonedMesh6,
           ];
           clonedPackages.forEach((clonedPackage) => {
-            clonedPackage.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.material.depthTest = true;
-                child.renderOrder = 2;
-              }
-            });
+            // clonedPackage.traverse((child) => {
+            //   if (child instanceof THREE.Mesh) {
+            //     child.material.depthTest = false;
+            //     child.renderOrder = 2;
+            //   }
+            // });
             this.sceneManager?.roomScene.add(clonedPackage);
           });
+
+          packageMesh.position.set(-5, -5, -5);
 
           this.cannonManager?.wrap(clonedPackages, 1, 0);
 
@@ -354,7 +356,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      scenarioManager.set('opening_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
       keyMap.activate();
     };
   }
