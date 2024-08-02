@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es';
+import * as THREE from 'three';
 
 let prevTime: number | undefined = undefined;
 
@@ -9,6 +10,7 @@ export const animateCharacter = (
 ) => {
   let newDirection: number | null = null;
   let speed = d * 10;
+
   if (keysPressed.has('up')) {
     body.position.z -= speed;
     newDirection = Math.PI;
