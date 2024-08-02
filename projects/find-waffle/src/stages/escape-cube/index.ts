@@ -129,12 +129,8 @@ export default class EscapeCubeStage extends Stage {
     );
   }
 
-  public animate(time: DOMHighResTimeStamp) {
-    const prevTime = this.prevTime;
-    this.prevTime = time;
-    if (!prevTime || !this.context.mounted || !this.context.world.initialized)
-      return;
-    const timeDelta = (time - prevTime) / 1000; // seconds
+  public animate(timeDelta: number) {
+    if (!this.context.mounted || !this.context.world.initialized) return;
     this.context.world.animate(timeDelta);
     StageDebugger.animate();
     this.renderer.render(this.context.scene, this.context.camera);
