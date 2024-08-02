@@ -63,7 +63,7 @@ export class Player extends BaseObject<
       -displacement.y,
       displacement.x,
       0,
-    ).applyQuaternion(this.world.map.quaternion.clone().invert());
+    ).applyQuaternion(this.world.map.mapObject.quaternion.clone().invert());
 
     const q = new THREE.Quaternion().setFromAxisAngle(
       rotateAxis.normalize(),
@@ -93,17 +93,17 @@ export class Player extends BaseObject<
     if (this.position.x > 5.001) {
       this.position.x = 5;
       this.syncToCannon();
-      this.world.rotate(yAxis, -90);
+      this.world.map.rotate(yAxis, -90);
     }
     if (this.position.x < -5.001) {
       this.position.x = -5;
       this.syncToCannon();
-      this.world.rotate(yAxis, 90);
+      this.world.map.rotate(yAxis, 90);
     }
     if (this.position.y > 6.001) {
       this.position.y = 6;
       this.syncToCannon();
-      this.world.rotate(zAxis, 90);
+      this.world.map.rotate(zAxis, 90);
     }
   }
 

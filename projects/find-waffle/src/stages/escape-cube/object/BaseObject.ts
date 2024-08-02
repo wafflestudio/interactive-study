@@ -15,7 +15,7 @@ export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
 
   protected syncToCannon() {
     this.object.position.copy(
-      this.world.map.worldToLocal(
+      this.world.map.mapObject.worldToLocal(
         new THREE.Vector3(...this.body.position.toArray()),
       ),
     );
@@ -23,7 +23,9 @@ export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
 
   protected syncToThree() {
     this.body.position.set(
-      ...this.world.map.localToWorld(this.object.position.clone()).toArray(),
+      ...this.world.map.mapObject
+        .localToWorld(this.object.position.clone())
+        .toArray(),
     );
   }
 
