@@ -141,15 +141,17 @@ export default class WaffleRoomStage extends Stage {
               (child as THREE.Mesh).renderOrder = -2;
             }
             if (child.name === '다운로드_(4)') {
-              console.log(child);
               (child as THREE.Mesh).material.depthTest = false;
               (child as THREE.Mesh).renderOrder = -1;
             }
             if (child.name === '평면') {
-              console.log(child);
               (child as THREE.Mesh).material.depthTest = false;
               (child as THREE.Mesh).renderOrder = 0;
             }
+
+            // if (child.name === 'box_sample_top') {
+            //   child.visible = false;
+            // }
 
             child.type === 'Mesh' && targetObjects.push(child);
           });
@@ -169,8 +171,6 @@ export default class WaffleRoomStage extends Stage {
           filteredMap.forEach(({ body }) => {
             this.cannonManager?.filterCollision(body, 4, 8);
           });
-
-          console.log(this.cannonManager!.totalObjectMap);
 
           // specify interactive objects (temp: only wardrobe for now)
           const wardrobeInfo =
@@ -251,9 +251,6 @@ export default class WaffleRoomStage extends Stage {
             scenarioManager,
             this.cannonManager!,
           );
-
-          console.log(this.cannonManager!.totalObjectMap);
-          console.log(this.sceneManager!.roomScene.children);
 
           this.onAnimateCallbacks.push({
             cb: packages.onAnimate,
