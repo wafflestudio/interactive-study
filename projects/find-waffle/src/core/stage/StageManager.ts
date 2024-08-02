@@ -8,6 +8,9 @@ export class StageManager {
   public renderer: THREE.WebGLRenderer;
   public home?: Stage;
   public currentStage?: Stage;
+  public clock = new THREE.Clock();
+  public pauseCallbacks: Array<() => void> = [];
+  public playCallbacks: Array<() => void> = [];
 
   private constructor() {
     this.app = document.querySelector('#app')!;
@@ -26,14 +29,16 @@ export class StageManager {
 
   public setHome(stage: Stage) {
     if (this.currentStage) return;
-    stage.mount();
     this.home = stage;
-    this.currentStage = stage;
+    this.toHome();
   }
 
   public toStage(stage: Stage) {
     this.currentStage?.unmount();
+    this.pauseCallbacks = [];
+    this.playCallbacks = [];
     stage.mount();
+    this.play();
     this.currentStage = stage;
   }
 
@@ -44,10 +49,36 @@ export class StageManager {
 
   public animate(time: DOMHighResTimeStamp) {
     this.currentStage?.animate(time);
-    window.requestAnimationFrame((t) => this.animate(t));
+    window.requestAnimationFrame(() => this.animate(this.clock.getDelta()));
   }
 
   public resize(e: Event) {
     this.currentStage?.resize(e);
+  }
+
+  public puase() {
+    this.clock.stop();
+    this.pauseCallbacks.forEach((cb) => cb());
+  }
+
+  public addPauseCallback(cb: () => void) {
+    this.pauseCallbacks.push(cb);
+  }
+
+  public removePauseCallback(cb: () => void) {
+    this.pauseCallbacks = this.pauseCallbacks.filter((c) => c !== cb);
+  }
+
+  public play() {
+    this.clock.start();
+    this.playCallbacks.forEach((cb) => cb());
+  }
+
+  public addPlayCallback(cb: () => void) {
+    this.playCallbacks.push(cb);
+  }
+
+  public removePlayCallback(cb: () => void) {
+    this.playCallbacks = this.playCallbacks.filter((c) => c !== cb);
   }
 }
