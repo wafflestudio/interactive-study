@@ -34,7 +34,7 @@ export class Player extends GameObject {
 
     this.resourceLoader.registerModel(
       'iceCream',
-      '/models/IceCream/icecream_standing.glb',
+      '/models/IceCream/icecream_standing_edit.glb',
       {
         onLoad: (gltf) => {
           const iceCream = gltf.scene;
