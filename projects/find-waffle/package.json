@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cannon-es": "^0.20.0",
+    "cannon-es-debugger": "^1.0.0",
     "es-toolkit": "^1.8.0",
     "gsap": "^3.12.5",
     "lil-gui": "^0.19.2",
