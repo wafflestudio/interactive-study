@@ -194,4 +194,11 @@ export class ResourceLoader {
   public getSound(key: ResourceKey): Sound | undefined {
     return this.loadedResources.sounds.get(key);
   }
+
+  public clear() {
+    this.resourcesToLoad = [];
+    this.loadedResources.models.clear();
+    this.loadedResources.textures.clear();
+    this.loadedResources.sounds.clear();
+  }
 }
