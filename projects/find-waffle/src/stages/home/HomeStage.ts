@@ -278,7 +278,9 @@ const stageInfo: {
     title: '/Grid_Flavor.svg',
     hardness: '/Easy.svg',
     description: '',
-    toStage: () => {},
+    toStage: () => {
+      // TODO
+    },
   },
   GOOSE: {
     title: '/Goose_Flavor.svg',
@@ -292,7 +294,9 @@ const stageInfo: {
     title: '/Icecream.svg',
     hardness: '/Hard.svg',
     description: '귀염뽀짝한 방에 숨겨진 와플들을 찾아보세요!',
-    toStage: () => {},
+    toStage: () => {
+      // TODO
+    },
   },
 };
 
