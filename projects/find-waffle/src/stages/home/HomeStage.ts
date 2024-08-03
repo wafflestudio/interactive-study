@@ -89,6 +89,7 @@ export class HomeStage extends Stage {
   unmount(): void {
     this.#container?.remove();
     this.#waffleRaycaster.unmount();
+    this.#raycaster.dispose();
     this.#unmountDescription();
   }
 
@@ -174,12 +175,11 @@ export class HomeStage extends Stage {
           }
         } else {
           document.body.style.cursor = 'default';
-          jams
-            .forEach((jam) => {
-              if (!this.#finishStages.includes(jam.id)) {
-                gsap.to(jam.material, { opacity: 0, duration: 0.2 });
-              }
-            });
+          jams.forEach((jam) => {
+            if (!this.#finishStages.includes(jam.id)) {
+              gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+            }
+          });
         }
       },
       jams.map((jam) => jam.mesh),
@@ -293,18 +293,19 @@ const stageInfo: {
       StageManager.instance.toStage(cardGame);
       cardGame.unmountListener = () => {
         StageManager.instance.finishStage('CARD');
-      }
+      };
     },
   },
   CUBE: {
     title: '/Grid_Flavor.svg',
     hardness: '/Easy.svg',
-    description: '미로를 돌아다니며 와플을 찾아보세요. 미로에는 무시무시한 몬스터들이 출몰하기 때문에 조심하세요!',
+    description:
+      '미로를 돌아다니며 와플을 찾아보세요. 미로에는 무시무시한 몬스터들이 출몰하기 때문에 조심하세요!',
     toStage: () => {
       StageManager.instance.toStage(escapeCubeGame);
       escapeCubeGame.unmountListener = () => {
-        StageManager.instance.finishStage('CUBE')
-      }
+        StageManager.instance.finishStage('CUBE');
+      };
     },
   },
   GOOSE: {
@@ -314,8 +315,8 @@ const stageInfo: {
     toStage: () => {
       StageManager.instance.toStage(gooseStage);
       gooseStage.unmountListener = () => {
-        StageManager.instance.finishStage('GOOSE')
-      }
+        StageManager.instance.finishStage('GOOSE');
+      };
     },
   },
   ROOM: {
@@ -325,8 +326,8 @@ const stageInfo: {
     toStage: () => {
       StageManager.instance.toStage(roomGame);
       roomGame.unmountListener = () => {
-        StageManager.instance.finishStage('ROOM')
-      }
+        StageManager.instance.finishStage('ROOM');
+      };
     },
   },
 };
@@ -353,7 +354,9 @@ let insertDescription = (
   <img src="${url(hardness)}" style="display: block; margin-top: 16px;"/>
   <p style="margin-top: 8px; color: #E00000; max-width: 400px;">${description}</p>
   <button style="border: none; background: transparent;">
-    <img src="${url('/order.svg')}" style="margin-left: auto; cursor: pointer;"/>
+    <img src="${url(
+      '/order.svg',
+    )}" style="margin-left: auto; cursor: pointer;"/>
   </button>
 </div>
 `;
