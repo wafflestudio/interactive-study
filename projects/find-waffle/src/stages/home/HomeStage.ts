@@ -316,7 +316,7 @@ let insertDescription = (
 <div>
   <img src="${title}" style="display: block; margin-top: 8px;"/>
   <img src="${hardness}" style="display: block; margin-top: 16px;"/>
-  <p style="margin-top: 8px; color: #E00000">${description}</p>
+  <p style="margin-top: 8px; color: #E00000; max-width: 400px;">${description}</p>
   <button style="border: none; background: transparent;">
     <img src="/order.svg" style="margin-left: auto; cursor: pointer;"/>
   </button>
