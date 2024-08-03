@@ -1,0 +1,117 @@
+.__background {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f7a8ae;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: -2;
+  font-family: 'KoreanTYGDB_1234', serif;
+}
+
+.__main {
+  height: 80%;
+  background-color: #f1e7cc;
+  display: flex;
+}
+
+.__left,
+.__right {
+  flex: 1 0 80px;
+  box-sizing: border-box;
+}
+
+.__left {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.__row {
+  flex: 1 0 0;
+  display: flex;
+}
+.__item {
+  flex: 1 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.__dot {
+  width: 20%;
+  aspect-ratio: 1;
+  background-color: #d9d9d9;
+  border-radius: 50%;
+}
+
+.__right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.__canvasWrapper {
+  position: relative;
+  width: 80%;
+  height: 60%;
+  background-color: #f3eed8;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.__label {
+  position: absolute;
+  top: -10px;
+  background-color: #efe05f;
+  padding: 8px 24px;
+  font: inherit;
+}
+
+.__button {
+  border: none;
+  position: absolute;
+  right: -10px;
+  bottom: -40px;
+  border-radius: 100px;
+  background-color: #ececec;
+  color: #d1d1d1;
+
+  padding: 8px 24px;
+  display: flex;
+  z-index: 100;
+  font: inherit;
+}
+
+.__buttonSuccess {
+  border: none;
+  position: absolute;
+  right: -10px;
+  bottom: -40px;
+  border-radius: 100px;
+  color: #ffffff;
+  background-color: #f7a8ae;
+  padding: 8px 24px;
+  display: flex;
+  z-index: 100;
+  font: inherit;
+}
+
+.__bag {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.1s;
+}
+.__bag > img {
+  width: 100%;
+  object-fit: contain;
+}
+.__bag:hover {
+  opacity: 0.8;
+}
+.__bag:active {
+  opacity: 0.6;
+}
