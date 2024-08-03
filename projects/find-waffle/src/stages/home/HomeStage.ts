@@ -1,6 +1,8 @@
+import gsap from 'gsap';
 import * as THREE from 'three';
 
 import { Stage } from '../../core/stage/Stage';
+import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 
 const WAFFLE_MODEL_KEY = 'waffle';
@@ -13,6 +15,12 @@ export class HomeStage extends Stage {
   // TODO: parameter
   #camera = new THREE.PerspectiveCamera(70, 1);
   #waffle?: THREE.Object3D;
+
+  #raycaster = new ListenableRaycaster(
+    this.#camera,
+    this.#scene,
+    this.renderer,
+  );
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -68,5 +76,53 @@ export class HomeStage extends Stage {
   #onModelLoad() {
     this.#waffle = this.#loader.getModel(WAFFLE_MODEL_KEY)!.scene;
     this.#scene.add(this.#waffle);
+
+    /**
+     * Jam
+     */
+    const geometry = new THREE.PlaneGeometry(20, 20);
+    const baseMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffd560,
+      opacity: 0.8,
+      transparent: true,
+    });
+
+    const stagePosition: [number, number, number][] = [
+      [30, 7, -30],
+      [30, 7, 30],
+      [-30, 6, 30],
+      [-30, 7, -30],
+    ];
+    const jams: { mesh: THREE.Mesh; material: THREE.MeshBasicMaterial }[] = [];
+
+    for (const position of stagePosition) {
+      const material = baseMaterial.clone();
+      const jam = new THREE.Mesh(geometry, material);
+      jam.rotateX(-Math.PI / 2);
+      jam.position.set(...position);
+      jams.push({ mesh: jam, material });
+      this.#waffle.add(jam);
+    }
+
+    this.#raycaster.registerCallback(
+      'mousemove',
+      (intersects) => {
+        if (intersects.length > 0) {
+          const jam = jams.find(
+            (jam) => jam.mesh.id === intersects[0].object.id,
+          );
+          if (jam) {
+            document.body.style.cursor = 'pointer';
+            gsap.to(jam.material, { opacity: 0.8, duration: 0.2 });
+          }
+        } else {
+          document.body.style.cursor = 'default';
+          jams.forEach((jam) => {
+            gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+          });
+        }
+      },
+      jams.map((jam) => jam.mesh),
+    );
   }
 }
