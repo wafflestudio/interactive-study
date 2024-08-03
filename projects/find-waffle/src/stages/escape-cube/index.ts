@@ -60,12 +60,15 @@ export default class EscapeCubeStage extends Stage {
 
   private createContext(): void {
     const scene = new THREE.Scene();
-    const world = new WaffleWorld(scene);
+
     const h = 7;
-    const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
+    const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 100);
     camera.position.set(0, 0, 15);
+
     scene.add(camera);
     scene.background = new THREE.Color('rgb(35, 110, 138)');
+
+    const world = new WaffleWorld(scene, camera);
 
     if (window.location.hash === '#debug') {
       world.onInitialized = () =>

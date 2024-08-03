@@ -1,9 +1,11 @@
 import * as CANNON from 'cannon-es';
+import { noop } from 'es-toolkit';
 import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 
-import { noop } from 'es-toolkit';
+import { StageManager } from '../../core/stage/StageManager';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import { resize } from '../../utils';
 import { Map } from './map/Map';
 import { Monster } from './object/Monster';
 import { Player } from './object/Player';
@@ -18,9 +20,61 @@ export class WaffleWorld {
   timer?: Timer;
   waffle?: Waffle;
   initialized = false;
+  private _followingCamera = false;
+  private originalCameraPosition: [number, number];
+  private originalCameraTop: number;
   monsters: Monster[] = [];
   cannonTimeline = gsap.timeline();
   _onInitialized: () => void = noop;
+
+  get followingCamera() {
+    return this._followingCamera;
+  }
+
+  set followingCamera(value: boolean) {
+    this._followingCamera = value;
+    if (value) {
+      gsap
+        .timeline()
+        .to(
+          this.camera.position,
+          {
+            x: this.player!.position.x,
+            y: this.player!.position.y,
+            duration: 1,
+          },
+          'start',
+        )
+        .to(
+          this.camera,
+          {
+            top: 3,
+            bottom: -3,
+            duration: 1,
+            onUpdate: () => {
+              resize(
+                StageManager.instance.renderer,
+                this.camera,
+                window.innerWidth,
+                window.innerHeight,
+              );
+            },
+          },
+          'start',
+        );
+    } else {
+      this.camera.position.x = this.originalCameraPosition[0];
+      this.camera.position.y = this.originalCameraPosition[1];
+      this.camera.top = this.originalCameraTop;
+      this.camera.bottom = -this.originalCameraTop;
+      resize(
+        StageManager.instance.renderer,
+        this.camera,
+        window.innerWidth,
+        window.innerHeight,
+      );
+    }
+  }
 
   set onInitialized(value: () => void) {
     this._onInitialized = value;
@@ -29,7 +83,12 @@ export class WaffleWorld {
     }
   }
 
-  constructor(public scene: THREE.Scene) {
+  constructor(
+    public scene: THREE.Scene,
+    public camera: THREE.OrthographicCamera,
+  ) {
+    this.originalCameraPosition = [camera.position.x, camera.position.y];
+    this.originalCameraTop = camera.top;
     this.map = new Map(this);
     this.initCannonWorld();
     this.init();
@@ -85,20 +144,27 @@ export class WaffleWorld {
     );
     this.monsters.push(m2);
 
-    this.cannonTimeline.to({}, {duration: 1.5, repeat: -1, onRepeat: () => {
-      const cannonBall = new Monster(
-        this,
-        [new THREE.Vector3(-2, -3, 5), new THREE.Vector3(5, -3, 5)],
-        false,
-        false,
-        GSAP.Power0.easeNone,
-      );
-      this.monsters.push(cannonBall);
-      cannonBall.timeline.eventCallback('onComplete', () => {
-        cannonBall.dispose();
-        this.monsters.splice(this.monsters.indexOf(cannonBall), 1);
-      });
-    }})
+    this.cannonTimeline.to(
+      {},
+      {
+        duration: 2,
+        repeat: -1,
+        onRepeat: () => {
+          const cannonBall = new Monster(
+            this,
+            [new THREE.Vector3(-2, -3, 5), new THREE.Vector3(5, -3, 5)],
+            false,
+            false,
+            GSAP.Power0.easeNone,
+          );
+          this.monsters.push(cannonBall);
+          cannonBall.timeline.eventCallback('onComplete', () => {
+            cannonBall.dispose();
+            this.monsters.splice(this.monsters.indexOf(cannonBall), 1);
+          });
+        },
+      },
+    );
 
     const m3 = new Monster(
       this,
@@ -153,6 +219,10 @@ export class WaffleWorld {
     this.waffle?.animate(timeDelta);
     this.timer?.animate(timeDelta);
     this.monsters.forEach((m) => m.animate(timeDelta));
+    if (this.followingCamera) {
+      this.camera.position.x = this.player!.position.x;
+      this.camera.position.y = this.player!.position.y;
+    }
   }
 
   public pause() {
