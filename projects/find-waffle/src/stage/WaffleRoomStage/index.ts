@@ -7,6 +7,7 @@ import van from 'vanjs-core';
 import { Stage } from '../../core/stage/Stage';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import { url } from '../../utils';
 import { CannonManager } from './core/cannon/CannonManager';
 import { Dialogue } from './core/dialogue/Dialogue';
 import { ScenarioManager } from './core/scenario/ScenarioManager';
@@ -100,7 +101,7 @@ export default class WaffleRoomStage extends Stage {
             if (child.name.startsWith('Box179')) {
               let loader = new THREE.TextureLoader();
               let texture = loader.load(
-                '/models/WaffleRoom/textures/sofa_texture.jpg',
+                url('/models/WaffleRoom/textures/sofa_texture.jpg'),
               );
               const material = new THREE.MeshPhysicalMaterial({
                 map: texture,
@@ -119,7 +120,7 @@ export default class WaffleRoomStage extends Stage {
             if (child.name.startsWith('tile')) {
               let loader = new THREE.TextureLoader();
               let texture = loader.load(
-                '/models/WaffleRoom/textures/tile_texture.jpeg',
+                url('/models/WaffleRoom/textures/tile_texture.jpeg'),
               );
               const material = new THREE.MeshStandardMaterial({ map: texture });
               const colorList = [
