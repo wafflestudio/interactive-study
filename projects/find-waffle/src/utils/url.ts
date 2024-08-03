@@ -5,8 +5,10 @@
  * @returns 절대 경로
  */
 export function url(path: string): string {
-  const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}/`;
-  if (path.startsWith('/')) path = "." + path
-  else if (!path.startsWith('./')) path = "./" + path
+  const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
+  console.log(BASE_URL, path);
+  if (path.startsWith('/')) path = path = path.slice(1);
+  console.log(`result: ${new URL(path, BASE_URL).href}`);
+  
   return new URL(path, BASE_URL).href;
 }
