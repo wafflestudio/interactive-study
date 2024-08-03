@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Font, FontLoader } from 'three/examples/jsm/Addons.js';
 
+import { url } from '../../utils';
+
 type ResourceType = 'model' | 'texture' | 'sound' | 'font';
 type ResourceKey = string;
 
@@ -101,7 +103,7 @@ export class ResourceLoader {
   private loadModel(resource: ModelLoadableResource) {
     const loader = new GLTFLoader();
     loader.load(
-      resource.url,
+      url(resource.url),
       (gltf) => {
         resource.options?.onLoad?.(gltf);
         this.loadedResources.models.set(resource.key, gltf);
@@ -119,7 +121,7 @@ export class ResourceLoader {
   private loadTexture(resource: TextureLoadableResource) {
     const loader = new THREE.TextureLoader();
     loader.load(
-      resource.url,
+      url(resource.url),
       (texture) => {
         resource.options?.onLoad?.(texture);
         this.loadedResources.textures.set(resource.key, texture);
@@ -139,7 +141,7 @@ export class ResourceLoader {
     const audio = new THREE.Audio(listener);
     const audioLoader = new THREE.AudioLoader();
     audioLoader.load(
-      resource.url,
+      url(resource.url),
       (buffer) => {
         audio.setBuffer(buffer);
 

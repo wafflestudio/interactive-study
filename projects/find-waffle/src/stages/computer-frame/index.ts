@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { Stage } from '../../core/stage/Stage';
+import { url } from '../../utils';
 
 const imageSize = {
   width: 1920,
@@ -72,7 +73,7 @@ export default class ComputerFrameStage extends Stage {
     `;
 
     const computerImage = document.createElement('img');
-    computerImage.src = '/computer-frame/images/computer.png';
+    computerImage.src = url('/computer-frame/images/computer.png');
     computerImage.className = 'computer__image';
 
     computerMain.appendChild(canvas);
