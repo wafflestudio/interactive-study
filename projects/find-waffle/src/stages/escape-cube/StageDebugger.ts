@@ -71,5 +71,30 @@ export class StageDebugger {
         'reduceTime',
       )
       .name('10초 감소');
+
+    this.gui
+      .add({ fluidization: false }, 'fluidization')
+      .name('유체화')
+      .onChange((isFluid: boolean) => {
+        if (isFluid) {
+          world.player!.body.shapes[0].collisionFilterGroup = 0;
+          world.player!.object.traverse((object) => {
+            if (object instanceof THREE.Mesh) {
+              object.material.transparent = true;
+              object.material.opacity = 0.5;
+              object.material.alphaTest = 0.5;
+            }
+          });
+        } else {
+          world.player!.body.shapes[0].collisionFilterGroup = 1;
+          world.player!.object.traverse((object) => {
+            if (object instanceof THREE.Mesh) {
+              object.material.transparent = false;
+              object.material.opacity = 1;
+              object.material.alphaTest = 0;
+            }
+          });
+        }
+      });
   }
 }
