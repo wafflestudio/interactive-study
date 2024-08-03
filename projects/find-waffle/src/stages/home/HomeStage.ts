@@ -2,8 +2,8 @@ import gsap from 'gsap';
 import * as THREE from 'three';
 
 import { Stage } from '../../core/stage/Stage';
-import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { StageManager } from '../../core/stage/StageManager';
+import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import CardGameStage from '../card-game';
 import { GooseStage } from '../goose/stage';
@@ -79,7 +79,7 @@ export class HomeStage extends Stage {
     this.#waffleRaycaster.mount();
     this.#addDragListener();
 
-    this.#unmountDescription = insertDescription('GOOSE', 0, 0);
+    this.#unmountDescription;
   }
 
   unmount(): void {
@@ -124,16 +124,32 @@ export class HomeStage extends Stage {
       [-30, 6, 30],
       [-30, 7, -30],
     ];
-    const jams: { mesh: THREE.Mesh; material: THREE.MeshBasicMaterial }[] = [];
+    const stages: {
+      id: StageType;
+      top?: number;
+      right?: number;
+      bottom?: number;
+      left?: number;
+    }[] = [
+      { id: 'CARD', top: 150, right: 150 },
+      { id: 'CUBE', bottom: 150, right: 150 },
+      { id: 'GOOSE', bottom: 150, left: 150 },
+      { id: 'ROOM', top: 150, left: 150 },
+    ];
+    const jams: {
+      mesh: THREE.Mesh;
+      material: THREE.MeshBasicMaterial;
+      id: StageType;
+    }[] = [];
 
-    for (const position of stagePosition) {
+    stagePosition.forEach((position, index) => {
       const material = baseMaterial.clone();
       const jam = new THREE.Mesh(geometry, material);
       jam.rotateX(-Math.PI / 2);
       jam.position.set(...position);
-      jams.push({ mesh: jam, material });
-      this.#waffle.add(jam);
-    }
+      jams.push({ mesh: jam, material, id: stages[index].id });
+      this.#waffle?.add(jam);
+    });
 
     this.#raycaster.registerCallback(
       'mousemove',
@@ -174,6 +190,19 @@ export class HomeStage extends Stage {
             document.querySelectorAll('img').forEach((img) => {
               img.style.opacity = '0';
             });
+
+            this.#unmountDescription();
+            const stageId = jam.id;
+            const { top, right, bottom, left } = stages.find(
+              (stage) => stage.id === stageId,
+            )!;
+            this.#unmountDescription = insertDescription(
+              jam.id,
+              top,
+              right,
+              bottom,
+              left,
+            );
           }
         } else {
           gsap.to(this.#camera.position, {
@@ -186,6 +215,8 @@ export class HomeStage extends Stage {
           document.querySelectorAll('img').forEach((img) => {
             img.style.opacity = '1';
           });
+
+          this.#unmountDescription();
         }
       },
       jams.map((jam) => jam.mesh),
@@ -268,9 +299,19 @@ const stageInfo: {
   },
 };
 
-let insertDescription = (type: StageType, x: number, y: number) => {
+let insertDescription = (
+  type: StageType,
+  top?: number,
+  right?: number,
+  bottom?: number,
+  left?: number,
+) => {
   const container = document.createElement('div');
-  container.style.cssText = `position: fixed; top: ${y}; left: ${x}`;
+  const topStyle = top ? `top: ${top}px;` : '';
+  const rightStyle = right ? `right: ${right}px;` : '';
+  const bottomStyle = bottom ? `bottom: ${bottom}px;` : '';
+  const leftStyle = left ? `left: ${left}px;` : '';
+  container.style.cssText = `position: fixed; ${topStyle} ${rightStyle} ${bottomStyle} ${leftStyle}`;
 
   const { title, hardness, description, toStage } = stageInfo[type];
 
