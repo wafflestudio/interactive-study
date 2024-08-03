@@ -24,6 +24,7 @@ export class Dialogue {
       lastIndex: 0,
     };
     this.currentQueue = [];
+    this.endCallback = () => {};
 
     // check if element exists
     const element = app.querySelector('.DialogueContainer');
@@ -53,9 +54,12 @@ export class Dialogue {
 
     if (!nextChunks) {
       if (this.endCallback) this.endCallback();
-      this.endCallback = undefined;
       this.containerVisibility.val = false;
       return;
+    }
+
+    if (!nextChunks) {
+      this.end();
     }
 
     this.currentState = {
@@ -90,6 +94,10 @@ export class Dialogue {
     };
 
     animate();
+  }
+
+  public end() {
+    this.endCallback = undefined;
   }
 
   public dispose() {

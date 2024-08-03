@@ -19,10 +19,11 @@ export const openingScenario =
             // ],
           ],
           () => {
-            sceneManager.toWardrobeScene((change) => {
-              // set('wardrobe_01');
-              change();
-            });
+            // sceneManager.toWardrobeScene((change) => {
+            //   // set('wardrobe_01');
+            //   change();
+            // });
+            set('spinbox_01');
           },
         );
       },

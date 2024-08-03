@@ -19,6 +19,7 @@ import { spinTileScenario } from './scenario/spinTile';
 import { wardrobeScenario } from './scenario/wardrobe';
 
 export default class WaffleRoomStage extends Stage {
+  scenarioManager: ScenarioManager = new ScenarioManager();
   sceneManager?: SceneManager;
   controls?: OrbitControls;
   clock?: THREE.Clock;
@@ -29,6 +30,8 @@ export default class WaffleRoomStage extends Stage {
   }[] = [];
   onUnmountCallbacks: (() => void)[] = [];
   cannonManager?: CannonManager;
+  keyMap: KeyMap = new KeyMap();
+  dialogue: Dialogue = new Dialogue({ app: this.app });
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -42,11 +45,10 @@ export default class WaffleRoomStage extends Stage {
 
     // implement managers
     this.sceneManager = new SceneManager(this.renderer, this.app);
-    const scenarioManager = new ScenarioManager();
     const resourceLoader = new ResourceLoader();
-    const keyMap = new KeyMap();
+    // this.keyMap = new KeyMap();
     this.cannonManager = new CannonManager();
-    const dialogue = new Dialogue({ app: this.app });
+    // const dialogue = new Dialogue({ app: this.app });
 
     // debug
     this.cannonDebugger = CannonDebugger(
@@ -67,9 +69,9 @@ export default class WaffleRoomStage extends Stage {
     // Player
     const player = new Player(
       resourceLoader,
-      keyMap,
+      this.keyMap,
       this.sceneManager,
-      scenarioManager,
+      this.scenarioManager,
       this.cannonManager,
     );
     this.onAnimateCallbacks.push({ cb: player.onAnimate, bindTarget: player });
@@ -78,7 +80,7 @@ export default class WaffleRoomStage extends Stage {
     // Props
     resourceLoader.registerModel(
       'waffleRoom',
-      '/models/WaffleRoom/WaffleRoomTest2.glb',
+      '/models/WaffleRoom/models/WaffleRoomFinal2.glb',
       {
         onLoad: ({ scene: room }) => {
           const scale = 1;
@@ -183,14 +185,14 @@ export default class WaffleRoomStage extends Stage {
           const wallInfo1 =
             this.cannonManager?.totalObjectMap.get('wall_right');
           const wallInfo2 = this.cannonManager?.totalObjectMap.get('wall_left');
-          // const wallInfo3 =
-          //   this.cannonManager?.totalObjectMap.get('wall_right001');
-          // const wallInfo4 =
-          //   this.cannonManager?.totalObjectMap.get('wall_left001');
+          const wallInfo3 =
+            this.cannonManager?.totalObjectMap.get('wall_right001');
+          const wallInfo4 =
+            this.cannonManager?.totalObjectMap.get('wall_left001');
           this.cannonManager?.filterCollision(wallInfo1!.body, 2, 1);
           this.cannonManager?.filterCollision(wallInfo2!.body, 2, 1);
-          // this.cannonManager?.filterCollision(wallInfo3!.body, 2, 1);
-          // this.cannonManager?.filterCollision(wallInfo4!.body, 2, 1);
+          this.cannonManager?.filterCollision(wallInfo3!.body, 2, 1);
+          this.cannonManager?.filterCollision(wallInfo4!.body, 2, 1);
 
           // specify interactive objects (temp: only wardrobe for now)
           const wardrobeInfo = this.cannonManager?.totalObjectMap.get(
@@ -202,9 +204,9 @@ export default class WaffleRoomStage extends Stage {
             wardrobeInfo!.mesh,
             wardrobeInfo!.body,
             resourceLoader,
-            keyMap,
+            this.keyMap,
             this.sceneManager!,
-            scenarioManager,
+            this.scenarioManager,
             this.cannonManager!,
           );
           this.onAnimateCallbacks.push({
@@ -271,7 +273,7 @@ export default class WaffleRoomStage extends Stage {
             this.sceneManager?.roomScene.add(clonedPackage);
           });
 
-          packageMesh.position.set(-5, -5, -5);
+          packageMesh.position.set(-100, -100, -100);
 
           this.cannonManager?.wrap(clonedPackages, 1, 0);
 
@@ -279,9 +281,9 @@ export default class WaffleRoomStage extends Stage {
             packagesInfo!.mesh,
             packagesInfo!.body,
             resourceLoader,
-            keyMap,
+            this.keyMap,
             this.sceneManager!,
-            scenarioManager,
+            this.scenarioManager,
             this.cannonManager!,
           );
 
@@ -342,9 +344,10 @@ export default class WaffleRoomStage extends Stage {
     );
 
     // temp
-    keyMap.bind('Space', () => {
-      dialogue.next();
+    this.keyMap.bind('Space', () => {
+      this.dialogue.next();
     });
+    console.log();
 
     /*
      * 3. activate
@@ -352,33 +355,36 @@ export default class WaffleRoomStage extends Stage {
     resourceLoader.loadAll();
     resourceLoader.onLoadComplete = () => {
       // add scenario
-      scenarioManager.addScenario(
-        openingScenario(this.sceneManager!, dialogue),
+      this.scenarioManager.addScenario(
+        openingScenario(this.sceneManager!, this.dialogue),
       );
-      scenarioManager.addScenario(
-        wardrobeScenario(this.sceneManager!, dialogue),
+      this.scenarioManager.addScenario(
+        wardrobeScenario(this.sceneManager!, this.dialogue),
       );
-      scenarioManager.addScenario(
+      this.scenarioManager.addScenario(
         spinboxScenario(
+          this.scenarioManager,
           this.sceneManager!,
           this.cannonManager!,
-          keyMap,
-          dialogue,
+          this.keyMap,
+          this.dialogue,
           this.renderer,
         ),
       );
-      scenarioManager.addScenario(
+      this.scenarioManager.addScenario(
         spinTileScenario(
+          this.scenarioManager,
           this.sceneManager!,
           this.cannonManager!,
-          keyMap,
-          dialogue,
+          this.keyMap,
+          this.dialogue,
           this.renderer,
+          player,
         ),
       );
 
-      scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
-      keyMap.activate();
+      this.scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      this.keyMap.activate();
     };
   }
 
@@ -422,7 +428,7 @@ export default class WaffleRoomStage extends Stage {
     this.cannonManager.world.step(1 / 60, delta, 3);
     this.cannonManager.renderMovement();
     this.cannonManager.stopIfCollided();
-    this.cannonDebugger?.update();
+    // this.cannonDebugger?.update();
   }
 
   public unmount() {

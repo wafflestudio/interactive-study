@@ -132,6 +132,9 @@ export class Player extends GameObject {
             this.animationMixer = new THREE.AnimationMixer(gltf.scene);
           const clips = gltf.animations;
           const clip = clips[0];
+          const action = this.animationMixer.clipAction(clip);
+          action.loop = THREE.LoopOnce;
+          action.clampWhenFinished = true;
           this.actionsMap.set('action', this.animationMixer!.clipAction(clip));
         },
       },

@@ -4,7 +4,7 @@ import { SceneManager } from '../core/scene/SceneManager';
 
 export const wardrobeScenario =
   (sceneManager: SceneManager, dialogue: Dialogue): Scenario =>
-  () => [
+  (set) => [
     {
       name: 'wardrobe_01',
       onMount: () => {
@@ -23,7 +23,10 @@ export const wardrobeScenario =
               },
             ],
           ],
-          () => {},
+          () => {
+            console.log('!');
+            set('spintile_01');
+          },
         );
       },
     },

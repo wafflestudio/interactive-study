@@ -9,10 +9,12 @@ import {
 import { CannonManager } from '../core/cannon/CannonManager';
 import { Dialogue } from '../core/dialogue/Dialogue';
 import { Scenario } from '../core/scenario/ScenarioManager';
+import { ScenarioManager } from '../core/scenario/ScenarioManager';
 import { SceneManager } from '../core/scene/SceneManager';
 
 export const spinboxScenario =
   (
+    scenarioManager: ScenarioManager,
     sceneManager: SceneManager,
     cannonManager: CannonManager,
     keyMap: KeyMap,
@@ -481,67 +483,108 @@ export const spinboxScenario =
       {
         name: 'spinbox_06', // 클리어
         onMount: () => {
-          const position = {
-            x: sceneManager.roomCamera.position.x,
-            y: sceneManager.roomCamera.position.y,
-            z: sceneManager.roomCamera.position.z,
-          };
-          gsap.to(position, {
-            duration: 1,
-            x: 100,
-            y: 11,
-            z: 11,
+          const targetObjects = [
+            cannonManager.totalObjectMap.get('box1')!.mesh,
+            cannonManager.totalObjectMap.get('box2')!.mesh,
+            cannonManager.totalObjectMap.get('box3')!.mesh,
+            cannonManager.totalObjectMap.get('box4')!.mesh,
+            cannonManager.totalObjectMap.get('box5')!.mesh,
+            cannonManager.totalObjectMap.get('box6')!.mesh,
+          ];
+
+          targetObjects.forEach((object) => {
+            object.userData.clicked = false;
+            object.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.material.depthTest = true;
+              }
+            });
+          });
+
+          const frustumSize = { frustumSize: 30 };
+          gsap.to(frustumSize, {
+            duration: 3,
+            frustumSize: 50,
+            ease: 'power2.inOut',
             onUpdate: () => {
-              sceneManager.roomCamera.position.set(
-                position.x,
-                position.y,
-                position.z,
-              );
-            },
-            onComplete: () => {
-              const lookAtPoint = { x: 100, y: 69, z: 89 };
-              gsap.to(lookAtPoint, {
-                duration: 2,
-                x: 0,
-                y: 11,
-                z: 11,
-                ease: 'power2.inOut',
-                onUpdate: () => {
-                  sceneManager.roomCamera.lookAt(
-                    lookAtPoint.x,
-                    lookAtPoint.y,
-                    lookAtPoint.z,
-                  );
-                },
-                onComplete: () => {
-                  const frustumSize = { frustumSize: 30 };
-                  gsap.to(frustumSize, {
-                    duration: 1,
-                    frustumSize: 12,
-                    ease: 'power2.inOut',
-                    onUpdate: () => {
-                      sceneManager.roomCamera.left =
-                        (-frustumSize.frustumSize * sceneManager.aspectRatio) /
-                        2;
-                      sceneManager.roomCamera.right =
-                        (frustumSize.frustumSize * sceneManager.aspectRatio) /
-                        2;
-                      sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
-                      sceneManager.roomCamera.bottom =
-                        -frustumSize.frustumSize / 2;
-                      sceneManager.roomCamera.updateProjectionMatrix();
-                    },
-                    onComplete: () => {
-                      dialogue.begin(
-                        [[{ value: '이얏호!!! 와플 액자를 만들었따!' }]],
-                        () => {},
-                      );
-                    },
-                  });
-                },
-              });
+              sceneManager.roomCamera.left =
+                (-frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.right =
+                (frustumSize.frustumSize * sceneManager.aspectRatio) / 2;
+              sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.bottom = -frustumSize.frustumSize / 2;
+              sceneManager.roomCamera.updateProjectionMatrix();
             },
           });
+          dialogue.begin(
+            [[{ value: '이얏호!!! 와플 액자를 만들었따!' }]],
+            () => {
+              scenarioManager.set('spintile_01');
+            },
+          );
+          // const position = {
+          //   x: sceneManager.roomCamera.position.x,
+          //   y: sceneManager.roomCamera.position.y,
+          //   z: sceneManager.roomCamera.position.z,
+          // };
+          // gsap.to(position, {
+          //   duration: 1,
+          //   x: 100,
+          //   y: 11,
+          //   z: 11,
+          //   onUpdate: () => {
+          //     sceneManager.roomCamera.position.set(
+          //       position.x,
+          //       position.y,
+          //       position.z,
+          //     );
+          //   },
+          //   onComplete: () => {
+          //     const lookAtPoint = { x: 100, y: 69, z: 89 };
+          //     gsap.to(lookAtPoint, {
+          //       duration: 2,
+          //       x: 0,
+          //       y: 11,
+          //       z: 11,
+          //       ease: 'power2.inOut',
+          //       onUpdate: () => {
+          //         sceneManager.roomCamera.lookAt(
+          //           lookAtPoint.x,
+          //           lookAtPoint.y,
+          //           lookAtPoint.z,
+          //         );
+          //       },
+          //       onComplete: () => {
+          //         const frustumSize = { frustumSize: 30 };
+          //         gsap.to(frustumSize, {
+          //           duration: 1,
+          //           frustumSize: 12,
+          //           ease: 'power2.inOut',
+          //           onUpdate: () => {
+          //             sceneManager.roomCamera.left =
+          //               (-frustumSize.frustumSize * sceneManager.aspectRatio) /
+          //               2;
+          //             sceneManager.roomCamera.right =
+          //               (frustumSize.frustumSize * sceneManager.aspectRatio) /
+          //               2;
+          //             sceneManager.roomCamera.top = frustumSize.frustumSize / 2;
+          //             sceneManager.roomCamera.bottom =
+          //               -frustumSize.frustumSize / 2;
+          //             sceneManager.roomCamera.updateProjectionMatrix();
+          //           },
+          //           onComplete: () => {
+          //             dialogue.begin(
+          //               [[{ value: '이얏호!!! 와플 액자를 만들었따!' }]],
+          //               () => {
+          //                 set('spintile_01');
+          //               },
+          //             );
+          //           },
+          //         });
+          //       },
+          //     });
+          //   },
+          // });
         },
       },
     ];

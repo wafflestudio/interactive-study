@@ -6,16 +6,19 @@ import { object } from 'zod';
 import { KeyMap } from '../../../libs/keyboard/KeyMap';
 import { CannonManager } from '../core/cannon/CannonManager';
 import { Dialogue } from '../core/dialogue/Dialogue';
-import { Scenario } from '../core/scenario/ScenarioManager';
+import { Scenario, ScenarioManager } from '../core/scenario/ScenarioManager';
 import { SceneManager } from '../core/scene/SceneManager';
+import { Player } from '../object/Player';
 
 export const spinTileScenario =
   (
+    scenarioManager: ScenarioManager,
     sceneManager: SceneManager,
     cannonManager: CannonManager,
     keyMap: KeyMap,
     dialogue: Dialogue,
     renderer: THREE.WebGLRenderer,
+    playerObject: Player,
   ): Scenario =>
   (set) => {
     const tileMap: Map<string, string> = new Map();
@@ -23,14 +26,46 @@ export const spinTileScenario =
       {
         name: 'spintile_01', // 오프닝
         onMount: () => {
-          dialogue.begin(['타일 돌려보세요'], () => {
-            set('spintile_02');
-          });
+          console.log(keyMap);
+          const playerInfo = cannonManager.totalObjectMap.get('Scene');
+          sceneManager.currentScene.add(playerInfo!.mesh);
+          playerInfo!.isMovable = true;
+          playerInfo!.mesh.position.set(5, 0, 5);
+
+          dialogue.begin(
+            [
+              [{ value: '이제 마지막 와플만이 남았네' }],
+              [
+                {
+                  value: '뒤질 만한 곳은 다 찾아본 것 같은데......\n',
+                  size: 'normal',
+                },
+                { value: '어!?', size: 'large' },
+              ],
+              [
+                {
+                  value: '바닥의 글자 배치가 좀 이상한데?\n한번 잘 돌려볼까??',
+                  size: 'normal',
+                },
+              ],
+              [
+                {
+                  value:
+                    '원하는 곳을 바라보고 T키를 누르면 타일을 돌릴 수 있어',
+                  size: 'normal',
+                },
+              ],
+            ],
+            () => {
+              set('spintile_02');
+            },
+          );
         },
       },
       {
         name: 'spintile_02', // 캐릭터가 타일을 돌려보는 씬
         onMount: () => {
+          console.log(keyMap);
           for (let i = 1; i < 9; i++) {
             for (let j = 1; j < 9; j++) {
               const tileName = `tile_${i}${j}`;
@@ -84,7 +119,9 @@ export const spinTileScenario =
 
           const player = cannonManager.totalObjectMap.get('Scene');
 
-          keyMap.bind('h', () => {
+          keyMap.bind('t', () => {
+            playerObject.changeAction('action');
+
             // Euler 각도로 변환하여 범위로 상하좌우 계산
             const quaternion = player!.body.quaternion;
             const euler = new CANNON.Vec3();
@@ -247,7 +284,50 @@ export const spinTileScenario =
       {
         name: 'spintile_03',
         onMount: () => {
-          dialogue.begin(['와플을 찾았습니다!'], () => {});
+          const cameraPosition = { x: 100, y: 80, z: 100 };
+          gsap.to(cameraPosition, {
+            duration: 2,
+            x: 10,
+            y: 50,
+            z: 10,
+
+            ease: 'power2.inOut',
+            onUpdate: () => {
+              console.log(sceneManager.roomCamera.position);
+              sceneManager.roomCamera.position.set(
+                cameraPosition.x,
+                cameraPosition.y,
+                cameraPosition.z,
+              );
+              sceneManager.roomCamera.updateProjectionMatrix();
+            },
+          });
+          const lookAtPoint = { x: 0, y: 0, z: 0 };
+          gsap.to(lookAtPoint, {
+            duration: 2,
+            x: 10,
+            y: 0,
+            z: 10,
+            ease: 'power2.inOut',
+            onUpdate: () => {
+              sceneManager.roomCamera.lookAt(
+                lookAtPoint.x,
+                lookAtPoint.y,
+                lookAtPoint.z,
+              );
+              sceneManager.roomCamera.updateProjectionMatrix();
+            },
+          });
+          // sceneManager.roomCamera.position.set(10, 50, 10);
+          // sceneManager.roomCamera.lookAt(10, 0, 10);
+
+          dialogue.begin(
+            [
+              [{ value: '이얏호! 와플 세 개를 다 찾았다' }],
+              [{ value: '이제 다음 맵을 클리어하러 떠나야겠어.\n🧇🧇🧇' }],
+            ],
+            () => {},
+          );
         },
       },
       {
