@@ -38,11 +38,7 @@ export class HomeStage extends Stage {
 
   #waffle?: THREE.Object3D;
 
-  #raycaster = new ListenableRaycaster(
-    this.#camera,
-    this.#scene,
-    this.renderer,
-  );
+  #raycaster?: ListenableRaycaster;
   #unmountDescription = () => {};
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
@@ -87,9 +83,10 @@ export class HomeStage extends Stage {
   }
 
   unmount(): void {
+    console.log('unmount');
     this.#container?.remove();
     this.#waffleRaycaster.unmount();
-    this.#raycaster.dispose();
+    this.#raycaster?.dispose();
     this.#unmountDescription();
   }
 
@@ -112,6 +109,12 @@ export class HomeStage extends Stage {
   #onModelLoad() {
     this.#waffle = this.#loader.getModel(WAFFLE_MODEL_KEY)!.scene;
     this.#scene.add(this.#waffle);
+
+    this.#raycaster = new ListenableRaycaster(
+      this.#camera,
+      this.#scene,
+      this.renderer,
+    );
 
     /**
      * Jam
