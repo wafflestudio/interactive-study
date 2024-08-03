@@ -91,7 +91,7 @@ export class Player extends GameObject {
           iceCream.traverse((child) => {
             if (child.isBone) {
               const helper = new THREE.SkeletonHelper(child);
-              this.sceneManager.roomScene.add(helper);
+              // this.sceneManager.roomScene.add(helper);
             }
           });
 

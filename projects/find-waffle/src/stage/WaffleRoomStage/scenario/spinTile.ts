@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { object } from 'zod';
 
+import { StageManager } from '../../../core/stage/StageManager';
 import { KeyMap } from '../../../libs/keyboard/KeyMap';
 import { CannonManager } from '../core/cannon/CannonManager';
 import { Dialogue } from '../core/dialogue/Dialogue';
@@ -21,6 +22,8 @@ export const spinTileScenario =
     playerObject: Player,
   ): Scenario =>
   (set) => {
+    const stageManager = StageManager.instance;
+    console.log(stageManager);
     const tileMap: Map<string, string> = new Map();
     return [
       {
@@ -28,9 +31,9 @@ export const spinTileScenario =
         onMount: () => {
           console.log(keyMap);
           const playerInfo = cannonManager.totalObjectMap.get('Scene');
+          playerInfo!.mesh.position.set(10, 0, 10);
           sceneManager.currentScene.add(playerInfo!.mesh);
           playerInfo!.isMovable = true;
-          playerInfo!.mesh.position.set(5, 0, 5);
 
           dialogue.begin(
             [
@@ -129,7 +132,7 @@ export const spinTileScenario =
             const yaw = euler.y * (180 / Math.PI);
 
             let playerDirection = 1;
-            const errorRange = 20;
+            const errorRange = 30;
 
             const downCase = yaw >= -errorRange && yaw <= errorRange;
             const upCase = yaw >= 180 - errorRange || yaw <= -180 + errorRange; // 180도와 -180도 사이의 오차 허용
@@ -155,12 +158,17 @@ export const spinTileScenario =
             tileMap.forEach((textName, tileName) => {
               const tile = cannonManager.totalObjectMap.get(tileName);
               const halfExtents = tile?.body.shapes[0].halfExtents;
+              const constraint = 0.3;
 
               if (
-                currentPosition.x <= tile!.boxCenter.x + halfExtents.x &&
-                currentPosition.x >= tile!.boxCenter.x - halfExtents.x &&
-                currentPosition.z <= tile!.boxCenter.z + halfExtents.z &&
-                currentPosition.z >= tile!.boxCenter.z - halfExtents.z
+                currentPosition.x <=
+                  tile!.boxCenter.x + halfExtents.x - constraint &&
+                currentPosition.x >=
+                  tile!.boxCenter.x - halfExtents.x + constraint &&
+                currentPosition.z <=
+                  tile!.boxCenter.z + halfExtents.z - constraint &&
+                currentPosition.z >=
+                  tile!.boxCenter.z - halfExtents.z + constraint
               ) {
                 const rowNum = Number(tileName.split('_')[1][0]);
                 const colNum = Number(tileName.split('_')[1][1]);
@@ -284,40 +292,40 @@ export const spinTileScenario =
       {
         name: 'spintile_03',
         onMount: () => {
-          const cameraPosition = { x: 100, y: 80, z: 100 };
-          gsap.to(cameraPosition, {
-            duration: 2,
-            x: 10,
-            y: 50,
-            z: 10,
+          // const cameraPosition = { x: 100, y: 80, z: 100 };
+          // gsap.to(cameraPosition, {
+          //   duration: 2,
+          //   x: 10,
+          //   y: 50,
+          //   z: 10,
 
-            ease: 'power2.inOut',
-            onUpdate: () => {
-              console.log(sceneManager.roomCamera.position);
-              sceneManager.roomCamera.position.set(
-                cameraPosition.x,
-                cameraPosition.y,
-                cameraPosition.z,
-              );
-              sceneManager.roomCamera.updateProjectionMatrix();
-            },
-          });
-          const lookAtPoint = { x: 0, y: 0, z: 0 };
-          gsap.to(lookAtPoint, {
-            duration: 2,
-            x: 10,
-            y: 0,
-            z: 10,
-            ease: 'power2.inOut',
-            onUpdate: () => {
-              sceneManager.roomCamera.lookAt(
-                lookAtPoint.x,
-                lookAtPoint.y,
-                lookAtPoint.z,
-              );
-              sceneManager.roomCamera.updateProjectionMatrix();
-            },
-          });
+          //   ease: 'power2.inOut',
+          //   onUpdate: () => {
+          //     console.log(sceneManager.roomCamera.position);
+          //     sceneManager.roomCamera.position.set(
+          //       cameraPosition.x,
+          //       cameraPosition.y,
+          //       cameraPosition.z,
+          //     );
+          //     sceneManager.roomCamera.updateProjectionMatrix();
+          //   },
+          // });
+          // const lookAtPoint = { x: 0, y: 0, z: 0 };
+          // gsap.to(lookAtPoint, {
+          //   duration: 2,
+          //   x: 10,
+          //   y: 0,
+          //   z: 10,
+          //   ease: 'power2.inOut',
+          //   onUpdate: () => {
+          //     sceneManager.roomCamera.lookAt(
+          //       lookAtPoint.x,
+          //       lookAtPoint.y,
+          //       lookAtPoint.z,
+          //     );
+          //     sceneManager.roomCamera.updateProjectionMatrix();
+          //   },
+          // });
           // sceneManager.roomCamera.position.set(10, 50, 10);
           // sceneManager.roomCamera.lookAt(10, 0, 10);
 
@@ -326,7 +334,9 @@ export const spinTileScenario =
               [{ value: '이얏호! 와플 세 개를 다 찾았다' }],
               [{ value: '이제 다음 맵을 클리어하러 떠나야겠어.\n🧇🧇🧇' }],
             ],
-            () => {},
+            () => {
+              stageManager.toHome();
+            },
           );
         },
       },

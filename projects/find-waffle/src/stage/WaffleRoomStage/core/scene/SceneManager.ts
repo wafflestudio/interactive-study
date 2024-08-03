@@ -77,12 +77,12 @@ export class SceneManager {
     this.roomScene.add(boxLight);
 
     const sunlightHelper = new THREE.DirectionalLightHelper(sunLight, 5);
-    this.roomScene.add(sunlightHelper);
+    // this.roomScene.add(sunlightHelper);
     // const sunlightHelper2 = new THREE.DirectionalLightHelper(sunLight2, 5);
     // this.roomScene.add(sunlightHelper2);
 
     const axesHelper = new THREE.AxesHelper(5);
-    this.roomScene.add(axesHelper);
+    // this.roomScene.add(axesHelper);
 
     this.roomScene.add(this.roomCamera);
 
