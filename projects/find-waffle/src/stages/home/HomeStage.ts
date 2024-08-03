@@ -6,6 +6,7 @@ import { StageManager } from '../../core/stage/StageManager';
 import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import WaffleRoomStage from '../../stage/WaffleRoomStage';
+import { url } from '../../utils';
 import CardGameStage from '../card-game';
 import EscapeCubeStage from '../escape-cube';
 import { GooseStage } from '../goose/stage';
@@ -348,11 +349,11 @@ let insertDescription = (
 
   container.innerHTML = `
 <div>
-  <img src="${title}" style="display: block; margin-top: 8px;"/>
-  <img src="${hardness}" style="display: block; margin-top: 16px;"/>
+  <img src="${url(title)}" style="display: block; margin-top: 8px;"/>
+  <img src="${url(hardness)}" style="display: block; margin-top: 16px;"/>
   <p style="margin-top: 8px; color: #E00000; max-width: 400px;">${description}</p>
   <button style="border: none; background: transparent;">
-    <img src="/order.svg" style="margin-left: auto; cursor: pointer;"/>
+    <img src="${url('/order.svg')}" style="margin-left: auto; cursor: pointer;"/>
   </button>
 </div>
 `;
