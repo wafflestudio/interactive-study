@@ -22,6 +22,7 @@ export class HomeStage extends Stage {
   #loader = new ResourceLoader();
   #scene = new THREE.Scene();
   #camera = new THREE.PerspectiveCamera(70, 1);
+  #finishStages: string[] = [];
 
   // 와플 회전용
   // 급해서 익숙한거 씀
@@ -53,6 +54,7 @@ export class HomeStage extends Stage {
   }
 
   mount(): void {
+    this.#finishStages = StageManager.instance.getFinishStages();
     this.#container = document.createElement('div');
     this.#container.style.cssText =
       'display: flex; flex-direction: column; align-items: center; width: 100%; margin: 2.75rem 0;';
@@ -153,14 +155,18 @@ export class HomeStage extends Stage {
             (jam) => jam.mesh.id === intersects[0].object.id,
           );
           if (jam) {
+            if (!this.#finishStages.includes(jam.id)) {
+              gsap.to(jam.material, { opacity: 0.8, duration: 0.2 });
+            }
             document.body.style.cursor = 'pointer';
-            gsap.to(jam.material, { opacity: 0.8, duration: 0.2 });
           }
         } else {
           document.body.style.cursor = 'default';
-          jams.forEach((jam) => {
-            gsap.to(jam.material, { opacity: 0, duration: 0.2 });
-          });
+          jams
+            .filter((jam) => !this.#finishStages.includes(jam.id))
+            .forEach((jam) => {
+              gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+            });
         }
       },
       jams.map((jam) => jam.mesh),
