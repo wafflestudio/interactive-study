@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: center;
   z-index: -2;
+  font-family: 'KoreanTYGDB_1234';
 }
 
 .__main {
@@ -66,32 +67,39 @@
   top: -10px;
   background-color: #efe05f;
   padding: 8px 24px;
+  font: inherit;
 }
 
 .__button {
   border: none;
   position: absolute;
   right: -10px;
-  bottom: -20px;
+  bottom: -40px;
   background-color: #ececec;
+  color: #d1d1d1;
   padding: 8px 24px;
+  border-radius: 100px;
   display: flex;
   z-index: 100;
-}
-
-.__button:hover {
-  background-color: red;
+  font: inherit;
 }
 
 .__buttonSuccess {
   border: none;
   position: absolute;
   right: -10px;
-  bottom: -20px;
-  background-color: blue;
+  bottom: -40px;
+  background-color: #f7a8ae;
+  color: #ffffff;
+  border-radius: 100px;
   padding: 8px 24px;
   display: flex;
   z-index: 100;
+  font: inherit;
+}
+
+.__buttonSuccess:hover {
+  opacity: 0.5;
 }
 
 .__bag {

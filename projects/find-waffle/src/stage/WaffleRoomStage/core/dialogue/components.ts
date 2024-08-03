@@ -64,6 +64,6 @@ const containerClassName = van.derive(() =>
 
 export const DialogueContainer = div(
   { class: containerClassName },
-  img({ src: '/ui/dialogue_ui.png' }),
+  img({ src: '/ui/dialogue_ui_2.png' }),
   div({ class: 'textsContainer' }),
 );
