@@ -6,7 +6,7 @@
       "transparent": true,
       "border": {
         "color": "black",
-        "width": 0.01
+        "width": 0.015
       },
       "positions": [
         {
@@ -154,7 +154,7 @@
     },
     {
       "type": "cube",
-      "background": "#FCEE42",
+      "background": "#FFBE34",
       "positions": [
         {
           "start": [-6, 0, -4],
@@ -187,10 +187,10 @@
     },
     {
       "type": "cube",
-      "background": "#FCEE42",
+      "background": "#FFBE34",
       "border": {
         "color": "black",
-        "width": 0.01
+        "width": 0.015
       },
       "positions": [
         {
@@ -313,7 +313,7 @@
     {
       "type": "cube",
       "texture": "dotted",
-      "background": "#FCEE42",
+      "background": "#FFBE34",
       "positions": [
         {
           "start": [6, 2, -2],
@@ -336,9 +336,16 @@
     },
     {
       "type": "model",
+      "name": "megaphone",
+      "rotation": [9, -90, 0],
+      "scale": 0.16,
+      "position": [5.5, 4.7, -4]
+    },
+    {
+      "type": "model",
       "name": "clock",
       "scale": 0.5,
-      "rotation": [-5, 188, -10],
+      "rotation": [4, 188, 15],
       "position": [2.4, -3.5, -6]
     }
   ],
@@ -395,7 +402,12 @@
     {
       "type": "gltf",
       "name": "car",
-      "path": "/escape-cube/models/car.glb"
+      "path": "/escape-cube/models/redcar.glb"
+    },
+    {
+      "type": "gltf",
+      "name": "megaphone",
+      "path": "/escape-cube/models/megaphone.glb"
     },
     {
       "type": "gltf",

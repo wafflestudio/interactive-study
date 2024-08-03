@@ -65,6 +65,7 @@ export default class EscapeCubeStage extends Stage {
     const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
     camera.position.set(0, 0, 15);
     scene.add(camera);
+    scene.background = new THREE.Color('rgb(35, 110, 138)');
 
     if (window.location.hash === '#debug') {
       world.onInitialized = () =>
