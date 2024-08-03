@@ -293,19 +293,19 @@
       "position": [0.5, 3, 5.4],
       "shapes": [
         {
-          "position": [0, 0, 0],
+          "position": [-4, -1.5, -0.83],
           "size": [6, 1, 1]
         },
         {
-          "position": [0, 1, 0],
+          "position": [-4, -0.5, -0.83],
           "size": [4, 1, 1]
         },
         {
-          "position": [0, 2, 0],
+          "position": [-4, 0.5, -0.83],
           "size": [6, 1, 1]
         },
         {
-          "position": [7, 0, 0],
+          "position": [3, -1.5, -0.83],
           "size": [1, 1, 1]
         }
       ]
@@ -313,7 +313,7 @@
     {
       "type": "cube",
       "texture": "dotted",
-      "background": "#FFBE34",
+      "background": "#FF8C12",
       "positions": [
         {
           "start": [6, 2, -2],
