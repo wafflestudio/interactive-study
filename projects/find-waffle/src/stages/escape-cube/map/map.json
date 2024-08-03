@@ -1,0 +1,443 @@
+{
+  "objects": [
+    {
+      "type": "cube",
+      "background": "white",
+      "transparent": true,
+      "border": {
+        "color": "black",
+        "width": 0.015
+      },
+      "positions": [
+        {
+          "start": [-4, -5, 4],
+          "end": [4, 5, 4]
+        },
+        {
+          "start": [4, -5, -4],
+          "end": [4, 5, 3]
+        },
+        {
+          "start": [-4, -5, -4],
+          "end": [-4, 5, 3]
+        },
+        {
+          "start": [-3, -5, -4],
+          "end": [3, 5, -4]
+        },
+        {
+          "start": [-3, 5, -3],
+          "end": [3, 5, 3]
+        },
+        {
+          "start": [-3, -5, -3],
+          "end": [3, -5, 3]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "texture": "grid",
+      "background": "white",
+      "transparent": true,
+      "positions": [
+        {
+          "start": [-5, -5, 5],
+          "end": [-5, -4, 5]
+        },
+        {
+          "start": [-5, -2, 5],
+          "end": [-5, 5, 5]
+        },
+        {
+          "start": [-4, 0, 5],
+          "end": [4, 0, 5]
+        },
+        {
+          "start": [5, -5, 5],
+          "end": [5, -4, 5]
+        },
+        {
+          "start": [5, -2, 5],
+          "end": [5, 2, 5]
+        },
+        {
+          "start": [5, 4, 5],
+          "end": [5, 5, 5]
+        },
+        {
+          "start": [5, -5, -5],
+          "end": [5, -4, -5]
+        },
+        {
+          "start": [5, -2, -5],
+          "end": [5, 2, -5]
+        },
+        {
+          "start": [5, 4, -5],
+          "end": [5, 5, -5]
+        },
+        {
+          "start": [-5, -5, -5],
+          "end": [-5, 5, -5]
+        },
+        {
+          "start": [5, 0, -4],
+          "end": [5, 0, 4]
+        },
+        {
+          "start": [-2, 0, -5],
+          "end": [4, 0, -5]
+        },
+        [-4, 0, -5],
+        {
+          "start": [-5, 0, -1],
+          "end": [-5, 0, 4]
+        },
+        [-5, 2, 2],
+        [-5, 2, 4],
+        [-5, 3, 2],
+        [-5, 3, 4],
+        {
+          "start": [-4, 6, 5],
+          "end": [5, 6, 5]
+        },
+        {
+          "start": [5, 6, -5],
+          "end": [5, 6, 4]
+        },
+        {
+          "start": [-5, 6, -5],
+          "end": [4, 6, -5]
+        },
+        {
+          "start": [-5, 6, -4],
+          "end": [-5, 6, 2]
+        },
+        {
+          "start": [-5, 6, 4],
+          "end": [-5, 6, 5]
+        },
+        {
+          "start": [-4, -6, 5],
+          "end": [5, -6, 5]
+        },
+        {
+          "start": [5, -6, -5],
+          "end": [5, -6, 4]
+        },
+        {
+          "start": [-5, -6, -5],
+          "end": [4, -6, -5]
+        },
+        {
+          "start": [-5, -6, -4],
+          "end": [-5, -6, 5]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "texture": "dotted",
+      "background": "white",
+      "transparent": true,
+      "positions": [
+        {
+          "start": [-4, -2, 5],
+          "end": [-1, -1, 5]
+        },
+        {
+          "start": [-4, -5, 5],
+          "end": [-1, -4, 5]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "background": "#FFBE34",
+      "positions": [
+        {
+          "start": [-6, 0, -4],
+          "end": [-6, 1, -2]
+        },
+        {
+          "start": [-6, 2, 3],
+          "end": [-6, 4, 3]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "background": "white",
+      "positions": [
+        {
+          "start": [0, -1, -5],
+          "end": [4, -1, -5]
+        },
+        [-4, -2, -5],
+        {
+          "start": [-2, -2, -5],
+          "end": [1, -2, -5]
+        },
+        {
+          "start": [0, -4, -5],
+          "end": [4, -4, -5]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "background": "#FFBE34",
+      "border": {
+        "color": "black",
+        "width": 0.015
+      },
+      "positions": [
+        {
+          "start": [-4, 1, -6],
+          "end": [4, 5, -6],
+          "step": 2
+        },
+        {
+          "start": [-3, 2, -6],
+          "end": [3, 4, -6],
+          "step": 2
+        },
+        {
+          "start": [6, -2, -3],
+          "end": [6, -2, 3],
+          "step": 2
+        },
+        {
+          "start": [6, -3, -2],
+          "end": [6, -3, 2],
+          "step": 2
+        },
+        {
+          "start": [6, -4, -4],
+          "end": [6, -4, -1]
+        },
+        {
+          "start": [6, -4, 1],
+          "end": [6, -4, 4]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "background": "black",
+      "positions": [
+        {
+          "start": [5, 1, 1],
+          "end": [5, 2, 4]
+        },
+        {
+          "start": [5, 4, -4],
+          "end": [5, 5, -1]
+        },
+        {
+          "start": [5, -3, -3],
+          "end": [5, -3, 3],
+          "step": 2
+        },
+        [-5, -5, -4],
+        [-5, -5, -3],
+        [-5, -5, 2],
+        [-5, -4, -4],
+        [-5, -4, -1],
+        [-5, -4, 0],
+        [-5, -4, 3],
+        [-5, -3, -2],
+        [-5, -3, 0],
+        [-5, -3, 1],
+        [-5, -2, -3],
+        [-5, -2, -2],
+        [-5, -2, 3],
+        [-5, -1, -2],
+        [-5, -1, 0],
+        [-5, -1, 1],
+        [-5, -1, 2],
+        [-5, 1, 0],
+        [-5, 3, -3],
+        [-5, 3, -2],
+        [-5, 3, 0],
+        [-5, 4, -3],
+        [-5, 5, -1],
+        [-5, 5, 0],
+        [-5, 5, 2],
+        [-5, 5, 4]
+      ]
+    },
+    {
+      "type": "model",
+      "name": "cannon",
+      "position": [-4.5, -4.5, 5.5],
+      "overrides": [
+        {
+          "name": "Boolean",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "go_get_that_waffle_over_there",
+      "position": [-3.5, 1.5, 4.5],
+      "shapes": [
+        {
+          "position": [0, 0, 0],
+          "size": [6, 1, 1]
+        },
+        {
+          "position": [0, 1, 0],
+          "size": [4, 1, 1]
+        },
+        {
+          "position": [0, 2, 0],
+          "size": [6, 1, 1]
+        },
+        {
+          "position": [7, 0, 0],
+          "size": [1, 1, 1]
+        }
+      ]
+    },
+    {
+      "type": "cube",
+      "texture": "dotted",
+      "background": "#FFBE34",
+      "positions": [
+        {
+          "start": [6, 2, -2],
+          "end": [6, 4, 1]
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "watch_out",
+      "rotation": [0, 90, 0],
+      "position": [6.51, 3, -0.5]
+    },
+    {
+      "type": "model",
+      "name": "car",
+      "rotation": [-8, 0, 0],
+      "scale": 3,
+      "position": [5.5, -0.7, 3]
+    },
+    {
+      "type": "model",
+      "name": "megaphone",
+      "rotation": [9, -90, 0],
+      "scale": 0.16,
+      "position": [5.5, 4.7, -4]
+    },
+    {
+      "type": "model",
+      "name": "clock",
+      "scale": 0.5,
+      "rotation": [4, 188, 15],
+      "position": [2.4, -3.5, -6]
+    }
+  ],
+  "resources": [
+    {
+      "type": "texture",
+      "name": "grid",
+      "path": "/escape-cube/textures/grid.png"
+    },
+    {
+      "type": "texture",
+      "name": "dotted",
+      "path": "/escape-cube/textures/dotted.png"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_1",
+      "path": "/escape-cube/textures/matcap_roughness_1.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_2",
+      "path": "/escape-cube/textures/matcap_roughness_2.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_3",
+      "path": "/escape-cube/textures/matcap_roughness_3.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "texture",
+      "name": "matcap_roughness_4",
+      "path": "/escape-cube/textures/matcap_roughness_4.png",
+      "colorSpace": "srgb"
+    },
+    {
+      "type": "gltf",
+      "name": "cannon",
+      "path": "/escape-cube/models/cannon.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "go_get_that_waffle_over_there",
+      "path": "/escape-cube/models/go_get_that_waffle_over_there.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "watch_out",
+      "path": "/escape-cube/models/watch_out.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "car",
+      "path": "/escape-cube/models/redcar.glb"
+    },
+    {
+      "type": "gltf",
+      "name": "megaphone",
+      "path": "/escape-cube/models/megaphone.glb"
+    },
+    {
+      "type": "gltf",
+      "name": "clock",
+      "path": "/escape-cube/models/clock.glb"
+    },
+    {
+      "type": "font",
+      "name": "helvetiker",
+      "path": "/escape-cube/fonts/helvetiker_regular.typeface.json"
+    },
+    {
+      "type": "texture",
+      "name": "displacement",
+      "path": "/escape-cube/textures/displacement.png"
+    },
+    {
+      "type": "gltf",
+      "name": "player_start",
+      "path": "/escape-cube/models/character1.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "player_end",
+      "path": "/escape-cube/models/character2.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "waffle",
+      "path": "/escape-cube/models/waffle.gltf"
+    }
+  ]
+}

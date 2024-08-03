@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Font, FontLoader } from 'three/examples/jsm/Addons.js';
 
-type ResourceType = 'model' | 'texture' | 'sound';
+import { url } from '../../utils';
+
+type ResourceType = 'model' | 'texture' | 'sound' | 'font';
 type ResourceKey = string;
 
 type Model = GLTF;
@@ -23,6 +26,11 @@ type SoundOptions = {
   onProgress?: (xhr: ProgressEvent<EventTarget>) => void;
   onError?: (error: unknown) => void;
 };
+type FontOptions = {
+  onLoad?: (resource: Font) => void;
+  onProgress?: (xhr: ProgressEvent<EventTarget>) => void;
+  onError?: (error: unknown) => void;
+};
 
 /**
  * Loadable Resource
@@ -36,10 +44,12 @@ type BaseLoadableResource<TType extends ResourceType, TOptions> = {
 type ModelLoadableResource = BaseLoadableResource<'model', ModelOptions>; // { type: 'model'; options?: ModelOptions; ... }
 type TextureLoadableResource = BaseLoadableResource<'texture', TextureOptions>; // { type: 'texture'; options?: TextureOptions; ... }
 type SoundLoadableResource = BaseLoadableResource<'sound', SoundOptions>; // { type: 'sound'; options?: SoundOptions; ... }
+type FontLodableResource = BaseLoadableResource<'font', FontOptions>; // { type: 'font'; options?: FontOptions; ... }
 type LoadableResource =
   | ModelLoadableResource
   | TextureLoadableResource
-  | SoundLoadableResource;
+  | SoundLoadableResource
+  | FontLodableResource;
 
 /**
  * Resource Loader
@@ -62,6 +72,7 @@ export class ResourceLoader {
     models: new Map<ResourceKey, Model>(),
     textures: new Map<ResourceKey, Texture>(),
     sounds: new Map<ResourceKey, Sound>(),
+    fonts: new Map<ResourceKey, Font>(),
   };
   public onProgressUpdate: (progress: number) => void = () => {}; // 0 ~ 1
   public onLoadComplete: () => void = () => {};
@@ -76,14 +87,14 @@ export class ResourceLoader {
     return (
       this.loadedResources.models.size +
       this.loadedResources.textures.size +
-      this.loadedResources.sounds.size
+      this.loadedResources.sounds.size +
+      this.loadedResources.fonts.size
     );
   }
 
   private handleProgressUpdate() {
     const progress = this.loadedResourcesCount / this.totalResourcesCount;
     this.onProgressUpdate(progress);
-
     if (this.loadedResourcesCount === this.totalResourcesCount) {
       this.onLoadComplete();
     }
@@ -92,7 +103,7 @@ export class ResourceLoader {
   private loadModel(resource: ModelLoadableResource) {
     const loader = new GLTFLoader();
     loader.load(
-      resource.url,
+      url(resource.url),
       (gltf) => {
         resource.options?.onLoad?.(gltf);
         this.loadedResources.models.set(resource.key, gltf);
@@ -110,7 +121,7 @@ export class ResourceLoader {
   private loadTexture(resource: TextureLoadableResource) {
     const loader = new THREE.TextureLoader();
     loader.load(
-      resource.url,
+      url(resource.url),
       (texture) => {
         resource.options?.onLoad?.(texture);
         this.loadedResources.textures.set(resource.key, texture);
@@ -130,12 +141,30 @@ export class ResourceLoader {
     const audio = new THREE.Audio(listener);
     const audioLoader = new THREE.AudioLoader();
     audioLoader.load(
-      resource.url,
+      url(resource.url),
       (buffer) => {
         audio.setBuffer(buffer);
 
         resource.options?.onLoad?.(audio);
         this.loadedResources.sounds.set(resource.key, audio);
+        this.handleProgressUpdate();
+      },
+      (xhr) => {
+        resource.options?.onProgress?.(xhr);
+      },
+      (error) => {
+        resource.options?.onError?.(error);
+      },
+    );
+  }
+
+  private loadFont(resource: FontLodableResource) {
+    const loader = new FontLoader();
+    loader.load(
+      resource.url,
+      (font) => {
+        resource.options?.onLoad?.(font);
+        this.loadedResources.fonts.set(resource.key, font);
         this.handleProgressUpdate();
       },
       (xhr) => {
@@ -158,6 +187,9 @@ export class ResourceLoader {
       case 'sound':
         this.loadSound(resource);
         break;
+      case 'font':
+        this.loadFont(resource);
+        break;
     }
   }
 
@@ -177,6 +209,10 @@ export class ResourceLoader {
     this.resourcesToLoad.push({ type: 'sound', key, url, options });
   }
 
+  public registerFont(key: ResourceKey, url: string, options?: FontOptions) {
+    this.resourcesToLoad.push({ type: 'font', key, url, options });
+  }
+
   public loadAll() {
     this.resourcesToLoad.forEach((resource) => {
       this.loadResource(resource);
@@ -193,5 +229,16 @@ export class ResourceLoader {
 
   public getSound(key: ResourceKey): Sound | undefined {
     return this.loadedResources.sounds.get(key);
+  }
+
+  public getFont(key: ResourceKey): Font | undefined {
+    return this.loadedResources.fonts.get(key);
+  }
+
+  public clear() {
+    this.resourcesToLoad = [];
+    this.loadedResources.models.clear();
+    this.loadedResources.textures.clear();
+    this.loadedResources.sounds.clear();
   }
 }
