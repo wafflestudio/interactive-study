@@ -10,11 +10,18 @@ export class Monster extends BaseObject<
   THREE.Mesh<THREE.SphereGeometry, THREE.MeshMatcapMaterial>
 > {
   noise = new SimplexNoise();
+  timeline: gsap.core.Timeline;
 
-  constructor(world: World, positions: THREE.Vector3[], repeat = true) {
-    const displacementMap = world.loader.getTexture('displacement');
-    displacementMap?.repeat.set(2, 1);
-    displacementMap!.wrapS = THREE.RepeatWrapping;
+  constructor(
+    world: World,
+    positions: THREE.Vector3[],
+    repeat = false,
+    yoyo = false,
+    easeFunction = GSAP.Power1.easeInOut,
+  ) {
+    const displacementMap = world.loader.getTexture('displacement')!.clone();
+    displacementMap.repeat.set(2, 1);
+    displacementMap.wrapS = THREE.RepeatWrapping;
     const object = new THREE.Mesh(
       new THREE.SphereGeometry(0.25, 32, 32),
       new THREE.MeshMatcapMaterial({
@@ -45,7 +52,7 @@ export class Monster extends BaseObject<
     body.addEventListener('collide', (e: any) => {
       const contact = e.contact as CANNON.ContactEquation;
       const player = world.player;
-      if (e.body === player.body) {
+      if (e.body === player?.body) {
         const playerBody = contact.bi;
         const playerDirection = contact.ri;
         playerBody.velocity.set(
@@ -65,7 +72,7 @@ export class Monster extends BaseObject<
         (body.shapes[0] as CANNON.Sphere).radius = 0.35 * helper.t;
       },
     });
-    this.initTimeline(positions, repeat);
+    this.timeline = this.initTimeline(positions, repeat, yoyo, easeFunction);
   }
 
   public animate(timeDelta: number) {
@@ -76,8 +83,16 @@ export class Monster extends BaseObject<
     }
   }
 
-  private initTimeline(positions: THREE.Vector3[], repeat: boolean) {
-    const tl = gsap.timeline({ repeat: repeat ? -1 : 0 });
+  private initTimeline(
+    positions: THREE.Vector3[],
+    repeat: boolean,
+    yoyo: boolean,
+    easeFunction: typeof GSAP.Power0.easeInOut,
+  ): gsap.core.Timeline {
+    const tl = gsap
+      .timeline()
+      .repeat(repeat ? -1 : 0)
+      .yoyo(yoyo);
     positions.slice(1).forEach((position, idx) => {
       const prevPosition = positions[idx];
       const distance = prevPosition.distanceTo(position);
@@ -86,9 +101,28 @@ export class Monster extends BaseObject<
         y: position.y,
         z: position.z,
         duration: distance / 4 + 0.5,
-        ease: GSAP.Power1.easeInOut,
+        ease: easeFunction,
       });
     });
     tl.play();
+    if (!repeat) {
+      tl.eventCallback('onComplete', () => {
+        this.dispose();
+      });
+    }
+    return tl;
+  }
+
+  public pause() {
+    this.timeline.pause();
+  }
+
+  public resume() {
+    this.timeline.resume();
+  }
+
+  public dispose() {
+    this.timeline.kill();
+    super.dispose();
   }
 }

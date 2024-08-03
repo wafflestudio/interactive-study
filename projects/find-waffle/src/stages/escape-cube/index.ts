@@ -67,7 +67,8 @@ export default class EscapeCubeStage extends Stage {
     scene.add(camera);
 
     if (window.location.hash === '#debug') {
-      StageDebugger.init(world, camera, this.renderer.domElement);
+      world.onInitialized = () =>
+        StageDebugger.init(world, camera, this.renderer.domElement);
     }
 
     this.context = {
@@ -83,11 +84,11 @@ export default class EscapeCubeStage extends Stage {
     this.keymap.bind(
       '->',
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         player.setDirection({ x: 1 });
       },
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         if (this.keymap.pressedKeys.has('ArrowLeft')) {
           player.setDirection({ x: -1 });
         } else {
@@ -99,11 +100,11 @@ export default class EscapeCubeStage extends Stage {
     this.keymap.bind(
       '<-',
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         player.setDirection({ x: -1 });
       },
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         if (this.keymap.pressedKeys.has('ArrowRight')) {
           player.setDirection({ x: 1 });
         } else {
@@ -114,11 +115,11 @@ export default class EscapeCubeStage extends Stage {
     this.keymap.bind(
       '↑',
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         player.setDirection({ y: 1 });
       },
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         if (this.keymap.pressedKeys.has('ArrowDown')) {
           player.setDirection({ y: -1 });
         } else {
@@ -129,11 +130,11 @@ export default class EscapeCubeStage extends Stage {
     this.keymap.bind(
       '↓',
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         player.setDirection({ y: -1 });
       },
       () => {
-        const player = this.context.world!.player;
+        const player = this.context.world!.player!;
         if (this.keymap.pressedKeys.has('ArrowUp')) {
           player.setDirection({ y: 1 });
         } else {

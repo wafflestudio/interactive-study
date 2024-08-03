@@ -411,6 +411,16 @@
       "type": "texture",
       "name": "displacement",
       "path": "/escape-cube/textures/displacement.png"
+    },
+    {
+      "type": "gltf",
+      "name": "player_start",
+      "path": "/escape-cube/models/character1.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "player_end",
+      "path": "/escape-cube/models/character2.gltf"
     }
   ]
 }

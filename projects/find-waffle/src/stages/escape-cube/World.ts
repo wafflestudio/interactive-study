@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es';
+import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
@@ -11,10 +12,11 @@ export class World {
   cannonWorld = new CANNON.World();
   loader: ResourceLoader = new ResourceLoader();
   map: Map;
-  player: Player;
+  player?: Player;
   timer?: Timer;
   initialized = false;
   monsters: Monster[] = [];
+  cannonTimeline = gsap.timeline();
   _onInitialized: () => void = () => {};
 
   set onInitialized(value: () => void) {
@@ -26,7 +28,6 @@ export class World {
 
   constructor(public scene: THREE.Scene) {
     this.map = new Map(this);
-    this.player = new Player(this);
     this.initCannonWorld();
     this.init();
   }
@@ -38,6 +39,7 @@ export class World {
 
   private init() {
     this.map.init().then(() => {
+      this.player = new Player(this);
       this.initTimer();
       this.initMonsters();
       this.initialized = true;
@@ -56,9 +58,73 @@ export class World {
         new THREE.Vector3(5, 5, 4),
       ],
       true,
+      false,
     );
-
     this.monsters.push(m1);
+
+    const m2 = new Monster(
+      this,
+      [
+        new THREE.Vector3(5, 3, 0),
+        new THREE.Vector3(5, 1, 0),
+        new THREE.Vector3(5, 1, -1),
+        new THREE.Vector3(5, 3, -1),
+        new THREE.Vector3(5, 3, -2),
+        new THREE.Vector3(5, 1, -2),
+        new THREE.Vector3(5, 1, -3),
+        new THREE.Vector3(5, 3, -3),
+        new THREE.Vector3(5, 3, -4),
+        new THREE.Vector3(5, 1, -4),
+      ],
+      true,
+      true,
+    );
+    this.monsters.push(m2);
+
+    this.cannonTimeline.to({}, {duration: 1.5, repeat: -1, onRepeat: () => {
+      const cannonBall = new Monster(
+        this,
+        [new THREE.Vector3(-2, -3, 5), new THREE.Vector3(5, -3, 5)],
+        false,
+        false,
+        GSAP.Power0.easeNone,
+      );
+      this.monsters.push(cannonBall);
+      cannonBall.timeline.eventCallback('onComplete', () => {
+        cannonBall.dispose();
+        this.monsters.splice(this.monsters.indexOf(cannonBall), 1);
+      });
+    }})
+
+    const m3 = new Monster(
+      this,
+      [
+        new THREE.Vector3(-5, 5, -4),
+        new THREE.Vector3(-5, 5, -2),
+        new THREE.Vector3(-5, 4, -2),
+        new THREE.Vector3(-5, 4, -1),
+        new THREE.Vector3(-5, 2, -1),
+        new THREE.Vector3(-5, 2, -4),
+        new THREE.Vector3(-5, 5, -4),
+      ],
+      true,
+      false,
+    );
+    this.monsters.push(m3);
+
+    const m4 = new Monster(
+      this,
+      [
+        new THREE.Vector3(-5, 4, 1),
+        new THREE.Vector3(-5, 4, 3),
+        new THREE.Vector3(-5, 1, 3),
+        new THREE.Vector3(-5, 1, 1),
+        new THREE.Vector3(-5, 4, 1),
+      ],
+      true,
+      false,
+    );
+    this.monsters.push(m4);
   }
 
   private initTimer() {
@@ -72,23 +138,27 @@ export class World {
 
   public dispose() {
     this.map.dispose();
-    this.player.dispose();
+    this.player?.dispose();
     this.timer?.dispose();
     this.monsters.forEach((m) => m.dispose());
   }
 
   public animate(timeDelta: number) {
     this.cannonWorld.step(1 / 60, timeDelta);
-    this.player.animate(timeDelta);
+    this.player?.animate(timeDelta);
     this.timer?.animate(timeDelta);
     this.monsters.forEach((m) => m.animate(timeDelta));
   }
 
   public pause() {
-    this.player.pause();
+    this.player?.pause();
+    this.monsters.forEach((m) => m.pause());
+    this.cannonTimeline.pause();
   }
 
   public resume() {
-    this.player.resume();
+    this.player?.resume();
+    this.monsters.forEach((m) => m.resume());
+    this.cannonTimeline.play();
   }
 }

@@ -8,20 +8,13 @@ const xAxis = new THREE.Vector3(1, 0, 0);
 const yAxis = new THREE.Vector3(0, 1, 0);
 const zAxis = new THREE.Vector3(0, 0, 1);
 
-export class Player extends BaseObject<
-  THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>
-> {
+export class Player extends BaseObject<THREE.Group> {
   private direction = new CANNON.Vec3();
 
   constructor(world: World) {
     const initialPosition = [-4, 5, 5] as const;
 
-    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5); // 구르는 거 디버깅 위해 박스로 변경
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xadadee,
-      format: THREE.RGBAFormat,
-    });
-    const object = new THREE.Mesh(geometry, material);
+    const object = world.loader.getModel('player_start')!.scene;
     object.castShadow = true;
     object.name = 'player';
     object.position.set(...initialPosition);

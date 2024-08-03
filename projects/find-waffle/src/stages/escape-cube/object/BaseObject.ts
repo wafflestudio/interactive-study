@@ -30,12 +30,18 @@ export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
   }
 
   public dispose() {
+    if (this.object instanceof THREE.Mesh) {
+      this.object.geometry.dispose();
+      this.object.material.dispose();
+    }
+
     this.object.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.geometry.dispose();
         child.material.dispose();
       }
     });
+    
     this.object.removeFromParent();
     this.world.cannonWorld.removeBody(this.body);
   }
