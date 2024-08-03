@@ -1,7 +1,9 @@
 import * as CANNON from 'cannon-es';
 import gsap from 'gsap';
 import * as THREE from 'three';
+import van from 'vanjs-core';
 
+import { StageManager } from '../../../core/stage/StageManager';
 import { WaffleWorld } from '../World';
 import { BaseObject } from './BaseObject';
 
@@ -37,8 +39,33 @@ export class Waffle extends BaseObject<THREE.Group> {
         tl.kill();
         player?.win();
         this.world.followingCamera = true;
+        this.makeHTML();
       }
     });
     super(world, object, body);
+    // this.makeHTML();
+
+  }
+
+  private makeHTML() {
+    const { button } = van.tags;
+    const finishButton = button(
+      {
+        class: 'finish-button',
+        onclick: () => {
+          StageManager.instance.toHome();
+          StageManager.instance.app.removeChild(finishButton);
+        },
+        style: `
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 50px;
+          height: 50px;
+        `,
+      },
+      'Finish',
+    );
+    StageManager.instance.app.appendChild(finishButton);
   }
 }
