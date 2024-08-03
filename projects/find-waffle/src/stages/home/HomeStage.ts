@@ -1,7 +1,9 @@
 import * as THREE from 'three';
+import { onumber } from 'zod';
 
 import { Stage } from '../../core/stage/Stage';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import { GooseRaycaster } from '../goose/util/raycaster';
 
 const WAFFLE_MODEL_KEY = 'waffle';
 
@@ -10,8 +12,12 @@ export class HomeStage extends Stage {
   #container?: HTMLElement;
   #loader = new ResourceLoader();
   #scene = new THREE.Scene();
-  // TODO: parameter
   #camera = new THREE.PerspectiveCamera(70, 1);
+
+  // 와플 회전용
+  // 급해서 익숙한거 씀
+  #waffleRaycaster = new GooseRaycaster();
+
   #waffle?: THREE.Object3D;
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
@@ -35,11 +41,11 @@ export class HomeStage extends Stage {
     this.#container.style.cssText =
       'display: flex; flex-direction: column; align-items: center; width: 100%; margin: 2.75rem 0;';
     this.#container.innerHTML = `
-  <h1 style="font-size: 9.375rem; color: #E00000; font-weight: 400; line-height: 1; margin: 0; padding: 0;">find</h1>
-  <h1 style="font-size: 9.375rem; color: #E00000; font-weight: 400; line-height: 1; margin: 0; padding: 0;">WAFFLE</h1>
+  <img src="find_waffle.svg"/>
   <div style="flex-grow: 1"></div>
-  <h2 style="margin: 0; padding: 0">we serve fresh waffles everyday</h2>
-  <p>Copyright 2024. Interactive Study from Waffle Studio all rights reserved.</p>
+  <img src="we_serve.svg"/>
+  <div style="height: 12px;"></div>
+  <img src="copyright.svg"/>
 `;
     this.#app.prepend(this.#container);
 
@@ -47,10 +53,14 @@ export class HomeStage extends Stage {
     this.#scene.add(light);
 
     this.resize();
+
+    this.#waffleRaycaster.mount();
+    this.#addDragListener();
   }
 
   unmount(): void {
     this.#container?.remove();
+    this.#waffleRaycaster.unmount();
   }
 
   resize(): void {
@@ -59,14 +69,55 @@ export class HomeStage extends Stage {
     this.#camera.aspect = aspectRatio;
     this.#camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+    this.#waffleRaycaster.resize(
+      new DOMRect(0, 0, window.innerWidth, window.innerHeight),
+    );
   }
 
   animate(): void {
     this.renderer.render(this.#scene, this.#camera);
+    this.#waffleRaycaster.animate(this.#camera);
   }
 
   #onModelLoad() {
     this.#waffle = this.#loader.getModel(WAFFLE_MODEL_KEY)!.scene;
     this.#scene.add(this.#waffle);
+  }
+
+  #addDragListener() {
+    addEventListener('mousedown', () => {
+      if (!this.#waffle) return;
+
+      const onWaffle =
+        0 < this.#waffleRaycaster.intersectObject(this.#waffle).length;
+      if (!onWaffle) return;
+
+      let prev: { x: number; y: number } | null = null;
+
+      const onMouseMove = ({ clientX: x, clientY: y }: MouseEvent) => {
+        const cur = { x, y };
+        prev ||= cur;
+        const diff = { x: x - prev.x, y: y - prev.y };
+
+        this.#waffle?.rotateOnWorldAxis(
+          new THREE.Vector3(0, 0, 1),
+          -diff.x / 200,
+        );
+        this.#waffle?.rotateOnWorldAxis(
+          new THREE.Vector3(1, 0, 0),
+          diff.y / 200,
+        );
+
+        prev = cur;
+      };
+
+      const onMouseUp = () => {
+        removeEventListener('mousemove', onMouseMove);
+        removeEventListener('mouseup', onMouseUp);
+      };
+
+      addEventListener('mousemove', onMouseMove);
+      addEventListener('mouseup', onMouseUp);
+    });
   }
 }
