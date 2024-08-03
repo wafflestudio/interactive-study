@@ -4,7 +4,7 @@ import { GUI } from 'lil-gui';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
-import { World } from './World';
+import { WaffleWorld } from './World';
 
 export class StageDebugger {
   static cannonDebugger: ReturnType<typeof CannonDebugger>;
@@ -14,7 +14,7 @@ export class StageDebugger {
     cannonDebugger: true,
   };
 
-  static init(world: World, camera: THREE.Camera, canvas: HTMLCanvasElement) {
+  static init(world: WaffleWorld, camera: THREE.Camera, canvas: HTMLCanvasElement) {
     const controls = new OrbitControls(camera, canvas);
     this.cannonDebugger = CannonDebugger(world.scene, world.cannonWorld);
     this.gui = new GUI();

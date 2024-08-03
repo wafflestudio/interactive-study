@@ -1,11 +1,10 @@
 import * as CANNON from 'cannon-es';
-import { noop } from 'es-toolkit';
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
 import { addBorderToMaterial, compositeImage, url } from '../../../utils';
-import { World } from '../World';
+import { WaffleWorld } from '../World';
 import {
   CubeObject,
   MapData,
@@ -25,9 +24,10 @@ export class Map {
   mapObject: THREE.Group = new THREE.Group();
   mapBody: CANNON.Body = new CANNON.Body({ mass: 0 });
   currentRotation = 0;
+  rotationTimeline = gsap.timeline();
   isRotating = false;
 
-  constructor(public world: World) {
+  constructor(public world: WaffleWorld) {
     this.world.cannonWorld.addBody(this.mapBody);
     this.world.scene.add(this.mapObject);
   }
@@ -198,12 +198,9 @@ export class Map {
     this.mapBody.addShape(shape, new CANNON.Vec3(...position));
   }
 
-  public rotate(axis: 'x' | 'y' | 'z', angle: number): gsap.core.Tween {
-    if (this.isRotating) return gsap.delayedCall(0, noop);
-    if (axis === 'y') {
-      if (angle > 90) this.currentRotation++;
-      if (angle < -90) this.currentRotation--;
-    }
+  public rotate(axis: 'x' | 'y' | 'z', angle: number) {
+    if (this.isRotating) return;
+    if (axis === 'y') this.currentRotation += angle;
 
     this.isRotating = true;
     this.world.pause();
@@ -214,7 +211,7 @@ export class Map {
       THREE.MathUtils.degToRad(angle),
     );
     const dest = start.clone().multiply(rotation).normalize();
-    return gsap.to(helper, {
+    this.rotationTimeline.to(helper, {
       t: 1,
       duration: 1,
       onUpdate: ({ t }: typeof helper) => {
@@ -228,9 +225,22 @@ export class Map {
         if (!this.world.timer?.paused) this.world.resume();
       },
     });
+    this.rotationTimeline.play();
   }
 
   public add(obj: THREE.Object3D) {
     this.mapObject.add(obj);
+  }
+
+  public restart() {
+    this.rotationTimeline.to(
+      {},
+      {
+        delay: 0,
+        onComplete: () => {
+          this.rotate('y', -this.currentRotation);
+        },
+      },
+    );
   }
 }

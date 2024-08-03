@@ -8,13 +8,15 @@ import { Map } from './map/Map';
 import { Monster } from './object/Monster';
 import { Player } from './object/Player';
 import { Timer } from './object/Timer';
+import { Waffle } from './object/Waffle';
 
-export class World {
+export class WaffleWorld {
   cannonWorld = new CANNON.World();
   loader: ResourceLoader = new ResourceLoader();
   map: Map;
   player?: Player;
   timer?: Timer;
+  waffle?: Waffle;
   initialized = false;
   monsters: Monster[] = [];
   cannonTimeline = gsap.timeline();
@@ -41,6 +43,7 @@ export class World {
   private init() {
     this.map.init().then(() => {
       this.player = new Player(this);
+      this.waffle = new Waffle(this);
       this.initTimer();
       this.initMonsters();
       this.initialized = true;
@@ -147,6 +150,7 @@ export class World {
   public animate(timeDelta: number) {
     this.cannonWorld.step(1 / 60, timeDelta);
     this.player?.animate(timeDelta);
+    this.waffle?.animate(timeDelta);
     this.timer?.animate(timeDelta);
     this.monsters.forEach((m) => m.animate(timeDelta));
   }
@@ -164,7 +168,7 @@ export class World {
   }
 
   public restart() {
-    this.dispose();
-    this.init();
+    this.map.restart();
+    this.player?.restart();
   }
 }

@@ -1,11 +1,11 @@
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 
-import { World } from '../World';
+import { WaffleWorld } from '../World';
 
 export abstract class BaseObject<T extends THREE.Object3D = THREE.Object3D> {
   constructor(
-    public world: World,
+    public world: WaffleWorld,
     public object: T,
     public body: CANNON.Body,
   ) {

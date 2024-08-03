@@ -3,7 +3,7 @@ import { zip } from 'es-toolkit';
 import * as THREE from 'three';
 import { Font, TextGeometry } from 'three/examples/jsm/Addons.js';
 
-import { World } from '../World';
+import { WaffleWorld } from '../World';
 import { BaseObject } from './BaseObject';
 
 export class Timer extends BaseObject<THREE.Group> {
@@ -19,7 +19,7 @@ export class Timer extends BaseObject<THREE.Group> {
   paused = true;
 
   constructor(
-    world: World,
+    world: WaffleWorld,
     private font: Font,
     matcap: THREE.Texture,
   ) {

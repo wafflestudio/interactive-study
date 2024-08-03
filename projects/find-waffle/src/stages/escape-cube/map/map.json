@@ -433,6 +433,11 @@
       "type": "gltf",
       "name": "player_end",
       "path": "/escape-cube/models/character2.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "waffle",
+      "path": "/escape-cube/models/waffle.gltf"
     }
   ]
 }

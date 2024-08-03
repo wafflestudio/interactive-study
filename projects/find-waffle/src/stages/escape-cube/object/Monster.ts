@@ -3,7 +3,7 @@ import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 import { SimplexNoise } from 'three/examples/jsm/Addons.js';
 
-import { World } from '../World';
+import { WaffleWorld } from '../World';
 import { BaseObject } from './BaseObject';
 
 export class Monster extends BaseObject<
@@ -13,7 +13,7 @@ export class Monster extends BaseObject<
   timeline: gsap.core.Timeline;
 
   constructor(
-    world: World,
+    world: WaffleWorld,
     positions: THREE.Vector3[],
     repeat = false,
     yoyo = false,

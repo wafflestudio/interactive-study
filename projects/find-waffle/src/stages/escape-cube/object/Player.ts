@@ -1,13 +1,14 @@
 import * as CANNON from 'cannon-es';
+import gsap from 'gsap';
 import * as THREE from 'three';
 
-import { World } from '../World';
+import { WaffleWorld } from '../World';
 import { BaseObject } from './BaseObject';
 
 export class Player extends BaseObject<THREE.Group> {
   private direction = new CANNON.Vec3();
 
-  constructor(world: World) {
+  constructor(world: WaffleWorld) {
     const initialPosition = [-4, 5, 5] as const;
 
     const object = world.loader.getModel('player_start')!.scene;
@@ -82,11 +83,6 @@ export class Player extends BaseObject<THREE.Group> {
       this.syncToCannon();
       this.world.map.rotate('y', 90);
     }
-    if (this.position.y > 6.001) {
-      this.position.y = 6;
-      this.syncToCannon();
-      this.world.map.rotate('z', 90);
-    }
   }
 
   public dispose() {
@@ -101,5 +97,31 @@ export class Player extends BaseObject<THREE.Group> {
 
   public resume() {
     this.body.wakeUp();
+  }
+
+  public restart() {
+    gsap.to(this.body.position, {
+      x: -4,
+      y: 5,
+      z: 5,
+      duration: 0.5,
+      delay: 0.5,
+      onUpdate: () => {
+        this.object.updateMatrix();
+      },
+      onComplete: () => {
+        this.body.velocity.setZero();
+        this.body.angularVelocity.setZero();
+        this.object.position.copy(this.position);
+        this.object.rotation.set(0, 0, 0);
+      }
+    });
+  }
+
+  public win() {
+    this.object.removeFromParent();
+    this.object = this.world.loader.getModel('player_end')!.scene;
+    this.object.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+    this.world.map.add(this.object);
   }
 }

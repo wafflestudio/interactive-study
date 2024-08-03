@@ -5,12 +5,12 @@ import { StageManager } from '../../core/stage/StageManager';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
 import { resize } from '../../utils';
 import { StageDebugger } from './StageDebugger';
-import { World } from './World';
+import { WaffleWorld } from './World';
 
 type ContextVariables = {
   scene: THREE.Scene;
   camera: THREE.Camera;
-  world: World;
+  world: WaffleWorld;
   worldIsRotating: boolean;
 };
 
@@ -60,7 +60,7 @@ export default class EscapeCubeStage extends Stage {
 
   private createContext(): void {
     const scene = new THREE.Scene();
-    const world = new World(scene);
+    const world = new WaffleWorld(scene);
     const h = 7;
     const camera = new THREE.OrthographicCamera(0, 0, h, -h, 1, 1000);
     camera.position.set(0, 0, 15);
