@@ -1,26 +1,12 @@
 import { StageManager } from './core/stage/StageManager';
-import TestHomeStage from './example/TestHomeStage';
-import CardGameStage from './stages/card-game';
-import EscapeCubeStage from './stages/escape-cube';
-import { GooseStage } from './stages/goose/stage';
+import { HomeStage } from './stages/home/HomeStage';
 
 // Stages
 const stageManager = StageManager.instance;
-const gooseStage = new GooseStage(stageManager.renderer, stageManager.app);
-const escapeCubeStage = new EscapeCubeStage(
-  stageManager.renderer,
-  stageManager.app,
-);
-const cardGame = new CardGameStage(stageManager.renderer, stageManager.app);
-const testHome = new TestHomeStage(stageManager.renderer, stageManager.app, [
-  gooseStage,
-  escapeCubeStage,
-  cardGame,
-]);
 
-stageManager.setHome(testHome);
+const homeStage = new HomeStage(stageManager.renderer, stageManager.app);
+stageManager.setHome(homeStage);
+stageManager.toHome();
+
 window.requestAnimationFrame(() => stageManager.animate());
 window.addEventListener('resize', (e) => stageManager.resize(e));
-
-// 디버깅용
-stageManager.toStage(gooseStage);

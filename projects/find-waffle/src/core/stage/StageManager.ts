@@ -82,4 +82,20 @@ export class StageManager {
   public removePlayCallback(cb: () => void) {
     this.playCallbacks = this.playCallbacks.filter((c) => c !== cb);
   }
+
+  public getFinishStages() {
+    return localStorage.getItem('finishStages')?.split(',') ?? [];
+  }
+
+  public findFinishStage(key: string) {
+    return this.getFinishStages().find(name => name === key);
+  }
+
+  public finishStage(key: string) {
+    const finishStages = localStorage.getItem('finishStages')?.split(',') ?? [];
+    if (finishStages.includes(key)) return;
+
+    finishStages.push(key);
+    localStorage.setItem('finishStages', finishStages.join(','));
+  }
 }
