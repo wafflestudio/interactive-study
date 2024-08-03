@@ -1,5 +1,6 @@
 import van from 'vanjs-core';
 
+import { url } from '../../../../utils';
 import './styles.css';
 
 const { div, img, span } = van.tags;
@@ -64,6 +65,7 @@ const containerClassName = van.derive(() =>
 
 export const DialogueContainer = div(
   { class: containerClassName },
-  img({ src: '/ui/dialogue_ui_2.png' }),
+  img({ src: url('/ui/dialogue_ui_2.png') }),
+  // img({ src: '/ui/dialogue_ui_2.png' }),
   div({ class: 'textsContainer' }),
 );

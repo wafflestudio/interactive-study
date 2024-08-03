@@ -14,11 +14,13 @@
   height: 80%;
   background-color: #f1e7cc;
   display: flex;
+  overflow: hidden;
 }
 
 .__left,
 .__right {
-  flex: 1 0 80px;
+  height: 100% !important;
+  flex: 1 1 80px;
   box-sizing: border-box;
 }
 
@@ -29,11 +31,11 @@
   box-sizing: border-box;
 }
 .__row {
-  flex: 1 0 0;
+  flex: 1 1 0;
   display: flex;
 }
 .__item {
-  flex: 1 0 0;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,10 +102,12 @@
 }
 
 .__bag {
+  flex: 1 1 auto;
   border: none;
   background-color: transparent;
   cursor: pointer;
   transition: 0.1s;
+  overflow: hidden;
 }
 .__bag > img {
   width: 100%;
