@@ -21,8 +21,8 @@ const resources = {
   heartKing: '/card-game/models/findwaffle_heart_king.glb',
   heartQueen: '/card-game/models/findwaffle_heart_queen.glb',
   spadeKing: '/card-game/models/findwaffle_spade_king.glb',
+  spadeKingNoSword: '/card-game/models/findwaffle_spade_king_nosword.glb',
   spadeQueen: '/card-game/models/findwaffle_spade_queen.glb',
-  swordBig: '/card-game/models/findwaffle_sword_big.glb',
   swordSmall: '/card-game/models/findwaffle_sword_small.glb',
   table: '/card-game/models/findwaffle_table.glb',
   tableclothOriginal: '/card-game/models/findwaffle_tablecloth_original.glb',
@@ -71,9 +71,11 @@ export default class CardGameStage extends ComputerFrameStage {
     const tableclothOriginal =
       this.resourceLoader.getModel('tableclothOriginal')!;
     const tableclothTorn = this.resourceLoader.getModel('tableclothTorn')!;
+    const cardplace = this.resourceLoader.getModel('cardplace')!;
 
     const heartQueen = this.resourceLoader.getModel('heartQueen')!;
     const spadeKing = this.resourceLoader.getModel('spadeKing')!;
+    const spadeKingNoSword = this.resourceLoader.getModel('spadeKingNoSword')!;
     const diaJack = this.resourceLoader.getModel('diaJack')!;
     const clubQueen = this.resourceLoader.getModel('clubQueen')!;
 
@@ -84,7 +86,6 @@ export default class CardGameStage extends ComputerFrameStage {
     const diaQueen = this.resourceLoader.getModel('diaQueen')!;
 
     const sword = this.resourceLoader.getModel('swordSmall')!;
-
     const cardStack = this.resourceLoader.getModel('cardstack')!;
 
     const planeGeometry = new THREE.PlaneGeometry(0.3, 0.3);
@@ -106,7 +107,7 @@ export default class CardGameStage extends ComputerFrameStage {
     heartQueen.scene.rotateY(transform.object.rotateY);
     heartQueen.scene.position.x = transform.heartQueen.position.x;
     heartQueen.scene.position.y = transform.heartQueen.position.y;
-    heartQueen.scene.position.z = transform.z1.position.z;
+    heartQueen.scene.position.z = transform.card.position.z;
     heartQueen.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -116,8 +117,18 @@ export default class CardGameStage extends ComputerFrameStage {
     spadeKing.scene.rotateY(transform.object.rotateY);
     spadeKing.scene.position.x = transform.spadeKing.position.x;
     spadeKing.scene.position.y = transform.spadeKing.position.y;
-    spadeKing.scene.position.z = transform.z1.position.z;
+    spadeKing.scene.position.z = transform.card.position.z;
     spadeKing.scene.scale.set(
+      transform.card.scale.x,
+      transform.card.scale.y,
+      transform.card.scale.z,
+    );
+
+    spadeKingNoSword.scene.rotateY(transform.object.rotateY);
+    spadeKingNoSword.scene.position.x = transform.spadeKing.position.x;
+    spadeKingNoSword.scene.position.y = transform.spadeKing.position.y;
+    spadeKingNoSword.scene.position.z = transform.hidden.position.z;
+    spadeKingNoSword.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
       transform.card.scale.z,
@@ -126,7 +137,7 @@ export default class CardGameStage extends ComputerFrameStage {
     diaJack.scene.rotateY(transform.object.rotateY);
     diaJack.scene.position.x = transform.diaJack.position.x;
     diaJack.scene.position.y = transform.diaJack.position.y;
-    diaJack.scene.position.z = transform.z1.position.z;
+    diaJack.scene.position.z = transform.card.position.z;
     diaJack.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -136,7 +147,7 @@ export default class CardGameStage extends ComputerFrameStage {
     clubQueen.scene.rotateY(transform.object.rotateY);
     clubQueen.scene.position.x = transform.clubQueen.position.x;
     clubQueen.scene.position.y = transform.clubQueen.position.y;
-    clubQueen.scene.position.z = transform.z1.position.z;
+    clubQueen.scene.position.z = transform.card.position.z;
     clubQueen.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -149,7 +160,7 @@ export default class CardGameStage extends ComputerFrameStage {
     diaKing.scene.rotateY(transform.object.rotateY);
     diaKing.scene.position.x = transform.diaKing.position.x;
     diaKing.scene.position.y = transform.diaKing.position.y;
-    diaKing.scene.position.z = transform.z2.position.z;
+    diaKing.scene.position.z = transform.card.position.z;
     diaKing.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -159,7 +170,7 @@ export default class CardGameStage extends ComputerFrameStage {
     heartKing.scene.rotateY(transform.object.rotateY);
     heartKing.scene.position.x = transform.heartKing.position.x;
     heartKing.scene.position.y = transform.heartKing.position.y;
-    heartKing.scene.position.z = transform.z2.position.z;
+    heartKing.scene.position.z = transform.card.position.z;
     heartKing.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -169,7 +180,7 @@ export default class CardGameStage extends ComputerFrameStage {
     clubKing.scene.rotateY(transform.object.rotateY);
     clubKing.scene.position.x = transform.clubKing.position.x;
     clubKing.scene.position.y = transform.clubKing.position.y;
-    clubKing.scene.position.z = transform.z2.position.z;
+    clubKing.scene.position.z = transform.card.position.z;
     clubKing.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -185,7 +196,7 @@ export default class CardGameStage extends ComputerFrameStage {
     diaQueen.scene.rotateY(Math.PI / 64);
     diaQueen.scene.position.x = transform.diaQueen.position.x;
     diaQueen.scene.position.y = transform.diaQueen.position.y;
-    diaQueen.scene.position.z = transform.z0.position.z;
+    diaQueen.scene.position.z = transform.hidden.position.z;
     diaQueen.scene.scale.set(
       transform.card.scale.x,
       transform.card.scale.y,
@@ -196,7 +207,7 @@ export default class CardGameStage extends ComputerFrameStage {
      * sword
      */
     sword.scene.rotateY(transform.object.rotateY);
-    sword.scene.position.z = transform.z0.position.z;
+    sword.scene.position.z = transform.underTablecloth.position.z - 0.01;
     sword.scene.position.x = transform.sword.position.x;
     sword.scene.position.y = transform.sword.position.y;
 
@@ -220,15 +231,19 @@ export default class CardGameStage extends ComputerFrameStage {
 
     this.scene.add(table.scene);
     this.scene.add(tableclothOriginal.scene);
+    this.scene.add(cardplace.scene);
 
     this.scene.add(heartQueen.scene);
     this.scene.add(spadeKing.scene);
+    this.scene.add(spadeKingNoSword.scene);
     this.scene.add(diaJack.scene);
     this.scene.add(clubQueen.scene);
 
     this.scene.add(diaKing.scene);
     this.scene.add(heartKing.scene);
     this.scene.add(clubKing.scene);
+
+    this.scene.add(diaQueen.scene);
 
     this.scene.add(sword.scene);
     this.scene.add(cardStack.scene);
@@ -289,6 +304,7 @@ export default class CardGameStage extends ComputerFrameStage {
             );
           },
           onComplete: () => {
+            object3D.position.z = transform.card.position.z;
             resolve(true);
           },
         });
@@ -302,15 +318,15 @@ export default class CardGameStage extends ComputerFrameStage {
       diaKing.scene,
       heartKing.scene,
       clubKing.scene,
-      spadeKing.scene,
+      spadeKingNoSword.scene,
     ];
 
     this.dragControls.addEventListener('dragstart', (event) => {
       const eventObjId = event.object.id;
+      event.object.position.z = transform.dragging.position.z;
 
       switch (eventObjId) {
         case sword.scene.id:
-          sword.scene.position.z = transform.z4.position.z;
           gsap.to(sword.scene.scale, {
             x: 1.5,
             y: 1.5,
@@ -324,10 +340,11 @@ export default class CardGameStage extends ComputerFrameStage {
               );
             },
           });
+          this.scene?.remove(spadeKing.scene);
+          spadeKingNoSword.scene.position.z = transform.card.position.z;
           break;
 
         case diaQueen.scene.id:
-          diaQueen.scene.position.z = transform.z4.position.z;
           gsap.to(diaQueen.scene.rotation, {
             y: transform.object.rotateY,
             x: 0,
@@ -346,14 +363,27 @@ export default class CardGameStage extends ComputerFrameStage {
 
     this.dragControls.addEventListener('drag', (event) => {
       const eventObjId = event.object.id;
+      const position = event.object.position;
+
+      event.object.position.z = transform.dragging.position.z;
 
       switch (eventObjId) {
         case sword.scene.id:
-          sword.scene.position.z = transform.z4.position.z;
-          break;
-
-        case diaQueen.scene.id:
-          diaQueen.scene.position.z = transform.z3.position.z;
+          if (isNear(position, { x: 0.7, y: -0.85 })) {
+            gsap.to(sword.scene.rotation, {
+              x: -Math.PI / 2,
+              y: -Math.PI / 4,
+              z: -Math.PI / 2,
+              duration: 0.3,
+              onUpdate: () => {
+                sword.scene.rotation.set(
+                  sword.scene.rotation.x,
+                  sword.scene.rotation.y,
+                  sword.scene.rotation.z,
+                );
+              },
+            });
+          }
           break;
       }
     });
@@ -370,7 +400,6 @@ export default class CardGameStage extends ComputerFrameStage {
 
             await updatePosition(event.object, transform.heartQueen.position);
             this.scene?.remove(heartQueen.scene);
-            heartKing.scene.position.z = transform.z2.position.z;
           } else {
             updatePosition(event.object, transform.heartKing.position);
           }
@@ -383,7 +412,6 @@ export default class CardGameStage extends ComputerFrameStage {
 
             await updatePosition(event.object, transform.clubQueen.position);
             this.scene?.remove(clubQueen.scene);
-            clubKing.scene.position.z = transform.z2.position.z;
           } else {
             updatePosition(event.object, transform.clubKing.position);
           }
@@ -395,7 +423,6 @@ export default class CardGameStage extends ComputerFrameStage {
 
             await updatePosition(event.object, transform.diaJack.position);
             this.scene?.remove(diaJack.scene);
-            diaQueen.scene.position.z = transform.z2.position.z;
 
             isDiaQueenPlaced = true;
           } else {
@@ -411,7 +438,6 @@ export default class CardGameStage extends ComputerFrameStage {
 
               await updatePosition(event.object, transform.diaJack.position);
               this.scene?.remove(diaQueen.scene);
-              diaKing.scene.position.z = transform.z4.position.z;
             } else {
               updatePosition(event.object, transform.diaKing.position);
             }
@@ -425,7 +451,7 @@ export default class CardGameStage extends ComputerFrameStage {
             this.scene?.remove(tableclothOriginal.scene);
             this.scene?.remove(sword.scene);
             this.scene?.add(tableclothTorn.scene);
-            this.scene?.add(diaQueen.scene);
+            diaQueen.scene.position.z = transform.underTablecloth.position.z;
 
             deleteDraggable(sword.scene);
             addDraggable(diaQueen.scene);
@@ -434,7 +460,7 @@ export default class CardGameStage extends ComputerFrameStage {
       }
 
       if (placedKingCount === 4) {
-        const rotateAndMove = async (king: THREE.Object3D) => {
+        const rotateAndMove = async (king: THREE.Object3D, index: number) => {
           const rotateInPlace = () => {
             return new Promise((resolve) => {
               const tl = gsap.timeline();
@@ -451,7 +477,7 @@ export default class CardGameStage extends ComputerFrameStage {
                 },
               });
               tl.to(king.position, {
-                z: transform.z2.position.z,
+                z: transform.card.position.z,
                 duration: 0.25,
                 onUpdate: () => {
                   king.position.set(
@@ -479,12 +505,12 @@ export default class CardGameStage extends ComputerFrameStage {
             });
           };
 
-          const moveToCenter = () => {
+          const moveToCenter = (index: number) => {
             return new Promise((resolve) => {
               gsap.to(king.position, {
                 x: 0,
                 y: 0,
-                z: 4.02,
+                z: 3.99 + index * 0.01,
                 delay: 0.3,
                 duration: 0.5,
                 ease: 'power2.out',
@@ -503,7 +529,7 @@ export default class CardGameStage extends ComputerFrameStage {
           };
 
           await rotateInPlace();
-          await moveToCenter();
+          await moveToCenter(index);
         };
 
         await Promise.all(kings.map(rotateAndMove));
@@ -588,5 +614,7 @@ export default class CardGameStage extends ComputerFrameStage {
 
   public unmount() {
     super.unmount();
+    this.raycaster?.dispose();
+    this.resourceLoader.clear();
   }
 }

@@ -13,35 +13,23 @@ export const transform = {
       y: 0.7,
       z: 0.7,
     },
-  },
-  z0: {
-    position: {
-      z: 3.705,
-    },
-  },
-  z1: {
     position: {
       z: 3.71,
     },
   },
-  z2: {
+  hidden: {
     position: {
-      z: 3.715,
+      z: 0,
     },
   },
-  z3: {
+  underTablecloth: {
     position: {
-      z: 3.72,
+      z: 3.705,
     },
   },
-  z4: {
+  dragging: {
     position: {
       z: 3.725,
-    },
-  },
-  z5: {
-    position: {
-      z: 3.87,
     },
   },
 
