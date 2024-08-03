@@ -584,7 +584,7 @@ export default class WaffleRoomStage extends Stage {
       }
     });
 
-    this.onUnmountCallbacks.forEach((callback) => callback());
+    this.onUnmountCallbacks.forEach((callback) => callback.bind(this));
 
     // done!
     console.log('TestBlueStage unmounted');
