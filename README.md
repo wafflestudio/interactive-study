@@ -15,6 +15,9 @@
 - 이민규 [minkyu97](https://github.com/minkyu97)
 - 김예지 [lerrybe](https://github.com/lerrybe)
 - 박준영 [designDefined](https://github.com/designDefined)
+- 이성열 [yeolyi](https://github.com/yeolyi)
+- 신현지 [nyanxyz](https://github.com/nyanxyz)
+- 백창인 [nuagenic](https://github.com/nuagenic)
 
 ## Docs
 
