@@ -3,8 +3,22 @@ import * as THREE from 'three';
 
 import { Stage } from '../../core/stage/Stage';
 import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
+import { StageManager } from '../../core/stage/StageManager';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import CardGameStage from '../card-game';
+import { GooseStage } from '../goose/stage';
 import { GooseRaycaster } from '../goose/util/raycaster';
+
+const stageManager = StageManager.instance;
+
+export const gooseStage = new GooseStage(
+  stageManager.renderer,
+  stageManager.app,
+);
+export const cardGame = new CardGameStage(
+  stageManager.renderer,
+  stageManager.app,
+);
 
 const WAFFLE_MODEL_KEY = 'waffle';
 
@@ -26,6 +40,7 @@ export class HomeStage extends Stage {
     this.#scene,
     this.renderer,
   );
+  #unmountDescription = () => {};
 
   constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
     super(renderer, app);
@@ -63,11 +78,14 @@ export class HomeStage extends Stage {
 
     this.#waffleRaycaster.mount();
     this.#addDragListener();
+
+    this.#unmountDescription = insertDescription('GOOSE', 0, 0);
   }
 
   unmount(): void {
     this.#container?.remove();
     this.#waffleRaycaster.unmount();
+    this.#unmountDescription();
   }
 
   resize(): void {
@@ -211,3 +229,66 @@ export class HomeStage extends Stage {
     });
   }
 }
+
+type StageType = 'GOOSE' | 'CARD' | 'CUBE' | 'ROOM';
+
+const stageInfo: {
+  [type in StageType]: {
+    title: string;
+    hardness: string;
+    description: string;
+    toStage: () => void;
+  };
+} = {
+  CARD: {
+    title: '/Card_Flavor.svg',
+    hardness: '/Easy.svg',
+    description: '카드 게임',
+    toStage: () => {},
+  },
+  CUBE: {
+    title: '/Grid_Flavor.svg',
+    hardness: '/Easy.svg',
+    description: '귀염뽀짝한 방에 숨겨진 와플들을 찾아보세요!',
+    toStage: () => {},
+  },
+  GOOSE: {
+    title: '/Goose_Flavor.svg',
+    hardness: '/Normal.svg',
+    description: '거위 게임',
+    toStage: () => {
+      StageManager.instance.toStage(gooseStage);
+    },
+  },
+  ROOM: {
+    title: '/Icecream.svg',
+    hardness: '/Hard.svg',
+    description: '방 게임',
+    toStage: () => {},
+  },
+};
+
+let insertDescription = (type: StageType, x: number, y: number) => {
+  const container = document.createElement('div');
+  container.style.cssText = `position: fixed; top: ${y}; left: ${x}`;
+
+  const { title, hardness, description, toStage } = stageInfo[type];
+
+  container.innerHTML = `
+<div>
+  <img src="${title}" style="display: block; margin-top: 8px;"/>
+  <img src="${hardness}" style="display: block; margin-top: 16px;"/>
+  <p style="margin-top: 8px; color: #E00000">${description}</p>
+  <button style="border: none; background: transparent;">
+    <img src="/order.svg" style="margin-left: auto; cursor: pointer;"/>
+  </button>
+</div>
+`;
+
+  const button = container.querySelector('button')!;
+  button.addEventListener('click', toStage);
+
+  document.body.append(container);
+
+  return () => container.remove();
+};
