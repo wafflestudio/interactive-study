@@ -15,9 +15,16 @@ import {
   mapDataSchema,
 } from './map-schema';
 
+const AXES = {
+  x: new THREE.Vector3(1, 0, 0),
+  y: new THREE.Vector3(0, 1, 0),
+  z: new THREE.Vector3(0, 0, 1),
+};
+
 export class Map {
   mapObject: THREE.Group = new THREE.Group();
   mapBody: CANNON.Body = new CANNON.Body({ mass: 0 });
+  currentRotation = 0;
   isRotating = false;
 
   constructor(public world: World) {
@@ -191,14 +198,19 @@ export class Map {
     this.mapBody.addShape(shape, new CANNON.Vec3(...position));
   }
 
-  public rotate(axis: THREE.Vector3, angle: number): gsap.core.Tween {
+  public rotate(axis: 'x' | 'y' | 'z', angle: number): gsap.core.Tween {
     if (this.isRotating) return gsap.delayedCall(0, noop);
+    if (axis === 'y') {
+      if (angle > 90) this.currentRotation++;
+      if (angle < -90) this.currentRotation--;
+    }
+
     this.isRotating = true;
     this.world.pause();
     const helper = { t: 0 };
     const start = this.mapObject.quaternion.clone();
     const rotation = new THREE.Quaternion().setFromAxisAngle(
-      axis,
+      AXES[axis],
       THREE.MathUtils.degToRad(angle),
     );
     const dest = start.clone().multiply(rotation).normalize();

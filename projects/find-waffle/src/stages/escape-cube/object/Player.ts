@@ -4,10 +4,6 @@ import * as THREE from 'three';
 import { World } from '../World';
 import { BaseObject } from './BaseObject';
 
-const xAxis = new THREE.Vector3(1, 0, 0);
-const yAxis = new THREE.Vector3(0, 1, 0);
-const zAxis = new THREE.Vector3(0, 0, 1);
-
 export class Player extends BaseObject<THREE.Group> {
   private direction = new CANNON.Vec3();
 
@@ -79,17 +75,17 @@ export class Player extends BaseObject<THREE.Group> {
     if (this.position.x > 5.001) {
       this.position.x = 5;
       this.syncToCannon();
-      this.world.map.rotate(yAxis, -90);
+      this.world.map.rotate('y', -90);
     }
     if (this.position.x < -5.001) {
       this.position.x = -5;
       this.syncToCannon();
-      this.world.map.rotate(yAxis, 90);
+      this.world.map.rotate('y', 90);
     }
     if (this.position.y > 6.001) {
       this.position.y = 6;
       this.syncToCannon();
-      this.world.map.rotate(zAxis, 90);
+      this.world.map.rotate('z', 90);
     }
   }
 

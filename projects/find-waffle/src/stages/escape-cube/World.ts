@@ -2,6 +2,7 @@ import * as CANNON from 'cannon-es';
 import gsap, * as GSAP from 'gsap';
 import * as THREE from 'three';
 
+import { noop } from 'es-toolkit';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import { Map } from './map/Map';
 import { Monster } from './object/Monster';
@@ -17,7 +18,7 @@ export class World {
   initialized = false;
   monsters: Monster[] = [];
   cannonTimeline = gsap.timeline();
-  _onInitialized: () => void = () => {};
+  _onInitialized: () => void = noop;
 
   set onInitialized(value: () => void) {
     this._onInitialized = value;
@@ -160,5 +161,10 @@ export class World {
     this.player?.resume();
     this.monsters.forEach((m) => m.resume());
     this.cannonTimeline.play();
+  }
+
+  public restart() {
+    this.dispose();
+    this.init();
   }
 }
