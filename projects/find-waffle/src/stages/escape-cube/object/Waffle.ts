@@ -36,6 +36,7 @@ export class Waffle extends BaseObject<THREE.Group> {
       if (e.body === player?.body) {
         tl.kill();
         player?.win();
+        this.world.followingCamera = true;
       }
     });
     super(world, object, body);
