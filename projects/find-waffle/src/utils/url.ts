@@ -6,9 +6,6 @@
  */
 export function url(path: string): string {
   const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
-  console.log(BASE_URL, path);
   if (path.startsWith('/')) path = path = path.slice(1);
-  console.log(`result: ${new URL(path, BASE_URL).href}`);
-  
   return new URL(path, BASE_URL).href;
 }
