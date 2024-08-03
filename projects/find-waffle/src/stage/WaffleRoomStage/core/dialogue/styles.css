@@ -1,5 +1,10 @@
+@font-face {
+  font-family: 'KoreanTYGDB_1234';
+  src: url('./fonts/aΩ≈µ≥™∑ÁB.otf');
+}
+
 .DialogueContainer {
-  font-family: 'KoreanTYGDB', sans-serif;
+  font-family: 'KoreanTYGDB_1234', serif;
   position: absolute;
   bottom: 0;
   left: 0;
