@@ -38,7 +38,10 @@ export class Wardrobe extends GameObject {
         'opening_01',
         (contact) => {
           if (contact.bi === this.body || contact.bj === this.body) {
-            this.scenarioManager.set('wardrobe_01'); // 시나리오 따라서 맞출 것
+            this.sceneManager.toWardrobeScene((change) => {
+              this.scenarioManager.set('wardrobe_01');
+              change();
+            });
           }
         },
       ),

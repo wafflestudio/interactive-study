@@ -46,7 +46,11 @@ export default class WaffleRoomStage extends Stage {
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
 
     // implement managers
-    this.sceneManager = new SceneManager(this.renderer, this.app);
+    this.sceneManager = new SceneManager(
+      this.renderer,
+      this.app,
+      this.scenarioManager,
+    );
     const resourceLoader = new ResourceLoader();
     // this.keyMap = new KeyMap();
     this.cannonManager = new CannonManager();
@@ -516,7 +520,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      this.scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      this.scenarioManager.set('opening_01');
       this.keyMap.activate();
     };
   }

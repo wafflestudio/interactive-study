@@ -1,4 +1,4 @@
-.background {
+.__background {
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -9,48 +9,48 @@
   z-index: -2;
 }
 
-.main {
+.__main {
   height: 80%;
   background-color: #f1e7cc;
   display: flex;
 }
 
-.left,
-.right {
+.__left,
+.__right {
   flex: 1 0 80px;
   box-sizing: border-box;
 }
 
-.left {
+.__left {
   padding: 40px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
-.row {
+.__row {
   flex: 1 0 0;
   display: flex;
 }
-.item {
+.__item {
   flex: 1 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.dot {
+.__dot {
   width: 20%;
   aspect-ratio: 1;
   background-color: #d9d9d9;
   border-radius: 50%;
 }
 
-.right {
+.__right {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.canvasWrapper {
+.__canvasWrapper {
   position: relative;
   width: 80%;
   height: 60%;
@@ -61,14 +61,14 @@
   align-items: center;
 }
 
-.label {
+.__label {
   position: absolute;
   top: -10px;
   background-color: #efe05f;
   padding: 8px 24px;
 }
 
-.button {
+.__button {
   border: none;
   position: absolute;
   right: -10px;
@@ -79,11 +79,11 @@
   z-index: 100;
 }
 
-.button:hover {
+.__button:hover {
   background-color: red;
 }
 
-.buttonSuccess {
+.__buttonSuccess {
   border: none;
   position: absolute;
   right: -10px;
@@ -94,19 +94,19 @@
   z-index: 100;
 }
 
-.bag {
+.__bag {
   border: none;
   background-color: transparent;
   cursor: pointer;
   transition: 0.1s;
 }
-.bag > img {
+.__bag > img {
   width: 100%;
   object-fit: contain;
 }
-.bag:hover {
+.__bag:hover {
   opacity: 0.8;
 }
-.bag:active {
+.__bag:active {
   opacity: 0.6;
 }

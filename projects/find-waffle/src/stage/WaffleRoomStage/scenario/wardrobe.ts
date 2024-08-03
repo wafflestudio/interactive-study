@@ -7,25 +7,21 @@ export const wardrobeScenario =
   (set) => [
     {
       name: 'wardrobe_01',
+      onMount: () => {},
+    },
+    {
+      name: 'wardrobe_02',
       onMount: () => {
         dialogue.begin(
           [
             [
               {
-                value: `옷장을 열어보니 와플이 숨어있는 것 같아!`,
-                size: 'normal',
-              },
-            ],
-            [
-              {
-                value: `어디에 숨어있을까?`,
-                size: 'normal',
+                value: '역시 예상이 맞았어\n이제 두 개 남았다!',
               },
             ],
           ],
           () => {
-            console.log('!');
-            set('spintile_01');
+            set('spinbox_01');
           },
         );
       },

@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import van from 'vanjs-core';
 
 import { Items, bagSuccess, currentBag } from '../../ui/Items';
+import { ScenarioManager } from '../scenario/ScenarioManager';
 import './test.css';
 
 export type SceneTransition = (change: () => void) => void;
@@ -16,6 +17,7 @@ export class SceneManager {
   wardrobeScene: THREE.Scene;
   wardrobeCamera: THREE.OrthographicCamera;
   control?: OrbitControls;
+  scenarioManager: ScenarioManager;
 
   currentScene: THREE.Scene;
   // currentCamera: THREE.PerspectiveCamera;
@@ -23,10 +25,15 @@ export class SceneManager {
   aspectRatio: number;
   frustumSize: number;
 
-  constructor(renderer: THREE.WebGLRenderer, app: HTMLElement) {
+  constructor(
+    renderer: THREE.WebGLRenderer,
+    app: HTMLElement,
+    scenarioManager: ScenarioManager,
+  ) {
     this.renderer = renderer;
     this.app = app;
     this.aspectRatio = this.app.clientWidth / this.app.clientHeight;
+    this.scenarioManager = scenarioManager;
     this.frustumSize = 50;
 
     // room
@@ -139,7 +146,20 @@ export class SceneManager {
 
   toWardrobeScene(transition: SceneTransition) {
     transition(() => {
-      van.add(this.app, Items);
+      const cb = () => {
+        this.scenarioManager.set('wardrobe_02');
+        this.app.classList.remove('noApp');
+        // this.app.removeChild(this.app.querySelector('.background')!);
+        this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
+        this.app.querySelector('#canvas')?.classList.remove('wardrobeCanvas');
+        this.app.querySelectorAll('.__background').forEach((el) => {
+          this.app.removeChild(el);
+        });
+        this.toRoomScene((change) => change());
+        this.control?.reset();
+        this.control?.dispose();
+      };
+      van.add(this.app, Items(cb.bind(this)));
       this.currentScene = this.wardrobeScene;
       this.currentCamera = this.wardrobeCamera;
 
@@ -156,7 +176,9 @@ export class SceneManager {
           this.control?.reset();
         }
       });
-      this.app.classList.add('noApp');
+      setTimeout(() => {
+        this.app.classList.add('noApp'), 100;
+      });
     });
   }
   unmountWardrobeScene() {}
