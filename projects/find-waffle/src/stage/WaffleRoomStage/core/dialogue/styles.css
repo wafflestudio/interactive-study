@@ -1,5 +1,5 @@
 .DialogueContainer {
-  font-family: 'KoreanTYGDE', serif;
+  font-family: 'KoreanTYGDB', serif;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -34,8 +34,8 @@
   font-size: 24px;
   line-height: 135%;
 }
-.DialogueContainer .textsContainer .big {
-  font-size: 28px;
+.DialogueContainer .textsContainer .large {
+  font-size: 32px;
 }
 .DialogueContainer .textsContainer .huge {
   font-size: 40px;
