@@ -24,13 +24,15 @@
 .left {
   padding: 40px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   box-sizing: border-box;
 }
+.row {
+  flex: 1 0 0;
+  display: flex;
+}
 .item {
-  flex: 0 1 calc(100% / 3);
+  flex: 1 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,9 +42,6 @@
   aspect-ratio: 1;
   background-color: #d9d9d9;
   border-radius: 50%;
-}
-.dot:hover {
-  background-color: red;
 }
 
 .right {
@@ -82,4 +81,32 @@
 
 .button:hover {
   background-color: red;
+}
+
+.buttonSuccess {
+  border: none;
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  background-color: blue;
+  padding: 8px 24px;
+  display: flex;
+  z-index: 100;
+}
+
+.bag {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.1s;
+}
+.bag > img {
+  width: 100%;
+  object-fit: contain;
+}
+.bag:hover {
+  opacity: 0.8;
+}
+.bag:active {
+  opacity: 0.6;
 }

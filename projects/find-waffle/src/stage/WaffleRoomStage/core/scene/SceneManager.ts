@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import van from 'vanjs-core';
 
-import { Items } from '../../ui/Items';
+import { Items, bagSuccess, currentBag } from '../../ui/Items';
 import './test.css';
 
 export type SceneTransition = (change: () => void) => void;
@@ -151,12 +151,29 @@ export class SceneManager {
         this.app.clientHeight / 2,
       );
       this.control = new OrbitControls(this.wardrobeCamera, target!);
+      van.derive(() => {
+        if (currentBag.val?.id !== currentBag.oldVal?.id) {
+          this.control?.reset();
+        }
+      });
       this.app.classList.add('noApp');
     });
   }
   unmountWardrobeScene() {}
 
   render() {
+    if (this.control) {
+      if (currentBag.val?.id === 5) {
+        const angle = this.control.getAzimuthalAngle();
+        if (angle > 2 || angle < -1.2) {
+          bagSuccess.val = true;
+        } else {
+          bagSuccess.val = false;
+        }
+      } else {
+        bagSuccess.val = false;
+      }
+    }
     if (!this.currentScene || !this.currentCamera) return;
     this.renderer.render(this.currentScene, this.currentCamera);
     if (this.control) this.control?.update();
