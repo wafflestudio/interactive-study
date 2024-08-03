@@ -108,7 +108,7 @@ export class HomeStage extends Stage {
     const geometry = new THREE.PlaneGeometry(20, 20);
     const baseMaterial = new THREE.MeshBasicMaterial({
       color: 0xffd560,
-      opacity: 0.8,
+      opacity: 0,
       transparent: true,
     });
 
