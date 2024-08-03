@@ -99,7 +99,7 @@ export class Timer extends BaseObject<THREE.Group> {
       ([char, textObject]) => {
         const newGeometry = new TextGeometry(char, {
           font: this.font,
-          size: 0.7,
+          size: 0.5,
           depth: 0.1,
           curveSegments: 4,
         });

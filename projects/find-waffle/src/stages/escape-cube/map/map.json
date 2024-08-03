@@ -290,7 +290,7 @@
     {
       "type": "model",
       "name": "go_get_that_waffle_over_there",
-      "position": [-3.5, 1.5, 4.5],
+      "position": [0.5, 3, 5.4],
       "shapes": [
         {
           "position": [0, 0, 0],
@@ -324,8 +324,14 @@
     {
       "type": "model",
       "name": "watch_out",
-      "rotation": [0, 90, 0],
+      "rotation": [0, 0, 0],
       "position": [6.51, 3, -0.5]
+    },
+    {
+      "type": "model",
+      "name": "they_can_hurt_you",
+      "rotation": [0, 0, 0],
+      "position": [6.51, -3.02, 0.07]
     },
     {
       "type": "model",
@@ -347,6 +353,71 @@
       "scale": 0.5,
       "rotation": [4, 188, 15],
       "position": [2.4, -3.5, -6]
+    },
+    {
+      "type": "model",
+      "name": "arrow",
+      "scale": 1,
+      "position": [-6.5, 3, 3],
+      "overrides": [
+        {
+          "name": "Cone",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        },
+        {
+          "name": "Cylinder",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "waffle_machine",
+      "scale": 1.2,
+      "rotation": [-20, -180, -100],
+      "position": [-6.5, -2.5, 2],
+      "overrides": [
+        {
+          "name": "20907_Classic_Circular_Waffle_Maker_v1_NEW_1",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        },
+        {
+          "name": "20907_Classic_Circular_Waffle_Maker_v1_NEW_2",
+          "material": {
+            "type": "MeshMatcapMaterial",
+            "args": {
+              "matcap": {
+                "type": "texture",
+                "name": "matcap_roughness_4"
+              }
+            }
+          }
+        }
+      ]
     }
   ],
   "resources": [
@@ -401,6 +472,11 @@
     },
     {
       "type": "gltf",
+      "name": "they_can_hurt_you",
+      "path": "/escape-cube/models/they_can_hurt_you.gltf"
+    },
+    {
+      "type": "gltf",
       "name": "car",
       "path": "/escape-cube/models/redcar.glb"
     },
@@ -413,6 +489,16 @@
       "type": "gltf",
       "name": "clock",
       "path": "/escape-cube/models/clock.glb"
+    },
+    {
+      "type": "gltf",
+      "name": "arrow",
+      "path": "/escape-cube/models/arrow.gltf"
+    },
+    {
+      "type": "gltf",
+      "name": "waffle_machine",
+      "path": "/escape-cube/models/waffle_machine.gltf"
     },
     {
       "type": "font",
