@@ -11,14 +11,8 @@ import { GooseRaycaster } from '../goose/util/raycaster';
 
 const stageManager = StageManager.instance;
 
-export const gooseStage = new GooseStage(
-  stageManager.renderer,
-  stageManager.app,
-);
-export const cardGame = new CardGameStage(
-  stageManager.renderer,
-  stageManager.app,
-);
+const gooseStage = new GooseStage(stageManager.renderer, stageManager.app);
+const cardGame = new CardGameStage(stageManager.renderer, stageManager.app);
 
 const WAFFLE_MODEL_KEY = 'waffle';
 
@@ -274,19 +268,22 @@ const stageInfo: {
   CARD: {
     title: '/Card_Flavor.svg',
     hardness: '/Easy.svg',
-    description: '카드 게임',
-    toStage: () => {},
+    description:
+      '카드 게임 속에서 와플을 찾아보세요. 와플을 찾기 위해서는 게임을 진행해야하지만 이 게임은 일반적인 솔리테어 규칙과는 다르게 작동한답니다!',
+    toStage: () => {
+      StageManager.instance.toStage(cardGame);
+    },
   },
   CUBE: {
     title: '/Grid_Flavor.svg',
     hardness: '/Easy.svg',
-    description: '귀염뽀짝한 방에 숨겨진 와플들을 찾아보세요!',
+    description: '',
     toStage: () => {},
   },
   GOOSE: {
     title: '/Goose_Flavor.svg',
     hardness: '/Normal.svg',
-    description: '거위 게임',
+    description: '거위가 돌아다니는 컴퓨터를 둘러보며 와플을 찾아보세요.',
     toStage: () => {
       StageManager.instance.toStage(gooseStage);
     },
@@ -294,7 +291,7 @@ const stageInfo: {
   ROOM: {
     title: '/Icecream.svg',
     hardness: '/Hard.svg',
-    description: '방 게임',
+    description: '귀염뽀짝한 방에 숨겨진 와플들을 찾아보세요!',
     toStage: () => {},
   },
 };

@@ -196,7 +196,7 @@ export class StaticGooseStage extends ComputerFrameStage {
     this.gooseList.forEach((goose) => goose.animate(time));
 
     if (this.cloud) {
-      this.cloud.rotation.y -= time / 10;
+      this.cloud.rotation.y -= time / 30;
     }
   }
 
