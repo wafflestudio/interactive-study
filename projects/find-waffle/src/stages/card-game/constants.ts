@@ -36,44 +36,44 @@ export const transform = {
   heartQueen: {
     position: {
       x: 0,
-      y: 0.9,
+      y: 0.8,
     },
   },
   spadeKing: {
     position: {
       x: 0.4,
-      y: 0.9,
+      y: 0.8,
     },
   },
   diaJack: {
     position: {
       x: 0.8,
-      y: 0.9,
+      y: 0.8,
     },
   },
   clubQueen: {
     position: {
       x: 1.2,
-      y: 0.9,
+      y: 0.8,
     },
   },
 
   diaKing: {
     position: {
       x: -0.8,
-      y: 0.3,
+      y: 0.2,
     },
   },
   heartKing: {
     position: {
       x: -0.4,
-      y: 0.3,
+      y: 0.2,
     },
   },
   clubKing: {
     position: {
       x: 0.8,
-      y: 0.3,
+      y: 0.2,
     },
   },
 
@@ -89,7 +89,7 @@ export const transform = {
   sword: {
     position: {
       x: 0.505,
-      y: 0.89,
+      y: 0.79,
     },
   },
 };
