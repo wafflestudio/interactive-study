@@ -2,6 +2,7 @@ import CannonDebugger from 'cannon-es-debugger';
 import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import van from 'vanjs-core';
 
 import { Stage } from '../../core/stage/Stage';
 import { KeyMap } from '../../libs/keyboard/KeyMap';
@@ -17,6 +18,7 @@ import { openingScenario } from './scenario/opening';
 import { spinboxScenario } from './scenario/spinBox';
 import { spinTileScenario } from './scenario/spinTile';
 import { wardrobeScenario } from './scenario/wardrobe';
+import { currentBag } from './ui/Items';
 
 export default class WaffleRoomStage extends Stage {
   scenarioManager: ScenarioManager = new ScenarioManager();
@@ -44,7 +46,11 @@ export default class WaffleRoomStage extends Stage {
     this.renderer.setSize(this.app.clientWidth, this.app.clientHeight);
 
     // implement managers
-    this.sceneManager = new SceneManager(this.renderer, this.app);
+    this.sceneManager = new SceneManager(
+      this.renderer,
+      this.app,
+      this.scenarioManager,
+    );
     const resourceLoader = new ResourceLoader();
     // this.keyMap = new KeyMap();
     this.cannonManager = new CannonManager();
@@ -299,7 +305,117 @@ export default class WaffleRoomStage extends Stage {
 
     // load bags
     resourceLoader.registerModel(
-      `waffleBag`,
+      `backpack_blue`,
+      '/models/WaffleRoom/models/backpack_blue.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 16;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 0.15, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 0) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `backpack_pink`,
+      '/models/WaffleRoom/models/backpack_pink.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 16;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 0.15, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 1) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `backpack_green`,
+      '/models/WaffleRoom/models/backpack_green.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 16;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 0.15, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 2) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `realbag_blue`,
+      '/models/WaffleRoom/models/realbag_blue.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 0.27;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 1.1, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 3) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `realbag_pink`,
+      '/models/WaffleRoom/models/realbag_pink.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 1.45;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 1.1, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 4) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `wafflebag`,
       '/models/WaffleRoom/models/wafflebag_2.glb',
       {
         onLoad: ({ scene: bag }) => {
@@ -308,36 +424,57 @@ export default class WaffleRoomStage extends Stage {
           bag.scale.set(scale, scale, scale);
           bag.position.set(position.x, position.y, position.z);
           bag.rotation.set(0, Math.PI * 1.1, 0);
-          // this.sceneManager?.wardrobeScene.add(bag);
+          van.derive(() => {
+            if (currentBag.val?.id === 5) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
         },
       },
     );
 
     resourceLoader.registerModel(
-      'fakeBag1',
-      '/models/WaffleRoom/models/fake_1_black.glb',
-      {
-        onLoad: ({ scene: bag }) => {
-          const scale = 10;
-          const position = new THREE.Vector3(0, 0, 0);
-          bag.scale.set(scale, scale, scale);
-          bag.position.set(position.x, position.y, position.z);
-          bag.rotation.set(0, Math.PI * 2, 0);
-          // this.sceneManager?.wardrobeScene.add(bag);
-        },
-      },
-    );
-
-    resourceLoader.registerModel(
-      'fakeBag2',
-      '/models/WaffleRoom/models/backpack.glb',
+      `fakeblue`,
+      '/models/WaffleRoom/models/fake_blue.glb',
       {
         onLoad: ({ scene: bag }) => {
           const scale = 7;
           const position = new THREE.Vector3(0, -16, 0);
           bag.scale.set(scale, scale, scale);
           bag.position.set(position.x, position.y, position.z);
-          bag.rotation.set(0, Math.PI * 1.25, 0);
+          bag.rotation.set(0, Math.PI * 0, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 6) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
+          this.sceneManager?.wardrobeScene.add(bag);
+        },
+      },
+    );
+
+    resourceLoader.registerModel(
+      `fakewhite`,
+      '/models/WaffleRoom/models/fake_white.glb',
+      {
+        onLoad: ({ scene: bag }) => {
+          const scale = 7;
+          const position = new THREE.Vector3(0, -16, 0);
+          bag.scale.set(scale, scale, scale);
+          bag.position.set(position.x, position.y, position.z);
+          bag.rotation.set(0, Math.PI * 0, 0);
+          van.derive(() => {
+            if (currentBag.val?.id === 7) {
+              bag.visible = true;
+            } else {
+              bag.visible = false;
+            }
+          });
           this.sceneManager?.wardrobeScene.add(bag);
         },
       },
@@ -383,7 +520,7 @@ export default class WaffleRoomStage extends Stage {
         ),
       );
 
-      this.scenarioManager.set('spinbox_01'); // 본인이 담당하는 플롯의 시작점으로 알아서 바꾸기
+      this.scenarioManager.set('opening_01');
       this.keyMap.activate();
     };
   }

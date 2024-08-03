@@ -1,26 +1,57 @@
 import van from 'vanjs-core';
 
-import styles from './Items.module.css';
+import './Items.css';
+import { Bag, bags } from './itemData';
 
-const { div, button } = van.tags;
+const { div, button, img } = van.tags;
 
-export const Items = div(
-  { class: styles.background },
-  div(
-    { class: styles.main },
+export const currentBag = van.state<null | Bag>(null);
+
+export const bagSuccess = van.state(false);
+
+export const Items = (endCallback: () => void) => () => {
+  const bagName = van.derive(() => currentBag.val?.name ?? '');
+  const isSuccess = van.derive(() => bagSuccess.val);
+  return div(
+    { class: '__background' },
     div(
-      { class: styles.left },
-      [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) =>
-        div({ class: styles.item, key: i }, div({ class: styles.dot })),
-      ),
-    ),
-    div(
-      { class: styles.right },
+      { class: '__main' },
       div(
-        { class: styles.canvasWrapper },
-        div({ class: styles.label }, '우유 아이스크림'),
-        button({ class: styles.button }, '찾았다!'),
+        { class: '__left' },
+        bags.map((row, i) => {
+          return div(
+            { class: '__row' },
+            row.map((item) => {
+              if (!item)
+                return div(
+                  { class: '__item', key: i },
+                  div({ class: '__dot' }),
+                );
+              return div(
+                { class: '__item', key: i },
+                button(
+                  { class: '__bag', onclick: () => (currentBag.val = item) },
+                  img({ src: item.imageSrc }),
+                ),
+              );
+            }),
+          );
+        }),
+      ),
+      div(
+        { class: '__right' },
+        div(
+          { class: '__canvasWrapper' },
+          div({ class: '__label' }, div(bagName)),
+          () =>
+            isSuccess.val
+              ? button(
+                  { class: '__buttonSuccess', onclick: () => endCallback() },
+                  '찾았다!',
+                )
+              : button({ class: '__button' }, '찾았다!'),
+        ),
       ),
     ),
-  ),
-);
+  );
+};
