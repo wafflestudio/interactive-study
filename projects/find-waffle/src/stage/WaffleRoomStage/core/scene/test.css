@@ -1,0 +1,9 @@
+.wardrobeCanvas {
+  left: 50% !important;
+  top: 25% !important;
+}
+
+.noApp {
+  height: 0 !important;
+  position: static !important;
+}
