@@ -5,6 +5,7 @@ import { Stage } from '../../core/stage/Stage';
 import { StageManager } from '../../core/stage/StageManager';
 import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
+import WaffleRoomStage from '../../stage/WaffleRoomStage';
 import CardGameStage from '../card-game';
 import EscapeCubeStage from '../escape-cube';
 import { GooseStage } from '../goose/stage';
@@ -18,6 +19,7 @@ const escapeCubeGame = new EscapeCubeStage(
   stageManager.renderer,
   stageManager.app,
 );
+const roomGame = new WaffleRoomStage(stageManager.renderer, stageManager.app);
 
 const WAFFLE_MODEL_KEY = 'waffle';
 
@@ -320,7 +322,10 @@ const stageInfo: {
     hardness: '/Hard.svg',
     description: '귀염뽀짝한 방에 숨겨진 와플들을 찾아보세요!',
     toStage: () => {
-      // TODO
+      StageManager.instance.toStage(roomGame);
+      roomGame.unmountListener = () => {
+        StageManager.instance.finishStage('ROOM')
+      }
     },
   },
 };
