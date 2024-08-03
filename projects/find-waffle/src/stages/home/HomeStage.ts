@@ -6,6 +6,7 @@ import { StageManager } from '../../core/stage/StageManager';
 import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
 import { ResourceLoader } from '../../libs/resource-loader/ResourceLoader';
 import CardGameStage from '../card-game';
+import EscapeCubeStage from '../escape-cube';
 import { GooseStage } from '../goose/stage';
 import { GooseRaycaster } from '../goose/util/raycaster';
 
@@ -13,6 +14,10 @@ const stageManager = StageManager.instance;
 
 const gooseStage = new GooseStage(stageManager.renderer, stageManager.app);
 const cardGame = new CardGameStage(stageManager.renderer, stageManager.app);
+const escapeCubeGame = new EscapeCubeStage(
+  stageManager.renderer,
+  stageManager.app,
+);
 
 const WAFFLE_MODEL_KEY = 'waffle';
 
@@ -111,6 +116,7 @@ export class HomeStage extends Stage {
     const baseMaterial = new THREE.MeshBasicMaterial({
       color: 0xffd560,
       opacity: 0,
+      alphaTest: 0,
       transparent: true,
     });
 
@@ -140,6 +146,9 @@ export class HomeStage extends Stage {
 
     stagePosition.forEach((position, index) => {
       const material = baseMaterial.clone();
+      if (this.#finishStages.includes(stages[index].id)) {
+        material.opacity = 0.8;
+      }
       const jam = new THREE.Mesh(geometry, material);
       jam.rotateX(-Math.PI / 2);
       jam.position.set(...position);
@@ -163,9 +172,10 @@ export class HomeStage extends Stage {
         } else {
           document.body.style.cursor = 'default';
           jams
-            .filter((jam) => !this.#finishStages.includes(jam.id))
             .forEach((jam) => {
-              gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+              if (!this.#finishStages.includes(jam.id)) {
+                gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+              }
             });
         }
       },
@@ -278,14 +288,20 @@ const stageInfo: {
       '카드 게임 속에서 와플을 찾아보세요. 와플을 찾기 위해서는 게임을 진행해야하지만 이 게임은 일반적인 솔리테어 규칙과는 다르게 작동한답니다!',
     toStage: () => {
       StageManager.instance.toStage(cardGame);
+      cardGame.unmountListener = () => {
+        StageManager.instance.finishStage('CARD');
+      }
     },
   },
   CUBE: {
     title: '/Grid_Flavor.svg',
     hardness: '/Easy.svg',
-    description: '',
+    description: '미로를 돌아다니며 와플을 찾아보세요. 미로에는 무시무시한 몬스터들이 출몰하기 때문에 조심하세요!',
     toStage: () => {
-      // TODO
+      StageManager.instance.toStage(escapeCubeGame);
+      escapeCubeGame.unmountListener = () => {
+        StageManager.instance.finishStage('CUBE')
+      }
     },
   },
   GOOSE: {
@@ -294,6 +310,9 @@ const stageInfo: {
     description: '거위가 돌아다니는 컴퓨터를 둘러보며 와플을 찾아보세요.',
     toStage: () => {
       StageManager.instance.toStage(gooseStage);
+      gooseStage.unmountListener = () => {
+        StageManager.instance.finishStage('GOOSE')
+      }
     },
   },
   ROOM: {
