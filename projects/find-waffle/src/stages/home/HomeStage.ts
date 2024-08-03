@@ -1,6 +1,5 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { onumber } from 'zod';
 
 import { Stage } from '../../core/stage/Stage';
 import { ListenableRaycaster } from '../../libs/raycaster/Raycaster';
@@ -49,11 +48,11 @@ export class HomeStage extends Stage {
     this.#container.style.cssText =
       'display: flex; flex-direction: column; align-items: center; width: 100%; margin: 2.75rem 0;';
     this.#container.innerHTML = `
-  <img src="find_waffle.svg"/>
+  <img src="find_waffle.svg" style="transition: opacity 0.5s;"/>
   <div style="flex-grow: 1"></div>
-  <img src="we_serve.svg"/>
+  <img src="we_serve.svg" style="transition: opacity 0.5s;"/>
   <div style="height: 12px;"></div>
-  <img src="copyright.svg"/>
+  <img src="copyright.svg" style="transition: opacity 0.5s;"/>
 `;
     this.#app.prepend(this.#container);
 
@@ -133,6 +132,41 @@ export class HomeStage extends Stage {
           document.body.style.cursor = 'default';
           jams.forEach((jam) => {
             gsap.to(jam.material, { opacity: 0, duration: 0.2 });
+          });
+        }
+      },
+      jams.map((jam) => jam.mesh),
+    );
+
+    this.#raycaster.registerCallback(
+      'click',
+      (intersects) => {
+        if (intersects.length > 0) {
+          const jam = jams.find(
+            (jam) => jam.mesh.id === intersects[0].object.id,
+          );
+          if (jam) {
+            gsap.to(this.#camera.position, {
+              x: jam.mesh.position.x * 1.1,
+              y: 100,
+              z: jam.mesh.position.z * 1.1,
+              duration: 0.5,
+              ease: 'power2.out',
+            });
+            document.querySelectorAll('img').forEach((img) => {
+              img.style.opacity = '0';
+            });
+          }
+        } else {
+          gsap.to(this.#camera.position, {
+            x: 0,
+            y: 200,
+            z: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+          });
+          document.querySelectorAll('img').forEach((img) => {
+            img.style.opacity = '1';
           });
         }
       },
