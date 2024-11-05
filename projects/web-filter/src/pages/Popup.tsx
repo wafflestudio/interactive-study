@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import "./Popup.css";
 
-export default function() {
+import './Popup.css';
+
+export default function () {
   useEffect(() => {
-    console.log("Hello from the popup!");
+    console.log('Hello from the popup!');
   }, []);
 
   return (
@@ -12,5 +13,5 @@ export default function() {
       <h1>Web Filter</h1>
       <p>by. Team Seoee - Interactive Study</p>
     </div>
-  )
+  );
 }
