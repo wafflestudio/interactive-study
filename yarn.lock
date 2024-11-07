@@ -2294,6 +2294,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome@npm:^0.0.280":
+  version: 0.0.280
+  resolution: "@types/chrome@npm:0.0.280"
+  dependencies:
+    "@types/filesystem": "npm:*"
+    "@types/har-format": "npm:*"
+  checksum: 81aed88de06e264049b8fdfefa54d6ce930dfc44aaea11eb95743fd6b856edf6e9a9974914ccf64359eee30808c0b3368e6ae2a1be97b2195962b3fbcdcc3138
+  languageName: node
+  linkType: hard
+
 "@types/css-font-loading-module@npm:^0.0.12":
   version: 0.0.12
   resolution: "@types/css-font-loading-module@npm:0.0.12"
@@ -2319,6 +2329,29 @@ __metadata:
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
   checksum: 9d35d475095199c23e05b431bcdd1f6fec7380612aed068b14b2a08aa70494de8a9026765a5a91b1073f636fb0368f6d8973f518a31391d519e20c59388ed88d
+  languageName: node
+  linkType: hard
+
+"@types/filesystem@npm:*":
+  version: 0.0.36
+  resolution: "@types/filesystem@npm:0.0.36"
+  dependencies:
+    "@types/filewriter": "npm:*"
+  checksum: ec831040fe3aff066ffb7b7541e21a5dd59aa06e7175c61e592736e38b018b1d513551438254631e2a3fbc81ff671bf618401000f4c8ea79156934cbc7dcaeaa
+  languageName: node
+  linkType: hard
+
+"@types/filewriter@npm:*":
+  version: 0.0.33
+  resolution: "@types/filewriter@npm:0.0.33"
+  checksum: 495a4bb424c27eda967fe9ac3b8f7b781e6b3f9ce59403a991590cb1073022f9c5383d3c7d808ef6956b785550c36664c4fcd502dc0baf69e340bd481171e0ca
+  languageName: node
+  linkType: hard
+
+"@types/har-format@npm:*":
+  version: 1.2.16
+  resolution: "@types/har-format@npm:1.2.16"
+  checksum: b7ecef1ca27b902f9eb0bff9cebe650370f594e20813a728853673b22400afa08966eb5fd725553c19811bc166947e1c845e92ce4df86cee79d4fd9bda4d251b
   languageName: node
   linkType: hard
 
@@ -8675,6 +8708,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web-filter@workspace:projects/web-filter"
   dependencies:
+    "@types/chrome": "npm:^0.0.280"
     "@types/react": "npm:^18.0.26"
     "@types/react-dom": "npm:^18.0.9"
     "@types/webextension-polyfill": "npm:^0.10.0"
