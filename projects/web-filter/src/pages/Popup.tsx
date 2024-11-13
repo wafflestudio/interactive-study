@@ -39,6 +39,15 @@ export default function () {
     }
   };
 
+  const stopSelection = async () => {
+    const tab = await getCurrentTab();
+    if (tab?.id) {
+      chrome.tabs.sendMessage(tab.id, {
+        action: MessageAction.STOP_SELECTION,
+      });
+    }
+  };
+
   // TODO: (테스트) 인라인 스타일은 후에 css 파일로 분리
   return (
     <div>
@@ -52,6 +61,16 @@ export default function () {
         }}
       >
         요소 선택
+      </button>
+
+      <button
+        onClick={stopSelection}
+        style={{
+          width: '100px',
+          height: '30px',
+        }}
+      >
+        요소 선택 안하는 모드
       </button>
 
       <section style={{ display: 'flex', gap: '10px' }}>
