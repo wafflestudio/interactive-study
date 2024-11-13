@@ -1,4 +1,5 @@
 import sampleSrc from '../../assets/sample-image.png';
+// static folder 사용 불가능
 import { Button } from '../../components/Button/Button';
 import { Header } from '../../components/Header/Header';
 import styles from './Popup.module.css';
