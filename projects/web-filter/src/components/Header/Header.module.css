@@ -1,0 +1,15 @@
+.Header {
+  padding-left: 21px;
+  padding-right: 14px;
+  flex: 0 0 51px;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  flex: 1 1 auto;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 20px;
+  color: white;
+}

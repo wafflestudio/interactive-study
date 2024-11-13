@@ -8,7 +8,8 @@ export default function () {
   }, []);
 
   return (
-    <div>
+    <div className="container">
+      <div className="header"></div>
       <img src="/coffee-filter.png" />
       <h1>Web Filter</h1>
       <p>by. Team Seoee - Interactive Study</p>
