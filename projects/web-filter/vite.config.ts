@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
 
 function generateManifest() {
-  const manifest = readJsonFile('src/manifest.json');
+  const manifest = readJsonFile('src/manifest-native.json'); // "src/manifest-content.json"로 바꾸면 자체 팝업 사용
   const pkg = readJsonFile('package.json');
   return {
     name: pkg.name,
