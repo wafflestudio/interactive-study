@@ -2,17 +2,23 @@ import { createRoot } from 'react-dom/client';
 
 import { VintageFilter } from './filters/VintageFilter';
 import { WaveFilter } from './filters/WaveFilter';
-import { useElementSelection } from './helpers/hooks/useElementSelection';
+import { useActionHandler } from './helpers/hooks/useActionHandler';
+import { useMessageListener } from './helpers/hooks/useMessageListener';
 
 const app = document.createElement('div');
 
 app.id = 'web-filter-app';
-app.style.display = 'none';
 
 document.body.appendChild(app);
 
 export const Content = () => {
-  useElementSelection();
+  const { startSelection, stopSelection, applyFilter } = useActionHandler();
+
+  useMessageListener({
+    onStartSelection: startSelection,
+    onApplyFilter: applyFilter,
+    onStopSelection: stopSelection,
+  });
 
   return (
     <svg>
