@@ -1,7 +1,7 @@
 .PopupNative {
   display: flex;
   flex-direction: column;
-  /* animation: open 0.3s ease; */
+  animation: open 0.3s ease;
 }
 
 .PopupNative .slider {
@@ -36,6 +36,18 @@
   font-size: 10px;
   color: white;
   font-weight: 400;
+}
+
+.PopupNative .divider {
+  background-color: rgba(51, 51, 51, 1);
+  height: 1px;
+  margin: 0 10px;
+}
+.PopupNative .footer {
+  padding: 17px 22px 22px 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
 }
 
 @keyframes open {

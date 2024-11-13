@@ -1,4 +1,5 @@
 import sampleSrc from '../../assets/sample-image.png';
+import { Button } from '../../components/Button/Button';
 import { Header } from '../../components/Header/Header';
 import styles from './Popup.module.css';
 
@@ -19,7 +20,11 @@ export const Popup = () => {
           )}
         </div>
       </div>
-      <footer></footer>
+      <div className={styles.divider} />
+      <footer className={styles.footer}>
+        <Button theme="gray">필터 초기화</Button>
+        <Button>적용하기</Button>
+      </footer>
     </article>
   );
 };
