@@ -1,8 +1,18 @@
 import { Button } from '../../components/Button/Button';
 import { Header } from '../../components/Header/Header';
+import { STATUS } from '../../types/status';
 import styles from './PopupNative.module.css';
 
 export const PopupNative = () => {
+  const handleStartSelectElement = async () => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tabId = tabs[0]?.id;
+
+    if (tabId) {
+      await chrome.runtime.sendMessage({ tabId, action: STATUS.SURFING });
+    }
+  };
+
   return (
     <article className={styles.PopupNative}>
       <Header />
@@ -22,7 +32,9 @@ export const PopupNative = () => {
       <div className={styles.divider} />
       <footer className={styles.footer}>
         <Button theme="gray">필터 초기화</Button>
-        <Button>적용하기</Button>
+        <Button theme="blue" onClick={handleStartSelectElement}>
+          요소 선택하기
+        </Button>
       </footer>
     </article>
   );
