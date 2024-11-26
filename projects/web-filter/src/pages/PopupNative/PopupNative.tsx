@@ -1,6 +1,6 @@
 import { Button } from '../../components/Button/Button';
 import { Header } from '../../components/Header/Header';
-import { STATUS } from '../../types/status';
+import { ACTION } from '../../types/status';
 import styles from './PopupNative.module.css';
 
 export const PopupNative = () => {
@@ -9,7 +9,20 @@ export const PopupNative = () => {
     const tabId = tabs[0]?.id;
 
     if (tabId) {
-      await chrome.runtime.sendMessage({ tabId, action: STATUS.SURFING });
+      await chrome.runtime.sendMessage({
+        tabId,
+        action: ACTION.START_SELECT_ELEMENT,
+      });
+    }
+  };
+
+  const handleFilterClick = async (filterId: string) => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tabId = tabs[0]?.id;
+    const action = ACTION.APPLY_FILTER;
+
+    if (tabId) {
+      await chrome.runtime.sendMessage({ tabId, action, filterId });
     }
   };
 
@@ -19,14 +32,25 @@ export const PopupNative = () => {
       <img src="/sample-image.png" />
       <div className={styles.slider}>
         <div className={styles.filterList}>
-          {['적록색맹', '필름카메라', '유리창', '빛 번짐', '기타'].map(
-            (filterName) => (
-              <div key={filterName} className={styles.filterItem}>
-                <img src="/sample-image.png" />
-                <h3 className={styles.filterName}>{filterName}</h3>
-              </div>
-            ),
-          )}
+          {[
+            {
+              filterId: 'wave',
+              filterName: '파도',
+            },
+            {
+              filterId: 'vintage',
+              filterName: '빈티지',
+            },
+          ].map(({ filterId, filterName }) => (
+            <div
+              key={filterId}
+              className={styles.filterItem}
+              onClick={() => handleFilterClick(filterId)}
+            >
+              <img src="/sample-image.png" />
+              <h3 className={styles.filterName}>{filterName}</h3>
+            </div>
+          ))}
         </div>
       </div>
       <div className={styles.divider} />

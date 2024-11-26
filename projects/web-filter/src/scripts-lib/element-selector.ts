@@ -1,9 +1,10 @@
 import { STATUS } from '../types/status';
 import { overlayStyles } from './element-selector.styles';
 
+// TODO: 리스너 해제 연결, 초기화
 export class ElementSelector {
   private status: STATUS = STATUS.INACTIVE;
-  private selectedElement: Element | null = null;
+  private selectedElement: HTMLElement | null = null;
   private styleSheet: HTMLStyleElement | null = null;
   private currentTheme: keyof typeof overlayStyles.themes = 'default';
   private overlay: HTMLElement | null = null;
@@ -22,6 +23,13 @@ export class ElementSelector {
       status: this.status,
       selectedElement: this.selectedElement ?? null,
     });
+  }
+
+  public applyFilter(filterId: string) {
+    if (!this.selectedElement) return;
+
+    console.log(this.selectedElement);
+    this.selectedElement.style.filter = `url(#${filterId})`;
   }
 
   private handleMouseMove = (e: MouseEvent) => {
@@ -81,7 +89,7 @@ export class ElementSelector {
   }
 
   private highlightElement = (overlay: HTMLElement) => {
-    overlay.style.transform = 'scale(1.03)';
+    overlay.style.transform = 'scale(1.01)';
     setTimeout(() => (overlay.style.transform = 'scale(1)'), 300);
   };
 
@@ -90,7 +98,7 @@ export class ElementSelector {
     e.stopPropagation();
 
     const element = document.elementFromPoint(e.clientX, e.clientY);
-    if (!element) return;
+    if (!element || !(element instanceof HTMLElement)) return;
 
     // 현재 선택된 요소와 새로 클릭한 요소가 다른 경우 선택 상태 해제
     if (this.selectedElement && this.selectedElement !== element) {
@@ -155,7 +163,7 @@ export class ElementSelector {
    * public methods
    */
   public surfingElements = () => {
-    // TODO: 화면에서 기존 요소와의 인터랙션을 불가능하게 해야함
+    // TODO: 화면에서 기존 요소와의 인터랙션을 불가능하게 하기
     this.setStatus(STATUS.SURFING);
   };
 

@@ -1,7 +1,7 @@
 export function WaveFilter() {
   return (
     <filter
-      id="filter"
+      id="wave"
       x="-20%"
       y="-20%"
       width="140%"

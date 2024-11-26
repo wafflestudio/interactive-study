@@ -9,7 +9,7 @@ browser.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   try {
     if (message.tabId && message.action) {
-      chrome.tabs.sendMessage(message.tabId, { action: message.action });
+      chrome.tabs.sendMessage(message.tabId, { ...message });
     }
     sendResponse({ success: true });
   } catch (error) {
