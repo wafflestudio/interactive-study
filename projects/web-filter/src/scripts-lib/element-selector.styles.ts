@@ -17,29 +17,29 @@ export const overlayStyles = {
         );
         border: 3px solid transparent;
         box-shadow: 
-          0 0 0 2px rgba(62, 184, 255, 0.3),
-          0 0 10px rgba(62, 184, 255, 0.2),
-          inset 0 0 20px rgba(62, 184, 255, 0.1);
+          0 0 0 2px rgba(62, 184, 255, 0.4),
+          0 0 10px rgba(62, 184, 255, 0.3),
+          inset 0 0 20px rgba(62, 184, 255, 0.2);
       `,
       keyframes: `
         @keyframes pulse {
           0% {
             box-shadow: 
-              0 0 0 2px rgba(62, 184, 255, 0.3),
-              0 0 10px rgba(62, 184, 255, 0.2),
-              inset 0 0 20px rgba(62, 184, 255, 0.1);
+              0 0 0 2px rgba(62, 184, 255, 0.4),
+              0 0 10px rgba(62, 184, 255, 0.3),
+              inset 0 0 20px rgba(62, 184, 255, 0.2);
           }
           50% {
             box-shadow: 
-              0 0 0 4px rgba(62, 184, 255, 0.3),
-              0 0 15px rgba(62, 184, 255, 0.2),
-              inset 0 0 30px rgba(62, 184, 255, 0.1);
+              0 0 0 4px rgba(62, 184, 255, 0.4),
+              0 0 15px rgba(62, 184, 255, 0.3),
+              inset 0 0 30px rgba(62, 184, 255, 0.2);
           }
           100% {
             box-shadow: 
-              0 0 0 2px rgba(62, 184, 255, 0.3),
-              0 0 10px rgba(62, 184, 255, 0.2),
-              inset 0 0 20px rgba(62, 184, 255, 0.1);
+              0 0 0 2px rgba(62, 184, 255, 0.4),
+              0 0 10px rgba(62, 184, 255, 0.3),
+              inset 0 0 20px rgba(62, 184, 255, 0.2);
           }
         }
       `,
