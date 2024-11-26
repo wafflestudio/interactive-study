@@ -21,7 +21,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content.ts"],
+      "js": ["src/content.tsx"],
       "all_frames": true
     }
   ],
