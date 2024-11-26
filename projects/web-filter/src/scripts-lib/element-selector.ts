@@ -25,6 +25,9 @@ export class ElementSelector {
   }
 
   private handleMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (this.status !== STATUS.SURFING) return;
 
     const element = document.elementFromPoint(e.clientX, e.clientY);
@@ -79,10 +82,13 @@ export class ElementSelector {
 
   private highlightElement = (overlay: HTMLElement) => {
     overlay.style.transform = 'scale(1.03)';
-    setTimeout(() => (overlay.style.transform = 'scale(1)'), 200);
+    setTimeout(() => (overlay.style.transform = 'scale(1)'), 300);
   };
 
   private handleMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     const element = document.elementFromPoint(e.clientX, e.clientY);
     if (!element) return;
 
