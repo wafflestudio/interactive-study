@@ -82,22 +82,24 @@ export class ElementSelector {
     setTimeout(() => (overlay.style.transform = 'scale(1)'), 200);
   };
 
-  private handleClick = (e: MouseEvent) => {
-    if (this.status !== STATUS.SURFING) return;
-
+  private handleMouseDown = (e: MouseEvent) => {
     const element = document.elementFromPoint(e.clientX, e.clientY);
     if (!element) return;
+
+    // 현재 선택된 요소와 새로 클릭한 요소가 다른 경우 선택 상태 해제
+    if (this.selectedElement && this.selectedElement !== element) {
+      this.selectedElement = null;
+      this.setStatus(STATUS.SURFING);
+      return;
+    }
 
     this.selectedElement = element;
     this.setStatus(STATUS.SELECTED);
 
     // 선택 효과 적용
-    const overlay = document.getElementById('web_filter_overlay_element');
-    if (overlay) {
-      const theme = overlayStyles.themes[this.currentTheme];
-      overlay.style.animation = 'none';
-      overlay.style.transform = 'scale(1)';
-      overlay.style.border = '2px solid ' + this.getThemeColor();
+    if (this.overlay) {
+      this.overlay.style.border = '2px solid ' + this.getThemeColor();
+      // TODO: 여기서 팝업에서 정보 받을 수 있게 넘겨주기
     }
   };
 
@@ -115,6 +117,17 @@ export class ElementSelector {
     }
   }
 
+  private handleScroll = () => {
+    // 요소 따라다니는 오버레이 위치 업데이트
+    if (this.overlay && this.selectedElement) {
+      const rect = this.selectedElement.getBoundingClientRect();
+      this.overlay.style.left = `${rect.left}px`;
+      this.overlay.style.top = `${rect.top}px`;
+      this.overlay.style.width = `${rect.width}px`;
+      this.overlay.style.height = `${rect.height}px`;
+    }
+  };
+
   private handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       this.cleanupOverlay();
@@ -124,8 +137,9 @@ export class ElementSelector {
   };
 
   private bindEvents = () => {
-    window.addEventListener('click', this.handleClick);
+    window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('mousedown', this.handleMouseDown);
     window.addEventListener('mousemove', this.handleMouseMove);
   };
 
@@ -135,6 +149,7 @@ export class ElementSelector {
    * public methods
    */
   public surfingElements = () => {
+    // TODO: 화면에서 기존 요소와의 인터랙션을 불가능하게 해야함
     this.setStatus(STATUS.SURFING);
   };
 
@@ -164,12 +179,9 @@ export class ElementSelector {
   public destroy = () => {
     this.cleanupOverlay();
 
-    window.removeEventListener('click', this.handleClick);
+    window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('mousedown', this.handleMouseDown);
     window.removeEventListener('mousemove', this.handleMouseMove);
   };
-
-  // TODO: mouseleave? 일 때 overlay 제거해주기
-  // 다른 요소가 호버링되면, 감지되면 기존 Overlay 제거?
-  // 선택한 정보 넘기기
 }
