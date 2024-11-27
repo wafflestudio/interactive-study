@@ -2,7 +2,11 @@ import { STATUS } from '../types/status';
 import { overlayStyles } from './element-selector.styles';
 
 // TODO: 리스너 해제 연결, 초기화
+// TODO: selected element 정보 popup에 전달
+// TODO: 화면에서 기존 요소와의 인터랙션을 불가능하게 하기
 export class ElementSelector {
+  private OVERLAY_ID = 'web_filter_overlay_element';
+
   private status: STATUS = STATUS.INACTIVE;
   private selectedElement: HTMLElement | null = null;
   private styleSheet: HTMLStyleElement | null = null;
@@ -15,21 +19,6 @@ export class ElementSelector {
 
   private setStatus(status: STATUS) {
     this.status = status;
-    this.notifyPopup();
-  }
-
-  private notifyPopup() {
-    chrome.runtime.sendMessage({
-      status: this.status,
-      selectedElement: this.selectedElement ?? null,
-    });
-  }
-
-  public applyFilter(filterId: string) {
-    if (!this.selectedElement) return;
-
-    console.log(this.selectedElement);
-    this.selectedElement.style.filter = `url(#${filterId})`;
   }
 
   private handleMouseMove = (e: MouseEvent) => {
@@ -42,8 +31,7 @@ export class ElementSelector {
     if (!element) return;
 
     const overlay =
-      document.getElementById('web_filter_overlay_element') ||
-      this.createOverlay();
+      document.getElementById(this.OVERLAY_ID) || this.createOverlay();
 
     const rect = element.getBoundingClientRect();
     overlay.style.left = `${rect.left}px`;
@@ -61,7 +49,7 @@ export class ElementSelector {
     }
 
     const overlay = document.createElement('div');
-    overlay.id = 'web_filter_overlay_element';
+    overlay.id = this.OVERLAY_ID;
 
     this.updateOverlayStyle(overlay);
 
@@ -167,13 +155,16 @@ export class ElementSelector {
     this.setStatus(STATUS.SURFING);
   };
 
+  public applyFilter(filterId: string) {
+    if (!this.selectedElement) return;
+    this.selectedElement.style.filter = `url(#${filterId})`;
+  }
+
   public setTheme = (theme: keyof typeof overlayStyles.themes) => {
     this.currentTheme = theme;
-    const overlay = document.getElementById('web_filter_overlay_element');
+    const overlay = document.getElementById(this.OVERLAY_ID);
 
-    if (overlay) {
-      this.updateOverlayStyle(overlay);
-    }
+    if (overlay) this.updateOverlayStyle(overlay);
   };
 
   public cleanupOverlay = () => {
