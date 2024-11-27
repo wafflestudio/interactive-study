@@ -4,6 +4,7 @@ import { overlayStyles } from './element-selector.styles';
 // TODO: 리스너 해제 연결, 초기화
 // TODO: selected element 정보 popup에 전달
 // TODO: 화면에서 기존 요소와의 인터랙션을 불가능하게 하기
+// TODO: 탭간 이동시 초기화
 export class ElementSelector {
   private OVERLAY_ID = 'web_filter_overlay_element';
 
