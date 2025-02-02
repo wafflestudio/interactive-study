@@ -34,6 +34,14 @@ const projectData: ProjectData[] = [
     videoSrc: `${import.meta.env.BASE_URL}waffle-sans_video.mp4`,
     url: 'https://interactive-study.wafflestudio.com/projects/waffle-sans/',
   },
+  {
+    id: 3,
+    title: "FIND WAFFLE",
+    description: '나는 어디 여긴 누구..\n4가지 와플 찾기 게임을 통해 3D 웹사이트를 구경해보세요!',
+    thumbnailSrc: `${import.meta.env.BASE_URL}find-waffle_thumbnail.png`,
+    videoSrc: `${import.meta.env.BASE_URL}find-waffle_video.mov`,
+    url: 'https://interactive-study.wafflestudio.com/projects/find-waffle/',
+  }
 ];
 
 export default projectData;

@@ -33,6 +33,30 @@ const developerData: MemberData[] = [
     github: 'designDefined',
     githubUrl: 'https://github.com/designDefined',
   },
+  {
+    id: 6,
+    thumbnailSrc: `${import.meta.env.BASE_URL}hyeonji.jpeg`,
+    name: '신현지',
+    email: 'hyeonji.shn@gmail.com',
+    github: 'nyanxyz',
+    githubUrl: 'https://github.com/nyanxyz',
+  },
+  {
+    id: 7,
+    thumbnailSrc: `${import.meta.env.BASE_URL}seongyeol.jpeg`,
+    name: '이성열',
+    email: 'yeolyi1310@gmail.com',
+    github: 'yeolyi',
+    githubUrl: 'https://github.com/yeolyi',
+  },
+  {
+    id: 8,
+    thumbnailSrc: `${import.meta.env.BASE_URL}changin.png`,
+    name: '백창인',
+    email: 'nuagenic@gmail.com',
+    github: 'nuagenic',
+    githubUrl: 'https://github.com/nuagenic',
+  },
 ];
 
 const designerData: MemberData[] = [

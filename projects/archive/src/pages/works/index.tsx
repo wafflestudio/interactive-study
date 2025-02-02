@@ -38,7 +38,7 @@ const ProjectWrapper = styled.div<{ $isSelected: boolean }>`
   display: flex;
   justify-content: center;
   width: ${({ $isSelected }) =>
-    $isSelected ? `calc(100vw * 125 / 189)` : `calc(100% * 25 / 189);`};
+    $isSelected ? `calc(100vw * 100 / 189)` : `calc(100% * 25 / 189);`};
   overflow: hidden;
   transition: width 0.5s;
 `;

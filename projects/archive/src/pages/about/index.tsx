@@ -11,7 +11,7 @@ export default function About() {
           인터랙티브 스터디는 웹 인터랙션의 가능성을 탐구하는 스터디입니다.
           <br />
           서울대학교 컴퓨터공학부 웹 개발 동아리 와플 스튜디오 소속의 스터디로,
-          개발자 3명, 디자이너 3명으로 구성되어있습니다.
+          개발자 6명, 디자이너 3명으로 구성되어있습니다.
           <br />
           <br />
           우리는 인터랙션이란 무엇인지 정의하는 것에서부터 출발하여, 웹페이지를
@@ -40,6 +40,9 @@ export default function About() {
             {memberData.designer.map((member) => (
               <Member member={member} />
             ))}
+            <EmptyMember />
+            <EmptyMember />
+            <EmptyMember />
           </List>
         </LabeledList>
       </Members>
@@ -55,7 +58,7 @@ const Container = styled.article`
   display: flex;
   justify-content: space-between;
   gap: 40px;
-  padding: 27vh 12vw;
+  padding: 10vh 12vw;
 
   font-family: 'Noto Sans KR', sans-serif;
 `;
@@ -85,6 +88,11 @@ const Members = styled.div`
   gap: 20px;
   justify-content: space-between;
 `;
+
+const EmptyMember = styled.div`
+  height: 64px;
+`;
+
 const LabeledList = styled.div`
   display: flex;
   flex-direction: column;

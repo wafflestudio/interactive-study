@@ -58,7 +58,7 @@ export default function Project({
 const Container = styled.section`
   display: flex;
   height: 100%;
-  width: calc(100vw * 125 / 189);
+  width: calc(100vw * 100 / 189);
   flex-direction: column-reverse;
   align-items: flex-end;
 `;
