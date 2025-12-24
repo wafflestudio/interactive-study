@@ -10,6 +10,7 @@ interface Params {
   initialText: string;
   fitToWidth?: boolean;
   minSize?: number;
+  align?: 'left' | 'center' | 'right';
 }
 
 export default function useWreathSans({
@@ -20,10 +21,11 @@ export default function useWreathSans({
   initialText,
   fitToWidth,
   minSize,
+  align,
 }: Params) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { WreathSansCanvas, resize, redraw, getText, onInputHandler } =
+  const { WreathSansCanvas, resize, redraw, getText, onInputHandler, setAlign } =
     useMemo(() => {
       return createWreathSans({
         initialText: initialText,
@@ -36,6 +38,7 @@ export default function useWreathSans({
         darkMode: darkMode ?? false,
         fitToWidth,
         minSize,
+        align,
       });
     }, [
       initialText,
@@ -45,6 +48,7 @@ export default function useWreathSans({
       darkMode,
       fitToWidth,
       minSize,
+      align,
       ref.current?.offsetWidth,
       ref.current?.offsetHeight,
     ]);
@@ -62,5 +66,13 @@ export default function useWreathSans({
     };
   }, [redraw, resize, ref]);
 
-  return { WreathSansCanvas, ref, resize, redraw, getText, onInputHandler };
+  return {
+    WreathSansCanvas,
+    ref,
+    resize,
+    redraw,
+    getText,
+    onInputHandler,
+    setAlign,
+  };
 }

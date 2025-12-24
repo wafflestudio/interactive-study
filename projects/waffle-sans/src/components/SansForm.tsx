@@ -14,19 +14,27 @@ import Textarea from './Textarea';
 
 interface Props {
   mode?: Mode;
+  align?: 'left' | 'center' | 'right';
 }
 
-export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
+export default function SansForm({ mode = Mode.OUTSIDE, align }: Props) {
   const router = useNavigate();
   const defaultValue = useMemo(() => 'interactive study', []);
-  const { ref, WreathSansCanvas, redraw, resize, getText, onInputHandler } =
-    useWreathSans({
-      width: window.innerWidth,
-      height: (window.innerHeight / 100) * 62,
-      initialText: defaultValue,
-      darkMode: mode === Mode.OUTSIDE,
-      fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
-    });
+  const {
+    ref,
+    WreathSansCanvas,
+    redraw,
+    resize,
+    getText,
+    onInputHandler,
+    setAlign,
+  } = useWreathSans({
+    width: window.innerWidth,
+    height: (window.innerHeight / 100) * 62,
+    initialText: defaultValue,
+    darkMode: mode === Mode.OUTSIDE,
+    fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
+  });
 
   const handleShare = useCallback(() => {
     if (!getText().trim()) {
@@ -34,10 +42,15 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
       return;
     }
     const text = encoder(getText());
+    const encodedAlign = encoder(align ?? 'left');
     mode === Mode.OUTSIDE
-      ? router(`/o-post?sans=${text}&mode=${encoder('o')}`)
-      : router(`/i-post?sans=${text}&mode=${encoder('i')}`);
-  }, [getText, mode, router]);
+      ? router(
+          `/o-post?sans=${text}&mode=${encoder('o')}&align=${encodedAlign}`,
+        )
+      : router(
+          `/i-post?sans=${text}&mode=${encoder('i')}&align=${encodedAlign}`,
+        );
+  }, [align, getText, mode, router]);
 
   useEffect(() => {
     function handleResize() {
@@ -48,6 +61,10 @@ export default function SansForm({ mode = Mode.OUTSIDE }: Props) {
       window.removeEventListener('resize', handleResize);
     };
   }, [resize]);
+
+  useEffect(() => {
+    if (align) setAlign(align);
+  }, [align, setAlign]);
 
   return (
     <Container>

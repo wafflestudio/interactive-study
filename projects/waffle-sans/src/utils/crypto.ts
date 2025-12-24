@@ -21,6 +21,7 @@ export const decodeParams = (url: URL) => {
   const decodedReceiver = decoder(url, 'receiver');
   const decodedSans = decoder(url, 'sans');
   const decodedMode = decoder(url, 'mode');
+  const decodedAlign = decoder(url, 'align');
 
   return {
     sender: decodedSender,
@@ -28,5 +29,6 @@ export const decodeParams = (url: URL) => {
     receiver: decodedReceiver,
     sans: decodedSans,
     mode: decodedMode,
+    align: decodedAlign,
   };
 };

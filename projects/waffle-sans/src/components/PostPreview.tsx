@@ -15,10 +15,15 @@ export default function PostPreview({ mode = Mode.OUTSIDE }: Props) {
   const value = useRecoilValue(postFormState);
   const url = useMemo(() => new URL(window.location.href), []);
   const sans = useMemo(() => decoder(url, 'sans'), [url]);
+  const align = useMemo(() => decoder(url, 'align'), [url]);
   const { ref, WreathSansCanvas } = useWreathSans({
     initialText: sans,
     darkMode: mode === Mode.OUTSIDE,
     fontColor: mode === Mode.OUTSIDE ? '#704234' : '#B27E41',
+    align:
+      align === 'left' || align === 'center' || align === 'right'
+        ? align
+        : undefined,
   });
 
   return (

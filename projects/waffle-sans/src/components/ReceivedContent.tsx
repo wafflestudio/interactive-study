@@ -9,6 +9,7 @@ type ReceivedContentProps = {
   sans: string;
   mode: string;
   stage?: string;
+  align?: string;
 };
 
 export default function ReceivedContent({
@@ -17,9 +18,12 @@ export default function ReceivedContent({
   sans,
   mode,
   stage,
+  align,
 }: ReceivedContentProps) {
   const [width, setWidth] = useState(280);
   const [height, setHeight] = useState(196);
+  console.log(align)
+  align = align ?? 'center';
 
   const { ref, WreathSansCanvas, redraw } = useWreathSans({
     width,
@@ -29,6 +33,10 @@ export default function ReceivedContent({
     fontColor: mode === 'o' ? '#704234' : '#B27E41',
     fitToWidth: true,
     minSize: 0,
+    align:
+      align === 'left' || align === 'center' || align === 'right'
+        ? align
+        : undefined,
   });
 
   useEffect(() => {

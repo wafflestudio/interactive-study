@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,12 +10,36 @@ import { GRID } from '../constants/breakpoint';
 
 export default function OutsideSans() {
   const router = useNavigate();
+  const [align, setAlign] = useState<'left' | 'center' | 'right'>('left');
 
   return (
     <Container>
       <Content>
         <Header />
-        <SansForm />
+        <AlignControls>
+          <AlignButton
+            type="button"
+            $active={align === 'left'}
+            onClick={() => setAlign('left')}
+          >
+            LEFT
+          </AlignButton>
+          <AlignButton
+            type="button"
+            $active={align === 'center'}
+            onClick={() => setAlign('center')}
+          >
+            CENTER
+          </AlignButton>
+          <AlignButton
+            type="button"
+            $active={align === 'right'}
+            onClick={() => setAlign('right')}
+          >
+            RIGHT
+          </AlignButton>
+        </AlignControls>
+        <SansForm align={align} />
       </Content>
 
       <Background />
@@ -60,6 +85,25 @@ const Content = styled.div`
       transform: translateY(0px);
     }
   }
+`;
+
+const AlignControls = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+`;
+
+const AlignButton = styled.button<{ $active: boolean }>`
+  appearance: none;
+  border: 1px solid ${({ $active }) => ($active ? '#2e3a2c' : '#c6d7c5')};
+  background: ${({ $active }) => ($active ? '#2e3a2c' : 'transparent')};
+  color: ${({ $active }) => ($active ? '#ffffff' : '#2e3a2c')};
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
 `;
 
 const BackBtnContainer = styled.div`

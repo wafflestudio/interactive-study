@@ -12,9 +12,16 @@ type LetterProps = {
   content: string;
   sans: string;
   mode: string;
+  align?: string;
 };
 
-export default function Letter({ sender, content, sans, mode }: LetterProps) {
+export default function Letter({
+  sender,
+  content,
+  sans,
+  mode,
+  align,
+}: LetterProps) {
   const [stage, setStage] = useState<(typeof stages)[number]>('shake');
   const parsedMode = useMemo(
     () => (mode === 'o' ? 'outside' : 'inside'),
@@ -45,6 +52,7 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
             content={content}
             mode={mode}
             stage={stage}
+            align={align}
           />
         </PaperWrapper>
         <LetterFront

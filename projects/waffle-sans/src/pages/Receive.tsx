@@ -6,7 +6,7 @@ import MobileFooter from '../components/MobileFooter';
 import { decodeParams } from '../utils/crypto';
 
 export default function Receive() {
-  const { sender, content, receiver, sans, mode } = useMemo(
+  const { sender, content, receiver, sans, mode, align } = useMemo(
     () => decodeParams(new URL(window.location.href)),
     [],
   );
@@ -16,7 +16,13 @@ export default function Receive() {
       <Dim />
       <Main>
         <ToWhom>{receiver}님에게 편지가 왔어요!</ToWhom>
-        <Letter sender={sender} content={content} sans={sans} mode={mode} />
+        <Letter
+          sender={sender}
+          content={content}
+          sans={sans}
+          mode={mode}
+          align={align}
+        />
         <FooterWrapper>
           <MobileFooter />
         </FooterWrapper>

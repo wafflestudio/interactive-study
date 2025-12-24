@@ -1,4 +1,4 @@
-import { CHARSET } from 'leonsans';
+import { Align, CHARSET } from 'leonsans';
 import { ComponentPropsWithoutRef } from 'react';
 
 import WreathSansController from '../domain/WreathSansController';
@@ -9,6 +9,7 @@ type Props = {
   color?: string;
   size?: number;
   weight?: number;
+  align?: Align;
   // canvas config
   width?: number;
   height?: number;
@@ -25,6 +26,7 @@ export default function createWreathSans({
   color = '#000000',
   size = 60,
   weight = 400,
+  align = 'left',
   width = 800,
   height = 600,
   background = '#ffffff',
@@ -44,6 +46,7 @@ export default function createWreathSans({
       color,
       size,
       weight,
+      align,
     },
   });
 
@@ -140,11 +143,16 @@ export default function createWreathSans({
     return wreathSansController.leon.text;
   }
 
+  function setAlign(newAlign: Align) {
+    wreathSansController.align = newAlign;
+  }
+
   return {
     WreathSansCanvas,
     onInputHandler,
     resize,
     redraw,
     getText,
+    setAlign,
   };
 }

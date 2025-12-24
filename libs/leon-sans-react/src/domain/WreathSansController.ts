@@ -42,6 +42,7 @@ type LeonOptions = {
   size?: number;
   weight?: number;
   pathGap?: number;
+  align?: Align;
 };
 
 type WreathSansProps = {
@@ -108,6 +109,7 @@ export default class WreathSansController {
       weight: leonOptions?.weight ?? 400,
       isPattern: true,
       pathGap: leonOptions?.pathGap ?? 1 / 20,
+      align: leonOptions?.align ?? 'left',
     });
 
     this.leon.update();
@@ -179,6 +181,7 @@ export default class WreathSansController {
 
   set align(align: Align) {
     this.leon.align = align;
+    this.leon.updateDrawingPaths();
     this.updatePositions();
   }
 
