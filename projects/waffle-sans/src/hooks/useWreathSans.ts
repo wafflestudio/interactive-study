@@ -25,33 +25,40 @@ export default function useWreathSans({
 }: Params) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { WreathSansCanvas, resize, redraw, getText, onInputHandler, setAlign } =
-    useMemo(() => {
-      return createWreathSans({
-        initialText: initialText,
-        width: width ? width : ref.current?.offsetWidth ?? 330,
-        height: height ? height : ref.current?.offsetHeight ?? 234,
-        size: width ? width / 8 : 40,
-        color: fontColor ?? '#704234',
-        background: 'transparent',
-        backgroundAlpha: 0,
-        darkMode: darkMode ?? false,
-        fitToWidth,
-        minSize,
-        align,
-      });
-    }, [
-      initialText,
-      width,
-      height,
-      fontColor,
-      darkMode,
+  const {
+    WreathSansCanvas,
+    resize,
+    redraw,
+    getText,
+    onInputHandler,
+    setAlign,
+    getTextRect,
+  } = useMemo(() => {
+    return createWreathSans({
+      initialText: initialText,
+      width: width ? width : ref.current?.offsetWidth ?? 330,
+      height: height ? height : ref.current?.offsetHeight ?? 234,
+      size: width ? width / 8 : 40,
+      color: fontColor ?? '#704234',
+      background: 'transparent',
+      backgroundAlpha: 0,
+      darkMode: darkMode ?? false,
       fitToWidth,
       minSize,
       align,
-      ref.current?.offsetWidth,
-      ref.current?.offsetHeight,
-    ]);
+    });
+  }, [
+    initialText,
+    width,
+    height,
+    fontColor,
+    darkMode,
+    fitToWidth,
+    minSize,
+    align,
+    ref.current?.offsetWidth,
+    ref.current?.offsetHeight,
+  ]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,5 +81,6 @@ export default function useWreathSans({
     getText,
     onInputHandler,
     setAlign,
+    getTextRect,
   };
 }

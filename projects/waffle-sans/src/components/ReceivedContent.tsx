@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import useWreathSans from '../hooks/useWreathSans';
@@ -10,6 +10,7 @@ type ReceivedContentProps = {
   mode: string;
   stage?: string;
   align?: string;
+  onHeightChange?: (height: number) => void;
 };
 
 export default function ReceivedContent({
@@ -19,13 +20,20 @@ export default function ReceivedContent({
   mode,
   stage,
   align,
+  onHeightChange,
 }: ReceivedContentProps) {
   const [width, setWidth] = useState(280);
   const [height, setHeight] = useState(196);
-  console.log(align)
-  align = align ?? 'center';
+  const [baseHeight, setBaseHeight] = useState<number | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number | null>(null);
+  const [sansHeight, setSansHeight] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const baseSansHeight = useMemo(
+    () => (baseHeight ? baseHeight * 0.3 : null),
+    [baseHeight],
+  );
 
-  const { ref, WreathSansCanvas, redraw } = useWreathSans({
+  const { ref, WreathSansCanvas, redraw, resize, getTextRect } = useWreathSans({
     width,
     height,
     initialText: sans,
@@ -40,20 +48,62 @@ export default function ReceivedContent({
   });
 
   useEffect(() => {
-    if (ref?.current) {
-      setWidth(ref?.current?.offsetWidth);
-      setHeight(ref.current.offsetHeight);
-      redraw();
-    }
-  }, [redraw, ref]);
+    const updateBaseSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.offsetWidth;
+      setBaseHeight(containerWidth / 0.55);
+      if (ref.current) {
+        const wrapperWidth = ref.current.offsetWidth;
+        setWidth(wrapperWidth);
+      }
+    };
+    updateBaseSize();
+    window.addEventListener('resize', updateBaseSize);
+    return () => {
+      window.removeEventListener('resize', updateBaseSize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!baseHeight) return;
+    const updateSansHeight = () => {
+      const rect = getTextRect();
+      if (!rect || rect.h === 0) return;
+      const targetHeight = Math.ceil(rect.h + 12);
+      const minHeight = baseSansHeight ?? 0;
+      setSansHeight(Math.max(targetHeight, minHeight));
+    };
+    const rafId = requestAnimationFrame(updateSansHeight);
+    return () => cancelAnimationFrame(rafId);
+  }, [baseHeight, baseSansHeight, getTextRect, sans, stage]);
+
+  useEffect(() => {
+    if (!baseHeight || !baseSansHeight) return;
+    const nextSansHeight = sansHeight ?? baseSansHeight;
+    const delta = Math.max(0, nextSansHeight - baseSansHeight);
+    const nextHeight = Math.ceil(baseHeight + delta);
+    setContainerHeight(nextHeight);
+    onHeightChange?.(nextHeight);
+  }, [baseHeight, baseSansHeight, onHeightChange, sansHeight]);
+
+  useEffect(() => {
+    if (!sansHeight || !width) return;
+    setHeight(sansHeight);
+    resize(width, sansHeight);
+    redraw();
+  }, [redraw, resize, sansHeight, width]);
 
   useEffect(() => {
     redraw();
   }, [redraw, stage]);
 
   return (
-    <Container $isOutside={mode === 'o'}>
-      <SansWrapper ref={ref}>
+    <Container
+      ref={containerRef}
+      $isOutside={mode === 'o'}
+      $height={containerHeight}
+    >
+      <SansWrapper ref={ref} $height={sansHeight}>
         <WreathSansCanvas />
       </SansWrapper>
       <MainText $isOutside={mode === 'o'}>{content}</MainText>
@@ -63,11 +113,12 @@ export default function ReceivedContent({
   );
 }
 
-const Container = styled.div<{ $isOutside: boolean }>`
+const Container = styled.div<{ $isOutside: boolean; $height: number | null }>`
   position: relative;
   top: 10px;
   width: 100%;
-  aspect-ratio: 0.55;
+  height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
+  aspect-ratio: ${({ $height }) => ($height ? 'auto' : '0.55')};
   box-sizing: border-box;
 
   padding: 45px 40px;
@@ -85,9 +136,9 @@ const Container = styled.div<{ $isOutside: boolean }>`
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);
 `;
 
-const SansWrapper = styled.div`
+const SansWrapper = styled.div<{ $height: number | null }>`
   width: 100%;
-  height: 30%;
+  height: ${({ $height }) => ($height ? `${$height}px` : '30%')};
 `;
 
 const MainText = styled.div<{ $isOutside: boolean }>`

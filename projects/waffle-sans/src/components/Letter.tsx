@@ -23,10 +23,16 @@ export default function Letter({
   align,
 }: LetterProps) {
   const [stage, setStage] = useState<(typeof stages)[number]>('shake');
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
   const parsedMode = useMemo(
     () => (mode === 'o' ? 'outside' : 'inside'),
     [mode],
   );
+  const baseHeight = stage === 'out' ? 652 : 252;
+  const adjustedHeight =
+    stage === 'out' && contentHeight
+      ? Math.max(baseHeight, contentHeight)
+      : baseHeight;
 
   const onClickLetter = useCallback(() => {
     const currentStageIndex = stages.findIndex((s) => s === stage);
@@ -40,7 +46,7 @@ export default function Letter({
         $isOutside={parsedMode === 'outside'}
         $isOut={stage === 'out'}
       />
-      <Container onClick={onClickLetter} $stage={stage}>
+      <Container onClick={onClickLetter} $stage={stage} $height={adjustedHeight}>
         <LetterBack
           $isOutside={parsedMode === 'outside'}
           $isOut={stage === 'out'}
@@ -53,6 +59,7 @@ export default function Letter({
             mode={mode}
             stage={stage}
             align={align}
+            onHeightChange={setContentHeight}
           />
         </PaperWrapper>
         <LetterFront
@@ -92,10 +99,13 @@ export default function Letter({
   );
 }
 
-const Container = styled.div<{ $stage: 'shake' | 'close' | 'open' | 'out' }>`
+const Container = styled.div<{
+  $stage: 'shake' | 'close' | 'open' | 'out';
+  $height: number;
+}>`
   position: relative;
   width: 100%;
-  height: ${({ $stage }) => ($stage === 'out' ? '652px' : '252px')};
+  height: ${({ $height }) => `${$height}px`};
 
   transition: 1s ease;
 

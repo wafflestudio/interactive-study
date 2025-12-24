@@ -147,6 +147,10 @@ export default function createWreathSans({
     wreathSansController.align = newAlign;
   }
 
+  function getTextRect() {
+    return wreathSansController.getTextRect();
+  }
+
   return {
     WreathSansCanvas,
     onInputHandler,
@@ -154,5 +158,6 @@ export default function createWreathSans({
     redraw,
     getText,
     setAlign,
+    getTextRect,
   };
 }

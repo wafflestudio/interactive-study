@@ -1,5 +1,5 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { Align, CHARSET, ModelData } from 'leonsans';
+import { Align, CHARSET, ModelData, Rect } from 'leonsans';
 import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
 
@@ -342,6 +342,15 @@ export default class WreathSansController {
         this.updatePositions();
       }
     });
+  }
+
+  getTextRect(): Rect {
+    return {
+      x: this.leon.rect.x,
+      y: this.leon.rect.y,
+      w: this.leon.rect.w,
+      h: this.leon.rect.h,
+    };
   }
 
   /**
