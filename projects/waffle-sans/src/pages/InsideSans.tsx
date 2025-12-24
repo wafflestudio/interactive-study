@@ -9,7 +9,7 @@ import SnowFlakes from '../components/SnowFlakes';
 import { GRID } from '../constants/breakpoint';
 import { Mode } from '../types/mode';
 
-export default function OutsideSans() {
+export default function InsideSans() {
   const router = useNavigate();
 
   return (

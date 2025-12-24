@@ -27,6 +27,8 @@ export default function ReceivedContent({
     initialText: sans,
     darkMode: mode === 'o',
     fontColor: mode === 'o' ? '#704234' : '#B27E41',
+    fitToWidth: true,
+    minSize: 0,
   });
 
   useEffect(() => {

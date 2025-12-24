@@ -99,11 +99,12 @@ export default class WreathSansController {
   }: WreathSansProps) {
     const canvasWidth = canvas?.clientWidth ?? 300;
     const canvasHeight = canvas?.clientHeight ?? 300;
+    const initialSize = dynamicSize ? (leonOptions?.size ?? 130) : 0;
 
     this.leon = new LeonSans({
       text: initialText,
       color: [leonOptions?.color ?? '#704234'],
-      size: 0,
+      size: initialSize,
       weight: leonOptions?.weight ?? 400,
       isPattern: true,
       pathGap: leonOptions?.pathGap ?? 1 / 20,
@@ -373,7 +374,7 @@ export default class WreathSansController {
   private dynamicResize() {
     if (this.leon.rect.w === 0) return;
     const newSize = this.size * (this.canvas.clientWidth / this.leon.rect.w);
-    if (newSize >= this._minSize) this.size = newSize;
+    this.size = Math.max(newSize, this._minSize);
   }
 
   private async loadAssets() {

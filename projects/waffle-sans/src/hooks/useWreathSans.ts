@@ -8,6 +8,8 @@ interface Params {
   fontColor?: string;
   darkMode?: boolean;
   initialText: string;
+  fitToWidth?: boolean;
+  minSize?: number;
 }
 
 export default function useWreathSans({
@@ -16,6 +18,8 @@ export default function useWreathSans({
   darkMode,
   fontColor,
   initialText,
+  fitToWidth,
+  minSize,
 }: Params) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -30,6 +34,8 @@ export default function useWreathSans({
         background: 'transparent',
         backgroundAlpha: 0,
         darkMode: darkMode ?? false,
+        fitToWidth,
+        minSize,
       });
     }, [
       initialText,
@@ -37,6 +43,8 @@ export default function useWreathSans({
       height,
       fontColor,
       darkMode,
+      fitToWidth,
+      minSize,
       ref.current?.offsetWidth,
       ref.current?.offsetHeight,
     ]);

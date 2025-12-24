@@ -16,6 +16,8 @@ type Props = {
   background?: string;
   backgroundAlpha?: number;
   darkMode?: boolean;
+  fitToWidth?: boolean;
+  minSize?: number;
 };
 
 export default function createWreathSans({
@@ -28,12 +30,16 @@ export default function createWreathSans({
   background = '#ffffff',
   backgroundAlpha = 1,
   darkMode,
+  fitToWidth = false,
+  minSize,
 }: Props) {
   const wreathSansController = new WreathSansController({
     initialText,
     background,
     backgroundAlpha,
     darkMode,
+    dynamicSize: fitToWidth,
+    minSize,
     leonOptions: {
       color,
       size,
