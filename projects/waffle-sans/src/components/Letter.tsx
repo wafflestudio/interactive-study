@@ -12,7 +12,7 @@ type LetterProps = {
   content: string;
   sans: string;
   mode: string;
-  align?: string;
+  align: string;
 };
 
 export default function Letter({

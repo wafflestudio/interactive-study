@@ -8,9 +8,9 @@ type ReceivedContentProps = {
   content: string;
   sans: string;
   mode: string;
-  stage?: string;
-  align?: string;
-  onHeightChange?: (height: number) => void;
+  stage: string;
+  align: string;
+  onHeightChange: (height: number) => void;
 };
 
 export default function ReceivedContent({
@@ -25,7 +25,7 @@ export default function ReceivedContent({
   const [width, setWidth] = useState(280);
   const [height, setHeight] = useState(196);
   const [baseHeight, setBaseHeight] = useState<number | null>(null);
-  const [containerHeight, setContainerHeight] = useState<number | null>(null);
+  // const [containerHeight, setContainerHeight] = useState<number | null>(null);
   const [sansHeight, setSansHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const baseSansHeight = useMemo(
@@ -77,14 +77,21 @@ export default function ReceivedContent({
     return () => cancelAnimationFrame(rafId);
   }, [baseHeight, baseSansHeight, getTextRect, sans, stage]);
 
+  // TODO: 필요한가?
+  // useEffect(() => {
+  //   if (!baseHeight || !baseSansHeight) return;
+  //   const nextSansHeight = sansHeight ?? baseSansHeight;
+  //   const delta = Math.max(0, nextSansHeight - baseSansHeight);
+  //   const nextHeight = Math.ceil(baseHeight + delta);
+  //   setContainerHeight(nextHeight);
+  //   onHeightChange?.(nextHeight);
+  // }, [baseHeight, baseSansHeight, onHeightChange, sansHeight]);
+
   useEffect(() => {
-    if (!baseHeight || !baseSansHeight) return;
-    const nextSansHeight = sansHeight ?? baseSansHeight;
-    const delta = Math.max(0, nextSansHeight - baseSansHeight);
-    const nextHeight = Math.ceil(baseHeight + delta);
-    setContainerHeight(nextHeight);
-    onHeightChange?.(nextHeight);
-  }, [baseHeight, baseSansHeight, onHeightChange, sansHeight]);
+    if (!containerRef.current) return;
+    onHeightChange(containerRef.current.offsetHeight);
+  }, [sansHeight, containerRef, onHeightChange]);
+
 
   useEffect(() => {
     if (!sansHeight || !width) return;
@@ -101,7 +108,7 @@ export default function ReceivedContent({
     <Container
       ref={containerRef}
       $isOutside={mode === 'o'}
-      $height={containerHeight}
+      // $height={containerHeight}
     >
       <SansWrapper ref={ref} $height={sansHeight}>
         <WreathSansCanvas />
@@ -113,24 +120,25 @@ export default function ReceivedContent({
   );
 }
 
-const Container = styled.div<{ $isOutside: boolean; $height: number | null }>`
+const OUTSIDE_LETTER_BG = `${import.meta.env.BASE_URL}background_outside_letter.png`;
+const INSIDE_LETTER_BG = `${import.meta.env.BASE_URL}background_inside_letter.png`;
+
+const Container = styled.div<{ $isOutside: boolean; $height?: number | null }>`
   position: relative;
   top: 10px;
   width: 100%;
-  height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
-  aspect-ratio: ${({ $height }) => ($height ? 'auto' : '0.55')};
+  /* TODO: auto로 두면 안 되는 이유? */
+  /* height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
+  aspect-ratio: ${({ $height }) => ($height ? 'auto' : '0.55')}; */
   box-sizing: border-box;
 
-  padding: 45px 40px;
+  padding: 45px 40px 80px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3%;
+  gap: 10px;
 
-  background-image: url(${({ $isOutside }) =>
-    $isOutside
-      ? `${import.meta.env.BASE_URL}background_outside_letter.png`
-      : `${import.meta.env.BASE_URL}background_inside_letter.png`});
+  background-image: url(${({ $isOutside }) => $isOutside ? OUTSIDE_LETTER_BG : INSIDE_LETTER_BG});
   background-size: cover;
   background-position: bottom center;
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.15);
@@ -145,7 +153,6 @@ const MainText = styled.pre<{ $isOutside: boolean }>`
   color: ${({ $isOutside }) => ($isOutside ? `#315c57` : `#FEDCB4`)};
 
   width: 100%;
-  /* height: 30%; */
   flex-shrink: 0;
   overflow-y: auto;
   white-space: pre-wrap;
