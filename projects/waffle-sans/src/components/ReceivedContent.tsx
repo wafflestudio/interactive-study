@@ -141,13 +141,14 @@ const SansWrapper = styled.div<{ $height: number | null }>`
   height: ${({ $height }) => ($height ? `${$height}px` : '30%')};
 `;
 
-const MainText = styled.div<{ $isOutside: boolean }>`
+const MainText = styled.pre<{ $isOutside: boolean }>`
   color: ${({ $isOutside }) => ($isOutside ? `#315c57` : `#FEDCB4`)};
 
   width: 100%;
-  height: 30%;
+  /* height: 30%; */
   flex-shrink: 0;
   overflow-y: auto;
+  white-space: pre-wrap;
 
   text-align: justify;
   font-family: Inter;
