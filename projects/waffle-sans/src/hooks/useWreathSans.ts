@@ -8,6 +8,9 @@ interface Params {
   fontColor?: string;
   darkMode?: boolean;
   initialText: string;
+  fitToWidth?: boolean;
+  minSize?: number;
+  align?: 'left' | 'center' | 'right';
 }
 
 export default function useWreathSans({
@@ -16,30 +19,46 @@ export default function useWreathSans({
   darkMode,
   fontColor,
   initialText,
+  fitToWidth,
+  minSize,
+  align,
 }: Params) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { WreathSansCanvas, resize, redraw, getText, onInputHandler } =
-    useMemo(() => {
-      return createWreathSans({
-        initialText: initialText,
-        width: width ? width : ref.current?.offsetWidth ?? 330,
-        height: height ? height : ref.current?.offsetHeight ?? 234,
-        size: width ? width / 8 : 40,
-        color: fontColor ?? '#704234',
-        background: 'transparent',
-        backgroundAlpha: 0,
-        darkMode: darkMode ?? false,
-      });
-    }, [
-      initialText,
-      width,
-      height,
-      fontColor,
-      darkMode,
-      ref.current?.offsetWidth,
-      ref.current?.offsetHeight,
-    ]);
+  const {
+    WreathSansCanvas,
+    resize,
+    redraw,
+    getText,
+    onInputHandler,
+    setAlign,
+    getTextRect,
+  } = useMemo(() => {
+    return createWreathSans({
+      initialText: initialText,
+      width: width ? width : ref.current?.offsetWidth ?? 330,
+      height: height ? height : ref.current?.offsetHeight ?? 234,
+      size: width ? width / 8 : 40,
+      color: fontColor ?? '#704234',
+      background: 'transparent',
+      backgroundAlpha: 0,
+      darkMode: darkMode ?? false,
+      fitToWidth,
+      minSize,
+      align,
+    });
+  }, [
+    initialText,
+    width,
+    height,
+    fontColor,
+    darkMode,
+    fitToWidth,
+    minSize,
+    align,
+    ref.current?.offsetWidth,
+    ref.current?.offsetHeight,
+  ]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,5 +73,14 @@ export default function useWreathSans({
     };
   }, [redraw, resize, ref]);
 
-  return { WreathSansCanvas, ref, resize, redraw, getText, onInputHandler };
+  return {
+    WreathSansCanvas,
+    ref,
+    resize,
+    redraw,
+    getText,
+    onInputHandler,
+    setAlign,
+    getTextRect,
+  };
 }

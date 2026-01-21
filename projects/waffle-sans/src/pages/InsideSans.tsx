@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,8 +10,9 @@ import SnowFlakes from '../components/SnowFlakes';
 import { GRID } from '../constants/breakpoint';
 import { Mode } from '../types/mode';
 
-export default function OutsideSans() {
+export default function InsideSans() {
   const router = useNavigate();
+  const [align, setAlign] = useState<'left' | 'center' | 'right'>('left');
 
   return (
     <Container>
@@ -19,7 +21,30 @@ export default function OutsideSans() {
 
       <Content>
         <Header mode={'dark'} />
-        <SansForm mode={Mode.INSIDE} />
+        <AlignControls>
+          <AlignButton
+            type="button"
+            $active={align === 'left'}
+            onClick={() => setAlign('left')}
+          >
+            LEFT
+          </AlignButton>
+          <AlignButton
+            type="button"
+            $active={align === 'center'}
+            onClick={() => setAlign('center')}
+          >
+            CENTER
+          </AlignButton>
+          <AlignButton
+            type="button"
+            $active={align === 'right'}
+            onClick={() => setAlign('right')}
+          >
+            RIGHT
+          </AlignButton>
+        </AlignControls>
+        <SansForm mode={Mode.INSIDE} align={align} />
       </Content>
 
       <WindowContainer>
@@ -93,6 +118,25 @@ const Content = styled.div`
       transform: translateY(0px);
     }
   }
+`;
+
+const AlignControls = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+`;
+
+const AlignButton = styled.button<{ $active: boolean }>`
+  appearance: none;
+  border: 1px solid ${({ $active }) => ($active ? '#fff' : '#d8c7b8')};
+  background: ${({ $active }) => ($active ? '#ffffff' : 'transparent')};
+  color: ${({ $active }) => ($active ? '#5e3517' : '#fff')};
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
 `;
 
 const BackBtnContainer = styled.div`

@@ -1,5 +1,5 @@
 import gsap, { Power0, Power3 } from 'gsap';
-import { Align, CHARSET, ModelData } from 'leonsans';
+import { Align, CHARSET, ModelData, Rect } from 'leonsans';
 import LeonSans from 'leonsans';
 import * as PIXI from 'pixi.js';
 
@@ -42,6 +42,7 @@ type LeonOptions = {
   size?: number;
   weight?: number;
   pathGap?: number;
+  align?: Align;
 };
 
 type WreathSansProps = {
@@ -99,14 +100,16 @@ export default class WreathSansController {
   }: WreathSansProps) {
     const canvasWidth = canvas?.clientWidth ?? 300;
     const canvasHeight = canvas?.clientHeight ?? 300;
+    const initialSize = dynamicSize ? (leonOptions?.size ?? 130) : 0;
 
     this.leon = new LeonSans({
       text: initialText,
       color: [leonOptions?.color ?? '#704234'],
-      size: 0,
+      size: initialSize,
       weight: leonOptions?.weight ?? 400,
       isPattern: true,
       pathGap: leonOptions?.pathGap ?? 1 / 20,
+      align: leonOptions?.align ?? 'left',
     });
 
     this.leon.update();
@@ -178,6 +181,7 @@ export default class WreathSansController {
 
   set align(align: Align) {
     this.leon.align = align;
+    this.leon.updateDrawingPaths();
     this.updatePositions();
   }
 
@@ -340,6 +344,15 @@ export default class WreathSansController {
     });
   }
 
+  getTextRect(): Rect {
+    return {
+      x: this.leon.rect.x,
+      y: this.leon.rect.y,
+      w: this.leon.rect.w,
+      h: this.leon.rect.h,
+    };
+  }
+
   /**
    * leonsans의 데이터를 사용하여 글자들의 위치를 업데이트한다.
    * 그러나 leonsans에는 영향을 주지 않는다.
@@ -373,7 +386,7 @@ export default class WreathSansController {
   private dynamicResize() {
     if (this.leon.rect.w === 0) return;
     const newSize = this.size * (this.canvas.clientWidth / this.leon.rect.w);
-    if (newSize >= this._minSize) this.size = newSize;
+    this.size = Math.max(newSize, this._minSize);
   }
 
   private async loadAssets() {

@@ -12,14 +12,27 @@ type LetterProps = {
   content: string;
   sans: string;
   mode: string;
+  align: string;
 };
 
-export default function Letter({ sender, content, sans, mode }: LetterProps) {
+export default function Letter({
+  sender,
+  content,
+  sans,
+  mode,
+  align,
+}: LetterProps) {
   const [stage, setStage] = useState<(typeof stages)[number]>('shake');
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
   const parsedMode = useMemo(
     () => (mode === 'o' ? 'outside' : 'inside'),
     [mode],
   );
+  const baseHeight = stage === 'out' ? 652 : 252;
+  const adjustedHeight =
+    stage === 'out' && contentHeight
+      ? Math.max(baseHeight, contentHeight)
+      : baseHeight;
 
   const onClickLetter = useCallback(() => {
     const currentStageIndex = stages.findIndex((s) => s === stage);
@@ -33,7 +46,7 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
         $isOutside={parsedMode === 'outside'}
         $isOut={stage === 'out'}
       />
-      <Container onClick={onClickLetter} $stage={stage}>
+      <Container onClick={onClickLetter} $stage={stage} $height={adjustedHeight}>
         <LetterBack
           $isOutside={parsedMode === 'outside'}
           $isOut={stage === 'out'}
@@ -45,6 +58,8 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
             content={content}
             mode={mode}
             stage={stage}
+            align={align}
+            onHeightChange={setContentHeight}
           />
         </PaperWrapper>
         <LetterFront
@@ -84,10 +99,13 @@ export default function Letter({ sender, content, sans, mode }: LetterProps) {
   );
 }
 
-const Container = styled.div<{ $stage: 'shake' | 'close' | 'open' | 'out' }>`
+const Container = styled.div<{
+  $stage: 'shake' | 'close' | 'open' | 'out';
+  $height: number;
+}>`
   position: relative;
   width: 100%;
-  height: ${({ $stage }) => ($stage === 'out' ? '652px' : '252px')};
+  height: ${({ $height }) => `${$height}px`};
 
   transition: 1s ease;
 
